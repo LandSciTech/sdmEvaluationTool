@@ -13,9 +13,9 @@ erDiagram
     USERS ||--o{ MATERIALS : user_id
 
     USERS ||--o{ EVALUATIONS : user_id
-    USERS ||--o{ FEEDBACKS : user_id
+    USERS ||--o{ COMMENTS : user_id
     EVALUATIONS ||--|| MATERIALS : evaluation_id
-    EVALUATIONS ||--|| FEEDBACKS : evaluation_id
+    EVALUATIONS ||--|| COMMENTS : evaluation_id
 ```
 
 ## Tables
