@@ -4,18 +4,25 @@
 
 ```mermaid
 erDiagram
-    UPLOADS }|..|{ MATERIALS : upload_id
-    METADATA }|..|{ MODELS : metadata_id
-    COMPONENTS ||--|{ MATERIALS : component_id
+    direction LR
+    uploads }|..|{ materials : upload_id
+    style uploads fill:#fff
+    rules ||..|| components : component_id
+    style rules fill:#fff
+    metadata }|..|{ models : metadata_id
+    style metadata fill:#fff
 
-    MODELS ||--|{ MATERIALS : model_id
-    SPECIES ||--|{ MATERIALS : species_id
-    USERS ||--o{ MATERIALS : user_id
+    components ||--|{ materials : component_id
+    style components fill:#ffa
+    models ||--|{ materials : model_id
+    style models fill:#ffa
+    species ||--|{ materials : species_id
+    style species fill:#ffa
+    users ||--o{ materials : user_id
+    style users fill:#ffa
 
-    USERS ||--o{ EVALUATIONS : user_id
-    USERS ||--o{ COMMENTS : user_id
-    EVALUATIONS ||--|| MATERIALS : evaluation_id
-    EVALUATIONS ||--|| COMMENTS : evaluation_id
+    users ||--o{ evaluations : user_id
+    evaluations ||--|| materials : evaluation_id
 ```
 
 ## Tables
@@ -86,18 +93,18 @@ Mandatory components are prerequisites for starting evaluations.
 
 ### `materials`
 
-Species ID, Model ID, and Component ID used as a compound key (`PRIMARY KEY (species_id, model_id, component_id)`). Upload materials are used to be displayed and evaluated.
+Upload materials are used to be displayed and evaluated.
 
 | Field name | Type | Constraints | Description |
 |------------|------|-------------|-------------|
+|  `material_id`  |  text  |  `PRIMARY KEY`  |  ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).  |
 |  `species_id`  |  text  |  `REFERENCES species`  |  Species ID.  |
 |  `model_id`  |  text  |  `REFERENCES models`  |  Model ID.  |
 |  `component_id`  |  text  |  `REFERENCES components`  |  Component ID.  |
-|  `material_id`  |  text  |  `UNIQUE NOT NULL`  |  ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).  |
-|  `material_user_created`  |  text  |  `REFERENCES user (user_id)`  |  User who uploaded the model material.  |
-|  `material_time_created`  |  timestamp  |  `NOT NULL`  |  Time of initial upload.  |
-|  `material_user_modified`  |  text  |  `REFERENCES user (user_id)`  |  User who modified the model material.  |
-|  `material_time_modified`  |  timestamp  |  `NOT NULL`  |  Time of last modification.  |
+|  `material_create_user`  |  text  |  `REFERENCES user (user_id)`  |  User who uploaded the model material.  |
+|  `material_create_time`  |  timestamp  |  `NOT NULL`  |  Time of initial upload.  |
+|  `material_modify_user`  |  text  |  `REFERENCES user (user_id)`  |  User who modified the model material.  |
+|  `material_modify_time`  |  timestamp  |  `NOT NULL`  |  Time of last modification.  |
 
 FIXME: need to link this to uploads (upload entries, files).
 
@@ -108,43 +115,28 @@ Note: the UI will enforce role based access rules.
 ### `evaluations`
 
 Evaluations are the basic feedback on the materials.
-Material ID, and User ID used as a compound key (`PRIMARY KEY (material_id, user_id)`).
+There is no explicitly defined primary key, sort and filter to find entries to display.
 User ID is the create user.
 
 | Field name | Type | Constraints | Description |
 |------------|------|-------------|-------------|
 |  `material_id`  |  text  |  `REFERENCES materials`  |  Material ID.  |
-|  `user_id`  |  text  |  `REFERENCES users`  |  User ID.  |
-|  `evaluation_id`  |  uuid  |  `UNIQUE NOT NULL`  |  UUID (also a primary key) for joining evaluations to materials.  |
-|  `evaluation_time_created`  |  timestamp  |  `NOT NULL`  |  Time of initial evaluation.  |
-|  `evaluation_time_modified`  |  timestamp  |  `NOT NULL`  |  Time of last modification.  |
-|  `evaluation_user_modified`  |  text  |  `REFERENCES users (user_id)`  |  User who last modified.  |
+|  `evaluation_create_user`  |  text  |  `REFERENCES users (user_id)`  |  User ID.  |
+|  `evaluation_create_time`  |  timestamp  |  `NOT NULL`  |  Time of initial evaluation.  |
+|  `evaluation_modify_user`  |  text  |  `REFERENCES users (user_id)`  |  User who last modified.  |
+|  `evaluation_modify_time`  |  timestamp  |  `NOT NULL`  |  Time of last modification.  |
 |  `evaluation_body`  |  json  |  `NOT NULL`  |  JSON blob with the evaluation according to component display rules reflecting last modification.  |
+|  `comment_create_user`  |  text  |  `REFERENCES users (user_id)`  |  User ID.  |
+|  `comment_create_time`  |  timestamp  |    |  Time of initial evaluation.  |
+|  `comment_modify_user`  |  text  |  `REFERENCES users (user_id)`  |  User who last modified.  |
+|  `comment_modify_time`  |  timestamp  |    |  Time of last modification.  |
+|  `comment_body`  |  json  |    |  JSON blob with the comment on an evaluation according to component display rules reflecting last modification.  |
 
 Note: the UI will enforce role based access rules.
 
 Note: the body has to conform with component display rules which is not checked by the database and is the job for the UI to enforce.
 
-### `comments`
-
-Comments are the feedback on the evaluations.
-Evaluation ID, and User ID used as a compound key (`PRIMARY KEY (evaluation_id, user_id)`). 
-User ID is the create user, who must be different from the `evaluations.user_id`.
-
-
-| Field name | Type | Constraints | Description |
-|------------|------|-------------|-------------|
-|  `evaluation_id`  |  text  |  `REFERENCES materials`  |  Material ID.  |
-|  `user_id`  |  text  |  `REFERENCES users`  |  User ID.  |
-|  `comment_id`  |  uuid  |  `UNIQUE NOT NULL`  |  UUID (also a primary key) for joining comments to evaluations.  |
-|  `comment_time_created`  |  timestamp  |  `NOT NULL`  |  Time of initial evaluation.  |
-|  `comment_time_modified`  |  timestamp  |  `NOT NULL`  |  Time of last modification.  |
-|  `comment_user_modified`  |  text  |  `REFERENCES users (user_id)`  |  User who last modified.  |
-|  `comment_body`  |  json  |  `NOT NULL`  |  JSON blob with the comment according to component display rules reflecting last modification.  |
-
-Note: the UI will enforce role based access rules.
-
-Display rune for comments are simpler than for evaluations, we consider text comments for now.
+Display rule for comments are simpler than for evaluations, we consider text comments for now.
 
 ## TODO
 
