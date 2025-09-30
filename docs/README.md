@@ -75,10 +75,8 @@ Components that can be uploaded and evaluated. Each component will have its Shin
 |  `component_id`  |  text  |  `PRIMARY KEY`  |  Component ID, lower case with `_`, also used in Shiny module names.  |
 |  `component_description`  |  text  |  `NOT NULL`  |  Component description.  |
 |  `component_mandatory`  |  boolean  |  `NOT NULL`  |  Is the component mandatory (value is `TRUE`).  |
-|  `component_placement`  |  text  |  `NOT NULL`  |  Component description. E.g. reflecting which page/tab/section it belongs and how it should be ordered relative to other components.  |
-|  `component_upload`  |  json  |  `NOT NULL`  |  A label that helps placing the component in the UI.  |
-|  `component_display`  |  json  |  `NOT NULL`  |  JSON document to describe display behavior.  |
-|  `component_evaluation`  |  json  |  `NOT NULL`  |  JSON document to describe evaluation behavior.  |
+|  `component_placement`  |  text  |  `NOT NULL`  |  A label that helps placing the component in the UI. E.g. reflecting which page/tab/section it belongs and how it should be ordered relative to other components.  |
+|  `component_rules`  |  json  |  `NOT NULL`  |  JSON document to describe upload/display/evaluation/reporting behavior.  |
 
 FIXME: MORE WORK NEEDED ON COMPONENTS, organize into sections to help with UI organization (page_tab_section, ordering, etc.) similarly to ODMAP dict.
 
@@ -96,9 +94,10 @@ Species ID, Model ID, and Component ID used as a compound key (`PRIMARY KEY (spe
 |  `model_id`  |  text  |  `REFERENCES models`  |  Model ID.  |
 |  `component_id`  |  text  |  `REFERENCES components`  |  Component ID.  |
 |  `material_id`  |  text  |  `UNIQUE NOT NULL`  |  ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).  |
-|  `material_user`  |  text  |  `REFERENCES user (user_id)  |  User who uploaded the model materials.  |
-|  `material_created`  |  timestamp  |  `NOT NULL`  |  Time of initial upload.  |
-|  `material_modified`  |  timestamp  |  `NOT NULL`  |  Time of last modification.  |
+|  `material_user_created`  |  text  |  `REFERENCES user (user_id)`  |  User who uploaded the model material.  |
+|  `material_time_created`  |  timestamp  |  `NOT NULL`  |  Time of initial upload.  |
+|  `material_user_modified`  |  text  |  `REFERENCES user (user_id)`  |  User who modified the model material.  |
+|  `material_time_modified`  |  timestamp  |  `NOT NULL`  |  Time of last modification.  |
 
 FIXME: need to link this to uploads (upload entries, files).
 
