@@ -138,6 +138,16 @@ Note: the body has to conform with component display rules which is not checked 
 
 Display rule for comments are simpler than for evaluations, we consider text comments for now.
 
+## Components
+
+Here we describe everything we need to know about the components.
+
+See [`components.yml`](./components.yml)
+
+## Model materials upload
+
+Single and multi-species uploads.
+
 ## TODO
 
 - [ ] Make YAML for components
