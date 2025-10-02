@@ -1,5 +1,19 @@
 # Documentation for the SDM Evaluation Tool
 
+- [Documentation for the SDM Evaluation Tool](#documentation-for-the-sdm-evaluation-tool)
+  - [Conceptual model](#conceptual-model)
+  - [Tables](#tables)
+    - [`species`](#species)
+    - [`models`](#models)
+    - [`users`](#users)
+    - [`components`](#components)
+    - [`materials`](#materials)
+    - [`evaluations`](#evaluations)
+  - [Components](#components-1)
+  - [Model materials upload](#model-materials-upload)
+  - [TODO](#todo)
+
+
 ## Conceptual model
 
 ```mermaid
