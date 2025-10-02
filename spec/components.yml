@@ -1,0 +1,130 @@
+components:
+
+  observations:
+    description: >
+      Detections or counts by location and timestamp for
+      a single or multiple species.
+    mandatory: Yes
+    applies_to: species
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: [latitude, longitude, timestamp, method, "{species_id}"]
+      species: by_column # species ID's in the column header
+      path: "{model}/{species}/observations.parquet"
+    display:
+      type: map
+      placement: "page.tab.section" # TBD
+      properties:
+        geometry_type: point
+    evaluation:
+    reporting:
+
+  model_metadata:
+    description: >
+      ODMAP protocol metadata.
+    mandatory: Yes
+    applies_to: models
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: []
+      species: none # no species info
+      path: "{model}/model_metadata.parquet"
+    display:
+      type: table
+      placement: "page.tab.section" # TBD
+      properties:
+    evaluation:
+    reporting:
+
+  predictor_metadata:
+    description: >
+      Predictor metadata.
+    mandatory: Yes
+    applies_to: models
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: [predictor, definition, predictor_class, resolution, source, provider, citation, covariate_extraction, prediction_resolution, years, temporal_matching]
+      species: none # no species info
+      path: "{model}/predictor_metadata.parquet"
+    display:
+      type: table
+      placement: "page.tab.section" # TBD
+      properties:
+    evaluation:
+    reporting:
+
+  predictor_raster:
+    description: >
+      Predictor raster, a multi-band TIF with spatial predictors as bands.
+    mandatory: Yes
+    applies_to: models
+    upload:
+      type: raster
+      file_ext: [tif]
+      columns: []
+      species: none # no species info
+      path: "{model}/predictor_raster.tif"
+    display:
+      type: map
+      placement: "page.tab.section" # TBD
+      properties:
+        geometry_type: raster
+    evaluation:
+    reporting:
+
+  spatial_prediction:
+    description: >
+      Expected value as band 1, variation as band 2.
+    mandatory: Yes
+    applies_to: species
+    upload:
+      type: raster
+      file_ext: [tif]
+      columns: []
+      species: none # no species info
+      path: "{model}/{species}/spatial_prediction.tif"
+    display:
+      type: map
+      placement: "page.tab.section" # TBD
+      properties:
+        geometry_type: raster
+    evaluation:
+    reporting:
+
+  model_summary:
+    description: >
+      Model summary including 
+      variable importance metrics or 
+      coefficients for predictor variables.
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: [species_id, predictor]
+      species: by_row # species ID's are rows in the species_id column
+      path: "{model}/{species}/model_summary.parquet"
+    display:
+      type: table
+      placement: "page.tab.section" # TBD
+      properties:
+    evaluation:
+    reporting:
+
+  model_fit:
+    description: >
+      Model fit statistics.
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: [species_id, statistic, value]
+      species: by_row # species ID's are rows in the species_id column
+      path: "{model}/{species}/model_fit.parquet"
+    display:
+      type: table
+      placement: "page.tab.section" # TBD
+      properties:
+    evaluation:
+    reporting:
+
