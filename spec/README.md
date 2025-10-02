@@ -10,7 +10,12 @@
     - [`materials`](#materials)
     - [`evaluations`](#evaluations)
   - [Components](#components-1)
-  - [Model materials upload](#model-materials-upload)
+    - [Model materials upload](#model-materials-upload)
+    - [Display](#display)
+    - [Evaluation](#evaluation)
+    - [Reporting](#reporting)
+  - [Materials upload](#materials-upload)
+  - [Database and evaluations](#database-and-evaluations)
   - [TODO](#todo)
 
 
@@ -155,18 +160,95 @@ Display rule for comments are simpler than for evaluations, we consider text com
 ## Components
 
 Here we describe everything we need to know about the components.
+See [`components.yml`](./components.yml).
 
-See [`components.yml`](./components.yml)
+Each component entry has the following properties:
 
-## Model materials upload
+- `description` [text]: A brief description of the component to be used in the UI
+- `mandatory` [boolean]: Is it a mandatory component, i.e. evaluation cannot
+  start while this is missing.
+- `applies_to` [text]: What the component applies to, species/models
+- `upload`, `display`, `evaluation`, `reporting` [list]: These describe the
+  behavior of the component for different use cases of the UI, see below
 
-Single and multi-species uploads.
+### Model materials upload
+
+Single and multi-species uploads are defined here.
+We can define what kind of component it is, e.g. a table, a raster file, etc.
+What kind of files are accepted, how to parse multi-species results (i.e.
+species are columns, or rows, what columns are expected for tables).
+The `path` property tells where to look for the result from this component.
+
+### Display
+
+The display section of the component specification determines what kind of
+functionality is required. We have corresponding `mod_<component_id>_ui` and 
+`mod_<component_id>_server` module functions to be used in the Shiny app.
+The placement of the component can also be determined here, i.e. which
+page/tab/section it will be displayed.
+
+### Evaluation
+
+This specifies what kind of evaluation is to be implemented for the component.
+
+FIXME: add more content here.
+
+### Reporting
+
+This specifies how to summarize the component in reports.
+
+FIXME: add more content here.
+
+## Materials upload
+
+When materials are uploaded, we expect the following sequence of actions:
+
+1. Metadata is uploaded or entered, this will allow to identify the model
+3. Once the model is identified, we can also upload predictor variable info (maps, descriptions)
+2. We can also upload the species information:
+   - Observations
+   - Model summaries (coefficients, variable importance)
+   - Spatial predictions (density, coefficient of variation)
+   - Model fit metrics
+
+We are following the model/species nesting order, but the list of potential
+species is the same for all models.
+
+Input files can be provided in different formats (csv, rda, parquet, gpkg).
+We write flat files in parquet formats because it is fast to read/write, compact,
+and it is type-safe (i.e. preserves dates). It can also be used to store
+spatial information for vector layers.
+Spatial raster files are saved a multi-band TIF files.
+
+When the info is uploaded, we organize the files inside the `./materials/` folder the following way:
+
+```text
+./materials/<model_id>/
+./materials/<model_id>/model_metadata.parquet"
+./materials/<model_id>/predictor_metadata.parquet"
+./materials/<model_id>/predictor_raster.tif"
+
+./materials/<model_id>/<species_id>/
+./materials/<model_id>/<species_id>/observations.parquet"
+./materials/<model_id>/<species_id>/spatial_prediction.tif"
+./materials/<model_id>/<species_id>/model_summary.parquet"
+./materials/<model_id>/<species_id>/model_fit.parquet"
+```
+
+## Database and evaluations
+
+The evaluations for each material are stored in a database, alongside the
+other tables outlined in the conceptual overview.
+For the local file system setup, the database is placed as follows:
+
+```text
+./sdm_evaluation_db.sqlite
+```
 
 ## TODO
 
-- [ ] Make YAML for components
+- [x] Make YAML for components
 - [ ] Describe single/multi-species upload specs
-- [ ] Outline mandatory component displays specs
+- [x] Outline mandatory component displays specs
 - [ ] Describe a framework for more flexible handling of GoF components
-- [ ] Outline mandatory component evaluation specs
 - [ ] Create mock app UI for summary, spp1 landing, etc
