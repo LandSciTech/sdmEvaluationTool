@@ -3,9 +3,9 @@
 - [Documentation for the SDM Evaluation Tool](#documentation-for-the-sdm-evaluation-tool)
   - [Conceptual model](#conceptual-model)
   - [Tables](#tables)
+    - [`users`](#users)
     - [`species`](#species)
     - [`models`](#models)
-    - [`users`](#users)
     - [`components`](#components)
     - [`materials`](#materials)
     - [`evaluations`](#evaluations)
@@ -51,29 +51,10 @@ and list the required field names. It is possible to have fields in these tables
 
 Table names are lower case (a single plural noun). Field names are snake case (lower case with underscores as word separator).
 
-### `species`
-
-A table that lists all potential species, in our case, birds in Canada.
-
-| Field name | Type | Constraints | Description |
-|------------|------|-------------|-------------|
-|  `species_id`  |  text  |  `PRIMARY KEY`  |  Lower case 4-letter code, e.g. `oven` for Ovenbird. |
-|  `scientific_name`  |  text  |  `UNIQUE NOT NULL`  |  Scientific name.  |
-|  `english_name`  |  text  |  `UNIQUE NOT NULL`  |  Common name in English.  |
-|  `french_name`  |  text  |  `UNIQUE NOT NULL`  |  Common name in French (use UTF-8 encoding).  |
-
-### `models`
-
-A table listing models. The model name and ID acts as an abbreviation of the model approach/extent/etc. and also acts as a version identifier, e.g. `can_glm_v1.1` would mean that GLM models were used for models with Canadian extent and this is version 1.1.
-
-| Field name | Type | Constraints | Description |
-|------------|------|-------------|-------------|
-|  `model_id`  |  text  |  `PRIMARY KEY`  |  Model ID, lower case, alphanumeric, `.` and `_` allowed.  |
-|  `model_name`  |  text  |  `UNIQUE NOT NULL`  |  A human readable version of `model_id` displayed in the app.  |
-|  `model_description`  |  text  |  `UNIQUE NOT NULL`  |  A brief model description.  |
-|  `model_metadata`  |  text  |  `UNIQUE NOT NULL`  |  A file path or URL pointing used to find the ODMAP metadata for the model.  |
-
 ### `users`
+
+This table contains user names and roles to be used as foreign keys in other tables
+to track change history.
 
 | Field name | Type | Constraints | Description |
 |------------|------|-------------|-------------|
@@ -92,6 +73,37 @@ Allowed values and access types for user roles:
 | `modeler` | Read, Write (create new, edit theirs) | Read |
 | `admin` | Read, Write (create new, edit all, delete) | Read, Write (create new, edit all, delete) |
 
+This table needs to be updated regularly, requires admin access and writing directly
+to the database.
+
+### `species`
+
+A table that lists all potential species, in our case, birds in Canada.
+
+| Field name | Type | Constraints | Description |
+|------------|------|-------------|-------------|
+|  `species_id`  |  text  |  `PRIMARY KEY`  |  Lower case 4-letter code, e.g. `oven` for Ovenbird. |
+|  `scientific_name`  |  text  |  `UNIQUE NOT NULL`  |  Scientific name.  |
+|  `english_name`  |  text  |  `UNIQUE NOT NULL`  |  Common name in English.  |
+|  `french_name`  |  text  |  `UNIQUE NOT NULL`  |  Common name in French (use UTF-8 encoding).  |
+
+Updates: this table is saved to the database once, changes to the `species`
+table require admin access directly to the database.
+
+### `models`
+
+A table listing models. The model name and ID acts as an abbreviation of the model approach/extent/etc. and also acts as a version identifier, e.g. `can_glm_v1.1` would mean that GLM models were used for models with Canadian extent and this is version 1.1.
+
+| Field name | Type | Constraints | Description |
+|------------|------|-------------|-------------|
+|  `model_id`  |  text  |  `PRIMARY KEY`  |  Model ID, lower case, alphanumeric, `.` and `_` allowed.  |
+|  `model_name`  |  text  |  `UNIQUE NOT NULL`  |  A human readable version of `model_id` displayed in the app.  |
+|  `model_description`  |  text  |  `UNIQUE NOT NULL`  |  A brief model description.  |
+|  `model_metadata`  |  text  |  `UNIQUE NOT NULL`  |  A file path or URL pointing used to find the ODMAP metadata for the model.  |
+
+Updates are done via uploading or creating a method metadata file.
+This action should be quite infrequent.
+
 ### `components`
 
 Components that can be uploaded and evaluated. Each component will have its Shiny module implementing the expected behavior for upload, display, and evaluation. e.g. a component can have corresponding `mod_<component_id>_ui` and `mod_<component_id>_server` module functions.
@@ -109,6 +121,10 @@ FIXME: MORE WORK NEEDED ON COMPONENTS, organize into sections to help with UI or
 FIXME: outline expectations re upload (file type, etc.) and evaluation in YAML (`components.yaml`). Use this YAML to generate this table, possibly using a json field to store document style properties to encapsulate expected behavior.
 
 Mandatory components are prerequisites for starting evaluations.
+
+Updates are done via parsing the `components.yaml` file by admins.
+After initial development, versioning and backward compatibility should be
+a concern so that previous entries will not break.
 
 ### `materials`
 
@@ -130,6 +146,10 @@ FIXME: need to link this to uploads (upload entries, files).
 Note: we can consider adding a lock field, i.e. locked for modifications because evaluations have started. For now, a soft lock is considered when all mandatory fields are available for a species/model combo.
 
 Note: the UI will enforce role based access rules.
+
+Updates to the file system and the database will be regular as modelers upload
+new materials. Every new entry and edit will be saved with user ID and timestamp
+when Save button is clicked after adding the entry.
 
 ### `evaluations`
 
@@ -156,6 +176,10 @@ Note: the UI will enforce role based access rules.
 Note: the body has to conform with component display rules which is not checked by the database and is the job for the UI to enforce.
 
 Display rule for comments are simpler than for evaluations, we consider text comments for now.
+
+Updates to evaluations will be frequent as evaluators provide more data.
+Every new entry and edit will be saved with user ID and timestamp
+when Save button is clicked after adding the entry.
 
 ## Components
 
@@ -215,10 +239,10 @@ We are following the model/species nesting order, but the list of potential
 species is the same for all models.
 
 Input files can be provided in different formats (csv, rda, parquet, gpkg).
-We write flat files in parquet formats because it is fast to read/write, compact,
-and it is type-safe (i.e. preserves dates). It can also be used to store
+We write flat files in rda or parquet formats because these are fast to read/write, compact,
+and type-safe (i.e. preserves dates). It can also be used to store
 spatial information for vector layers.
-Spatial raster files are saved a multi-band TIF files.
+Spatial raster files are saved as multi-band TIF files.
 
 When the info is uploaded, we organize the files inside the `./materials/` folder the following way:
 
@@ -234,6 +258,9 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 ./materials/<model_id>/<species_id>/model_summary.parquet"
 ./materials/<model_id>/<species_id>/model_fit.parquet"
 ```
+
+Model materials are saved after upload, this is also when the database
+is updated with the new information.
 
 ## Database and evaluations
 
