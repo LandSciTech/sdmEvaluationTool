@@ -1,0 +1,17 @@
+Package: sdmEvalToolCore
+Title: SDM Evaluation Tool Core Functions
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Peter", "Solymos", email = "psolymos@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7337-1740")),
+    person("Steffi", "LaZerte", email = "sel@steffilazerte.ca", role = c("aut"),
+           comment = c(ORCID = "0000-0002-7690-8360")))
+Description: The goal of sdmEvalToolCore is to implement the data model and 
+    non-interactive functionality for sdmEvalToolUI according to the SDM 
+    Evaluation Tool requirements.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Suggests: 
+    rmarkdown
