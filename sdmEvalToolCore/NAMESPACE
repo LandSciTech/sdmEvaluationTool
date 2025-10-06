@@ -2,3 +2,6 @@
 
 export(get_fields)
 export(get_user_roles)
+export(sdmevaltool_options)
+export(timestamp_from)
+export(timestamp_to)
