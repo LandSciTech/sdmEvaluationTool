@@ -61,22 +61,22 @@ tables:
       name: User ID
       description: User ID (a unique ID or the email).
       type: text
-      constraints: PRIMARY KEY
+      constraint: PRIMARY KEY
     user_name:
       name: User Name
       description: The user's full name.
       type: text
-      constraints: NOT NULL
+      constraint: NOT NULL
     user_email:
       name: User Email
       description: The user's email address.
       type: text
-      constraints: UNIQUE NOT NULL
+      constraint: UNIQUE NOT NULL
     user_affiliation:
       name: User Affiliation
       description: The user's primary affiliation, e.g. ECCC, BAM, etc.
       type: text
-      constraints: NOT NULL
+      constraint: NOT NULL
     user_roles:
       name: User Role
       description: >
@@ -84,172 +84,172 @@ tables:
         The default role is `viewer` and is assumed even if not mentioned 
         explicitly (value is null).
       type: text
-      constraints:
+      constraint:
 
   species:
     species_id:
       name: Species ID
       description: Lower case 4-letter code, e.g. `oven` for Ovenbird.
       type: text
-      constraints: PRIMARY KEY
+      constraint: PRIMARY KEY
     scientific_name:
       name: Scientific Name
       description: Scientific name.
       type: text
-      constraints: UNIQUE NOT NULL
+      constraint: UNIQUE NOT NULL
     english_name:
       name: English Name
       description: Common name in English.
       type: text
-      constraints: UNIQUE NOT NULL
+      constraint: UNIQUE NOT NULL
     french_name:
       name: French Name
       description: Common name in French (use UTF-8 encoding).
       type: text
-      constraints: UNIQUE NOT NULL
+      constraint: UNIQUE NOT NULL
 
   models:
     model_id:
       name: Model ID
       description: Model ID, lower case, alphanumeric, `.` and `_` allowed.
       type: text
-      constraints: PRIMARY KEY
+      constraint: PRIMARY KEY
     model_name:
       name: Model Name
       description: A human readable version of `model_id` displayed in the app.
       type: text
-      constraints: UNIQUE NOT NULL
+      constraint: UNIQUE NOT NULL
     model_description:
       name: Model Description
       description: A human readable version of `model_id` displayed in the app.
       type: text
-      constraints: UNIQUE NOT NULL
+      constraint: UNIQUE NOT NULL
     model_metadata:
       name: Model Metadata
       description: A file path or URL pointing used to find the ODMAP metadata for the model.
       type: text
-      constraints: UNIQUE NOT NULL
+      constraint: UNIQUE NOT NULL
 
   components:
     component_id:
       name: Component ID
       description: Component ID, lower case with `_`, also used in Shiny module names.
       type: text
-      constraints: PRIMARY KEY
+      constraint: PRIMARY KEY
     component_description:
       name: Component Description
       description: Component description.
       type: text
-      constraints: NOT NULL
+      constraint: NOT NULL
     component_mandatory:
       name: Mandatory
       description: Is the component mandatory (value is `TRUE`).
       type: boolean
-      constraints: NOT NULL
+      constraint: NOT NULL
     component_placement:
       name: Component Placement
       description: A label that helps placing the component in the UI. E.g. reflecting which page/tab/section it belongs and how it should be ordered relative to other components.
       type: text
-      constraints: NOT NULL
+      constraint: NOT NULL
 
   materials:
     material_id:
       name: Material ID
       description: ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).
       type: text
-      constraints: PRIMARY KEY
+      constraint: PRIMARY KEY
     species_id:
       name: Species ID
       description: Species ID (foreign key).
       type: text
-      constraints: REFERENCES species
+      constraint: REFERENCES species
     model_id:
       name: Model ID
       description: Model ID (foreign key).
       type: text
-      constraints: REFERENCES models
+      constraint: REFERENCES models
     component_id:
       name: Component ID
       description: Component ID (foreign key).
       type: text
-      constraints: REFERENCES components
+      constraint: REFERENCES components
     material_create_user:
       name: Create User
       description: User who uploaded the model material (foreign key).
       type: text
-      constraints: REFERENCES user (user_id)
+      constraint: REFERENCES user (user_id)
     material_create_time:
       name: Create Time
       description: Time of initial upload.
       type: timestamp
-      constraints: NOT NULL
+      constraint: NOT NULL
     material_modify_user:
       name: Modify User
       description: User who modified the model material (foreign key).
       type: text
-      constraints: REFERENCES user (user_id)
+      constraint: REFERENCES user (user_id)
     material_modify_time:
       name: Modify Time
       description: Time of last modification.
       type: timestamp
-      constraints: NOT NULL
+      constraint: NOT NULL
 
   evaluations:
     material_id:
       name: Material ID
       description: Material ID.
       type: text
-      constraints: REFERENCES materials
+      constraint: REFERENCES materials
     evaluation_create_user:
       name: Create User
       description: Time of initial evaluation (foreign key).
       type: text
-      constraints: REFERENCES user (user_id)
+      constraint: REFERENCES user (user_id)
     evaluation_create_time:
       name: Create Time
       description: Time of initial upload.
       type: timestamp
-      constraints: NOT NULL
+      constraint: NOT NULL
     evaluation_modify_user:
       name: Modify User
       description: User who last modified (foreign key).
       type: text
-      constraints: REFERENCES user (user_id)
+      constraint: REFERENCES user (user_id)
     evaluation_modify_time:
       name: Modify Time
       description: Time of last modification.
       type: timestamp
-      constraints: NOT NULL
+      constraint: NOT NULL
     evaluation_body:
       name: Evaluation
       description: JSON blob with the evaluation according to component display rules reflecting last modification.
       type: json
-      constraints: NOT NULL
+      constraint: NOT NULL
     comment_create_user:
       name: Create User
       description: Time of initial evaluation (foreign key).
       type: text
-      constraints: REFERENCES user (user_id)
+      constraint: REFERENCES user (user_id)
     comment_create_time:
       name: Create Time
       description: Time of initial upload.
       type: timestamp
-      constraints: NOT NULL
+      constraint: NOT NULL
     comment_modify_user:
       name: Modify User
       description: User who last modified (foreign key).
       type: text
-      constraints: REFERENCES user (user_id)
+      constraint: REFERENCES user (user_id)
     comment_modify_time:
       name: Modify Time
       description: Time of last modification.
       type: timestamp
-      constraints: NOT NULL
+      constraint: NOT NULL
     comment_body:
       name: Comment
       description: JSON blob with the comment on an evaluation according to component display rules reflecting last modification.
       type: json
-      constraints: NOT NULL
+      constraint: NOT NULL
 
 components:
 
