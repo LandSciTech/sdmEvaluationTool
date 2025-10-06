@@ -17,7 +17,33 @@ tables <- do.call(rbind, lapply(names(conf$tables), \(i) {
 }))
 save(tables, file = file.path(pkg, "data", "tables.rda"), compress="xz")
 
-components <- conf$components
+cmp <- conf$components
+components <- data.frame(
+    component = character(0L),
+    description = character(0L),
+    mandatory = logical(0L),
+    applies_to = character(0L),
+    upload = character(0L),
+    display = character(0L),
+    evaluation = character(0L),
+    reporting = character(0L))
+for (i in names(cmp)) {
+    l <- cmp[[i]]
+    c1 <- data.frame(
+        component = i,
+        description = l$description,
+        mandatory = l$mandatory,
+        applies_to = l$applies_to,
+        upload = NA_character_,
+        display = NA_character_,
+        evaluation = NA_character_,
+        reporting = NA_character_)
+    for (j in c("upload", "display", "evaluation", "reporting")) {
+        if (!is.null(l[[j]]))
+            c1[[j]] <- list(l[[j]])
+    }
+    components <- rbind(components, c1)
+}
 save(components, file = file.path(pkg, "data", "components.rda"), compress="xz")
 
 devtools::document(pkg)

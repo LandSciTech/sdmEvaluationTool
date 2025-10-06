@@ -352,6 +352,8 @@ components:
       Model summary including 
       variable importance metrics or 
       coefficients for predictor variables.
+    mandatory: Yes
+    applies_to: species
     upload:
       type: table
       file_ext: [csv, rda, parquet]
@@ -368,6 +370,8 @@ components:
   model_fit:
     description: >
       Model fit statistics.
+    mandatory: Yes
+    applies_to: species
     upload:
       type: table
       file_ext: [csv, rda, parquet]

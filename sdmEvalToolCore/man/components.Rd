@@ -5,7 +5,7 @@
 \alias{components}
 \title{Components}
 \format{
-A list with component configuration.
+A data frame with component configuration (some columns are lists).
 }
 \usage{
 components

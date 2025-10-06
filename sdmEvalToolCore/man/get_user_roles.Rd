@@ -16,8 +16,8 @@ A data frame with the permissible user actions (TRUE/FALSE).
 Get User Roles
 }
 \examples{
-str(users(c("modeler")))
-str(users(c("evaluator")))
-str(users(c("evaluator", "modeler")))
+str(get_user_roles(c("modeler")))
+str(get_user_roles(c("evaluator")))
+str(get_user_roles(c("evaluator", "modeler")))
 
 }
