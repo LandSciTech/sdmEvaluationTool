@@ -1,0 +1,35 @@
+name: sdmEvalToolUI
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: [ "sdmEvalToolUI/**"]
+  pull_request:
+    branches: [ "main" ]
+    paths: [ "sdmEvalToolUI/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+      - name: Set up Pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+      - name: Install dependencies
+        run: |
+          Sys.setenv("GITHUB_PAT" = "${{ secrets.GITHUB_TOKEN }}")
+          install.packages(c("remotes", "rcmdcheck"))
+          remotes::install_deps("sdmEvalToolUI", dependencies = TRUE)
+        shell: Rscript {0}
+      - name: Check
+        run: rcmdcheck::rcmdcheck("sdmEvalToolUI", args = "--no-manual", error_on = "warning")
+        shell: Rscript {0}
