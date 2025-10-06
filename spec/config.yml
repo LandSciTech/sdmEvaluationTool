@@ -1,0 +1,382 @@
+version: 0.1
+
+roles:
+
+  viewer:
+    name: Viewer
+    materials_read: Yes
+    materials_create_new: No
+    materials_edit_own: No
+    materials_edit_all: No
+    materials_delete: No
+    evaluations_read: Yes
+    evaluations_create_new: No
+    evaluations_edit_own: No
+    evaluations_edit_all: No
+    evaluations_delete: No
+
+  evaluator:
+    name: Evaluator
+    materials_read: Yes
+    materials_create_new: No
+    materials_edit_own: No
+    materials_edit_all: No
+    materials_delete: No
+    evaluations_read: Yes
+    evaluations_create_new: Yes
+    evaluations_edit_own: Yes
+    evaluations_edit_all: No
+    evaluations_delete: No
+
+  modeler:
+    name: Modeler
+    materials_read: Yes
+    materials_create_new: Yes
+    materials_edit_own: Yes
+    materials_edit_all: No
+    materials_delete: No
+    evaluations_read: Yes
+    evaluations_create_new: No
+    evaluations_edit_own: No
+    evaluations_edit_all: No
+    evaluations_delete: No
+
+  admin:
+    name: Admin
+    materials_read: Yes
+    materials_create_new: Yes
+    materials_edit_own: Yes
+    materials_edit_all: Yes
+    materials_delete: Yes
+    evaluations_read: Yes
+    evaluations_create_new: Yes
+    evaluations_edit_own: Yes
+    evaluations_edit_all: Yes
+    evaluations_delete: Yes
+
+tables:
+
+  users:
+    user_id:
+      name: User ID
+      description: User ID (a unique ID or the email).
+      type: text
+      constraints: PRIMARY KEY
+    user_name:
+      name: User Name
+      description: The user's full name.
+      type: text
+      constraints: NOT NULL
+    user_email:
+      name: User Email
+      description: The user's email address.
+      type: text
+      constraints: UNIQUE NOT NULL
+    user_affiliation:
+      name: User Affiliation
+      description: The user's primary affiliation, e.g. ECCC, BAM, etc.
+      type: text
+      constraints: NOT NULL
+    user_roles:
+      name: User Role
+      description: >
+        A comma separated list of user roles, e.g. `modeler,evaluator`. 
+        The default role is `viewer` and is assumed even if not mentioned 
+        explicitly (value is null).
+      type: text
+      constraints:
+
+  species:
+    species_id:
+      name: Species ID
+      description: Lower case 4-letter code, e.g. `oven` for Ovenbird.
+      type: text
+      constraints: PRIMARY KEY
+    scientific_name:
+      name: Scientific Name
+      description: Scientific name.
+      type: text
+      constraints: UNIQUE NOT NULL
+    english_name:
+      name: English Name
+      description: Common name in English.
+      type: text
+      constraints: UNIQUE NOT NULL
+    french_name:
+      name: French Name
+      description: Common name in French (use UTF-8 encoding).
+      type: text
+      constraints: UNIQUE NOT NULL
+
+  models:
+    model_id:
+      name: Model ID
+      description: Model ID, lower case, alphanumeric, `.` and `_` allowed.
+      type: text
+      constraints: PRIMARY KEY
+    model_name:
+      name: Model Name
+      description: A human readable version of `model_id` displayed in the app.
+      type: text
+      constraints: UNIQUE NOT NULL
+    model_description:
+      name: Model Description
+      description: A human readable version of `model_id` displayed in the app.
+      type: text
+      constraints: UNIQUE NOT NULL
+    model_metadata:
+      name: Model Metadata
+      description: A file path or URL pointing used to find the ODMAP metadata for the model.
+      type: text
+      constraints: UNIQUE NOT NULL
+
+  components:
+    component_id:
+      name: Component ID
+      description: Component ID, lower case with `_`, also used in Shiny module names.
+      type: text
+      constraints: PRIMARY KEY
+    component_description:
+      name: Component Description
+      description: Component description.
+      type: text
+      constraints: NOT NULL
+    component_mandatory:
+      name: Mandatory
+      description: Is the component mandatory (value is `TRUE`).
+      type: boolean
+      constraints: NOT NULL
+    component_placement:
+      name: Component Placement
+      description: A label that helps placing the component in the UI. E.g. reflecting which page/tab/section it belongs and how it should be ordered relative to other components.
+      type: text
+      constraints: NOT NULL
+
+  materials:
+    material_id:
+      name: Material ID
+      description: ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).
+      type: text
+      constraints: PRIMARY KEY
+    species_id:
+      name: Species ID
+      description: Species ID (foreign key).
+      type: text
+      constraints: REFERENCES species
+    model_id:
+      name: Model ID
+      description: Model ID (foreign key).
+      type: text
+      constraints: REFERENCES models
+    component_id:
+      name: Component ID
+      description: Component ID (foreign key).
+      type: text
+      constraints: REFERENCES components
+    material_create_user:
+      name: Create User
+      description: User who uploaded the model material (foreign key).
+      type: text
+      constraints: REFERENCES user (user_id)
+    material_create_time:
+      name: Create Time
+      description: Time of initial upload.
+      type: timestamp
+      constraints: NOT NULL
+    material_modify_user:
+      name: Modify User
+      description: User who modified the model material (foreign key).
+      type: text
+      constraints: REFERENCES user (user_id)
+    material_modify_time:
+      name: Modify Time
+      description: Time of last modification.
+      type: timestamp
+      constraints: NOT NULL
+
+  evaluations:
+    material_id:
+      name: Material ID
+      description: Material ID.
+      type: text
+      constraints: REFERENCES materials
+    evaluation_create_user:
+      name: Create User
+      description: Time of initial evaluation (foreign key).
+      type: text
+      constraints: REFERENCES user (user_id)
+    evaluation_create_time:
+      name: Create Time
+      description: Time of initial upload.
+      type: timestamp
+      constraints: NOT NULL
+    evaluation_modify_user:
+      name: Modify User
+      description: User who last modified (foreign key).
+      type: text
+      constraints: REFERENCES user (user_id)
+    evaluation_modify_time:
+      name: Modify Time
+      description: Time of last modification.
+      type: timestamp
+      constraints: NOT NULL
+    evaluation_body:
+      name: Evaluation
+      description: JSON blob with the evaluation according to component display rules reflecting last modification.
+      type: json
+      constraints: NOT NULL
+    comment_create_user:
+      name: Create User
+      description: Time of initial evaluation (foreign key).
+      type: text
+      constraints: REFERENCES user (user_id)
+    comment_create_time:
+      name: Create Time
+      description: Time of initial upload.
+      type: timestamp
+      constraints: NOT NULL
+    comment_modify_user:
+      name: Modify User
+      description: User who last modified (foreign key).
+      type: text
+      constraints: REFERENCES user (user_id)
+    comment_modify_time:
+      name: Modify Time
+      description: Time of last modification.
+      type: timestamp
+      constraints: NOT NULL
+    comment_body:
+      name: Comment
+      description: JSON blob with the comment on an evaluation according to component display rules reflecting last modification.
+      type: json
+      constraints: NOT NULL
+
+components:
+
+  observations:
+    description: >
+      Detections or counts by location and timestamp for
+      a single or multiple species.
+    mandatory: Yes
+    applies_to: species
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: [latitude, longitude, timestamp, method, "{species_id}"]
+      species: by_column # species ID's in the column header
+      path: "{model}/{species}/observations.parquet"
+    display:
+      type: map
+      placement: "page.tab.section" # TBD
+      properties:
+        geometry_type: point
+    evaluation:
+    reporting:
+
+  model_metadata:
+    description: >
+      ODMAP protocol metadata.
+    mandatory: Yes
+    applies_to: models
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: []
+      species: none # no species info
+      path: "{model}/model_metadata.parquet"
+    display:
+      type: table
+      placement: "page.tab.section" # TBD
+      properties:
+    evaluation:
+    reporting:
+
+  predictor_metadata:
+    description: >
+      Predictor metadata.
+    mandatory: Yes
+    applies_to: models
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: [predictor, definition, predictor_class, resolution, source, provider, citation, covariate_extraction, prediction_resolution, years, temporal_matching]
+      species: none # no species info
+      path: "{model}/predictor_metadata.parquet"
+    display:
+      type: table
+      placement: "page.tab.section" # TBD
+      properties:
+    evaluation:
+    reporting:
+
+  predictor_raster:
+    description: >
+      Predictor raster, a multi-band TIF with spatial predictors as bands.
+    mandatory: Yes
+    applies_to: models
+    upload:
+      type: raster
+      file_ext: [tif]
+      columns: []
+      species: none # no species info
+      path: "{model}/predictor_raster.tif"
+    display:
+      type: map
+      placement: "page.tab.section" # TBD
+      properties:
+        geometry_type: raster
+    evaluation:
+    reporting:
+
+  spatial_prediction:
+    description: >
+      Expected value as band 1, variation as band 2.
+    mandatory: Yes
+    applies_to: species
+    upload:
+      type: raster
+      file_ext: [tif]
+      columns: []
+      species: none # no species info
+      path: "{model}/{species}/spatial_prediction.tif"
+    display:
+      type: map
+      placement: "page.tab.section" # TBD
+      properties:
+        geometry_type: raster
+    evaluation:
+    reporting:
+
+  model_summary:
+    description: >
+      Model summary including 
+      variable importance metrics or 
+      coefficients for predictor variables.
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: [species_id, predictor]
+      species: by_row # species ID's are rows in the species_id column
+      path: "{model}/{species}/model_summary.parquet"
+    display:
+      type: table
+      placement: "page.tab.section" # TBD
+      properties:
+    evaluation:
+    reporting:
+
+  model_fit:
+    description: >
+      Model fit statistics.
+    upload:
+      type: table
+      file_ext: [csv, rda, parquet]
+      columns: [species_id, statistic, value]
+      species: by_row # species ID's are rows in the species_id column
+      path: "{model}/{species}/model_fit.parquet"
+    display:
+      type: table
+      placement: "page.tab.section" # TBD
+      properties:
+    evaluation:
+    reporting:

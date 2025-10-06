@@ -114,7 +114,6 @@ Components that can be uploaded and evaluated. Each component will have its Shin
 |  `component_description`  |  text  |  `NOT NULL`  |  Component description.  |
 |  `component_mandatory`  |  boolean  |  `NOT NULL`  |  Is the component mandatory (value is `TRUE`).  |
 |  `component_placement`  |  text  |  `NOT NULL`  |  A label that helps placing the component in the UI. E.g. reflecting which page/tab/section it belongs and how it should be ordered relative to other components.  |
-|  `component_rules`  |  json  |  `NOT NULL`  |  JSON document to describe upload/display/evaluation/reporting behavior.  |
 
 FIXME: MORE WORK NEEDED ON COMPONENTS, organize into sections to help with UI organization (page_tab_section, ordering, etc.) similarly to ODMAP dict.
 
