@@ -4,11 +4,14 @@
 \alias{timestamp}
 \alias{timestamp_from}
 \alias{timestamp_to}
+\alias{now}
 \title{Handling Timestamps}
 \usage{
 timestamp_from(ms, tz = NULL, ...)
 
 timestamp_to(dt)
+
+now()
 }
 \arguments{
 \item{ms}{Unix time in milliseconds.}
@@ -28,10 +31,9 @@ timestamp_to(dt)
 Handling Timestamps
 }
 \examples{
-dt1 <- as.POSIXct("2020-12-24 21:15:49 MDT")
-dt2 <- timestamp_to(dt1)
-dt3 <- timestamp_from(dt2)
-stopifnot(identical(dt3, dt1))
+dt1 <- now()
+timestamp_to(dt1)
+timestamp_from(timestamp_to(dt1))
 
 }
 \seealso{

@@ -113,7 +113,6 @@ Components that can be uploaded and evaluated. Each component will have its Shin
 |  `component_id`  |  text  |  `PRIMARY KEY`  |  Component ID, lower case with `_`, also used in Shiny module names.  |
 |  `component_description`  |  text  |  `NOT NULL`  |  Component description.  |
 |  `component_mandatory`  |  boolean  |  `NOT NULL`  |  Is the component mandatory (value is `TRUE`).  |
-|  `component_placement`  |  text  |  `NOT NULL`  |  A label that helps placing the component in the UI. E.g. reflecting which page/tab/section it belongs and how it should be ordered relative to other components.  |
 
 FIXME: MORE WORK NEEDED ON COMPONENTS, organize into sections to help with UI organization (page_tab_section, ordering, etc.) similarly to ODMAP dict.
 
@@ -132,7 +131,7 @@ Upload materials are used to be displayed and evaluated.
 | Field name | Type | Constraints | Description |
 |------------|------|-------------|-------------|
 |  `material_id`  |  text  |  `PRIMARY KEY`  |  ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).  |
-|  `species_id`  |  text  |  `REFERENCES species`  |  Species ID.  |
+|  `species_id`  |  text  |  `REFERENCES species`  |  Species ID (can be missing).  |
 |  `model_id`  |  text  |  `REFERENCES models`  |  Model ID.  |
 |  `component_id`  |  text  |  `REFERENCES components`  |  Component ID.  |
 |  `material_create_user`  |  text  |  `REFERENCES user (user_id)`  |  User who uploaded the model material.  |
