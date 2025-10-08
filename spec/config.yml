@@ -386,7 +386,10 @@ components:
       title: Spatial Prediction
       description: >
         A raster map in Leaflet, with 2 bands: one for "abundance" one for
-        "uncertainty".
+        "uncertainty". There is a single-species mode, and a comparison
+        model. In comparison mode, we use a slider to reveal differences.
+        We need a dropdown to choose which map to compare against.
+        Same species & different model, same model & different species.
       placement: "page.tab.section" # TBD
     evaluation:
     reporting:
