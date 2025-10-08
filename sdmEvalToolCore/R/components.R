@@ -13,7 +13,7 @@
 #'
 #' @export
 get_comp_ready <- function(ready = character(0L)) {
-    out <- sdmEvalToolCore::components[,c("component", "mandatory", "applies_to")]
+    out <- sdmEvalToolCore::components[,c("component", "mandatory")]
     out$ready <- out$component %in% ready
     attr(out, "percent_ready") <- round(100 * sum(out$ready & out$mandatory) / sum(out$mandatory), 1)
     out
