@@ -186,3 +186,8 @@ dbWriteTable(con, "materials", materials, overwrite=TRUE)
 
 dbListTables(con)
 dbDisconnect(con)
+
+# the output from this script can be found here:
+# https://www.dropbox.com/scl/fi/1khm6hhoosgkjtmldqxg7/base.zip?rlkey=xwywv6s5cgjr0ufrxosxnx95w&dl=0
+# we can put this inside the _tmp folder and use it as the folder location
+# (_tmp is git ignored)
