@@ -57,191 +57,215 @@ roles:
 tables:
 
   users:
-    user_id:
-      name: User ID
-      description: User ID (a unique ID or the email).
-      type: text
-      constraint: PRIMARY KEY
-    user_name:
-      name: User Name
-      description: The user's full name.
-      type: text
-      constraint: NOT NULL
-    user_email:
-      name: User Email
-      description: The user's email address.
-      type: text
-      constraint: UNIQUE NOT NULL
-    user_affiliation:
-      name: User Affiliation
-      description: The user's primary affiliation, e.g. ECCC, BAM, etc.
-      type: text
-      constraint: NOT NULL
-    user_roles:
-      name: User Role
-      description: A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not mentioned explicitly (value is null).
-      type: text
-      constraint:
+    name: Users
+    description: >
+      This table contains user names and roles to be used as foreign keys in other tables to track change history. This table needs to be updated regularly, requires admin access and writing directly to the database. See the list of user roles for specific permissions
+    fields:
+      user_id:
+        name: User ID
+        description: User ID (a unique ID or the email).
+        type: text
+        constraint: PRIMARY KEY
+      user_name:
+        name: User Name
+        description: The user's full name.
+        type: text
+        constraint: NOT NULL
+      user_email:
+        name: User Email
+        description: The user's email address.
+        type: text
+        constraint: UNIQUE NOT NULL
+      user_affiliation:
+        name: User Affiliation
+        description: The user's primary affiliation, e.g. ECCC, BAM, etc.
+        type: text
+        constraint: NOT NULL
+      user_roles:
+        name: User Role
+        description: A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not mentioned explicitly (value is null).
+        type: text
+        constraint:
 
   species:
-    species_id:
-      name: Species ID
-      description: Lower case 4-letter code, e.g. `oven` for Ovenbird.
-      type: text
-      constraint: PRIMARY KEY
-    scientific_name:
-      name: Scientific Name
-      description: Scientific name.
-      type: text
-      constraint: UNIQUE NOT NULL
-    english_name:
-      name: English Name
-      description: Common name in English.
-      type: text
-      constraint: UNIQUE NOT NULL
-    french_name:
-      name: French Name
-      description: Common name in French (use UTF-8 encoding).
-      type: text
-      constraint: UNIQUE NOT NULL
+    name: Species
+    description: >
+      A table that lists all potential species, in our case, birds in Canada. This table is saved to the database once, changes to the `species` table require admin access directly to the database.
+    fields:
+      species_id:
+        name: Species ID
+        description: Upper case 4-letter code, e.g. `OVEN` for Ovenbird.
+        type: text
+        constraint: PRIMARY KEY
+      scientific_name:
+        name: Scientific Name
+        description: Scientific name.
+        type: text
+        constraint: UNIQUE NOT NULL
+      english_name:
+        name: English Name
+        description: Common name in English.
+        type: text
+        constraint: UNIQUE NOT NULL
+      french_name:
+        name: French Name
+        description: Common name in French (use UTF-8 encoding).
+        type: text
+        constraint: UNIQUE NOT NULL
 
   models:
-    model_id:
-      name: Model ID
-      description: Model ID, lower case, alphanumeric, `.` and `_` allowed.
-      type: text
-      constraint: PRIMARY KEY
-    model_name:
-      name: Model Name
-      description: A human readable version of `model_id` displayed in the app.
-      type: text
-      constraint: UNIQUE NOT NULL
-    model_description:
-      name: Model Description
-      description: A human readable version of `model_id` displayed in the app.
-      type: text
-      constraint: UNIQUE NOT NULL
-    model_metadata:
-      name: Model Metadata
-      description: A file path or URL pointing used to find the ODMAP metadata for the model.
-      type: text
-      constraint: UNIQUE NOT NULL
+    name: Models
+    description: >
+      A table listing models. The model name and ID acts as an abbreviation of the model approach/extent/etc. and also acts as a version identifier, e.g. `can_glm_v1.1` would mean that GLM models were used for models with Canadian extent and this is version 1.1. Updates are done via uploading or creating a method metadata file. This action should be quite infrequent.
+    fields:
+      model_id:
+        name: Model ID
+        description: Model ID, lower case, alphanumeric, `.` and `_` allowed.
+        type: text
+        constraint: PRIMARY KEY
+      model_name:
+        name: Model Name
+        description: A human readable version of `model_id` displayed in the app.
+        type: text
+        constraint: UNIQUE NOT NULL
+      model_description:
+        name: Model Description
+        description: A human readable version of `model_id` displayed in the app.
+        type: text
+        constraint: UNIQUE NOT NULL
+      model_metadata:
+        name: Model Metadata
+        description: A file path or URL pointing used to find the ODMAP metadata for the model.
+        type: text
+        constraint: UNIQUE NOT NULL
 
   components:
-    component_id:
-      name: Component ID
-      description: Component ID, lower case with `_`, also used in Shiny module names.
-      type: text
-      constraint: PRIMARY KEY
-    component_description:
-      name: Component Description
-      description: Component description.
-      type: text
-      constraint: NOT NULL
-    component_mandatory:
-      name: Mandatory
-      description: Is the component mandatory (value is `TRUE`).
-      type: boolean
-      constraint: NOT NULL
+    name: Components
+    description: >
+      Components that can be uploaded and evaluated. Each component will have its Shiny module implementing the expected behavior for upload, display, and evaluation. e.g. a component can have corresponding `mod_<component_id>_ui` and `mod_<component_id>_server` module functions. Mandatory components are prerequisites for starting evaluations. Updates are done via parsing the `components.yaml` file by admins. After initial development, versioning and backward compatibility should be a concern so that previous entries will not break.
+    fields:
+      component_id:
+        name: Component ID
+        description: Component ID, lower case with `_`, also used in Shiny module names.
+        type: text
+        constraint: PRIMARY KEY
+      component_description:
+        name: Component Description
+        description: Component description.
+        type: text
+        constraint: NOT NULL
+      component_mandatory:
+        name: Mandatory
+        description: Is the component mandatory (value is `TRUE`).
+        type: boolean
+        constraint: NOT NULL
 
   materials:
-    material_id:
-      name: Material ID
-      description: ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).
-      type: text
-      constraint: PRIMARY KEY
-    model_id:
-      name: Model ID
-      description: Model ID (foreign key).
-      type: text
-      constraint: REFERENCES models
-    species_id:
-      name: Species ID
-      description: Species ID (foreign key).
-      type: text
-      constraint: REFERENCES species
-    component_id:
-      name: Component ID
-      description: Component ID (foreign key).
-      type: text
-      constraint: REFERENCES components
-    material_create_user:
-      name: Create User
-      description: User who uploaded the model material (foreign key).
-      type: text
-      constraint: REFERENCES user (user_id)
-    material_create_time:
-      name: Create Time
-      description: Time of initial upload.
-      type: timestamp
-      constraint: NOT NULL
-    material_modify_user:
-      name: Modify User
-      description: User who modified the model material (foreign key).
-      type: text
-      constraint: REFERENCES user (user_id)
-    material_modify_time:
-      name: Modify Time
-      description: Time of last modification.
-      type: timestamp
-      constraint: NOT NULL
+    name: Materials
+    description: >
+      Upload materials are used to be displayed and evaluated. Updates to the file system and the database will be regular as modelers upload new materials.
+    fields:
+      material_id:
+        name: Material ID
+        description: ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).
+        type: text
+        constraint: PRIMARY KEY
+      model_id:
+        name: Model ID
+        description: Model ID (foreign key).
+        type: text
+        constraint: REFERENCES models
+      species_id:
+        name: Species ID
+        description: Species ID (foreign key).
+        type: text
+        constraint: REFERENCES species
+      component_id:
+        name: Component ID
+        description: Component ID (foreign key).
+        type: text
+        constraint: REFERENCES components
+      material_create_user:
+        name: Create User
+        description: User who uploaded the model material (foreign key).
+        type: text
+        constraint: REFERENCES user (user_id)
+      material_create_time:
+        name: Create Time
+        description: Time of initial upload.
+        type: timestamp
+        constraint: NOT NULL
+      material_modify_user:
+        name: Modify User
+        description: User who modified the model material (foreign key).
+        type: text
+        constraint: REFERENCES user (user_id)
+      material_modify_time:
+        name: Modify Time
+        description: Time of last modification.
+        type: timestamp
+        constraint: NOT NULL
 
   evaluations:
-    material_id:
-      name: Material ID
-      description: Material ID.
-      type: text
-      constraint: REFERENCES materials
-    evaluation_create_user:
-      name: Create User
-      description: Time of initial evaluation (foreign key).
-      type: text
-      constraint: REFERENCES user (user_id)
-    evaluation_create_time:
-      name: Create Time
-      description: Time of initial upload.
-      type: timestamp
-      constraint: NOT NULL
-    evaluation_modify_user:
-      name: Modify User
-      description: User who last modified (foreign key).
-      type: text
-      constraint: REFERENCES user (user_id)
-    evaluation_modify_time:
-      name: Modify Time
-      description: Time of last modification.
-      type: timestamp
-      constraint: NOT NULL
-    evaluation_body:
-      name: Evaluation
-      description: JSON blob with the evaluation according to component display rules reflecting last modification.
-      type: json
-      constraint: NOT NULL
-    comment_create_user:
-      name: Create User
-      description: Time of initial evaluation (foreign key).
-      type: text
-      constraint: REFERENCES user (user_id)
-    comment_create_time:
-      name: Create Time
-      description: Time of initial upload.
-      type: timestamp
-      constraint: NOT NULL
-    comment_modify_user:
-      name: Modify User
-      description: User who last modified (foreign key).
-      type: text
-      constraint: REFERENCES user (user_id)
-    comment_modify_time:
-      name: Modify Time
-      description: Time of last modification.
-      type: timestamp
-      constraint: NOT NULL
-    comment_body:
-      name: Comment
-      description: JSON blob with the comment on an evaluation according to component display rules reflecting last modification.
-      type: json
-      constraint: NOT NULL
+    name: Evaluations
+    description: >
+      Evaluations are the basic feedback on the materials. There is no explicitly defined primary key, sort and filter to find entries to display. The body has to conform with component display rules which is not checked by the database and is the job for the UI to enforce. Display rule for comments are simpler than for evaluations, we consider text comments. Updates to evaluations will be frequent as evaluators provide more data.
+    fields:
+      material_id:
+        name: Material ID
+        description: Material ID.
+        type: text
+        constraint: REFERENCES materials
+      evaluation_create_user:
+        name: Create User
+        description: Time of initial evaluation (foreign key).
+        type: text
+        constraint: REFERENCES user (user_id)
+      evaluation_create_time:
+        name: Create Time
+        description: Time of initial upload.
+        type: timestamp
+        constraint: NOT NULL
+      evaluation_modify_user:
+        name: Modify User
+        description: User who last modified (foreign key).
+        type: text
+        constraint: REFERENCES user (user_id)
+      evaluation_modify_time:
+        name: Modify Time
+        description: Time of last modification.
+        type: timestamp
+        constraint: NOT NULL
+      evaluation_body:
+        name: Evaluation
+        description: JSON blob with the evaluation according to component display rules reflecting last modification.
+        type: json
+        constraint: NOT NULL
+      comment_create_user:
+        name: Create User
+        description: Time of initial evaluation (foreign key).
+        type: text
+        constraint: REFERENCES user (user_id)
+      comment_create_time:
+        name: Create Time
+        description: Time of initial upload.
+        type: timestamp
+        constraint: NOT NULL
+      comment_modify_user:
+        name: Modify User
+        description: User who last modified (foreign key).
+        type: text
+        constraint: REFERENCES user (user_id)
+      comment_modify_time:
+        name: Modify Time
+        description: Time of last modification.
+        type: timestamp
+        constraint: NOT NULL
+      comment_body:
+        name: Comment
+        description: JSON blob with the comment on an evaluation according to component display rules reflecting last modification.
+        type: json
+        constraint: NOT NULL
 
 components:
 

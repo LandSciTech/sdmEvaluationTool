@@ -9,13 +9,19 @@ save(user_roles, file = file.path(pkg, "data", "user_roles.rda"), compress="xz")
 
 tables <- do.call(rbind, lapply(names(conf$tables), \(i) {
     l <- conf$tables[[i]]
+    data.frame(table=i, name=l$name, description=l$description)
+}))
+save(tables, file = file.path(pkg, "data", "tables.rda"), compress="xz")
+
+fields <- do.call(rbind, lapply(names(conf$tables), \(i) {
+    l <- conf$tables[[i]]$fields
     data.frame(table=i, do.call(rbind, lapply(names(l), \(j) {
         k <- l[[j]]
         k[sapply(k, is.null)] <- NA_character_
         data.frame(field=j, as.data.frame(k))
     })))
 }))
-save(tables, file = file.path(pkg, "data", "tables.rda"), compress="xz")
+save(fields, file = file.path(pkg, "data", "fields.rda"), compress="xz")
 
 cmp <- conf$components
 components <- data.frame(

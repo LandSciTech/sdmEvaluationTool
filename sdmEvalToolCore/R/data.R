@@ -13,6 +13,11 @@
 #' @format A data frame.
 "tables"
 
+#' Fields
+#'
+#' @format A data frame.
+"fields"
+
 #' Get Table Fields
 #'
 #' @param table_name Table name.
@@ -24,7 +29,7 @@
 #' get_fields("components")
 #' @export
 get_fields <- function(table_name) {
-    tab <- sdmEvalToolCore::tables
+    tab <- sdmEvalToolCore::fields
     table_name <- match.arg(table_name, unique(tab$table), several.ok = FALSE)
     tab[tab$table == table_name, colnames(tab) != "table"]
 }
