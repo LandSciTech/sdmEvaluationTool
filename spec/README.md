@@ -1,3 +1,5 @@
+# SDM Evaluation Tool
+
 ## Conceptual model
 
 ``` mermaid
@@ -149,17 +151,6 @@ Allowed values and access types for user roles:
 This table needs to be updated regularly, requires admin access and
 writing directly to the database.
 
-## Updates
-
-FIXME: MORE WORK NEEDED ON COMPONENTS, organize into sections to help
-with UI organization (page_tab_section, ordering, etc.) similarly to
-ODMAP dict.
-
-FIXME: outline expectations re upload (file type, etc.) and evaluation
-in YAML (`components.yaml`). Use this YAML to generate this table,
-possibly using a json field to store document style properties to
-encapsulate expected behavior.
-
 Mandatory components are prerequisites for starting evaluations. After
 initial development, versioning and backward compatibility should be a
 concern so that previous entries will not break.
@@ -180,8 +171,134 @@ Save button is clicked after adding the entry.
 
 ## Components
 
-Here we describe everything we need to know about the components. See
-[`components.yml`](./components.yml).
+### Observations (`observations`)
+
+Detections or counts by location and timestamp for a single or multiple
+species.
+
+**Input**: Observations are organized as survey events as rows (unique
+combinations of location \[longitude/latitude\] and date/time). The
+table has the following mandatory fields: latitude, longitude, time, and
+method. Latitude and longitude are coordinates as decimal degrees
+(EPSG:4326). Time is in a format coercible to POSIX time,
+e.g. 2019-06-01 7:21:00 AM. Method is a string denoting the survey
+method. Other columns holding the observations should be named using
+Species IDs, i.e. 4-letter codes (e.g. OVEN, TEWA, etc.) consistent with
+the species list being used. The cell values in the species columns
+should be non-negative integers (i.e. 0, 1, 2, … or 0/1) indicating the
+detections (\>0) and non-detections of the species during the survey
+events. The single-species and multi-species data format are identical
+except for the number of species whose data is in the table. The table
+can be in csv (make sure that time is formatted properly), rds and
+parquet (these latter formats should have time as POSIX).
+
+**Output**: The output is a spatial point data frame with columns: time,
+method, and status (coordinates are part of the geometry column).
+
+Output path: `materials/{model_id}/{species_id}/observations.gpkg`
+
+**Display**: Display non-detections (status == 0) detections (status \>
+0) in different colors. Show detections by default (green), allow an
+option to turn on non-detections (grey). Use circle markers in Leaflet.
+We can use unique(method) and year of survey as dropdown filters.
+Method, time, status should be part of popup message on click.
+
+### Model Metadata (`model_metadata`)
+
+ODMAP protocol metadata.
+
+**Input**: TBD once we integrate ODMAP into the UI.
+
+**Output**: TBD once we integrate ODMAP into the UI.
+
+Output path: `materials/{model_id}/model_metadata.parquet`
+
+**Display**: TBD once we integrate ODMAP into the UI.
+
+### Predictor Metadata (`predictor_metadata`)
+
+Predictor metadata.
+
+**Input**: The file should contain the recommended columns but is not
+strictly enforced. The table should give information about the
+predictors (one predictor per row). The file can be csv, rds, or
+parquet. The predictor column should list the short names of the
+predictors that match the band names in the predictor raster.
+
+**Output**: A file is written with the listed columns.
+
+Output path: `materials/{model_id}/predictor_metadata.parquet`
+
+**Display**: The table is displayed as a reactable table.
+
+### Predictor Raster (`predictor_raster`)
+
+Predictor raster, a multi-band TIF with spatial predictors as bands.
+
+**Input**: A spatial raster file in tif format where bands are different
+spatial predictors. Names of the layers should match the predictor
+column in the predictor metadata.
+
+**Output**: The tif file is saved as is.
+
+Output path: `materials/{model_id}/predictor_raster.tif`
+
+**Display**: A raster map in Leaflet, bands are added as layers and can
+be selected from the layers icon of the map.
+
+### Spatial Prediction (`spatial_prediction`)
+
+Expected value as band 1, variation as band 2.
+
+**Input**: A spatial raster in tif format. The 1st band is interpreted
+as the distribution layer (abundance, occurrence probability, density)
+with non-negative real values. The second layer, if present, is
+interpreted as a layer with uncertainty (non-negative values, SE, CoV,
+CI or PI width, etc.).
+
+**Output**: The file is saved as is. The metadata will be used to label
+the map appropriately (what the units are etc.).
+
+Output path: `materials/{model_id}/{species_id}/spatial_prediction.tif`
+
+**Display**: A raster map in Leaflet, with 2 bands: one for “abundance”
+one for “uncertainty”. There is a single-species mode, and a comparison
+model. In comparison mode, we use a slider to reveal differences. We
+need a dropdown to choose which map to compare against. Same species &
+different model, same model & different species.
+
+### Model Summary (`model_summary`)
+
+Model summary including variable importance metrics or coefficients for
+predictor variables.
+
+**Input**: A table summarizing the models, usually predictors as rows
+(listed in the column called predictor). The multi-species version lists
+Species IDs in the column species_id. The predictors should match names
+in the predictor metadata. Other columns can be named freely,
+e.g. var_importance, coefficient, StdError etc.
+
+**Output**: The input file is filtered for individual species and saved.
+
+Output path: `materials/{model_id}/{species_id}/model_summary.parquet`
+
+**Display**: The table is displayed as a reactable table.
+
+### Model Fit (`model_fit`)
+
+Model fit statistics.
+
+**Input**: A table summarizing the model fit, statistics as rows (listed
+in the column called statistic). The multi-species version lists Species
+IDs in the column species_id. The value of the fit statistic is in the
+column called value. Fit metrics are also listed in the project
+metadata.
+
+**Output**: The input file is filtered for individual species and saved.
+
+Output path: `materials/{model_id}/{species_id}/model_fit.parquet`
+
+**Display**: The table is displayed as a reactable table.
 
 ### Model materials upload
 

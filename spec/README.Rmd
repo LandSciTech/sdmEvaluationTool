@@ -40,12 +40,23 @@ show_tab <- function(tn, ...) {
     knitr::kable(z0, row.names = FALSE, ...)
 }
 show_section <- function(tn, ...) {
-    cat(paste0("### ", conf$tables[[tn]]$name, " (", code(tn), ")\n"))
-    cat("\n", conf$tables[[tn]]$description, "\n")
+    cat(paste0("### ", conf$tables[[tn]]$name, " (", code(tn), ")\n\n"))
+    cat(conf$tables[[tn]]$description, "\n")
     print(show_tab(tn, ...))
     cat("\n")
 }
+show_comps <- function(tn, ...) {
+    cat(paste0("### ", conf$components[[tn]]$display$title, " (", code(tn), ")\n\n"))
+    cat(conf$components[[tn]]$description, "\n\n")
+    cat("**Input**: ", conf$components[[tn]]$upload$input$description, "\n\n")
+    cat("**Output**: ", conf$components[[tn]]$upload$output$description, "\n\n")
+    cat("Output path: ", code(conf$components[[tn]]$upload$output$path), "\n\n")
+    cat("**Display**: ", conf$components[[tn]]$display$description, "\n\n")
+}
+
 ```
+
+# SDM Evaluation Tool
 
 ## Conceptual model
 
@@ -98,12 +109,6 @@ Allowed values and access types for user roles:
 This table needs to be updated regularly, requires admin access and writing directly
 to the database.
 
-## Updates
-
-FIXME: MORE WORK NEEDED ON COMPONENTS, organize into sections to help with UI organization (page_tab_section, ordering, etc.) similarly to ODMAP dict.
-
-FIXME: outline expectations re upload (file type, etc.) and evaluation in YAML (`components.yaml`). Use this YAML to generate this table, possibly using a json field to store document style properties to encapsulate expected behavior.
-
 Mandatory components are prerequisites for starting evaluations.
 After initial development, versioning and backward compatibility should be a concern so that previous entries will not break.
 
@@ -121,9 +126,10 @@ when Save button is clicked after adding the entry.
 
 ## Components
 
-Here we describe everything we need to know about the components.
-See [`components.yml`](./components.yml).
-
+```{r}
+for (i in names(conf$components))
+    show_comps(i)
+```
 
 ### Model materials upload
 
