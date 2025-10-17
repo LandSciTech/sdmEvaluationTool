@@ -4,24 +4,29 @@
 
 ``` mermaid
 erDiagram
-    direction LR
     uploads }|..|{ materials : upload_id
     style uploads fill:#fff
-    rules ||..|| components : component_id
-    style rules fill:#fff
     metadata }|..|{ models : metadata_id
     style metadata fill:#fff
 
-    components ||--|{ materials : component_id
-    style components fill:#ffa
     models ||--|{ materials : model_id
     style models fill:#ffa
     species ||--|{ materials : species_id
     style species fill:#ffa
+
+    rules ||..|| components : component_id
+    style rules fill:#fff
+    components ||--|{ materials : component_id
+    usecases ||--|{ questions : usecase_id
+    style usecases fill:#ffa
+    style questions fill:#ffa
     users ||--o{ materials : user_id
     style users fill:#ffa
-
     users ||--o{ evaluations : user_id
+
+    style components fill:#ffa
+    questions ||--|{ evaluations : question_id
+    questions ||--|{ components : question_id
     evaluations ||--|| materials : evaluation_id
 ```
 
@@ -35,12 +40,35 @@ tables other than what is listed if the names are unique across tables
 Table names are lower case (a single plural noun). Field names are snake
 case (lower case with underscores as word separator).
 
+### Usecases (`usecases`)
+
+The table defines use cases defined by the modeler. The evaluators will
+provide feedback in the context of the usecase, such as forestry
+applications, etc.
+
+| field          | type | constraint    | description   |
+|:---------------|:-----|:--------------|:--------------|
+| `usecase_id`   | text | `PRIMARY KEY` | Usecase ID.   |
+| `usecase_name` | text | `NOT NULL`    | Usecase name. |
+
+### Questions (`questions`)
+
+Questions are defined for each usecase and component combinations. The
+default questions are specified in the configuration. These can be
+edited by the modeler for a given usecase.
+
+| field           | type | constraint            | description            |
+|:----------------|:-----|:----------------------|:-----------------------|
+| `question_id`   | text | `PRIMARY KEY`         | Question ID.           |
+| `question_body` | json | `NOT NULL`            | Question body as JSON. |
+| `usecase_id`    | text | `REFERENCES usecases` | Usecase ID.            |
+
 ### Users (`users`)
 
 This table contains user names and roles to be used as foreign keys in
 other tables to track change history. This table needs to be updated
 regularly, requires admin access and writing directly to the database.
-See the list of user roles for specific permissions
+See the list of user roles for specific permissions.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
@@ -108,9 +136,9 @@ materials.
 | `model_id` | text | `REFERENCES models` | Model ID (foreign key). |
 | `species_id` | text | `REFERENCES species` | Species ID (foreign key). |
 | `component_id` | text | `REFERENCES components` | Component ID (foreign key). |
-| `material_create_user` | text | `REFERENCES user (user_id)` | User who uploaded the model material (foreign key). |
+| `material_create_user` | text | `REFERENCES users (user_id)` | User who uploaded the model material (foreign key). |
 | `material_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
-| `material_modify_user` | text | `REFERENCES user (user_id)` | User who modified the model material (foreign key). |
+| `material_modify_user` | text | `REFERENCES users (user_id)` | User who modified the model material (foreign key). |
 | `material_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
 
 ### Evaluations (`evaluations`)
@@ -126,14 +154,15 @@ provide more data.
 | field | type | constraint | description |
 |:---|:---|:---|:---|
 | `material_id` | text | `REFERENCES materials` | Material ID. |
-| `evaluation_create_user` | text | `REFERENCES user (user_id)` | Time of initial evaluation (foreign key). |
+| `question_id` | text | `REFERENCES questions` | Question ID. |
+| `evaluation_create_user` | text | `REFERENCES users (user_id)` | Time of initial evaluation (foreign key). |
 | `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
-| `evaluation_modify_user` | text | `REFERENCES user (user_id)` | User who last modified (foreign key). |
+| `evaluation_modify_user` | text | `REFERENCES users (user_id)` | User who last modified (foreign key). |
 | `evaluation_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
 | `evaluation_body` | json | `NOT NULL` | JSON blob with the evaluation according to component display rules reflecting last modification. |
-| `comment_create_user` | text | `REFERENCES user (user_id)` | Time of initial evaluation (foreign key). |
+| `comment_create_user` | text | `REFERENCES users (user_id)` | Time of initial evaluation (foreign key). |
 | `comment_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
-| `comment_modify_user` | text | `REFERENCES user (user_id)` | User who last modified (foreign key). |
+| `comment_modify_user` | text | `REFERENCES users (user_id)` | User who last modified (foreign key). |
 | `comment_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
 | `comment_body` | json | `NOT NULL` | JSON blob with the comment on an evaluation according to component display rules reflecting last modification. |
 
@@ -195,7 +224,8 @@ parquet (these latter formats should have time as POSIX).
 **Output**: The output is a spatial point data frame with columns: time,
 method, and status (coordinates are part of the geometry column).
 
-Output path: `materials/{model_id}/{species_id}/observations.gpkg`
+Output path:
+`materials/{model_id}/species/{species_id}/observations.gpkg`
 
 **Display**: Display non-detections (status == 0) detections (status \>
 0) in different colors. Show detections by default (green), allow an
@@ -227,7 +257,8 @@ predictors that match the band names in the predictor raster.
 
 **Output**: A file is written with the listed columns.
 
-Output path: `materials/{model_id}/predictor_metadata.parquet`
+Output path:
+`materials/{model_id}/predictors/predictor_metadata.parquet`
 
 **Display**: The table is displayed as a reactable table.
 
@@ -241,7 +272,7 @@ column in the predictor metadata.
 
 **Output**: The tif file is saved as is.
 
-Output path: `materials/{model_id}/predictor_raster.tif`
+Output path: `materials/{model_id}/predictors/predictor_raster.tif`
 
 **Display**: A raster map in Leaflet, bands are added as layers and can
 be selected from the layers icon of the map.
@@ -259,7 +290,8 @@ CI or PI width, etc.).
 **Output**: The file is saved as is. The metadata will be used to label
 the map appropriately (what the units are etc.).
 
-Output path: `materials/{model_id}/{species_id}/spatial_prediction.tif`
+Output path:
+`materials/{model_id}/species/{species_id}/spatial_prediction.tif`
 
 **Display**: A raster map in Leaflet, with 2 bands: one for “abundance”
 one for “uncertainty”. There is a single-species mode, and a comparison
@@ -280,7 +312,8 @@ e.g. var_importance, coefficient, StdError etc.
 
 **Output**: The input file is filtered for individual species and saved.
 
-Output path: `materials/{model_id}/{species_id}/model_summary.parquet`
+Output path:
+`materials/{model_id}/species/{species_id}/model_summary.parquet`
 
 **Display**: The table is displayed as a reactable table.
 
@@ -296,7 +329,8 @@ metadata.
 
 **Output**: The input file is filtered for individual species and saved.
 
-Output path: `materials/{model_id}/{species_id}/model_fit.parquet`
+Output path:
+`materials/{model_id}/species/{species_id}/model_fit.parquet`
 
 **Display**: The table is displayed as a reactable table.
 
@@ -358,19 +392,25 @@ When the info is uploaded, we organize the files inside the
 
 ``` text
 ./materials/<model_id>/
-./materials/<model_id>/model_metadata.parquet"
-./materials/<model_id>/predictor_metadata.parquet"
-./materials/<model_id>/predictor_raster.tif"
+./materials/<model_id>/model_metadata.parquet
+./materials/<model_id>/predictors/predictor_metadata.parquet
+./materials/<model_id>/predictors/predictor_raster.tif
 
-./materials/<model_id>/<species_id>/
-./materials/<model_id>/<species_id>/observations.parquet"
-./materials/<model_id>/<species_id>/spatial_prediction.tif"
-./materials/<model_id>/<species_id>/model_summary.parquet"
-./materials/<model_id>/<species_id>/model_fit.parquet"
+./materials/<model_id>/species/<species_id>/
+./materials/<model_id>/species/<species_id>/observations.parquet
+./materials/<model_id>/species/<species_id>/spatial_prediction.tif
+./materials/<model_id>/species/<species_id>/model_summary.parquet
+./materials/<model_id>/species/<species_id>/model_fit.parquet
 ```
 
 Model materials are saved after upload, this is also when the database
 is updated with the new information.
+
+Questions for the usecases are saved as:
+
+``` text
+./materials/<model_id>/usecases/<usecase_id>/questions.parquet
+```
 
 ## Database and evaluations
 

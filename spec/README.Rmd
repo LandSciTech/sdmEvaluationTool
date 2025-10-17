@@ -62,24 +62,29 @@ show_comps <- function(tn, ...) {
 
 ```mermaid
 erDiagram
-    direction LR
     uploads }|..|{ materials : upload_id
     style uploads fill:#fff
-    rules ||..|| components : component_id
-    style rules fill:#fff
     metadata }|..|{ models : metadata_id
     style metadata fill:#fff
 
-    components ||--|{ materials : component_id
-    style components fill:#ffa
     models ||--|{ materials : model_id
     style models fill:#ffa
     species ||--|{ materials : species_id
     style species fill:#ffa
+
+    rules ||..|| components : component_id
+    style rules fill:#fff
+    components ||--|{ materials : component_id
+    usecases ||--|{ questions : usecase_id
+    style usecases fill:#ffa
+    style questions fill:#ffa
     users ||--o{ materials : user_id
     style users fill:#ffa
-
     users ||--o{ evaluations : user_id
+
+    style components fill:#ffa
+    questions ||--|{ evaluations : question_id
+    questions ||--|{ components : question_id
     evaluations ||--|| materials : evaluation_id
 ```
 
@@ -184,19 +189,25 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 
 ```text
 ./materials/<model_id>/
-./materials/<model_id>/model_metadata.parquet"
-./materials/<model_id>/predictor_metadata.parquet"
-./materials/<model_id>/predictor_raster.tif"
+./materials/<model_id>/model_metadata.parquet
+./materials/<model_id>/predictors/predictor_metadata.parquet
+./materials/<model_id>/predictors/predictor_raster.tif
 
-./materials/<model_id>/<species_id>/
-./materials/<model_id>/<species_id>/observations.parquet"
-./materials/<model_id>/<species_id>/spatial_prediction.tif"
-./materials/<model_id>/<species_id>/model_summary.parquet"
-./materials/<model_id>/<species_id>/model_fit.parquet"
+./materials/<model_id>/species/<species_id>/
+./materials/<model_id>/species/<species_id>/observations.parquet
+./materials/<model_id>/species/<species_id>/spatial_prediction.tif
+./materials/<model_id>/species/<species_id>/model_summary.parquet
+./materials/<model_id>/species/<species_id>/model_fit.parquet
 ```
 
 Model materials are saved after upload, this is also when the database
 is updated with the new information.
+
+Questions for the usecases are saved as:
+
+```text
+./materials/<model_id>/usecases/<usecase_id>/questions.parquet
+```
 
 ## Database and evaluations
 

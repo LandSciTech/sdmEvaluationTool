@@ -56,10 +56,51 @@ roles:
 
 tables:
 
+  usecases:
+    name: Usecases
+    description: >
+      The table defines use cases defined by the modeler.
+      The evaluators will provide feedback in the context of the
+      usecase, such as forestry applications, etc.
+    fields:
+      usecase_id:
+        name: Usecase ID
+        description: Usecase ID.
+        type: text
+        constraint: PRIMARY KEY
+      usecase_name:
+        name: Usecase Name
+        description: Usecase name.
+        type: text
+        constraint: NOT NULL
+
+  questions:
+    name: Questions
+    description: >
+      Questions are defined for each usecase and component combinations.
+      The default questions are specified in the configuration.
+      These can be edited by the modeler for a given usecase.
+    fields:
+      question_id:
+        name: Question ID
+        description: Question ID.
+        type: text
+        constraint: PRIMARY KEY
+      question_body:
+        name: Question Body
+        description: Question body as JSON.
+        type: json
+        constraint: NOT NULL
+      usecase_id:
+        name: Usecase ID
+        description: Usecase ID.
+        type: text
+        constraint: REFERENCES usecases
+
   users:
     name: Users
     description: >
-      This table contains user names and roles to be used as foreign keys in other tables to track change history. This table needs to be updated regularly, requires admin access and writing directly to the database. See the list of user roles for specific permissions
+      This table contains user names and roles to be used as foreign keys in other tables to track change history. This table needs to be updated regularly, requires admin access and writing directly to the database. See the list of user roles for specific permissions.
     fields:
       user_id:
         name: User ID
@@ -189,7 +230,7 @@ tables:
         name: Create User
         description: User who uploaded the model material (foreign key).
         type: text
-        constraint: REFERENCES user (user_id)
+        constraint: REFERENCES users (user_id)
       material_create_time:
         name: Create Time
         description: Time of initial upload.
@@ -199,7 +240,7 @@ tables:
         name: Modify User
         description: User who modified the model material (foreign key).
         type: text
-        constraint: REFERENCES user (user_id)
+        constraint: REFERENCES users (user_id)
       material_modify_time:
         name: Modify Time
         description: Time of last modification.
@@ -216,11 +257,16 @@ tables:
         description: Material ID.
         type: text
         constraint: REFERENCES materials
+      question_id:
+        name: Question ID
+        description: Question ID.
+        type: text
+        constraint: REFERENCES questions
       evaluation_create_user:
         name: Create User
         description: Time of initial evaluation (foreign key).
         type: text
-        constraint: REFERENCES user (user_id)
+        constraint: REFERENCES users (user_id)
       evaluation_create_time:
         name: Create Time
         description: Time of initial upload.
@@ -230,7 +276,7 @@ tables:
         name: Modify User
         description: User who last modified (foreign key).
         type: text
-        constraint: REFERENCES user (user_id)
+        constraint: REFERENCES users (user_id)
       evaluation_modify_time:
         name: Modify Time
         description: Time of last modification.
@@ -245,7 +291,7 @@ tables:
         name: Create User
         description: Time of initial evaluation (foreign key).
         type: text
-        constraint: REFERENCES user (user_id)
+        constraint: REFERENCES users (user_id)
       comment_create_time:
         name: Create Time
         description: Time of initial upload.
@@ -255,7 +301,7 @@ tables:
         name: Modify User
         description: User who last modified (foreign key).
         type: text
-        constraint: REFERENCES user (user_id)
+        constraint: REFERENCES users (user_id)
       comment_modify_time:
         name: Modify Time
         description: Time of last modification.
@@ -298,7 +344,7 @@ components:
           The output is a spatial point data frame with columns:
           time, method, and status (coordinates are part of the geometry column).
         columns: [time:timestamp, method:text, status:integer]
-        path: "materials/{model_id}/{species_id}/observations.gpkg"
+        path: "materials/{model_id}/species/{species_id}/observations.gpkg"
     display:
       type: map
       title: Observations
@@ -350,7 +396,7 @@ components:
       output:
         description: A file is written with the listed columns.
         columns: [predictor, definition, predictor_class, resolution, source, provider, citation, covariate_extraction, prediction_resolution, years, temporal_matching]
-        path: "materials/{model_id}/predictor_metadata.parquet"
+        path: "materials/{model_id}/predictors/predictor_metadata.parquet"
     display:
       type: table
       title: Predictor Metadata
@@ -375,7 +421,7 @@ components:
       output:
         description: >
           The tif file is saved as is.
-        path: "materials/{model_id}/predictor_raster.tif"
+        path: "materials/{model_id}/predictors/predictor_raster.tif"
     display:
       type: map
       title: Predictor Raster
@@ -404,7 +450,7 @@ components:
         description: >
           The file is saved as is. The metadata will be used to
           label the map appropriately (what the units are etc.).
-        path: "materials/{model_id}/{species_id}/spatial_prediction.tif"
+        path: "materials/{model_id}/species/{species_id}/spatial_prediction.tif"
     display:
       type: map
       title: Spatial Prediction
@@ -436,7 +482,7 @@ components:
       output:
         description: >
           The input file is filtered for individual species and saved.
-        path: "materials/{model_id}/{species_id}/model_summary.parquet"
+        path: "materials/{model_id}/species/{species_id}/model_summary.parquet"
     display:
       type: table
       title: Model Summary
@@ -463,7 +509,7 @@ components:
       output:
         description: >
           The input file is filtered for individual species and saved.
-        path: "materials/{model_id}/{species_id}/model_fit.parquet"
+        path: "materials/{model_id}/species/{species_id}/model_fit.parquet"
     display:
       type: table
       title: Model Fit
