@@ -73,29 +73,11 @@ tables:
         description: Usecase name.
         type: text
         constraint: NOT NULL
-
-  questions:
-    name: Questions
-    description: >
-      Questions are defined for each usecase and component combinations.
-      The default questions are specified in the configuration.
-      These can be edited by the modeler for a given usecase.
-    fields:
-      question_id:
-        name: Question ID
-        description: Question ID.
+      usecase_description:
+        name: Usecase Description
+        description: Usecase name.
         type: text
-        constraint: PRIMARY KEY
-      question_body:
-        name: Question Body
-        description: Question body as JSON.
-        type: json
         constraint: NOT NULL
-      usecase_id:
-        name: Usecase ID
-        description: Usecase ID.
-        type: text
-        constraint: REFERENCES usecases
 
   users:
     name: Users

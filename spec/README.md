@@ -17,16 +17,13 @@ erDiagram
     rules ||..|| components : component_id
     style rules fill:#fff
     components ||--|{ materials : component_id
-    usecases ||--|{ questions : usecase_id
-    style usecases fill:#ffa
-    style questions fill:#ffa
+    style components fill:#ffa
     users ||--o{ materials : user_id
     style users fill:#ffa
     users ||--o{ evaluations : user_id
 
-    style components fill:#ffa
-    questions ||--|{ evaluations : question_id
-    questions ||--|{ components : question_id
+    usecases ||--|{ evaluations : usecase_id
+    style usecases fill:#ffa
     evaluations ||--|| materials : evaluation_id
 ```
 
@@ -46,22 +43,11 @@ The table defines use cases defined by the modeler. The evaluators will
 provide feedback in the context of the usecase, such as forestry
 applications, etc.
 
-| field          | type | constraint    | description   |
-|:---------------|:-----|:--------------|:--------------|
-| `usecase_id`   | text | `PRIMARY KEY` | Usecase ID.   |
-| `usecase_name` | text | `NOT NULL`    | Usecase name. |
-
-### Questions (`questions`)
-
-Questions are defined for each usecase and component combinations. The
-default questions are specified in the configuration. These can be
-edited by the modeler for a given usecase.
-
-| field           | type | constraint            | description            |
-|:----------------|:-----|:----------------------|:-----------------------|
-| `question_id`   | text | `PRIMARY KEY`         | Question ID.           |
-| `question_body` | json | `NOT NULL`            | Question body as JSON. |
-| `usecase_id`    | text | `REFERENCES usecases` | Usecase ID.            |
+| field                 | type | constraint    | description   |
+|:----------------------|:-----|:--------------|:--------------|
+| `usecase_id`          | text | `PRIMARY KEY` | Usecase ID.   |
+| `usecase_name`        | text | `NOT NULL`    | Usecase name. |
+| `usecase_description` | text | `NOT NULL`    | Usecase name. |
 
 ### Users (`users`)
 
@@ -166,7 +152,7 @@ provide more data.
 | `comment_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
 | `comment_body` | json | `NOT NULL` | JSON blob with the comment on an evaluation according to component display rules reflecting last modification. |
 
-## Notes
+## Users and user roles
 
 Allowed values and access types for user roles:
 
@@ -177,28 +163,23 @@ Allowed values and access types for user roles:
 | `modeler` | Read, Write (create new, edit theirs) | Read |
 | `admin` | Read, Write (create new, edit all, delete) | Read, Write (create new, edit all, delete) |
 
-This table needs to be updated regularly, requires admin access and
-writing directly to the database.
-
-Mandatory components are prerequisites for starting evaluations. After
-initial development, versioning and backward compatibility should be a
-concern so that previous entries will not break.
-
-FIXME: need to link this to uploads (upload entries, files).
-
 The UI will enforce role based access rules.
 
-Note: the body has to conform with component display rules which is not
-checked by the database and is the job for the UI to enforce.
-
-Display rule for comments are simpler than for evaluations, we consider
-text comments for now.
-
-Updates to evaluations will be frequent as evaluators provide more data.
-Every new entry and edit will be saved with user ID and timestamp when
-Save button is clicked after adding the entry.
+The `users` table needs to be updated regularly, requires admin access
+and writing directly to the database.
 
 ## Components
+
+The configuration for components outlines the materials upload
+expectations. We specify what expect the **inputs** and the **outputs**
+to look like. The `path` property tells where to look for the result
+from this component.
+
+The display section of the component specification determines what kind
+of functionality is required. We have corresponding
+`mod_<component_id>_ui` and `mod_<component_id>_server` module functions
+to be used in the Shiny app. The placement of the component can also be
+determined here, i.e. which page/tab/section it will be displayed.
 
 ### Observations (`observations`)
 
@@ -334,35 +315,6 @@ Output path:
 
 **Display**: The table is displayed as a reactable table.
 
-### Model materials upload
-
-Single and multi-species uploads are defined here. We can define what
-kind of component it is, e.g. a table, a raster file, etc. What kind of
-files are accepted, how to parse multi-species results (i.e. species are
-columns, or rows, what columns are expected for tables). The `path`
-property tells where to look for the result from this component.
-
-### Display
-
-The display section of the component specification determines what kind
-of functionality is required. We have corresponding
-`mod_<component_id>_ui` and `mod_<component_id>_server` module functions
-to be used in the Shiny app. The placement of the component can also be
-determined here, i.e. which page/tab/section it will be displayed.
-
-### Evaluation
-
-This specifies what kind of evaluation is to be implemented for the
-component.
-
-FIXME: add more content here.
-
-### Reporting
-
-This specifies how to summarize the component in reports.
-
-FIXME: add more content here.
-
 ## Materials upload
 
 When materials are uploaded, we expect the following sequence of
@@ -373,9 +325,9 @@ actions:
 2.  Once the model is identified, we can also upload predictor variable
     info (maps, descriptions)
 3.  We can also upload the species information:
+    - Spatial predictions (density, coefficient of variation)
     - Observations
     - Model summaries (coefficients, variable importance)
-    - Spatial predictions (density, coefficient of variation)
     - Model fit metrics
 
 We are following the model/species nesting order, but the list of
@@ -391,6 +343,8 @@ When the info is uploaded, we organize the files inside the
 `./materials/` folder the following way:
 
 ``` text
+./sdm_evaluation_db.sqlite
+
 ./materials/<model_id>/
 ./materials/<model_id>/model_metadata.parquet
 ./materials/<model_id>/predictors/predictor_metadata.parquet
@@ -401,31 +355,16 @@ When the info is uploaded, we organize the files inside the
 ./materials/<model_id>/species/<species_id>/spatial_prediction.tif
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
+
+./materials/<model_id>/usecases/<usecase_id>/questions.parquet
 ```
 
 Model materials are saved after upload, this is also when the database
 is updated with the new information.
 
-Questions for the usecases are saved as:
+Questions will have an expected table format, and a csv file can be
+uploaded similarly to metadata. In the absence of a usecase, the default
+question template will be used.
 
-``` text
-./materials/<model_id>/usecases/<usecase_id>/questions.parquet
-```
-
-## Database and evaluations
-
-The evaluations for each material are stored in a database, alongside
-the other tables outlined in the conceptual overview. For the local file
-system setup, the database is placed as follows:
-
-``` text
-./sdm_evaluation_db.sqlite
-```
-
-## TODO
-
-- [x] Make YAML for components
-- [ ] Describe single/multi-species upload specs
-- [x] Outline mandatory component displays specs
-- [ ] Describe a framework for more flexible handling of GoF components
-- [ ] Create mock app UI for summary, spp1 landing, etc
+The evaluations for each material are stored in the SQLite database,
+alongside the other tables outlined in the conceptual overview.
