@@ -140,7 +140,7 @@ provide more data.
 | field | type | constraint | description |
 |:---|:---|:---|:---|
 | `material_id` | text | `REFERENCES materials` | Material ID. |
-| `question_id` | text | `REFERENCES questions` | Question ID. |
+| `usecase_id` | text | `REFERENCES usecases` | Usecase ID. |
 | `evaluation_create_user` | text | `REFERENCES users (user_id)` | Time of initial evaluation (foreign key). |
 | `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
 | `evaluation_modify_user` | text | `REFERENCES users (user_id)` | User who last modified (foreign key). |

@@ -239,11 +239,11 @@ tables:
         description: Material ID.
         type: text
         constraint: REFERENCES materials
-      question_id:
-        name: Question ID
-        description: Question ID.
+      usecase_id:
+        name: Usecase ID
+        description: Usecase ID.
         type: text
-        constraint: REFERENCES questions
+        constraint: REFERENCES usecases
       evaluation_create_user:
         name: Create User
         description: Time of initial evaluation (foreign key).
