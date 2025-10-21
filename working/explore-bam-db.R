@@ -10,8 +10,7 @@ path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
 conf <- yaml::read_yaml("spec/config.yml")
 
 devtools::load_all("sdmEvalToolCore")
-sdmevaltool_options(base = "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/base")
-
+sdmevaltool_options(base = "./misc/base") # use the misc folder
 
 # ------- species table ----------
 
@@ -92,11 +91,11 @@ materials <- materials_fun(materials, model_id, NA, "predictor_raster")
 # we might have to organize predictor summaries and rasters a bit better? Check names etc...
 
 # -------- MODEL MATERIAL: MODELS/SPECIES --------
-# ./materials/<model_id>/<species_id>/
-# ./materials/<model_id>/<species_id>/observations.gpkg"
-# ./materials/<model_id>/<species_id>/spatial_prediction.tif"
-# ./materials/<model_id>/<species_id>/model_summary.parquet"
-# ./materials/<model_id>/<species_id>/model_fit.parquet"
+# ./materials/<model_id>/species/<species_id>/
+# ./materials/<model_id>/species/<species_id>/observations.gpkg"
+# ./materials/<model_id>/species/<species_id>/spatial_prediction.tif"
+# ./materials/<model_id>/species/<species_id>/model_summary.parquet"
+# ./materials/<model_id>/species/<species_id>/model_fit.parquet"
 
 # -------- observations -----------
 
@@ -172,6 +171,8 @@ for (species_id in SPP) {
 
 }
 
+# NOTE: evaluations and usecases are not provided yet ...
+
 # -------- DATABASE ------
 
 # ./sdm_evaluation_db.sqlite
@@ -189,5 +190,5 @@ dbDisconnect(con)
 
 # the output from this script can be found here:
 # https://www.dropbox.com/scl/fi/1khm6hhoosgkjtmldqxg7/base.zip?rlkey=xwywv6s5cgjr0ufrxosxnx95w&dl=0
-# we can put this inside the _tmp folder and use it as the folder location
-# (_tmp is git ignored)
+# we can put this inside the ./misc/base folder and use it as the folder location
+# (./misc is git ignored)
