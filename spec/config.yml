@@ -390,7 +390,7 @@ components:
 
   predictor_raster:
     description: Predictor raster, a multi-band TIF with spatial predictors as bands.
-    mandatory: Yes
+    mandatory: No
     upload:
       type: raster
       input:
