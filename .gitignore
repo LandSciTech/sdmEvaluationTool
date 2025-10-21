@@ -47,3 +47,7 @@ rsconnect/
 
 # folder for temp stuff
 _tmp
+
+# folder to store files that don't belong to git
+misc/*
+!misc/.gitkeep
