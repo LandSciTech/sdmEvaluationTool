@@ -7,6 +7,7 @@ and implements the SDM Evaluation Tool.
 - [`spec`](./spec/): SDM Evaluation Tool specifications.
 - [`sdmEvalToolCore`](./sdmEvalToolCore/): R package implementing the SDM Evaluation Tool core functionality
 - [`sdmEvalToolUI`](./sdmEvalToolUI/): R package implementing the SDM Evaluation Tool UI and Shiny app
+- [`working`](./working/): Scripts used in the interim.
 
 ## Testing
 
