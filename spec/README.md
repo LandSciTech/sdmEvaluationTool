@@ -225,6 +225,8 @@ determined here, i.e. which page/tab/section it will be displayed.
 Detections or counts by location and timestamp for a single or multiple
 species.
 
+**Mandatory**: Yes
+
 **Input**: Observations are organized as survey events as rows (unique
 combinations of location \[longitude/latitude\] and date/time). The
 table has the following mandatory fields: latitude, longitude, time, and
@@ -257,6 +259,8 @@ Method, time, status should be part of popup message on click.
 
 ODMAP protocol metadata.
 
+**Mandatory**: Yes
+
 **Input**: TBD once we integrate ODMAP into the UI.
 
 **Output**: TBD once we integrate ODMAP into the UI.
@@ -268,6 +272,8 @@ Output path: `materials/{model_id}/model_metadata.parquet`
 ### Predictor Metadata (`predictor_metadata`)
 
 Predictor metadata.
+
+**Mandatory**: Yes
 
 **Input**: The file should contain the recommended columns but is not
 strictly enforced. The table should give information about the
@@ -286,6 +292,8 @@ Output path:
 
 Predictor raster, a multi-band TIF with spatial predictors as bands.
 
+**Mandatory**: No
+
 **Input**: A spatial raster file in tif format where bands are different
 spatial predictors. Names of the layers should match the predictor
 column in the predictor metadata.
@@ -301,6 +309,8 @@ be selected from the layers icon of the map.
 
 Spatial polygons defining subunits over the spatial predictions.
 
+**Mandatory**: No
+
 **Input**: A spatial polygons file with geometries and a key called
 `subunit_id`. Each usecase can have its own subunits.
 
@@ -315,6 +325,8 @@ prediction (raster) map.
 ### Spatial Prediction (`spatial_prediction`)
 
 Expected value as band 1, variation as band 2.
+
+**Mandatory**: Yes
 
 **Input**: A spatial raster in tif format. The 1st band is interpreted
 as the distribution layer (abundance, occurrence probability, density)
@@ -339,6 +351,8 @@ different model, same model & different species.
 Model summary including variable importance metrics or coefficients for
 predictor variables.
 
+**Mandatory**: Yes
+
 **Input**: A table summarizing the models, usually predictors as rows
 (listed in the column called predictor). The multi-species version lists
 Species IDs in the column species_id. The predictors should match names
@@ -355,6 +369,8 @@ Output path:
 ### Model Fit (`model_fit`)
 
 Model fit statistics.
+
+**Mandatory**: Yes
 
 **Input**: A table summarizing the model fit, statistics as rows (listed
 in the column called statistic). The multi-species version lists Species
