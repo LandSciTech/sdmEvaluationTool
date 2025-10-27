@@ -353,7 +353,7 @@ components:
       output:
         description: TBD once we integrate ODMAP into the UI.
         columns: []
-        path: "materials/{model_id}/model_metadata.parquet"
+        path: "materials/{model_id}/metadata/model_metadata.parquet"
     display:
       type: table
       title: Model Metadata

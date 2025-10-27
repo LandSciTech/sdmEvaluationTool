@@ -196,7 +196,7 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 ./sdm_evaluation_db.sqlite
 
 ./materials/<model_id>/
-./materials/<model_id>/model_metadata.parquet
+./materials/<model_id>/metadata/model_metadata.parquet
 ./materials/<model_id>/predictors/predictor_metadata.parquet
 ./materials/<model_id>/predictors/predictor_raster.tif
 

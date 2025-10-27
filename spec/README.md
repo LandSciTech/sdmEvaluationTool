@@ -265,7 +265,7 @@ ODMAP protocol metadata.
 
 **Output**: TBD once we integrate ODMAP into the UI.
 
-Output path: `materials/{model_id}/model_metadata.parquet`
+Output path: `materials/{model_id}/metadata/model_metadata.parquet`
 
 **Display**: TBD once we integrate ODMAP into the UI.
 
@@ -416,7 +416,7 @@ When the info is uploaded, we organize the files inside the
 ./sdm_evaluation_db.sqlite
 
 ./materials/<model_id>/
-./materials/<model_id>/model_metadata.parquet
+./materials/<model_id>/metadata/model_metadata.parquet
 ./materials/<model_id>/predictors/predictor_metadata.parquet
 ./materials/<model_id>/predictors/predictor_raster.tif
 
