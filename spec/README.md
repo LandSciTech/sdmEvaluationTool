@@ -1,4 +1,43 @@
-# SDM Evaluation Tool
+# SDM Model Evaluation Tool (MET)
+
+## Objective
+
+MET that will enable NOBMWG members to:
+
+- evaluate bird SDMs;
+- develop methods for synthesizing expert evaluations with quantitative
+  evaluations to inform model improvement and application; and
+- to assess what more (if anything) is needed to improve the bird SDM
+  evaluation process.
+
+MET attributes include:
+
+1.  **Modular**: The MET consists of independent Modules, each handling
+    specific functionality. This minimizes duplication of code within
+    and among Modules and links Modules into a usable tool.
+2.  **Flexible**: The MET code is stored and shared in a GitHub
+    repository that allows ECCC and other Tool Maintainers in the NOBMWG
+    to add to or modify all components of the MET.
+3.  **Expandable**: The MET allows for the possibility of adding new
+    Modules created by Tool Maintainers in future.
+4.  **Portable**: Tool Maintainers will be able to run the MET locally
+    on their computers with minimal changes, and will understand
+    possible future server deployment options and procedures.
+5.  **Generalizable**: The MET allows for a variety of species, SDM
+    model types, and geographies.
+6.  **Spatially explicit**: Users will be able to visualize, interact
+    with, and provide feedback on multiple raster and vector layers
+    (predictions, uncertainty, covariates, etc).
+7.  **Open source**: MET code will be released under a suitable open
+    source software license that is compatible with the ODMAP v1 project
+    dependency.
+8.  **Comparative**: Users will be able to view outputs from multiple
+    models (e.g., predictions of multiple species), either side by side
+    or by toggling among layers, to gain a deeper understanding of model
+    outputs.
+9.  **Multiple formats**: Users must be able to upload, view and
+    interact with Model Materials in a variety of formats (text, tables,
+    rasters, vectors).
 
 ## Conceptual model
 
@@ -258,6 +297,21 @@ Output path: `materials/{model_id}/predictors/predictor_raster.tif`
 **Display**: A raster map in Leaflet, bands are added as layers and can
 be selected from the layers icon of the map.
 
+### Prediction Subunits (`prediction_subunits`)
+
+Spatial polygons defining subunits over the spatial predictions.
+
+**Input**: A spatial polygons file with geometries and a key called
+`subunit_id`. Each usecase can have its own subunits.
+
+**Output**: Same file structure as the input file including subunit IDs
+and geometries, saved as a Geopackage
+
+Output path: `materials/{model_id}/usecases/{usecase_id}/subunits.gpkg`
+
+**Display**: The subunits layer is overlaid on top of the spatial
+prediction (raster) map.
+
 ### Spatial Prediction (`spatial_prediction`)
 
 Expected value as band 1, variation as band 2.
@@ -356,7 +410,8 @@ When the info is uploaded, we organize the files inside the
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
-./materials/<model_id>/usecases/<usecase_id>/questions.parquet
+./materials/<model_id>/usecases/<usecase_id>/questions.csv
+./materials/<model_id>/usecases/<usecase_id>/subunits.gpkg
 ```
 
 Model materials are saved after upload, this is also when the database
@@ -365,6 +420,12 @@ is updated with the new information.
 Questions will have an expected table format, and a csv file can be
 uploaded similarly to metadata. In the absence of a usecase, the default
 question template will be used.
+
+Subunits can be used to make evaluations more specific. In the 1st
+phase, we will make sure subunits can be identified (popups, paste ID to
+clopboard). In next phase, we will develop more sophisticated ways of
+providing subunit level feedback if this is identified as a priority. If
+no subunits are provided for a usecase, the subunits will not show.
 
 The evaluations for each material are stored in the SQLite database,
 alongside the other tables outlined in the conceptual overview.
