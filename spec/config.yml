@@ -296,6 +296,7 @@ tables:
         constraint: NOT NULL
 
 components:
+# note: properties used in the ui will have to take `en` and `fr` values.
 
   observations:
     description: Detections or counts by location and timestamp for a single or multiple species.
@@ -526,6 +527,52 @@ components:
       placement: "page.tab.section" # TBD
     evaluation:
     reporting:
+
+# note: this might be added to the components replacing `evaluation`
+questions:
+
+  # highest level list name must be a component_id
+  # - use input_type=none when there are subquestions
+  # - define other input types where there are no subquestions
+
+  model_summary:
+    question_body:
+      en: Please provide your summary of the model.
+      fr:
+    input_type: text
+
+  spatial_prediction:
+    question_body:
+      en: What is the accuracy of model predictions based on your expert knowledge?
+      fr:
+    input_type: none
+    subquestions:
+      - order: 1
+        input_type: gold_standard
+        body:
+          en: How confident are you about model predictions?
+          fr:
+      - order: 2
+        input_type: text
+        body:
+          en: Why is it a problem?
+          fr:
+      - order: 3
+        input_type: ordinal
+        body:
+          en: How important is it to fix the problem?
+          fr:
+      - order: 4
+        input_type: ordinal
+        body:
+          en: How difficult/expensive is it to fix the problem?
+          fr:
+      - order: 5
+        input_type: text
+        body:
+          en: Can you suggest options for addressing the problem?
+          fr:
+
 
 glossary:
 
