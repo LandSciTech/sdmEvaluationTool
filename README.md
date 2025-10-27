@@ -20,3 +20,7 @@ corresponding folders, see YAML files inside the [`.github/workflows`](./.github
 ## Contributing
 
 See the [`CONTRIBUTING.md`](./CONTRIBUTING.md) file.
+
+## License
+
+TBD
