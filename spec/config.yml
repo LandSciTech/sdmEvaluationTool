@@ -432,7 +432,7 @@ components:
         path: "materials/{model_id}/usecases/{usecase_id}/subunits.gpkg"
     display:
       type: map
-      title: Spatial Prediction
+      title: Prediction Subunits
       description: >
         The subunits layer is overlaid on top of the spatial prediction (raster) 
         map.
