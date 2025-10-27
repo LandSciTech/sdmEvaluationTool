@@ -48,6 +48,7 @@ show_section <- function(tn, ...) {
 show_comps <- function(tn, ...) {
     cat(paste0("### ", conf$components[[tn]]$display$title, " (", code(tn), ")\n\n"))
     cat(conf$components[[tn]]$description, "\n\n")
+    cat("**Mandatory**: ", ifelse(conf$components[[tn]]$mandatory, "Yes", "No"), "\n\n")
     cat("**Input**: ", conf$components[[tn]]$upload$input$description, "\n\n")
     cat("**Output**: ", conf$components[[tn]]$upload$output$description, "\n\n")
     cat("Output path: ", code(conf$components[[tn]]$upload$output$path), "\n\n")
