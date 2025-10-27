@@ -423,7 +423,7 @@ question template will be used.
 
 Subunits can be used to make evaluations more specific. In the 1st
 phase, we will make sure subunits can be identified (popups, paste ID to
-clopboard). In next phase, we will develop more sophisticated ways of
+clipboard). In next phase, we will develop more sophisticated ways of
 providing subunit level feedback if this is identified as a priority. If
 no subunits are provided for a usecase, the subunits will not show.
 
