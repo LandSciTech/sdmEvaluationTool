@@ -1,0 +1,94 @@
+glossary:
+
+  - name: Beta-testing
+    en: >
+      Initial testing of MET functionality by Modelers, Evaluators 
+      and Tool Maintainers from the NOBMWG.
+    fr:
+  - name: Evaluators
+    en: >
+      Evaluators are people with relevant knowledge who provide 
+      feedback on some or all aspects of Model Materials using the MET.
+    fr:
+  - name: GitHub
+    en: >
+      A free Microsoft cloud platform for storing, sharing, and 
+      collaboratively developing computer code.
+    fr:
+  - name: Inputs
+    en: >
+      Data including species observations (a tabular csv or binary 
+      file with coordinates or in a common geospatial format, such as geopackage), 
+      covariates (raster layers), area of interest (geospatial boundary vector layer), 
+      etc.
+    fr:
+  - name: Metadata
+    en: >
+      Information about model design, development and implementation 
+      (this is usually a text file).
+    fr:
+  - name: Modelers
+    en: >
+      Modelers design, develop, implement, test and report on SDMs, 
+      and will provide Model Materials for evaluation using the MET.
+    fr:
+  - name: Model evaluation tool (MET)
+    en: >
+      An interactive R Shiny tool that integrates 
+      Modules to enable evaluation of SDMs and synthesis of expert evaluation with 
+      quantitative evaluation to inform model improvement and use.
+    fr:
+  - name: Model Materials
+    en: >
+      A collection of information about SDM model methods, 
+      inputs and outputs in multiple formats (e.g. tables, text, figures, rasters 
+      and vector maps). Model Materials include Inputs, Outputs and Metadata. 
+    fr:
+  - name: Module
+    en: >
+      A functional component of the MET.
+    fr:
+  - name: Northern Ontario Bird Modeling Working Group (NOBMWG)
+    en: >
+      The NOBMWG is an 
+      ECCC-led group of Modelers, bird specialists, and managers drawn from federal 
+      and provincial governments, academia and environmental non-government 
+      organizations. Collectively, the group is coordinating and refining modeling 
+      and related communications through its expertise in statistical modeling, 
+      northern Ontario birds and bird habitats, and model inputs to financial, 
+      human resource and survey decision making. The working group has agreed to 
+      participate in Beta-testing workshops and provide suggestions for improving 
+      Phase 1 of the MET and informing later phases.
+    fr:
+  - name: Outputs
+    en: >
+      Raster layers of model predictions and associated uncertainty, 
+      and tables (binary or csv files) of information about model predictions, 
+      covariates relative importance, model performance metrics, etc.
+    fr:
+  - name: R
+    en: >
+      An open-source language for statistical analysis.
+    fr:
+  - name: R Shiny
+    en: >
+      An open-source tool for developing interactive tools written in 
+      the R language.
+    fr:
+  - name: Species distribution model (SDM)
+    en: >
+      SDMs combine species occurrences (e.g., 
+      presence, presence/absence and counts) with covariates (environmental data 
+      sets related to species) to make spatially explicit predictions of habitat 
+      suitability or species density.
+    fr:
+  - name: Tool Maintainers
+    en: >
+      Tool Maintainers are NOBMWG members capable of using 
+      R Shiny, R, and GitHub to modify or add to the MET code.
+    fr:
+  - name: Users
+    en: >
+      All people who use the MET. This includes Modelers, Evaluators, 
+      Tool Maintainers, and others.
+    fr:
