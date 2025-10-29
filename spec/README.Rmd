@@ -214,9 +214,9 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 ./sdm_evaluation_db.sqlite
 
 ./materials/<model_id>/
-./materials/<model_id>/metadata/model_metadata.parquet
+./materials/<model_id>/metadata/model_metadata.csv
 ./materials/<model_id>/predictors/predictor_metadata.parquet
-./materials/<model_id>/predictors/predictor_raster.tif            # *
+./materials/<model_id>/predictors/predictor_raster.tif
 
 ./materials/<model_id>/species/<species_id>/
 ./materials/<model_id>/species/<species_id>/observations.parquet
@@ -224,6 +224,7 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
+./deployments/{deployment_id}/metadata.json
 ./deployments/{deployment_id}/questions.csv
 ./deployments/{deployment_id}/subunits.gpkg
 ```
@@ -243,6 +244,22 @@ If no subunits are provided for a usecase, the subunits will not show.
 
 The evaluations for each material are stored in the SQLite database, alongside the
 other tables outlined in the conceptual overview.
+
+## Deployments
+
+For each deployment there is:
+
+- 1 evaluation question table (`questions.csv`), 
+- 1 evaluation polygon layer (`subunits.gpkg`), 
+- 1 free form opportunity for modeler to explain the evaluation to the evaluators, 
+- a set of use cases (at least one)
+- and whether comments are allowed or not (`metadata.json`).
+
+User access can be set differently for each deployment. I.e. the same user
+can function as `modeler,commenter` for one and `evaluator,commenter` for another.
+
+When making a new deployment, the modeler can select from (1) starting
+new materials upload or (2) reusing existing model materials from previous uploads.
 
 ## Future changes to consider
 
