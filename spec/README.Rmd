@@ -140,12 +140,13 @@ for (i in names(conf$tables))
 
 Allowed values and access types for user roles:
 
-| Role | Model materials | Evaluations |
-|--|--|--|
-| `viewer` | Read | Read |
-| `evaluator` | Read | Read, Write (create new, edit theirs) |
-| `modeler` | Read, Write (create new, edit theirs) | Read |
-| `admin` | Read, Write (create new, edit all, delete) | Read, Write (create new, edit all, delete) |
+| Role | Model materials | Evaluations | Discussions |
+|--|--|--|--|
+| `viewer` | Read | Read | None |
+| `commenter` | Read | Read | Read, Write |
+| `evaluator` | Read | Read, Write (create new, edit theirs) | Read, Write |
+| `modeler` | Read, Write (create new, edit theirs) | Read | Read, Write |
+| `admin` | Read, Write (create new, edit all, delete) | Read, Write (create new, edit all, delete) | Read, Write |
 
 The UI will enforce role based access rules.
 
@@ -198,7 +199,7 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 ./materials/<model_id>/
 ./materials/<model_id>/metadata/model_metadata.parquet
 ./materials/<model_id>/predictors/predictor_metadata.parquet
-./materials/<model_id>/predictors/predictor_raster.tif
+./materials/<model_id>/predictors/predictor_raster.tif            # *
 
 ./materials/<model_id>/species/<species_id>/
 ./materials/<model_id>/species/<species_id>/observations.parquet
@@ -225,3 +226,15 @@ If no subunits are provided for a usecase, the subunits will not show.
 
 The evaluations for each material are stored in the SQLite database, alongside the
 other tables outlined in the conceptual overview.
+
+## Future changes
+
+Repeatedly storing some of the materials will not be sustainable.
+We will revisit organizing predictor variables independently,
+this way the evaluation app will have the ability to link to it.
+If this is a file server, we can have static HTML files displaying rasters:
+
+```bash
+./shared/predictors/<predictor_id>/predictor_raster.tif
+./shared/predictors/<predictor_id>/index.html
+```

@@ -14,6 +14,23 @@ roles:
     evaluations_edit_own: No
     evaluations_edit_all: No
     evaluations_delete: No
+    discussions_read: No
+    discussions_write: No
+
+  commenter:
+    name: Commenter
+    materials_read: Yes
+    materials_create_new: No
+    materials_edit_own: No
+    materials_edit_all: No
+    materials_delete: No
+    evaluations_read: Yes
+    evaluations_create_new: No
+    evaluations_edit_own: No
+    evaluations_edit_all: No
+    evaluations_delete: No
+    discussions_read: Yes
+    discussions_write: Yes
 
   evaluator:
     name: Evaluator
@@ -27,6 +44,13 @@ roles:
     evaluations_edit_own: Yes
     evaluations_edit_all: No
     evaluations_delete: No
+    comments_read: Yes
+    comments_create_new: Yes
+    comments_edit_own: Yes
+    comments_edit_all: No
+    comments_delete: No
+    discussions_read: Yes
+    discussions_write: Yes
 
   modeler:
     name: Modeler
@@ -40,6 +64,13 @@ roles:
     evaluations_edit_own: No
     evaluations_edit_all: No
     evaluations_delete: No
+    comments_read: Yes
+    comments_create_new: Yes
+    comments_edit_own: Yes
+    comments_edit_all: No
+    comments_delete: No
+    discussions_read: Yes
+    discussions_write: Yes
 
   admin:
     name: Admin
@@ -53,6 +84,13 @@ roles:
     evaluations_edit_own: Yes
     evaluations_edit_all: Yes
     evaluations_delete: Yes
+    comments_read: Yes
+    comments_create_new: Yes
+    comments_edit_own: Yes
+    comments_edit_all: No
+    comments_delete: No
+    discussions_read: Yes
+    discussions_write: Yes
 
 tables:
 
