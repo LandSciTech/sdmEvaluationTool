@@ -101,8 +101,16 @@ MET attributes include:
 
 ```mermaid
 erDiagram
+
+    models ||--|{ comments : model_id
+    species ||--|{ comments : species_id
+
     uploads }|..|{ materials : upload_id
     style uploads fill:#fff
+    components ||--|{ materials : component_id
+    style components fill:#ffa
+    style materials fill:#ffa
+
     metadata }|..|{ models : metadata_id
     style metadata fill:#fff
 
@@ -111,17 +119,20 @@ erDiagram
     species ||--|{ materials : species_id
     style species fill:#ffa
 
-    rules ||..|| components : component_id
-    style rules fill:#fff
-    components ||--|{ materials : component_id
-    style components fill:#ffa
+    deployments ||--|{ materials : deployment_id
+    deployments ||--|{ comments : deployment_id
+    deployments ||--|{ evaluations : deployment_id
+    deployments ||--|{ access : deployment_id
+    users ||--|{ access : deployment_id
+    style users fill:#ffa
+
+
     users ||--o{ materials : user_id
     style users fill:#ffa
     users ||--o{ evaluations : user_id
 
-    usecases ||--|{ evaluations : usecase_id
-    style usecases fill:#ffa
     evaluations ||--|| materials : evaluation_id
+    users ||--o{ comments : user_id
 ```
 
 ## Tables
@@ -152,6 +163,12 @@ The UI will enforce role based access rules.
 
 The `users` table needs to be updated regularly, requires admin access and 
 writing directly to the database.
+
+The admin role cannot be selected by users when setting up deployment access 
+roles for other users.
+
+When providing multiple roles to a user, the user will have the union of
+privileges associated with those roles.
 
 ## Components
 
@@ -207,8 +224,8 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
-./materials/<model_id>/usecases/<usecase_id>/questions.csv
-./materials/<model_id>/usecases/<usecase_id>/subunits.gpkg
+./deployments/{deployment_id}/questions.csv
+./deployments/{deployment_id}/subunits.gpkg
 ```
 
 Model materials are saved after upload, this is also when the database
@@ -227,7 +244,7 @@ If no subunits are provided for a usecase, the subunits will not show.
 The evaluations for each material are stored in the SQLite database, alongside the
 other tables outlined in the conceptual overview.
 
-## Future changes
+## Future changes to consider
 
 Repeatedly storing some of the materials will not be sustainable.
 We will revisit organizing predictor variables independently,

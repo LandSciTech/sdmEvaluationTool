@@ -94,29 +94,6 @@ roles:
 
 tables:
 
-  usecases:
-    name: Usecases
-    description: >
-      The table defines use cases defined by the modeler.
-      The evaluators will provide feedback in the context of the
-      usecase, such as forestry applications, etc.
-    fields:
-      usecase_id:
-        name: Usecase ID
-        description: Usecase ID.
-        type: text
-        constraint: PRIMARY KEY
-      usecase_name:
-        name: Usecase Name
-        description: Usecase name.
-        type: text
-        constraint: NOT NULL
-      usecase_description:
-        name: Usecase Description
-        description: Usecase name.
-        type: text
-        constraint: NOT NULL
-
   users:
     name: Users
     description: >
@@ -142,11 +119,11 @@ tables:
         description: The user's primary affiliation, e.g. ECCC, BAM, etc.
         type: text
         constraint: NOT NULL
-      user_roles:
-        name: User Role
-        description: A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not mentioned explicitly (value is null).
-        type: text
-        constraint:
+      admin:
+        name: Admin User Flag
+        description: Boolean flag for admin users.
+        type: boolean
+        constraint: NOT NULL
 
   species:
     name: Species
@@ -228,9 +205,14 @@ tables:
     fields:
       material_id:
         name: Material ID
-        description: ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).
+        description: ID for joining feedback to materials (in the form of `<deployment_id>_<species_id>_<model_id>_<component_id>`).
         type: text
         constraint: PRIMARY KEY
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID (foreign key).
+        type: text
+        constraint: REFERENCES deployments
       model_id:
         name: Model ID
         description: Model ID (foreign key).
@@ -277,19 +259,24 @@ tables:
         description: Material ID.
         type: text
         constraint: REFERENCES materials
-      usecase_id:
-        name: Usecase ID
-        description: Usecase ID.
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID (foreign key).
         type: text
-        constraint: REFERENCES usecases
+        constraint: REFERENCES deployments
+      use_cases:
+        name: Use Cases
+        description: Use case applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition.
+        type: text
+        constraint: NOT NULL
       evaluation_create_user:
         name: Create User
-        description: Time of initial evaluation (foreign key).
+        description: User who created the initial evaluation (foreign key).
         type: text
         constraint: REFERENCES users (user_id)
       evaluation_create_time:
         name: Create Time
-        description: Time of initial upload.
+        description: Time of initial the initial evaluation.
         type: timestamp
         constraint: NOT NULL
       evaluation_modify_user:
@@ -307,31 +294,101 @@ tables:
         description: JSON blob with the evaluation according to component display rules reflecting last modification.
         type: json
         constraint: NOT NULL
+      note_create_user:
+        name: Note Create User
+        description: User who created the note.
+        type: text
+        constraint: REFERENCES users (user_id)
+      note_create_time:
+        name: Note Create Time
+        description: Time of note creation.
+        type: timestamp
+        constraint: NOT NULL
+      note_body:
+        name: Note Body
+        description: JSON blob with the note on an evaluation reflecting last modification.
+        type: json
+        constraint: NOT NULL
+
+  comments:
+    name: Comments
+    description: >
+      Comments are chat-like exchanges of ideas tied to a model-species combination, visible to users with discussion roles.
+    fields:
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID (foreign key).
+        type: text
+        constraint: REFERENCES deployments
+      model_id:
+        name: Model ID
+        description: Model ID (foreign key).
+        type: text
+        constraint: REFERENCES models
+      species_id:
+        name: Species ID
+        description: Species ID (foreign key).
+        type: text
+        constraint: REFERENCES species
       comment_create_user:
-        name: Create User
-        description: Time of initial evaluation (foreign key).
+        name: Comment Create User
+        description: User who created the note.
         type: text
         constraint: REFERENCES users (user_id)
       comment_create_time:
-        name: Create Time
-        description: Time of initial upload.
-        type: timestamp
-        constraint: NOT NULL
-      comment_modify_user:
-        name: Modify User
-        description: User who last modified (foreign key).
-        type: text
-        constraint: REFERENCES users (user_id)
-      comment_modify_time:
-        name: Modify Time
-        description: Time of last modification.
+        name: Comment Create Time
+        description: Time of comment creation.
         type: timestamp
         constraint: NOT NULL
       comment_body:
-        name: Comment
-        description: JSON blob with the comment on an evaluation according to component display rules reflecting last modification.
+        name: Comment Body
+        description: JSON blob with the note on an evaluation reflecting last modification.
         type: json
         constraint: NOT NULL
+
+  deployments:
+    name: Deployments
+    description: >
+      Deployment is a set of results organized for a specific audience for
+      evaluation.
+    fields:
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID.
+        type: text
+        constraint: PRIMARY KEY
+      deployment_name:
+        name: Deployment Name
+        description: Deployment name.
+        type: text
+        constraint: NOT NULL
+      deployment_description:
+        name: Deployment Description
+        description: Deployment name.
+        type: text
+        constraint: NOT NULL
+
+  access:
+    name: User Access
+    description: >
+      Describe what access users have for deployments
+    fields:
+      user_id:
+        name: User ID
+        description: User ID (foreign key).
+        type: text
+        constraint: REFERENCES users
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID (foreign key).
+        type: text
+        constraint: REFERENCES deployments
+      user_roles:
+        name: User Role
+        description: A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not mentioned explicitly (value is null).
+        type: text
+        constraint: NOT NULL
+
 
 components:
 # note: properties used in the ui will have to take `en` and `fr` values.
@@ -461,14 +518,14 @@ components:
       input:
         description: >
           A spatial polygons file with geometries and a key called
-          `subunit_id`. Each usecase can have its own subunits.
+          `subunit_id`. Each deployment can have its own subunits.
         file_ext: [gpkg]
         columns: [subunit_id]
       output:
         description: >
           Same file structure as the input file including subunit IDs and
           geometries, saved as a Geopackage
-        path: "materials/{model_id}/usecases/{usecase_id}/subunits.gpkg"
+        path: "deployments/{deployment_id}/subunits.gpkg"
     display:
       type: map
       title: Prediction Subunits
@@ -570,43 +627,41 @@ components:
 questions:
 
   # highest level list name must be a component_id
-  # - use input_type=none when there are subquestions
-  # - define other input types where there are no subquestions
-
   model_summary:
-    question_body:
-      en: Please provide your summary of the model.
-      fr:
-    input_type: text
+    - order: 0
+      type: text
+      question_body:
+        en: Please provide your summary of the model.
+        fr:
 
   spatial_prediction:
-    question_body:
-      en: What is the accuracy of model predictions based on your expert knowledge?
-      fr:
-    input_type: none
-    subquestions:
-      - order: 1
-        input_type: gold_standard
-        body:
-          en: How confident are you about model predictions?
-          fr:
-      - order: 2
-        input_type: text
-        body:
-          en: Why is it a problem?
-          fr:
-      - order: 3
-        input_type: ordinal
-        body:
-          en: How important is it to fix the problem?
-          fr:
-      - order: 4
-        input_type: ordinal
-        body:
-          en: How difficult/expensive is it to fix the problem?
-          fr:
-      - order: 5
-        input_type: text
-        body:
-          en: Can you suggest options for addressing the problem?
-          fr:
+    - order: 0
+      type: heading
+      question_body:
+        en: What is the accuracy of model predictions based on your expert knowledge?
+        fr:
+    - order: 1
+      type: gold_standard
+      question_body:
+        en: How confident are you about model predictions?
+        fr:
+    - order: 2
+      type: text
+      question_body:
+        en: Why is it a problem?
+        fr:
+    - order: 3
+      type: ordinal
+      question_body:
+        en: How important is it to fix the problem?
+        fr:
+    - order: 4
+      type: ordinal
+      question_body:
+        en: How difficult/expensive is it to fix the problem?
+        fr:
+    - order: 5
+      type: text
+      question_body:
+        en: Can you suggest options for addressing the problem?
+        fr:

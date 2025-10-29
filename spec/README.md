@@ -43,8 +43,16 @@ MET attributes include:
 
 ``` mermaid
 erDiagram
+
+    models ||--|{ comments : model_id
+    species ||--|{ comments : species_id
+
     uploads }|..|{ materials : upload_id
     style uploads fill:#fff
+    components ||--|{ materials : component_id
+    style components fill:#ffa
+    style materials fill:#ffa
+
     metadata }|..|{ models : metadata_id
     style metadata fill:#fff
 
@@ -53,17 +61,20 @@ erDiagram
     species ||--|{ materials : species_id
     style species fill:#ffa
 
-    rules ||..|| components : component_id
-    style rules fill:#fff
-    components ||--|{ materials : component_id
-    style components fill:#ffa
+    deployments ||--|{ materials : deployment_id
+    deployments ||--|{ comments : deployment_id
+    deployments ||--|{ evaluations : deployment_id
+    deployments ||--|{ access : deployment_id
+    users ||--|{ access : deployment_id
+    style users fill:#ffa
+
+
     users ||--o{ materials : user_id
     style users fill:#ffa
     users ||--o{ evaluations : user_id
 
-    usecases ||--|{ evaluations : usecase_id
-    style usecases fill:#ffa
     evaluations ||--|| materials : evaluation_id
+    users ||--o{ comments : user_id
 ```
 
 ## Tables
@@ -75,18 +86,6 @@ tables other than what is listed if the names are unique across tables
 
 Table names are lower case (a single plural noun). Field names are snake
 case (lower case with underscores as word separator).
-
-### Usecases (`usecases`)
-
-The table defines use cases defined by the modeler. The evaluators will
-provide feedback in the context of the usecase, such as forestry
-applications, etc.
-
-| field                 | type | constraint    | description   |
-|:----------------------|:-----|:--------------|:--------------|
-| `usecase_id`          | text | `PRIMARY KEY` | Usecase ID.   |
-| `usecase_name`        | text | `NOT NULL`    | Usecase name. |
-| `usecase_description` | text | `NOT NULL`    | Usecase name. |
 
 ### Users (`users`)
 
@@ -101,7 +100,7 @@ See the list of user roles for specific permissions.
 | `user_name` | text | `NOT NULL` | The user’s full name. |
 | `user_email` | text | `UNIQUE NOT NULL` | The user’s email address. |
 | `user_affiliation` | text | `NOT NULL` | The user’s primary affiliation, e.g. ECCC, BAM, etc. |
-| `user_roles` | text |  | A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not mentioned explicitly (value is null). |
+| `admin` | boolean | `NOT NULL` | Boolean flag for admin users. |
 
 ### Species (`species`)
 
@@ -157,7 +156,8 @@ materials.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `material_id` | text | `PRIMARY KEY` | ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`). |
+| `material_id` | text | `PRIMARY KEY` | ID for joining feedback to materials (in the form of `<deployment_id>_<species_id>_<model_id>_<component_id>`). |
+| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
 | `model_id` | text | `REFERENCES models` | Model ID (foreign key). |
 | `species_id` | text | `REFERENCES species` | Species ID (foreign key). |
 | `component_id` | text | `REFERENCES components` | Component ID (foreign key). |
@@ -179,33 +179,74 @@ provide more data.
 | field | type | constraint | description |
 |:---|:---|:---|:---|
 | `material_id` | text | `REFERENCES materials` | Material ID. |
-| `usecase_id` | text | `REFERENCES usecases` | Usecase ID. |
-| `evaluation_create_user` | text | `REFERENCES users (user_id)` | Time of initial evaluation (foreign key). |
-| `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
+| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
+| `use_cases` | text | `NOT NULL` | Use case applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition. |
+| `evaluation_create_user` | text | `REFERENCES users (user_id)` | User who created the initial evaluation (foreign key). |
+| `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial the initial evaluation. |
 | `evaluation_modify_user` | text | `REFERENCES users (user_id)` | User who last modified (foreign key). |
 | `evaluation_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
 | `evaluation_body` | json | `NOT NULL` | JSON blob with the evaluation according to component display rules reflecting last modification. |
-| `comment_create_user` | text | `REFERENCES users (user_id)` | Time of initial evaluation (foreign key). |
-| `comment_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
-| `comment_modify_user` | text | `REFERENCES users (user_id)` | User who last modified (foreign key). |
-| `comment_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
-| `comment_body` | json | `NOT NULL` | JSON blob with the comment on an evaluation according to component display rules reflecting last modification. |
+| `note_create_user` | text | `REFERENCES users (user_id)` | User who created the note. |
+| `note_create_time` | timestamp | `NOT NULL` | Time of note creation. |
+| `note_body` | json | `NOT NULL` | JSON blob with the note on an evaluation reflecting last modification. |
+
+### Comments (`comments`)
+
+Comments are chat-like exchanges of ideas tied to a model-species
+combination, visible to users with discussion roles.
+
+| field | type | constraint | description |
+|:---|:---|:---|:---|
+| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
+| `model_id` | text | `REFERENCES models` | Model ID (foreign key). |
+| `species_id` | text | `REFERENCES species` | Species ID (foreign key). |
+| `comment_create_user` | text | `REFERENCES users (user_id)` | User who created the note. |
+| `comment_create_time` | timestamp | `NOT NULL` | Time of comment creation. |
+| `comment_body` | json | `NOT NULL` | JSON blob with the note on an evaluation reflecting last modification. |
+
+### Deployments (`deployments`)
+
+Deployment is a set of results organized for a specific audience for
+evaluation.
+
+| field                    | type | constraint    | description      |
+|:-------------------------|:-----|:--------------|:-----------------|
+| `deployment_id`          | text | `PRIMARY KEY` | Deployment ID.   |
+| `deployment_name`        | text | `NOT NULL`    | Deployment name. |
+| `deployment_description` | text | `NOT NULL`    | Deployment name. |
+
+### User Access (`access`)
+
+Describe what access users have for deployments
+
+| field | type | constraint | description |
+|:---|:---|:---|:---|
+| `user_id` | text | `REFERENCES users` | User ID (foreign key). |
+| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
+| `user_roles` | text | `NOT NULL` | A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not mentioned explicitly (value is null). |
 
 ## Users and user roles
 
 Allowed values and access types for user roles:
 
-| Role | Model materials | Evaluations |
-|----|----|----|
-| `viewer` | Read | Read |
-| `evaluator` | Read | Read, Write (create new, edit theirs) |
-| `modeler` | Read, Write (create new, edit theirs) | Read |
-| `admin` | Read, Write (create new, edit all, delete) | Read, Write (create new, edit all, delete) |
+| Role | Model materials | Evaluations | Discussions |
+|----|----|----|----|
+| `viewer` | Read | Read | None |
+| `commenter` | Read | Read | Read, Write |
+| `evaluator` | Read | Read, Write (create new, edit theirs) | Read, Write |
+| `modeler` | Read, Write (create new, edit theirs) | Read | Read, Write |
+| `admin` | Read, Write (create new, edit all, delete) | Read, Write (create new, edit all, delete) | Read, Write |
 
 The UI will enforce role based access rules.
 
 The `users` table needs to be updated regularly, requires admin access
 and writing directly to the database.
+
+The admin role cannot be selected by users when setting up deployment
+access roles for other users.
+
+When providing multiple roles to a user, the user will have the union of
+privileges associated with those roles.
 
 ## Components
 
@@ -312,12 +353,12 @@ Spatial polygons defining subunits over the spatial predictions.
 **Mandatory**: No
 
 **Input**: A spatial polygons file with geometries and a key called
-`subunit_id`. Each usecase can have its own subunits.
+`subunit_id`. Each deployment can have its own subunits.
 
 **Output**: Same file structure as the input file including subunit IDs
 and geometries, saved as a Geopackage
 
-Output path: `materials/{model_id}/usecases/{usecase_id}/subunits.gpkg`
+Output path: `deployments/{deployment_id}/subunits.gpkg`
 
 **Display**: The subunits layer is overlaid on top of the spatial
 prediction (raster) map.
@@ -418,7 +459,7 @@ When the info is uploaded, we organize the files inside the
 ./materials/<model_id>/
 ./materials/<model_id>/metadata/model_metadata.parquet
 ./materials/<model_id>/predictors/predictor_metadata.parquet
-./materials/<model_id>/predictors/predictor_raster.tif
+./materials/<model_id>/predictors/predictor_raster.tif            # *
 
 ./materials/<model_id>/species/<species_id>/
 ./materials/<model_id>/species/<species_id>/observations.parquet
@@ -426,8 +467,8 @@ When the info is uploaded, we organize the files inside the
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
-./materials/<model_id>/usecases/<usecase_id>/questions.csv
-./materials/<model_id>/usecases/<usecase_id>/subunits.gpkg
+./deployments/{deployment_id}/questions.csv
+./deployments/{deployment_id}/subunits.gpkg
 ```
 
 Model materials are saved after upload, this is also when the database
@@ -445,3 +486,15 @@ no subunits are provided for a usecase, the subunits will not show.
 
 The evaluations for each material are stored in the SQLite database,
 alongside the other tables outlined in the conceptual overview.
+
+## Future changes to consider
+
+Repeatedly storing some of the materials will not be sustainable. We
+will revisit organizing predictor variables independently, this way the
+evaluation app will have the ability to link to it. If this is a file
+server, we can have static HTML files displaying rasters:
+
+``` bash
+./shared/predictors/<predictor_id>/predictor_raster.tif
+./shared/predictors/<predictor_id>/index.html
+```
