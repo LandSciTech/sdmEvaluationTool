@@ -476,14 +476,13 @@ Model materials are saved after upload, this is also when the database
 is updated with the new information.
 
 Questions will have an expected table format, and a csv file can be
-uploaded similarly to metadata. In the absence of a usecase, the default
-question template will be used.
+uploaded similarly to metadata.
 
 Subunits can be used to make evaluations more specific. In the 1st
 phase, we will make sure subunits can be identified (popups, paste ID to
 clipboard). In next phase, we will develop more sophisticated ways of
 providing subunit level feedback if this is identified as a priority. If
-no subunits are provided for a usecase, the subunits will not show.
+no subunits are provided for a deployment, the subunits will not show.
 
 The evaluations for each material are stored in the SQLite database,
 alongside the other tables outlined in the conceptual overview.
