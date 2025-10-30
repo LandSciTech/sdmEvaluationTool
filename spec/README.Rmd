@@ -101,27 +101,24 @@ MET attributes include:
 
 ```mermaid
 erDiagram
+    direction TB
 
     models ||--|{ comments : model_id
     species ||--|{ comments : species_id
 
-    uploads }|..|{ materials : upload_id
-    style uploads fill:#fff
     components ||--|{ materials : component_id
     style components fill:#ffa
-    style materials fill:#ffa
-
-    metadata }|..|{ models : metadata_id
-    style metadata fill:#fff
 
     models ||--|{ materials : model_id
-    style models fill:#ffa
     species ||--|{ materials : species_id
     style species fill:#ffa
 
-    deployments ||--|{ materials : deployment_id
+    users ||--|{ deployments : material_id
+    deploymentmaterials ||--|{ evaluations : deployment_id
+    materials ||--|{ deploymentmaterials : material_id
+    deployments ||--|{ deploymentmaterials : deployment_id
     deployments ||--|{ comments : deployment_id
-    deployments ||--|{ evaluations : deployment_id
+    style comments fill:#fff
     deployments ||--|{ access : deployment_id
     users ||--|{ access : deployment_id
     style users fill:#ffa
@@ -130,8 +127,7 @@ erDiagram
     users ||--o{ materials : user_id
     style users fill:#ffa
     users ||--o{ evaluations : user_id
-
-    evaluations ||--|| materials : evaluation_id
+    style evaluations fill:#fff
     users ||--o{ comments : user_id
 ```
 
@@ -224,7 +220,7 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
-./deployments/{deployment_id}/metadata.json
+./deployments/{deployment_id}/settings.json
 ./deployments/{deployment_id}/questions.csv
 ./deployments/{deployment_id}/subunits.gpkg
 ```
@@ -252,7 +248,7 @@ For each deployment there is:
 - 1 evaluation polygon layer (`subunits.gpkg`), 
 - 1 free form opportunity for modeler to explain the evaluation to the evaluators, 
 - a set of use cases (at least one)
-- and whether comments are allowed or not (`metadata.json`).
+- and whether comments are allowed or not (`settings.json`).
 
 User access can be set differently for each deployment. I.e. the same user
 can function as `modeler,commenter` for one and `evaluator,commenter` for another.
