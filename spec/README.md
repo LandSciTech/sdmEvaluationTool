@@ -43,27 +43,24 @@ MET attributes include:
 
 ``` mermaid
 erDiagram
+    direction TB
 
     models ||--|{ comments : model_id
     species ||--|{ comments : species_id
 
-    uploads }|..|{ materials : upload_id
-    style uploads fill:#fff
     components ||--|{ materials : component_id
     style components fill:#ffa
-    style materials fill:#ffa
-
-    metadata }|..|{ models : metadata_id
-    style metadata fill:#fff
 
     models ||--|{ materials : model_id
-    style models fill:#ffa
     species ||--|{ materials : species_id
     style species fill:#ffa
 
-    deployments ||--|{ materials : deployment_id
+    users ||--|{ deployments : material_id
+    deploymentmaterials ||--|{ evaluations : deployment_id
+    materials ||--|{ deploymentmaterials : material_id
+    deployments ||--|{ deploymentmaterials : deployment_id
     deployments ||--|{ comments : deployment_id
-    deployments ||--|{ evaluations : deployment_id
+    style comments fill:#fff
     deployments ||--|{ access : deployment_id
     users ||--|{ access : deployment_id
     style users fill:#ffa
@@ -72,8 +69,7 @@ erDiagram
     users ||--o{ materials : user_id
     style users fill:#ffa
     users ||--o{ evaluations : user_id
-
-    evaluations ||--|| materials : evaluation_id
+    style evaluations fill:#fff
     users ||--o{ comments : user_id
 ```
 
@@ -156,8 +152,7 @@ materials.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `material_id` | text | `PRIMARY KEY` | ID for joining feedback to materials (in the form of `<deployment_id>_<species_id>_<model_id>_<component_id>`). |
-| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
+| `material_id` | text | `PRIMARY KEY` | ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`). |
 | `model_id` | text | `REFERENCES models` | Model ID (foreign key). |
 | `species_id` | text | `REFERENCES species` | Species ID (foreign key). |
 | `component_id` | text | `REFERENCES components` | Component ID (foreign key). |
@@ -165,6 +160,29 @@ materials.
 | `material_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
 | `material_modify_user` | text | `REFERENCES users (user_id)` | User who modified the model material (foreign key). |
 | `material_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
+
+### Deployments (`deployments`)
+
+Deployment is a set of results organized for a specific audience for
+evaluation.
+
+| field | type | constraint | description |
+|:---|:---|:---|:---|
+| `deployment_id` | text | `PRIMARY KEY` | Deployment ID. |
+| `deployment_name` | text | `NOT NULL` | Deployment name. |
+| `deployment_description` | text | `NOT NULL` | Deployment name. |
+| `deployment_create_user` | text | `REFERENCES users (user_id)` | User who created the deployment (foreign key). |
+| `deployment_create_time` | timestamp | `NOT NULL` | Time of deployment creation. |
+
+### Deployment Materials (`deployment_materials`)
+
+Materials selected for a deployment.
+
+| field | type | constraint | description |
+|:---|:---|:---|:---|
+| `deployment_material_id` | text | `PRIMARY KEY` | ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`). |
+| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
+| `material_id` | text | `REFERENCES materials` | Material ID. |
 
 ### Evaluations (`evaluations`)
 
@@ -178,8 +196,7 @@ provide more data.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `material_id` | text | `REFERENCES materials` | Material ID. |
-| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
+| `deployment_material_id` | text | `REFERENCES deployment_materials` | Deployment Material ID. |
 | `use_cases` | text | `NOT NULL` | Use case applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition. |
 | `evaluation_create_user` | text | `REFERENCES users (user_id)` | User who created the initial evaluation (foreign key). |
 | `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial the initial evaluation. |
@@ -203,17 +220,6 @@ combination, visible to users with discussion roles.
 | `comment_create_user` | text | `REFERENCES users (user_id)` | User who created the note. |
 | `comment_create_time` | timestamp | `NOT NULL` | Time of comment creation. |
 | `comment_body` | json | `NOT NULL` | JSON blob with the note on an evaluation reflecting last modification. |
-
-### Deployments (`deployments`)
-
-Deployment is a set of results organized for a specific audience for
-evaluation.
-
-| field                    | type | constraint    | description      |
-|:-------------------------|:-----|:--------------|:-----------------|
-| `deployment_id`          | text | `PRIMARY KEY` | Deployment ID.   |
-| `deployment_name`        | text | `NOT NULL`    | Deployment name. |
-| `deployment_description` | text | `NOT NULL`    | Deployment name. |
 
 ### User Access (`access`)
 
@@ -467,7 +473,7 @@ When the info is uploaded, we organize the files inside the
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
-./deployments/{deployment_id}/metadata.json
+./deployments/{deployment_id}/settings.json
 ./deployments/{deployment_id}/questions.csv
 ./deployments/{deployment_id}/subunits.gpkg
 ```
@@ -496,7 +502,7 @@ For each deployment there is:
 - 1 free form opportunity for modeler to explain the evaluation to the
   evaluators,
 - a set of use cases (at least one)
-- and whether comments are allowed or not (`metadata.json`).
+- and whether comments are allowed or not (`settings.json`).
 
 User access can be set differently for each deployment. I.e. the same
 user can function as `modeler,commenter` for one and

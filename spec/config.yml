@@ -205,14 +205,9 @@ tables:
     fields:
       material_id:
         name: Material ID
-        description: ID for joining feedback to materials (in the form of `<deployment_id>_<species_id>_<model_id>_<component_id>`).
+        description: ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).
         type: text
         constraint: PRIMARY KEY
-      deployment_id:
-        name: Deployment ID
-        description: Deployment ID (foreign key).
-        type: text
-        constraint: REFERENCES deployments
       model_id:
         name: Model ID
         description: Model ID (foreign key).
@@ -249,21 +244,69 @@ tables:
         type: timestamp
         constraint: NOT NULL
 
-  evaluations:
-    name: Evaluations
+  deployments:
+    name: Deployments
     description: >
-      Evaluations are the basic feedback on the materials. There is no explicitly defined primary key, sort and filter to find entries to display. The body has to conform with component display rules which is not checked by the database and is the job for the UI to enforce. Display rule for comments are simpler than for evaluations, we consider text comments. Updates to evaluations will be frequent as evaluators provide more data.
+      Deployment is a set of results organized for a specific audience for
+      evaluation.
     fields:
-      material_id:
-        name: Material ID
-        description: Material ID.
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID.
         type: text
-        constraint: REFERENCES materials
+        constraint: PRIMARY KEY
+      deployment_name:
+        name: Deployment Name
+        description: Deployment name.
+        type: text
+        constraint: NOT NULL
+      deployment_description:
+        name: Deployment Description
+        description: Deployment name.
+        type: text
+        constraint: NOT NULL
+      deployment_create_user:
+        name: Create User
+        description: User who created the deployment (foreign key).
+        type: text
+        constraint: REFERENCES users (user_id)
+      deployment_create_time:
+        name: Create Time
+        description: Time of deployment creation.
+        type: timestamp
+        constraint: NOT NULL
+
+  deployment_materials:
+    name: Deployment Materials
+    description: >
+      Materials selected for a deployment.
+    fields:
+      deployment_material_id:
+        name: Deployment Material ID
+        description: ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).
+        type: text
+        constraint: PRIMARY KEY
       deployment_id:
         name: Deployment ID
         description: Deployment ID (foreign key).
         type: text
         constraint: REFERENCES deployments
+      material_id:
+        name: Material ID
+        description: Material ID.
+        type: text
+        constraint: REFERENCES materials
+
+  evaluations:
+    name: Evaluations
+    description: >
+      Evaluations are the basic feedback on the materials. There is no explicitly defined primary key, sort and filter to find entries to display. The body has to conform with component display rules which is not checked by the database and is the job for the UI to enforce. Display rule for comments are simpler than for evaluations, we consider text comments. Updates to evaluations will be frequent as evaluators provide more data.
+    fields:
+      deployment_material_id:
+        name: Deployment Material ID
+        description: Deployment Material ID.
+        type: text
+        constraint: REFERENCES deployment_materials
       use_cases:
         name: Use Cases
         description: Use case applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition.
@@ -344,28 +387,6 @@ tables:
         name: Comment Body
         description: JSON blob with the note on an evaluation reflecting last modification.
         type: json
-        constraint: NOT NULL
-
-  deployments:
-    name: Deployments
-    description: >
-      Deployment is a set of results organized for a specific audience for
-      evaluation.
-    fields:
-      deployment_id:
-        name: Deployment ID
-        description: Deployment ID.
-        type: text
-        constraint: PRIMARY KEY
-      deployment_name:
-        name: Deployment Name
-        description: Deployment name.
-        type: text
-        constraint: NOT NULL
-      deployment_description:
-        name: Deployment Description
-        description: Deployment name.
-        type: text
         constraint: NOT NULL
 
   access:
