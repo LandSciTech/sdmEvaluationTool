@@ -13,9 +13,12 @@
 #'
 #' @export
 get_comp_ready <- function(ready = character(0L)) {
-    out <- sdmEvalToolCore::components[,c("component", "mandatory")]
+    out <- sdmEvalToolCore::components[, c("component", "mandatory")]
     out$ready <- out$component %in% ready
-    attr(out, "percent_ready") <- round(100 * sum(out$ready & out$mandatory) / sum(out$mandatory), 1)
+    attr(out, "percent_ready") <- round(
+        100 * sum(out$ready & out$mandatory) / sum(out$mandatory),
+        1
+    )
     out
 }
 
@@ -31,10 +34,13 @@ get_comp_ready <- function(ready = character(0L)) {
 #' str(get_comp_rule("observations", "reporting"))
 #'
 #' @export
-get_comp_rule <- function(component_id, 
-rule_type = c("upload", "display", "evaluation", "reporting")) {
-    if (length(component_id)>1L)
+get_comp_rule <- function(
+    component_id,
+    rule_type = c("upload", "display", "evaluation", "reporting")
+) {
+    if (length(component_id) > 1L) {
         stop("component_id must have length of 1.")
+    }
     rule_type <- match.arg(rule_type)
     cmp <- sdmEvalToolCore::components
     rownames(cmp) <- cmp$component
