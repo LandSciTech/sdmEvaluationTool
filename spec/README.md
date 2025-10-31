@@ -85,14 +85,15 @@ case (lower case with underscores as word separator).
 
 ### Users (`users`)
 
-This table contains user names and roles to be used as foreign keys in
-other tables to track change history. This table needs to be updated
-regularly, requires admin access and writing directly to the database.
-See the list of user roles for specific permissions.
+This table contains user names and admin roles, and IDs be used as
+foreign keys in other tables to track change history. This table needs
+to be updated regularly, requires **admin** access and writing directly
+to the database. See the list of user roles for specific permissions. In
+the future, this table might be a 3rd party authorization tool.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `user_id` | text | `PRIMARY KEY` | User ID (a unique ID or the email). |
+| `user_id` | text | `PRIMARY KEY` | User ID (a unique ID). |
 | `user_name` | text | `NOT NULL` | The user’s full name. |
 | `user_email` | text | `UNIQUE NOT NULL` | The user’s email address. |
 | `user_affiliation` | text | `NOT NULL` | The user’s primary affiliation, e.g. ECCC, BAM, etc. |
@@ -102,7 +103,7 @@ See the list of user roles for specific permissions.
 
 A table that lists all potential species, in our case, birds in Canada.
 This table is saved to the database once, changes to the `species` table
-require admin access directly to the database.
+require **admin** access directly in the database.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
@@ -111,32 +112,17 @@ require admin access directly to the database.
 | `english_name` | text | `UNIQUE NOT NULL` | Common name in English. |
 | `french_name` | text | `UNIQUE NOT NULL` | Common name in French (use UTF-8 encoding). |
 
-### Models (`models`)
-
-A table listing models. The model name and ID acts as an abbreviation of
-the model approach/extent/etc. and also acts as a version identifier,
-e.g. `can_glm_v1.1` would mean that GLM models were used for models with
-Canadian extent and this is version 1.1. Updates are done via uploading
-or creating a method metadata file. This action should be quite
-infrequent.
-
-| field | type | constraint | description |
-|:---|:---|:---|:---|
-| `model_id` | text | `PRIMARY KEY` | Model ID, lower case, alphanumeric, `.` and `_` allowed. |
-| `model_name` | text | `UNIQUE NOT NULL` | A human readable version of `model_id` displayed in the app. |
-| `model_description` | text | `UNIQUE NOT NULL` | A human readable version of `model_id` displayed in the app. |
-| `model_metadata` | text | `UNIQUE NOT NULL` | A file path or URL pointing used to find the ODMAP metadata for the model. |
-
 ### Components (`components`)
 
-Components that can be uploaded and evaluated. Each component will have
-its Shiny module implementing the expected behavior for upload, display,
-and evaluation. e.g. a component can have corresponding
-`mod_<component_id>_ui` and `mod_<component_id>_server` module
-functions. Mandatory components are prerequisites for starting
-evaluations. Updates are done via parsing the `components.yaml` file by
-admins. After initial development, versioning and backward compatibility
-should be a concern so that previous entries will not break.
+Components are SDM results that can be uploaded and evaluated. Each
+component will have its Shiny module implementing the expected behavior
+for upload, display, and evaluation. e.g. a component can have
+corresponding `mod_<component_id>_ui` and `mod_<component_id>_server`
+module functions. Mandatory components are prerequisites for starting
+evaluations. Updates are done via parsing the `components` section of
+the `config.yaml` file by **admins** and **tool developers**. After
+initial development, versioning and backward compatibility should be a
+concern so that previous entries will not break.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
@@ -144,15 +130,30 @@ should be a concern so that previous entries will not break.
 | `component_description` | text | `NOT NULL` | Component description. |
 | `component_mandatory` | boolean | `NOT NULL` | Is the component mandatory (value is `TRUE`). |
 
+### Models (`models`)
+
+A table listing models. The model name and ID acts as an abbreviation of
+the model approach/extent/etc. and also acts as a version identifier,
+e.g. `can_glm_v1.1` would mean that GLM models were used for models with
+Canadian extent and this is version 1.1. Updates are done by
+**modelers** via uploading or creating a method metadata file.
+
+| field | type | constraint | description |
+|:---|:---|:---|:---|
+| `model_id` | text | `PRIMARY KEY` | Model ID, lower case, alphanumeric, `.` and `_` allowed. |
+| `model_name` | text | `UNIQUE NOT NULL` | A human readable version of `model_id` displayed in the app, can include spaces. |
+| `model_description` | text | `NOT NULL` | A human readable version of `model_id` displayed in the app. |
+| `model_metadata` | text | `NOT NULL` | A file path or URL used to find the ODMAP metadata for the model. |
+
 ### Materials (`materials`)
 
 Upload materials are used to be displayed and evaluated. Updates to the
-file system and the database will be regular as modelers upload new
+file system and the database will be regular as **modelers** upload new
 materials.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `material_id` | text | `PRIMARY KEY` | ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`). |
+| `material_id` | text | `PRIMARY KEY` | ID for uploaded model materials (in the form of `<species_id>_<model_id>_<component_id>`). |
 | `model_id` | text | `REFERENCES models` | Model ID (foreign key). |
 | `species_id` | text | `REFERENCES species` | Species ID (foreign key). |
 | `component_id` | text | `REFERENCES components` | Component ID (foreign key). |
@@ -164,7 +165,10 @@ materials.
 ### Deployments (`deployments`)
 
 Deployment is a set of results organized for a specific audience for
-evaluation.
+evaluation. Deployments make materials reusable without having to
+repeatedly upload the same set of files. A deployment is defined by the
+**modeler** based on model materials that they are the owners (creators)
+of.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
@@ -176,28 +180,31 @@ evaluation.
 
 ### Deployment Materials (`deployment_materials`)
 
-Materials selected for a deployment.
+Materials selected for a deployment. Entries in this table form the
+basis for evaluations and are defined by the **modeler**.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `deployment_material_id` | text | `PRIMARY KEY` | ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`). |
+| `deployment_material_id` | text | `PRIMARY KEY` | Compound ID for joining feedback to deployment materials (in the form of `<deployment_id>_<species_id>_<model_id>_<component_id>`). |
 | `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
 | `material_id` | text | `REFERENCES materials` | Material ID. |
 
 ### Evaluations (`evaluations`)
 
-Evaluations are the basic feedback on the materials. There is no
-explicitly defined primary key, sort and filter to find entries to
-display. The body has to conform with component display rules which is
-not checked by the database and is the job for the UI to enforce.
-Display rule for comments are simpler than for evaluations, we consider
-text comments. Updates to evaluations will be frequent as evaluators
-provide more data.
+Evaluations are the basic feedback on the materials within the context
+of a deployment. There is no explicitly defined primary key, sort and
+filter to find entries to display. The body has to conform with
+component display rules which is not checked by the database and is the
+job for the UI to enforce. Updates to evaluations will be frequent as
+**evaluators** provide more data feedback. Notes can be provided for
+evaluations, these function like flags marking feedback that needs to be
+addressed later (i.e. such notes can be identified later when
+synthesizing the evaluations).
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
 | `deployment_material_id` | text | `REFERENCES deployment_materials` | Deployment Material ID. |
-| `use_cases` | text | `NOT NULL` | Use case applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition. |
+| `use_cases` | text | `NOT NULL` | One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment. |
 | `evaluation_create_user` | text | `REFERENCES users (user_id)` | User who created the initial evaluation (foreign key). |
 | `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial the initial evaluation. |
 | `evaluation_modify_user` | text | `REFERENCES users (user_id)` | User who last modified (foreign key). |
@@ -210,7 +217,10 @@ provide more data.
 ### Comments (`comments`)
 
 Comments are chat-like exchanges of ideas tied to a model-species
-combination, visible to users with discussion roles.
+combination, visible to users with discussion roles. Display rule for
+comments are simpler than for evaluations, we consider text comments.
+Users with **commenter** privileges can leave comments (like discussions
+back and forth) if comments are enabled for the deployment.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
@@ -223,13 +233,17 @@ combination, visible to users with discussion roles.
 
 ### User Access (`access`)
 
-Describe what access users have for deployments
+Describe what access users have for deployments, i.e. who the
+**modeler** wants to be an evaluator. This is a table that will be
+required for later phases of the tool development. We might have to
+consider access based on user groups as well to avoid having to set
+permissions for individuals, using existing groups instead.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
 | `user_id` | text | `REFERENCES users` | User ID (foreign key). |
 | `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
-| `user_roles` | text | `NOT NULL` | A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not mentioned explicitly (value is null). |
+| `user_roles` | text | `NOT NULL` | A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not set by the user granting the access. |
 
 ## Users and user roles
 
@@ -463,6 +477,7 @@ When the info is uploaded, we organize the files inside the
 ./sdm_evaluation_db.sqlite
 
 ./materials/<model_id>/
+./materials/<model_id>/settings.json
 ./materials/<model_id>/metadata/model_metadata.csv
 ./materials/<model_id>/predictors/predictor_metadata.parquet
 ./materials/<model_id>/predictors/predictor_raster.tif
@@ -480,6 +495,10 @@ When the info is uploaded, we organize the files inside the
 
 Model materials are saved after upload, this is also when the database
 is updated with the new information.
+
+The `./materials/<model_id>/settings.json` file stores figure legends
+and units (what the values in the rasters mean) get stored. This is
+created based on UI inputs during materials upload.
 
 Questions will have an expected table format, and a csv file can be
 uploaded similarly to metadata.

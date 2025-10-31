@@ -97,11 +97,15 @@ tables:
   users:
     name: Users
     description: >
-      This table contains user names and roles to be used as foreign keys in other tables to track change history. This table needs to be updated regularly, requires admin access and writing directly to the database. See the list of user roles for specific permissions.
+      This table contains user names and admin roles, and IDs be used as foreign keys in 
+      other tables to track change history. This table needs to be updated 
+      regularly, requires **admin** access and writing directly to the database. 
+      See the list of user roles for specific permissions.
+      In the future, this table might be a 3rd party authorization tool.
     fields:
       user_id:
         name: User ID
-        description: User ID (a unique ID or the email).
+        description: User ID (a unique ID).
         type: text
         constraint: PRIMARY KEY
       user_name:
@@ -128,7 +132,9 @@ tables:
   species:
     name: Species
     description: >
-      A table that lists all potential species, in our case, birds in Canada. This table is saved to the database once, changes to the `species` table require admin access directly to the database.
+      A table that lists all potential species, in our case, birds in Canada. 
+      This table is saved to the database once, changes to the `species` 
+      table require **admin** access directly in the database.
     fields:
       species_id:
         name: Species ID
@@ -151,36 +157,18 @@ tables:
         type: text
         constraint: UNIQUE NOT NULL
 
-  models:
-    name: Models
-    description: >
-      A table listing models. The model name and ID acts as an abbreviation of the model approach/extent/etc. and also acts as a version identifier, e.g. `can_glm_v1.1` would mean that GLM models were used for models with Canadian extent and this is version 1.1. Updates are done via uploading or creating a method metadata file. This action should be quite infrequent.
-    fields:
-      model_id:
-        name: Model ID
-        description: Model ID, lower case, alphanumeric, `.` and `_` allowed.
-        type: text
-        constraint: PRIMARY KEY
-      model_name:
-        name: Model Name
-        description: A human readable version of `model_id` displayed in the app.
-        type: text
-        constraint: UNIQUE NOT NULL
-      model_description:
-        name: Model Description
-        description: A human readable version of `model_id` displayed in the app.
-        type: text
-        constraint: UNIQUE NOT NULL
-      model_metadata:
-        name: Model Metadata
-        description: A file path or URL pointing used to find the ODMAP metadata for the model.
-        type: text
-        constraint: UNIQUE NOT NULL
-
   components:
     name: Components
     description: >
-      Components that can be uploaded and evaluated. Each component will have its Shiny module implementing the expected behavior for upload, display, and evaluation. e.g. a component can have corresponding `mod_<component_id>_ui` and `mod_<component_id>_server` module functions. Mandatory components are prerequisites for starting evaluations. Updates are done via parsing the `components.yaml` file by admins. After initial development, versioning and backward compatibility should be a concern so that previous entries will not break.
+      Components are SDM results that can be uploaded and evaluated. 
+      Each component will have its Shiny module implementing the expected 
+      behavior for upload, display, and evaluation. e.g. a component can have 
+      corresponding `mod_<component_id>_ui` and `mod_<component_id>_server` 
+      module functions. Mandatory components are prerequisites for starting 
+      evaluations. Updates are done via parsing the `components` section of the
+      `config.yaml` file by **admins** and **tool developers**. 
+      After initial development, versioning and backward compatibility should 
+      be a concern so that previous entries will not break.
     fields:
       component_id:
         name: Component ID
@@ -198,14 +186,46 @@ tables:
         type: boolean
         constraint: NOT NULL
 
+  models:
+    name: Models
+    description: >
+      A table listing models. The model name and ID acts as an abbreviation of 
+      the model approach/extent/etc. and also acts as a version identifier, 
+      e.g. `can_glm_v1.1` would mean that GLM models were used for models with 
+      Canadian extent and this is version 1.1. Updates are done 
+      by **modelers** via uploading or creating a method metadata file.
+    fields:
+      model_id:
+        name: Model ID
+        description: Model ID, lower case, alphanumeric, `.` and `_` allowed.
+        type: text
+        constraint: PRIMARY KEY
+      model_name:
+        name: Model Name
+        description: A human readable version of `model_id` displayed in the app, can include spaces.
+        type: text
+        constraint: UNIQUE NOT NULL
+      model_description:
+        name: Model Description
+        description: A human readable version of `model_id` displayed in the app.
+        type: text
+        constraint: NOT NULL
+      model_metadata:
+        name: Model Metadata
+        description: A file path or URL used to find the ODMAP metadata for the model.
+        type: text
+        constraint: NOT NULL
+
   materials:
     name: Materials
     description: >
-      Upload materials are used to be displayed and evaluated. Updates to the file system and the database will be regular as modelers upload new materials.
+      Upload materials are used to be displayed and evaluated. 
+      Updates to the file system and the database will be regular as 
+      **modelers** upload new materials.
     fields:
       material_id:
         name: Material ID
-        description: ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).
+        description: ID for uploaded model materials (in the form of `<species_id>_<model_id>_<component_id>`).
         type: text
         constraint: PRIMARY KEY
       model_id:
@@ -248,7 +268,10 @@ tables:
     name: Deployments
     description: >
       Deployment is a set of results organized for a specific audience for
-      evaluation.
+      evaluation. Deployments make materials reusable without having to
+      repeatedly upload the same set of files. A deployment is defined
+      by the **modeler** based on model materials that they are the
+      owners (creators) of.
     fields:
       deployment_id:
         name: Deployment ID
@@ -279,11 +302,12 @@ tables:
   deployment_materials:
     name: Deployment Materials
     description: >
-      Materials selected for a deployment.
+      Materials selected for a deployment. Entries in this table form the
+      basis for evaluations and are defined by the **modeler**.
     fields:
       deployment_material_id:
         name: Deployment Material ID
-        description: ID for joining feedback to materials (in the form of `<species_id>_<model_id>_<component_id>`).
+        description: Compound ID for joining feedback to deployment materials (in the form of `<deployment_id>_<species_id>_<model_id>_<component_id>`).
         type: text
         constraint: PRIMARY KEY
       deployment_id:
@@ -300,7 +324,15 @@ tables:
   evaluations:
     name: Evaluations
     description: >
-      Evaluations are the basic feedback on the materials. There is no explicitly defined primary key, sort and filter to find entries to display. The body has to conform with component display rules which is not checked by the database and is the job for the UI to enforce. Display rule for comments are simpler than for evaluations, we consider text comments. Updates to evaluations will be frequent as evaluators provide more data.
+      Evaluations are the basic feedback on the materials within the context of
+      a deployment. There is no explicitly defined primary key, sort and filter 
+      to find entries to display. The body has to conform with component display 
+      rules which is not checked by the database and is the job for the UI to 
+      enforce. Updates to evaluations will be frequent as 
+      **evaluators** provide more data feedback. Notes can be provided for
+      evaluations, these function like flags marking feedback that needs
+      to be addressed later (i.e. such notes can be identified later when
+      synthesizing the evaluations).
     fields:
       deployment_material_id:
         name: Deployment Material ID
@@ -309,8 +341,8 @@ tables:
         constraint: REFERENCES deployment_materials
       use_cases:
         name: Use Cases
-        description: Use case applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition.
-        type: text
+        description: One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment.
+        type: text # should this be json?
         constraint: NOT NULL
       evaluation_create_user:
         name: Create User
@@ -356,7 +388,12 @@ tables:
   comments:
     name: Comments
     description: >
-      Comments are chat-like exchanges of ideas tied to a model-species combination, visible to users with discussion roles.
+      Comments are chat-like exchanges of ideas tied to a model-species 
+      combination, visible to users with discussion roles.
+      Display rule for comments are simpler than for evaluations, 
+      we consider text comments. Users with **commenter**
+      privileges can leave comments (like discussions back and forth) if
+      comments are enabled for the deployment.
     fields:
       deployment_id:
         name: Deployment ID
@@ -392,7 +429,11 @@ tables:
   access:
     name: User Access
     description: >
-      Describe what access users have for deployments
+      Describe what access users have for deployments, i.e. who the **modeler**
+      wants to be an evaluator. This is a table that will be required for
+      later phases of the tool development. We might have to consider
+      access based on user groups as well to avoid having to set permissions
+      for individuals, using existing groups instead.
     fields:
       user_id:
         name: User ID
@@ -406,7 +447,7 @@ tables:
         constraint: REFERENCES deployments
       user_roles:
         name: User Role
-        description: A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not mentioned explicitly (value is null).
+        description: A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not set by the user granting the access.
         type: text
         constraint: NOT NULL
 
