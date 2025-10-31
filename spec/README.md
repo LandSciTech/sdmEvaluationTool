@@ -488,9 +488,9 @@ When the info is uploaded, we organize the files inside the
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
-./deployments/{deployment_id}/settings.json
-./deployments/{deployment_id}/questions.csv
-./deployments/{deployment_id}/subunits.gpkg
+./deployments/<deployment_id>/settings.json
+./deployments/<deployment_id>/questions.csv
+./deployments/<deployment_id>/subunits.gpkg
 ```
 
 Model materials are saved after upload, this is also when the database
