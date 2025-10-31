@@ -210,6 +210,7 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 ./sdm_evaluation_db.sqlite
 
 ./materials/<model_id>/
+./materials/<model_id>/settings.json
 ./materials/<model_id>/metadata/model_metadata.csv
 ./materials/<model_id>/predictors/predictor_metadata.parquet
 ./materials/<model_id>/predictors/predictor_raster.tif
@@ -227,6 +228,10 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 
 Model materials are saved after upload, this is also when the database
 is updated with the new information.
+
+The `./materials/<model_id>/settings.json` file stores figure legends and 
+units (what the values in the rasters mean) get stored. This is created
+based on UI inputs during materials upload.
 
 Questions will have an expected table format, and a csv file can be uploaded
 similarly to metadata.
