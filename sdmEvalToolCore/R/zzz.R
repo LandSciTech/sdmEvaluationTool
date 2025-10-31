@@ -1,6 +1,8 @@
 .onAttach <- function(libname, pkgname) {
-    ver <- read.dcf(file=system.file("DESCRIPTION", package=pkgname),
-                    fields=c("Version"))
+    ver <- read.dcf(
+        file = system.file("DESCRIPTION", package = pkgname),
+        fields = c("Version")
+    )
     packageStartupMessage(paste(pkgname, ver[1]))
     invisible(NULL)
 }
@@ -10,11 +12,13 @@ options_set <- FALSE
 .onLoad <- function(libname, pkgname) {
     if (is.null(getOption("cu_options"))) {
         options_set <<- TRUE
-        options("sdmevaltool_options" = list(
-            base = "../results",
-            db = "sqlite",
-            tz = "" # time zone for unix dates
-        ))
+        options(
+            "sdmevaltool_options" = list(
+                base = "../results",
+                db = "sqlite",
+                tz = "" # time zone for unix dates
+            )
+        )
     }
     invisible(NULL)
 }
@@ -33,19 +37,17 @@ options_set <- FALSE
 #' (sdmevaltool_options())
 #'
 #' @export
-sdmevaltool_options <-
-function(...)
-{
+sdmevaltool_options <- function(...) {
     opar <- getOption("sdmevaltool_options")
     args <- list(...)
     if (length(args)) {
-        if (length(args)==1 && is.list(args[[1]])) {
+        if (length(args) == 1 && is.list(args[[1]])) {
             npar <- args[[1]]
         } else {
             npar <- opar
             npar[match(names(args), names(npar))] <- args
         }
-        options("sdmevaltool_options"=npar)
+        options("sdmevaltool_options" = npar)
     }
     invisible(opar)
 }

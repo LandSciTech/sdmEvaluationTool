@@ -46,9 +46,11 @@ get_fields <- function(table_name) {
 #' @export
 scaffold_table <- function(table_name) {
     tt <- get_fields(table_name)
-    cat(paste0(table_name, " <- data.frame("),
-        paste0("    ", tt$field[1:(nrow(tt)-1)], " = ...,"), 
+    cat(
+        paste0(table_name, " <- data.frame("),
+        paste0("    ", tt$field[1:(nrow(tt) - 1)], " = ...,"),
         paste0("    ", tt$field[nrow(tt)], " = ...)"),
-        sep = "\n")
+        sep = "\n"
+    )
     invisible(tt)
 }
