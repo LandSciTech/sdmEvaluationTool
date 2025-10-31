@@ -7,7 +7,7 @@
 #'
 #' @export
 #' @examples
-mod_observations_ui <- function(id, title = "Observations") {
+mod_page_observations_ui <- function(id = "observations", title = "Observations") {
   nav_panel(
     title,
     h2(textOutput(NS(id, "title"))),
@@ -23,14 +23,18 @@ mod_observations_ui <- function(id, title = "Observations") {
 #'
 #' @export
 #' @examples
-mod_observations_server <- function(id, mod, sp, tbl_materials) {
+mod_page_observations_server <- function(id = "observations", ...) {
   moduleServer(id, function(input, output, session) {
+
+    rlang::env_bind(rlang::current_env(), !!!list(...))
+
     output$title <- renderText(paste0("Observations for Model: ", mod(), " and species ", sp()))
 
     # TODO: Options for when materials don't exist
 
     obs <- reactive({
       req(sp(), mod())
+      browser()
       sdmEvalToolCore:::make_target_path(
         paste0("materials/{mod}/species/{sp}/observations.gpkg"),
         data = list(mod = mod(), sp = sp())

@@ -7,7 +7,7 @@
 #'
 #' @export
 #' @examples
-mod_overview_ui <- function(id, title = "Overview") {
+mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   nav_panel(
     title,
     "Current status of review", 
@@ -24,19 +24,14 @@ mod_overview_ui <- function(id, title = "Overview") {
 #'
 #' @export
 #' @examples
-mod_overview_server <- function(
-  id,
-  mod,
-  sp,
-  tbl_models,
-  tbl_species,
-  tbl_materials
-) {
+mod_page_overview_server <- function(id = "overview", ...) {
   moduleServer(id, function(input, output, session) {
 
+    rlang::env_bind(rlang::current_env(), !!!list(...))
 
     table <- reactive(tbl_overview(tbl_models, tbl_species, tbl_materials))
 
+    # TODO: Option to click on species/model combination on table to select
     output$table <- reactable::renderReactable({
 
       reactable::reactable(
@@ -83,13 +78,12 @@ tbl_overview <- function(tbl_models, tbl_species, tbl_materials) {
 }
 
 fmt_tbl <- function(tbl, tbl_models, tbl_species) {
-  # TODO: Remove language hard coding
-  # TODO: Get pretty column names
-  
+  # TODO: Get pretty column names  
   tbl |>
-    dplyr::left_join(dplyr::select(sp, "species_id", "english_name"), by = "species_id") |>
-    dplyr::left_join(dplyr::select(model, "model_id", "model_name"), by = "model_id") |>
-    dplyr::relocate("model_name", "english_name")
+    dplyr::left_join(dplyr::select(tbl_species, "species_id", "species_display"), by = "species_id") |>
+    dplyr::left_join(dplyr::select(tbl_models, "model_id", "model_name"), by = "model_id") |>
+    dplyr::select(-"model_id", "species_id") |>
+    dplyr::relocate("model_name", "species_display")
 }
 
 
