@@ -37,6 +37,5 @@ get_user_roles <- function(role) {
             }
         }
     }
-
     as.data.frame(out)
 }

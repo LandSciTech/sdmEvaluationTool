@@ -1,9 +1,35 @@
+#' Get File Extension
+#'
+#' @param path Character, a file path.
+#'
+#' @return Lower case file extension as string.
+#'
+#' @examples
+#' get_file_ext("bam_v5/oven/observations.parquet")
+#'
+#' @export
 get_file_ext <- function(path) {
-    fn <- basename(path)
-    tolower(rev(strsplit(fn, "\\.")[[1L]])[1L])
+    tolower(tools::file_ext(basename(path)))
 }
-# get_file_ext("bam_v5/oven/observations.parquet")
 
+#' Make Target Path
+#'
+#' @param path Character, a file path.
+#' @param data List with name value pairs, the values are substituted
+#'   into the path according to glue rules (with curly braces).
+#' @param base Character, base path, defaults to `sdmevaltool_options()$base`
+#'   when `NULL`.
+#'
+#' @return The path string with data values substituted.
+#'
+#' @examples
+#' make_target_path("bam_v5/oven/observations.parquet")
+#' make_target_path("{model}/{species}/observations.parquet",
+#'   list(model = "bam_v5", species = "oven"))
+#' make_target_path("{model}/{species}/observations.parquet",
+#'   list(model = "bam_v5", species = "oven"), ".")
+#'
+#' @export
 make_target_path <- function(path, data = list(), base = NULL) {
     if (is.null(base)) {
         base <- sdmevaltool_options()$base
@@ -11,14 +37,28 @@ make_target_path <- function(path, data = list(), base = NULL) {
     path <- glue::glue_data(.x = data, path)
     file.path(base, path)
 }
-# make_target_path("bam_v5/oven/observations.parquet")
-# make_target_path("{model}/{species}/observations.parquet", list(model = "bam_v5", species = "oven"))
-# make_target_path("{model}/{species}/observations.parquet", list(model = "bam_v5", species = "oven"), ".")
 
+#' Make Directory
+#'
+#' @param path Character, a file path.
+#' @param ... Arguments passed to [dir.create()].
+#'
+#' @return Create a directory recursively as a side effect,
+#'   returning logical indicating the result ().
+#'
+#' @export
 make_dir <- function(path, ...) {
     dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE, ...)
 }
 
+#' Read File
+#'
+#' @param path Character, a file path.
+#' @param ... Arguments passed to the reader functions.
+#'
+#' @return Return the result from the file.
+#'
+#' @export
 read_file <- function(path, ...) {
     ext <- get_file_ext(path)
     switch(
@@ -32,6 +72,15 @@ read_file <- function(path, ...) {
     )
 }
 
+#' Write File
+#'
+#' @param x Object to write.
+#' @param path Character, a file path.
+#' @param ... Arguments passed to the writer functions.
+#'
+#' @return Writes file as a side effect.
+#'
+#' @export
 write_file <- function(x, path, ...) {
     make_dir(path)
     ext <- get_file_ext(path)
