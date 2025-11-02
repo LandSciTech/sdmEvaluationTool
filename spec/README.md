@@ -368,23 +368,6 @@ Output path: `materials/{model_id}/predictors/predictor_raster.tif`
 **Display**: A raster map in Leaflet, bands are added as layers and can
 be selected from the layers icon of the map.
 
-### Prediction Subunits (`deployment_subunits`)
-
-Spatial polygons defining subunits over the spatial predictions.
-
-**Mandatory**: No
-
-**Input**: A spatial polygons file with geometries and a key called
-`subunit_id`. Each deployment can have its own subunits.
-
-**Output**: Same file structure as the input file including subunit IDs
-and geometries, saved as a Geopackage
-
-Output path: `deployments/{deployment_id}/deployment_subunits.gpkg`
-
-**Display**: The subunits layer is overlaid on top of the spatial
-prediction (raster) map.
-
 ### Spatial Prediction (`spatial_prediction`)
 
 Expected value as band 1, variation as band 2.
@@ -479,7 +462,6 @@ When the info is uploaded, we organize the files inside the
 ./sdm_evaluation_db.sqlite
 
 ./materials/<model_id>/
-./materials/<model_id>/materials_settings.json
 ./materials/<model_id>/metadata/model_metadata.csv
 ./materials/<model_id>/predictors/predictor_metadata.parquet
 ./materials/<model_id>/predictors/predictor_raster.tif
@@ -490,7 +472,6 @@ When the info is uploaded, we organize the files inside the
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
-./deployments/<deployment_id>/deployment_settings.json
 ./deployments/<deployment_id>/deployment_questions.csv
 ./deployments/<deployment_id>/deployment_subunits.gpkg
 ```
@@ -498,9 +479,9 @@ When the info is uploaded, we organize the files inside the
 Model materials are saved after upload, this is also when the database
 is updated with the new information.
 
-The `./materials/<model_id>/materials_settings.json` file stores figure
-legends and units (what the values in the rasters mean) get stored. This
-is created based on UI inputs during materials upload.
+The `materials_settings` field stores figure legends and units (what the
+values in the rasters mean) get stored. This is created based on UI
+inputs during materials upload.
 
 Questions will have an expected table format, and a csv file can be
 uploaded similarly to metadata.
@@ -523,7 +504,8 @@ For each deployment there is:
 - 1 free form opportunity for modeler to explain the evaluation to the
   evaluators,
 - a set of use cases (at least one)
-- and whether comments are allowed or not (`deployment_settings.json`).
+- and whether comments are allowed or not (see the `deployment_settings`
+  field).
 
 User access can be set differently for each deployment. I.e. the same
 user can function as `modeler,commenter` for one and
