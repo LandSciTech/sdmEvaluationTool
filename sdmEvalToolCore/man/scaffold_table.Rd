@@ -18,4 +18,5 @@ Scaffold Table
 \examples{
 scaffold_table("users")
 scaffold_table("materials")
+
 }
