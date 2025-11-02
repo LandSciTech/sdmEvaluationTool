@@ -519,6 +519,7 @@ DBI::dbListTables(con)
 comps <- sdmEvalToolCore::components
 
 userinfo <- db_user_info(con, userid, deploymentid)
+attr(userinfo, "user_roles")
 
 dm <- db_deployment_materials(con, modelid, deploymentid)
 

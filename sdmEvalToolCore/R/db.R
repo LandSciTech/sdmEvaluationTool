@@ -55,6 +55,7 @@ db_connect <- function(...) {
 #' @param deploymentid Deployment ID.
 #'
 #' @return A data frame with user info and access roles.
+#'   The `"user_roles"` attribute gives the user roles as a vector.
 #'
 #' @export
 db_user_info <- function(con, userid, deploymentid) {
@@ -81,8 +82,11 @@ db_user_info <- function(con, userid, deploymentid) {
             sQuote(deploymentid)
         )
     }
-    user_roles <- get_user_roles(strsplit(tbl_access$user_roles, ",")[[1L]])
-    cbind(tbl_user, user_roles)
+    v <- strsplit(tbl_access$user_roles, ",")[[1L]]
+    roles <- get_user_roles(v)
+    out <- data.frame(tbl_user, user_roles = tbl_access$user_roles, roles)
+    attr(out, "user_roles") <- v
+    out
 }
 
 
