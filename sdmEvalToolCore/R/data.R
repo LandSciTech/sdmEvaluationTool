@@ -72,14 +72,14 @@ scaffold_table <- function(table_name) {
 #'
 #' @examples
 #' users <- data.frame(
-#'     user_id = c("dcooper", "lpalmer", "sjohnson"),
-#'     user_name = c("Dale Cooper", "Laura Palmer", "Shelly Johnson"),
+#'     user_id = c("holden", "draper", "okoye"),
+#'     user_name = c("James Holden", "Bobbie Draper", "Elvi Okoye"),
 #'     user_email = c(
-#'         "agent_cooper@fbi.gov",
-#'         "laura@mealsonwheels.org",
-#'         "shelly@drd.com"
+#'         "jim@rocinante.org",
+#'         "bdraper@mcrn.gov",
+#'         "okoye@rce.com"
 #'     ),
-#'     user_affiliation = c("FBI", "Meals on Wheels", "Double R Diner"),
+#'     user_affiliation = c("Rocinante", "MCRN", "RCE"),
 #'     admin = c(TRUE, FALSE, FALSE)
 #' )
 #' check_table(users, "users")

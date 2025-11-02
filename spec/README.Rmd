@@ -227,7 +227,7 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 Model materials are saved after upload, this is also when the database
 is updated with the new information.
 
-The `materials_settings` field stores figure legends and 
+The `material_settings` field stores figure legends and 
 units (what the values in the rasters mean) get stored. This is created
 based on UI inputs during materials upload.
 

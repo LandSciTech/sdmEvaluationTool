@@ -154,7 +154,7 @@ materials.
 | field | type | constraint | description |
 |:---|:---|:---|:---|
 | `material_id` | text | `PRIMARY KEY` | ID for uploaded model materials (in the form of `<species_id>_<model_id>_<component_id>`). |
-| `model_id` | text | `REFERENCES models` | Model ID (foreign key). |
+| `model_id` | text | `REFERENCES models` | Model ID (foreign key), can be missing. |
 | `species_id` | text | `REFERENCES species` | Species ID (foreign key). |
 | `component_id` | text | `REFERENCES components` | Component ID (foreign key). |
 | `material_create_user` | text | `REFERENCES users (user_id)` | User who uploaded the model material (foreign key). |
@@ -479,7 +479,7 @@ When the info is uploaded, we organize the files inside the
 Model materials are saved after upload, this is also when the database
 is updated with the new information.
 
-The `materials_settings` field stores figure legends and units (what the
+The `material_settings` field stores figure legends and units (what the
 values in the rasters mean) get stored. This is created based on UI
 inputs during materials upload.
 
