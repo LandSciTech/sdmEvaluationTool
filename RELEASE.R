@@ -46,8 +46,7 @@ components <- data.frame(
     mandatory = logical(0L),
     upload = character(0L),
     display = character(0L),
-    evaluation = character(0L),
-    reporting = character(0L)
+    evaluation = character(0L)
 )
 for (i in names(cmp)) {
     l <- cmp[[i]]
@@ -55,13 +54,11 @@ for (i in names(cmp)) {
         component = i,
         description = l$description,
         mandatory = l$mandatory,
-        # applies_to = l$applies_to,
         upload = NA_character_,
         display = NA_character_,
-        evaluation = NA_character_,
-        reporting = NA_character_
+        evaluation = NA_character_
     )
-    for (j in c("upload", "display", "evaluation", "reporting")) {
+    for (j in c("upload", "display", "evaluation")) {
         if (!is.null(l[[j]])) {
             c1[[j]] <- list(l[[j]])
         }
@@ -71,6 +68,39 @@ for (i in names(cmp)) {
 save(
     components,
     file = file.path(pkg, "data", "components.rda"),
+    compress = "xz"
+)
+
+default_questions <- data.frame(
+    component = character(0L),
+    order = integer(0L),
+    type = logical(0L),
+    english = character(0L),
+    frenchy = character(0L)
+)
+for (i in names(cmp)) {
+    e <- cmp[[i]][["evaluation"]]
+    if (e$evaluation_allowed) {
+        for (j in seq_along(e$questions)) {
+            qj <- e$questions[[j]]
+            q1 <- data.frame(
+                component = i,
+                order = qj$order,
+                type = qj$type,
+                english = qj$question_body$en,
+                french = if (is.null(qj$question_body$fr)) {
+                    ""
+                } else {
+                    qj$question_body$fr
+                }
+            )
+            default_questions <- rbind(default_questions, q1)
+        }
+    }
+}
+save(
+    default_questions,
+    file = file.path(pkg, "data", "default_questions.rda"),
     compress = "xz"
 )
 
