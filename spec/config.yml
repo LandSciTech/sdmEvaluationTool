@@ -215,7 +215,7 @@ tables:
         constraint: PRIMARY KEY
       model_id:
         name: Model ID
-        description: Model ID (foreign key).
+        description: Model ID (foreign key), can be missing.
         type: text
         constraint: REFERENCES models
       species_id:
