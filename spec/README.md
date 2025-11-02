@@ -161,6 +161,7 @@ materials.
 | `material_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
 | `material_modify_user` | text | `REFERENCES users (user_id)` | User who modified the model material (foreign key). |
 | `material_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
+| `material_settings` | json | `NOT NULL` | Material settings, see `templates`. |
 
 ### Deployments (`deployments`)
 
@@ -177,6 +178,7 @@ of.
 | `deployment_description` | text | `NOT NULL` | Deployment name. |
 | `deployment_create_user` | text | `REFERENCES users (user_id)` | User who created the deployment (foreign key). |
 | `deployment_create_time` | timestamp | `NOT NULL` | Time of deployment creation. |
+| `deployment_settings` | json | `NOT NULL` | Deployment settings, see `templates`. |
 
 ### Deployment Materials (`deployment_materials`)
 
@@ -366,7 +368,7 @@ Output path: `materials/{model_id}/predictors/predictor_raster.tif`
 **Display**: A raster map in Leaflet, bands are added as layers and can
 be selected from the layers icon of the map.
 
-### Prediction Subunits (`prediction_subunits`)
+### Prediction Subunits (`deployment_subunits`)
 
 Spatial polygons defining subunits over the spatial predictions.
 
@@ -378,7 +380,7 @@ Spatial polygons defining subunits over the spatial predictions.
 **Output**: Same file structure as the input file including subunit IDs
 and geometries, saved as a Geopackage
 
-Output path: `deployments/{deployment_id}/subunits.gpkg`
+Output path: `deployments/{deployment_id}/deployment_subunits.gpkg`
 
 **Display**: The subunits layer is overlaid on top of the spatial
 prediction (raster) map.
@@ -477,7 +479,7 @@ When the info is uploaded, we organize the files inside the
 ./sdm_evaluation_db.sqlite
 
 ./materials/<model_id>/
-./materials/<model_id>/settings.json
+./materials/<model_id>/materials_settings.json
 ./materials/<model_id>/metadata/model_metadata.csv
 ./materials/<model_id>/predictors/predictor_metadata.parquet
 ./materials/<model_id>/predictors/predictor_raster.tif
@@ -488,17 +490,17 @@ When the info is uploaded, we organize the files inside the
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
-./deployments/<deployment_id>/settings.json
-./deployments/<deployment_id>/questions.csv
-./deployments/<deployment_id>/subunits.gpkg
+./deployments/<deployment_id>/deployment_settings.json
+./deployments/<deployment_id>/deployment_questions.csv
+./deployments/<deployment_id>/deployment_subunits.gpkg
 ```
 
 Model materials are saved after upload, this is also when the database
 is updated with the new information.
 
-The `./materials/<model_id>/settings.json` file stores figure legends
-and units (what the values in the rasters mean) get stored. This is
-created based on UI inputs during materials upload.
+The `./materials/<model_id>/materials_settings.json` file stores figure
+legends and units (what the values in the rasters mean) get stored. This
+is created based on UI inputs during materials upload.
 
 Questions will have an expected table format, and a csv file can be
 uploaded similarly to metadata.
@@ -516,12 +518,12 @@ alongside the other tables outlined in the conceptual overview.
 
 For each deployment there is:
 
-- 1 evaluation question table (`questions.csv`),
-- 1 evaluation polygon layer (`subunits.gpkg`),
+- 1 evaluation question table (`deployment_questions.csv`),
+- 1 evaluation polygon layer (`deployment_subunits.gpkg`),
 - 1 free form opportunity for modeler to explain the evaluation to the
   evaluators,
 - a set of use cases (at least one)
-- and whether comments are allowed or not (`settings.json`).
+- and whether comments are allowed or not (`deployment_settings.json`).
 
 User access can be set differently for each deployment. I.e. the same
 user can function as `modeler,commenter` for one and

@@ -263,6 +263,11 @@ tables:
         description: Time of last modification.
         type: timestamp
         constraint: NOT NULL
+      material_settings:
+        name: Material Settings
+        description: Material settings, see `templates`.
+        type: json
+        constraint: NOT NULL
 
   deployments:
     name: Deployments
@@ -297,6 +302,11 @@ tables:
         name: Create Time
         description: Time of deployment creation.
         type: timestamp
+        constraint: NOT NULL
+      deployment_settings:
+        name: Deployment Settings
+        description: Deployment settings, see `templates`.
+        type: json
         constraint: NOT NULL
 
   deployment_materials:
@@ -458,6 +468,7 @@ components:
   observations:
     description: Detections or counts by location and timestamp for a single or multiple species.
     mandatory: Yes
+    evaluation_allowed: Yes
     upload:
       type: table
       input:
@@ -501,6 +512,7 @@ components:
   model_metadata:
     description: ODMAP protocol metadata.
     mandatory: Yes
+    evaluation_allowed: No
     upload:
       type: table
       input:
@@ -522,6 +534,7 @@ components:
   predictor_metadata:
     description: Predictor metadata.
     mandatory: Yes
+    evaluation_allowed: Yes
     upload:
       type: table
       input:
@@ -549,6 +562,7 @@ components:
   predictor_raster:
     description: Predictor raster, a multi-band TIF with spatial predictors as bands.
     mandatory: No
+    evaluation_allowed: No
     upload:
       type: raster
       input:
@@ -572,9 +586,10 @@ components:
     evaluation:
     reporting:
 
-  prediction_subunits:
+  deployment_subunits:
     description: Spatial polygons defining subunits over the spatial predictions.
     mandatory: No
+    evaluation_allowed: No
     upload:
       type: polygon
       input:
@@ -587,7 +602,7 @@ components:
         description: >
           Same file structure as the input file including subunit IDs and
           geometries, saved as a Geopackage
-        path: "deployments/{deployment_id}/subunits.gpkg"
+        path: "deployments/{deployment_id}/deployment_subunits.gpkg"
     display:
       type: map
       title: Prediction Subunits
@@ -601,6 +616,7 @@ components:
   spatial_prediction:
     description: Expected value as band 1, variation as band 2.
     mandatory: Yes
+    evaluation_allowed: Yes
     upload:
       type: raster
       input:
@@ -633,6 +649,7 @@ components:
   model_summary:
     description: Model summary including variable importance metrics or coefficients for predictor variables.
     mandatory: Yes
+    evaluation_allowed: Yes
     upload:
       type: table
       input:
@@ -661,6 +678,7 @@ components:
   model_fit:
     description: Model fit statistics.
     mandatory: Yes
+    evaluation_allowed: Yes
     upload:
       type: table
       input:
@@ -685,45 +703,120 @@ components:
     evaluation:
     reporting:
 
-# note: this might be added to the components replacing `evaluation`
-questions:
+templates:
 
-  # highest level list name must be a component_id
-  model_summary:
-    - order: 0
-      type: text
-      question_body:
-        en: Please provide your summary of the model.
+  # these settings apply to materials uploaded for a model
+  # complementing the ODMAP metadata
+  materials_settings:
+    spatial_prediction:
+      legend:
+        en: "Spatial predictions."
+        fr:
+      units:
+        en: "Density [inds/ha]"
+        fr:
+    observations:
+      legend:
+        en: "Observations."
+        fr:
+      units:
+        en: "Counts"
+        fr:
+    predictor_metadata:
+      legend:
+        en: "Predictor metadata table."
+        fr:
+    predictor_raster:
+      legend:
+        en: "Predictor rasters."
+        fr:
+      units:
+        en: ""
+        fr:
+    model_summary:
+      legend:
+        en: "Model summary."
+        fr:
+    model_fit:
+      legend:
+        en: "Model goodness-of-fit metrics."
         fr:
 
-  spatial_prediction:
-    - order: 0
-      type: heading
-      question_body:
-        en: What is the accuracy of model predictions based on your expert knowledge?
-        fr:
-    - order: 1
-      type: gold_standard
-      question_body:
-        en: How confident are you about model predictions?
-        fr:
-    - order: 2
-      type: text
-      question_body:
-        en: Why is it a problem?
-        fr:
-    - order: 3
-      type: ordinal
-      question_body:
-        en: How important is it to fix the problem?
-        fr:
-    - order: 4
-      type: ordinal
-      question_body:
-        en: How difficult/expensive is it to fix the problem?
-        fr:
-    - order: 5
-      type: text
-      question_body:
-        en: Can you suggest options for addressing the problem?
-        fr:
+  # placeholders for the inputs
+  deployment_settings:
+    instructions_to_evaluators:
+      en: "Provide instructions for the evaluation."
+      fr:
+    deployment_subunits:
+      en: "Provide a description for the subunits."
+      fr:
+    use_cases:
+      - en: "Use case 1"
+        fr: "Cas d'utilisation 1"
+      - en: "Use case 2"
+        fr: "Cas d'utilisation 2"
+    comments_allowed: No
+    preferred_language: "en"
+
+  # questions are provided by the modeler for each deployment
+  # if not provided, this template is used as the default
+  # the list version of the questions can be used as a template for the
+  # evaluation body by attaching the `response` to it as JSON
+  questions:
+
+    spatial_prediction:
+      - order: 0
+        type: heading
+        question_body:
+          en: What is the accuracy of model predictions based on your expert knowledge?
+          fr:
+      - order: 1
+        type: gold_standard
+        question_body:
+          en: How confident are you about model predictions?
+          fr:
+      - order: 2
+        type: text
+        question_body:
+          en: Why is it a problem?
+          fr:
+      - order: 3
+        type: ordinal
+        question_body:
+          en: How important is it to fix the problem?
+          fr:
+      - order: 4
+        type: ordinal
+        question_body:
+          en: How difficult/expensive is it to fix the problem?
+          fr:
+      - order: 5
+        type: text
+        question_body:
+          en: Can you suggest options for addressing the problem?
+          fr:
+    observations:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the observations?
+          fr:
+    predictor_metadata:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the predictor metadata table?
+          fr:
+    model_summary:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the model summary?
+          fr:
+    model_fit:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the model fit?
+          fr:
+
