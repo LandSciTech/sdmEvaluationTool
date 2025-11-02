@@ -163,8 +163,6 @@ db_read_evaluations <- function(con, deploymentid) {
     out
 }
 
-DBI::dbWriteTable
-
 # TODO:
 # insert new values with dplyr::rows_insert(), only for new key values
 # update existing rows with dplyr::rows_update(), all values
