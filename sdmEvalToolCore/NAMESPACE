@@ -2,8 +2,10 @@
 
 export(check_table)
 export(db_connect)
-export(db_deployment_materials)
-export(db_user_info)
+export(db_read_comments)
+export(db_read_deployment_materials)
+export(db_read_evaluations)
+export(db_read_user_info)
 export(get_comp_ready)
 export(get_comp_rule)
 export(get_fields)

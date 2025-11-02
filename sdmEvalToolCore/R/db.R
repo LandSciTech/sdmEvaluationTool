@@ -4,7 +4,7 @@
 #'
 #' @return Character or an error.
 #' @noRd
-get_dbtype <- function(con) {
+db_type <- function(con) {
     if (inherits(con, "SQLiteConnection")) {
         return("sqlite")
     }
@@ -58,7 +58,9 @@ db_connect <- function(...) {
 #'   The `"user_roles"` attribute gives the user roles as a vector.
 #'
 #' @export
-db_user_info <- function(con, userid, deploymentid) {
+db_read_user_info <- function(con, userid, deploymentid) {
+    # dealing with NSE
+    user_id <- admin <- deployment_id <- NULL
     # user info
     tbl_user <- dplyr::tbl(con, "users") |>
         dplyr::filter(user_id == userid) |>
@@ -93,35 +95,76 @@ db_user_info <- function(con, userid, deploymentid) {
 #' Get Deployment Materials from DB
 #'
 #' @param con DB connection.
-#' @param modelid Model ID.
 #' @param deploymentid Deployment ID.
 #'
 #' @return A data frame with joined deployment materials.
 #'
 #' @export
-db_deployment_materials <- function(con, modelid, deploymentid) {
-    # get tables that do not change during evaluations
-    tbl_deployments <- dplyr::tbl(con, "deployments") |>
-        dplyr::collect()
-    tbl_models <- dplyr::tbl(con, "models") |>
-        dplyr::collect()
-    tbl_species <- dplyr::tbl(con, "species") |>
-        dplyr::collect()
-
-    tbl_materials <- dplyr::tbl(con, "materials") |>
-        dplyr::filter(model_id == modelid) |>
-        dplyr::collect()
-
-    tbl_depmats <- dplyr::tbl(con, "deployment_materials") |>
+db_read_deployment_materials <- function(con, deploymentid) {
+    # dealing with NSE
+    deployment_id <- NULL
+    dm <- dplyr::tbl(con, "deployment_materials") |>
         dplyr::filter(deployment_id == deploymentid) |>
-        dplyr::collect()
-
-    dm <- tbl_depmats |>
-        dplyr::left_join(tbl_materials, by = "material_id") |>
-        dplyr::left_join(tbl_deployments, by = "deployment_id") |>
-        dplyr::left_join(tbl_models, by = "model_id") |>
-        dplyr::left_join(tbl_species, by = "species_id") |>
+        dplyr::left_join(
+            dplyr::tbl(con, "deployments"),
+            by = "deployment_id"
+        ) |>
+        dplyr::left_join(
+            dplyr::tbl(con, "materials"),
+            by = "material_id"
+        ) |>
+        dplyr::left_join(
+            dplyr::tbl(con, "models"),
+            by = "model_id"
+        ) |>
+        dplyr::left_join(
+            dplyr::tbl(con, "species"),
+            by = "species_id"
+        ) |>
+        dplyr::collect() |>
         db_timestamp()
 
     dm
 }
+
+#' Get Comments from DB
+#'
+#' @param con DB connection.
+#' @param deploymentid Deployment ID.
+#'
+#' @return A data frame with comments for the deployment.
+#'
+#' @export
+db_read_comments <- function(con, deploymentid) {
+    # dealing with NSE
+    deployment_id <- NULL
+    out <- dplyr::tbl(con, "comments") |>
+        dplyr::filter(deployment_id == deploymentid) |>
+        dplyr::collect() |>
+        db_timestamp()
+    out
+}
+
+#' Get Comments from DB
+#'
+#' @param con DB connection.
+#' @param deploymentid Deployment ID.
+#'
+#' @return A data frame with evaluations for the deployment.
+#'
+#' @export
+db_read_evaluations <- function(con, deploymentid) {
+    # dealing with NSE
+    deployment_id <- NULL
+    out <- dplyr::tbl(con, "evaluations") |>
+        dplyr::filter(deployment_id == deploymentid) |>
+        dplyr::collect() |>
+        db_timestamp()
+    out
+}
+
+DBI::dbWriteTable
+
+# TODO:
+# insert new values with dplyr::rows_insert(), only for new key values
+# update existing rows with dplyr::rows_update(), all values

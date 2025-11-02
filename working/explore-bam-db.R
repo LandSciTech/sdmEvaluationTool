@@ -502,42 +502,6 @@ dbDisconnect(con)
 # we can put this inside the ./misc/base folder and use it as the folder location
 # (./misc is git ignored)
 
-# read tables
-
-devtools::load_all("sdmEvalToolCore")
-sdmevaltool_options(base = "./misc/base") # use the misc folder
-
-lang <- "english"
-userid <- "draper"
-deploymentid <- "deployment1"
-modelid <- "bam_v5_can71"
-
-con <- db_connect()
-DBI::dbListTables(con)
-
-# note: components should be pulled from the package
-comps <- sdmEvalToolCore::components
-
-userinfo <- db_user_info(con, userid, deploymentid)
-attr(userinfo, "user_roles")
-
-dm <- db_deployment_materials(con, modelid, deploymentid)
-
-# get tables that change during evaluations
-# note: need all comments (i.e. no filter on comment_create_user)
-# because other users comments are part of the discussions
-tbl_comments <- dplyr::tbl(con, "comments") |>
-    dplyr::filter(
-        deployment_id == deploymentid
-    ) |>
-    dplyr::collect() |>
-    db_timestamp()
-
-# note: need all comments (i.e. no filter on evaluation_create_user)
-# because other users comments are part of the discussions
-tbl_evaluations <- dplyr::tbl(con, "evaluations") |>
-    dplyr::filter(deployment_id == deploymentid) |>
-    dplyr::collect() |>
-    db_timestamp()
-
-DBI::dbDisconnect(con)
+# TODO:
+# this now has no notion of keys
+# need to use SQL when creating the tables to define pk's and fk's
