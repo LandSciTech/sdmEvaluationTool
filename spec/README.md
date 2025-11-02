@@ -206,6 +206,8 @@ synthesizing the evaluations).
 | field | type | constraint | description |
 |:---|:---|:---|:---|
 | `deployment_material_id` | text | `REFERENCES deployment_materials` | Deployment Material ID. |
+| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
+| `material_id` | text | `REFERENCES materials` | Material ID. |
 | `use_cases` | text | `NOT NULL` | One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment. |
 | `evaluation_create_user` | text | `REFERENCES users (user_id)` | User who created the initial evaluation (foreign key). |
 | `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial the initial evaluation. |

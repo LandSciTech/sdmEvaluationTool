@@ -15,8 +15,10 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
     arrow,
+    DBI,
     glue,
     sf,
+    RSQLite,
     terra
 Suggests: 
     rmarkdown
