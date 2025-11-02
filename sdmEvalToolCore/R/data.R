@@ -48,6 +48,7 @@ get_fields <- function(table_name) {
 #' @examples
 #' scaffold_table("users")
 #' scaffold_table("materials")
+#'
 #' @export
 scaffold_table <- function(table_name) {
     tt <- get_fields(table_name)
@@ -58,4 +59,87 @@ scaffold_table <- function(table_name) {
         sep = "\n"
     )
     invisible(tt)
+}
+
+#' Check Table
+#'
+#' @param x A data frame.
+#' @param table_name Table name.
+#' @param dryrun Logical, if checks fail and error is produced,
+#'   unless it is a dry run.
+#'
+#' @return Invisible `TRUE` if all check passed.
+#'
+#' @examples
+#' users <- data.frame(
+#'     user_id = c("dcooper", "lpalmer", "sjohnson"),
+#'     user_name = c("Dale Cooper", "Laura Palmer", "Shelly Johnson"),
+#'     user_email = c(
+#'         "agent_cooper@fbi.gov",
+#'         "laura@mealsonwheels.org",
+#'         "shelly@drd.com"
+#'     ),
+#'     user_affiliation = c("FBI", "Meals on Wheels", "Double R Diner"),
+#'     admin = c(TRUE, FALSE, FALSE)
+#' )
+#' check_table(users, "users")
+#'
+#' models <- data.frame(
+#'     model_id = "bam_v5_can71",
+#'     model_name = "BAM v5 Can 71",
+#'     model_description = "BAM version 5 Canada model in BCR 71",
+#'     model_metadata = NA_character_
+#' )
+#' check_table(models, "models")
+#'
+#' check_table(models, "users", dryrun = TRUE)
+#'
+#' @export
+check_table <- function(x, table_name, dryrun = FALSE) {
+    cat("Checking table", sQuote(table_name))
+    tt <- get_fields(table_name)
+    ok <- TRUE
+    c1 <- setdiff(colnames(x), tt$field)
+    if (length(c1) > 0L) {
+        ok <- FALSE
+        cat("\n* Additional fields found:", paste0(c1, collapse = ", "))
+    } else {
+        cat("\n* Checking additional fields ... OK")
+    }
+    c2 <- setdiff(tt$field, colnames(x))
+    if (length(c1) > 0L) {
+        ok <- FALSE
+        cat("\n* Missing fields:", paste0(c2, collapse = ", "))
+    } else {
+        cat("\n* Checking missing fields ... OK")
+    }
+    cn <- intersect(tt$field, colnames(x))
+    for (i in cn) {
+        k <- which(tt$field == i)
+        ok_type <- switch(
+            tt$type[k],
+            "text" = is.character(x[[tt$field[k]]]),
+            "boolean" = is.logical(x[[tt$field[k]]]),
+            "json" = is.character(x[[tt$field[k]]]),
+            "timestamp" = is.character(x[[tt$field[k]]])
+        )
+        if (!ok_type) {
+            ok <- FALSE
+            cat(
+                "\n* Type for field",
+                sQuote(tt$field[k]),
+                "should be",
+                tt$type[k],
+                "but found",
+                typeof(x[[tt$field[k]]])
+            )
+        } else {
+            cat("\n* Checking type for field", sQuote(tt$field[k]), "... OK")
+        }
+    }
+    cat("\n")
+    if (!dryrun && !ok) {
+        stop("Check for table ", sQuote(table_name), " failed")
+    }
+    invisible(ok)
 }
