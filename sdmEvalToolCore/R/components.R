@@ -31,12 +31,12 @@ get_comp_ready <- function(ready = character(0L)) {
 #'
 #' @examples
 #' str(get_comp_rule("observations", "upload"))
-#' str(get_comp_rule("observations", "reporting"))
+#' str(get_comp_rule("observations", "evaluation"))
 #'
 #' @export
 get_comp_rule <- function(
     component_id,
-    rule_type = c("upload", "display", "evaluation", "reporting")
+    rule_type = c("upload", "display", "evaluation")
 ) {
     if (length(component_id) > 1L) {
         stop("component_id must have length of 1.")

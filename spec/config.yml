@@ -44,11 +44,6 @@ roles:
     evaluations_edit_own: Yes
     evaluations_edit_all: No
     evaluations_delete: No
-    comments_read: Yes
-    comments_create_new: Yes
-    comments_edit_own: Yes
-    comments_edit_all: No
-    comments_delete: No
     discussions_read: Yes
     discussions_write: Yes
 
@@ -64,11 +59,6 @@ roles:
     evaluations_edit_own: No
     evaluations_edit_all: No
     evaluations_delete: No
-    comments_read: Yes
-    comments_create_new: Yes
-    comments_edit_own: Yes
-    comments_edit_all: No
-    comments_delete: No
     discussions_read: Yes
     discussions_write: Yes
 
@@ -84,11 +74,6 @@ roles:
     evaluations_edit_own: Yes
     evaluations_edit_all: Yes
     evaluations_delete: Yes
-    comments_read: Yes
-    comments_create_new: Yes
-    comments_edit_own: Yes
-    comments_edit_all: No
-    comments_delete: No
     discussions_read: Yes
     discussions_write: Yes
 

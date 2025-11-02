@@ -3,6 +3,11 @@
 #' @format A data frame with component configuration (some columns are lists).
 "components"
 
+#' Default Questions
+#'
+#' @format A data frame with default questions.
+"default_questions"
+
 #' User Roles
 #'
 #' @format A data frame.

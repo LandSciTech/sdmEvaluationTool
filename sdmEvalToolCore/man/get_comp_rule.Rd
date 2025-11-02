@@ -4,10 +4,7 @@
 \alias{get_comp_rule}
 \title{Get Rule for a Component}
 \usage{
-get_comp_rule(
-  component_id,
-  rule_type = c("upload", "display", "evaluation", "reporting")
-)
+get_comp_rule(component_id, rule_type = c("upload", "display", "evaluation"))
 }
 \arguments{
 \item{component_id}{Character, component name (length 1).}
@@ -22,6 +19,6 @@ Get Rule for a Component
 }
 \examples{
 str(get_comp_rule("observations", "upload"))
-str(get_comp_rule("observations", "reporting"))
+str(get_comp_rule("observations", "evaluation"))
 
 }
