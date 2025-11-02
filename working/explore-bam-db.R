@@ -12,7 +12,7 @@ conf <- yaml::read_yaml("spec/config.yml")
 
 devtools::load_all("sdmEvalToolCore")
 sdmevaltool_options(base = "./misc/base") # use the misc folder
-# unlink("./misc/base", recursive = TRUE)
+unlink("./misc/base", recursive = TRUE)
 dir.create("./misc/base", recursive = TRUE)
 
 # ------- species table ----------
@@ -82,14 +82,14 @@ species <- structure(
             "Tennessee Warbler"
         ),
         french_name = c(
-            "Paruline &agrave; poitrine baie",
-            "Pic &agrave; dos noir",
-            "Paruline ray&eacute;e",
+            "Paruline à poitrine baie",
+            "Pic à dos noir",
+            "Paruline rayée",
             "Paruline du Canada",
-            "Paruline &agrave; gorge grise",
+            "Paruline à gorge grise",
             "Petit Chevalier",
-            "Moucherolle &agrave; c&ocirc;t&eacute;s olive",
-            "Paruline couronn&eacute;e",
+            "Moucherolle à côtés olive",
+            "Paruline couronnée",
             "Quiscale rouilleux",
             "Chevalier solitaire",
             "Paruline obscure"
@@ -366,13 +366,13 @@ access <- rbind(
 deployment_materials <- data.frame(
     deployment_material_id = paste0(
         rep(
-            c("deployment1_", "deployment2_"),
+            c("deployment1", "deployment2"),
             each = length(materials$material_id)
         ),
         materials$material_id
     ),
     deployment_id = rep(
-        c("deployment1_", "deployment2_"),
+        c("deployment1", "deployment2"),
         each = length(materials$material_id)
     ),
     material_id = materials$material_id
@@ -428,7 +428,12 @@ evaluations <- data.frame(
         "deployment1_bam_v5_can71_CAWA_observations bam_v5_can71",
         "deployment1_bam_v5_can71_CAWA_observations bam_v5_can71"
     ),
-    use_cases = "",
+    deployment_id = c("deployment1", "deployment1"),
+    material_id = c(
+        "bam_v5_can71_CAWA_observations bam_v5_can71",
+        "bam_v5_can71_CAWA_observations bam_v5_can71"
+    ),
+    use_cases = "Forestry",
     evaluation_create_user = "draper",
     evaluation_create_time = c(timestamp_to(now()), timestamp_to(now() + 60)),
     evaluation_modify_user = NA_character_,
@@ -496,3 +501,42 @@ dbDisconnect(con)
 # https://www.dropbox.com/scl/fi/1khm6hhoosgkjtmldqxg7/base.zip?rlkey=xwywv6s5cgjr0ufrxosxnx95w&dl=0
 # we can put this inside the ./misc/base folder and use it as the folder location
 # (./misc is git ignored)
+
+# read tables
+
+devtools::load_all("sdmEvalToolCore")
+sdmevaltool_options(base = "./misc/base") # use the misc folder
+
+lang <- "english"
+userid <- "draper"
+deploymentid <- "deployment1"
+modelid <- "bam_v5_can71"
+
+con <- db_connect()
+DBI::dbListTables(con)
+
+# note: components should be pulled from the package
+comps <- sdmEvalToolCore::components
+
+userinfo <- db_user_info(con, userid, deploymentid)
+
+dm <- db_deployment_materials(con, modelid, deploymentid)
+
+# get tables that change during evaluations
+# note: need all comments (i.e. no filter on comment_create_user)
+# because other users comments are part of the discussions
+tbl_comments <- dplyr::tbl(con, "comments") |>
+    dplyr::filter(
+        deployment_id == deploymentid
+    ) |>
+    dplyr::collect() |>
+    db_timestamp()
+
+# note: need all comments (i.e. no filter on evaluation_create_user)
+# because other users comments are part of the discussions
+tbl_evaluations <- dplyr::tbl(con, "evaluations") |>
+    dplyr::filter(deployment_id == deploymentid) |>
+    dplyr::collect() |>
+    db_timestamp()
+
+DBI::dbDisconnect(con)

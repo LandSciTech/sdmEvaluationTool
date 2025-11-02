@@ -1,0 +1,123 @@
+#' Determine DB type
+#'
+#' @param con DB connection.
+#'
+#' @return Character or an error.
+#' @noRd
+get_dbtype <- function(con) {
+    if (inherits(con, "SQLiteConnection")) {
+        return("sqlite")
+    }
+    if (inherits(con, "PqConnection")) {
+        return("postgresql")
+    }
+    stop("Unsupported database connection.")
+}
+
+#' Mutate Timestamps
+#'
+#' @param x A data frame.
+#'
+#' @return A data frame with `*_time` columns as date/time.
+#' @noRd
+db_timestamp <- function(x) {
+    for (i in colnames(x)[endsWith(colnames(x), "_time")]) {
+        x[[i]] <- timestamp_from(x[[i]])
+    }
+    x
+}
+
+#' Connect to Database
+#'
+#' @param ... Arguments bassed to [DBI::dbConnect()].
+#'
+#' @return A database connection.
+#'
+#' @export
+db_connect <- function(...) {
+    if (sdmevaltool_options()$db == "sqlite") {
+        db_file <- make_target_path("sdm_evaluation_db.sqlite")
+        db_con <- DBI::dbConnect(
+            drv = RSQLite::SQLite(),
+            dbname = db_file,
+            ...
+        )
+    } else {
+        stop("Use SQLite for now...")
+    }
+    db_con
+}
+
+#' Get User Info from DB
+#'
+#' @param con DB connection.
+#' @param userid User ID.
+#' @param deploymentid Deployment ID.
+#'
+#' @return A data frame with user info and access roles.
+#'
+#' @export
+db_user_info <- function(con, userid, deploymentid) {
+    # user info
+    tbl_user <- dplyr::tbl(con, "users") |>
+        dplyr::filter(user_id == userid) |>
+        dplyr::collect() |>
+        dplyr::mutate(admin = as.logical(admin))
+    if (nrow(tbl_user) < 0L) {
+        stop("User ", sQuote(userid), " unknown.")
+    }
+    # user roles
+    tbl_access <- dplyr::tbl(con, "access") |>
+        dplyr::filter(
+            deployment_id == deploymentid,
+            user_id == userid
+        ) |>
+        dplyr::collect()
+    if (nrow(tbl_access) < 0L) {
+        stop(
+            "User ",
+            sQuote(userid),
+            " has no access to deployment ",
+            sQuote(deploymentid)
+        )
+    }
+    user_roles <- get_user_roles(strsplit(tbl_access$user_roles, ",")[[1L]])
+    cbind(tbl_user, user_roles)
+}
+
+
+#' Get Deployment Materials from DB
+#'
+#' @param con DB connection.
+#' @param modelid Model ID.
+#' @param deploymentid Deployment ID.
+#'
+#' @return A data frame with joined deployment materials.
+#'
+#' @export
+db_deployment_materials <- function(con, modelid, deploymentid) {
+    # get tables that do not change during evaluations
+    tbl_deployments <- dplyr::tbl(con, "deployments") |>
+        dplyr::collect()
+    tbl_models <- dplyr::tbl(con, "models") |>
+        dplyr::collect()
+    tbl_species <- dplyr::tbl(con, "species") |>
+        dplyr::collect()
+
+    tbl_materials <- dplyr::tbl(con, "materials") |>
+        dplyr::filter(model_id == modelid) |>
+        dplyr::collect()
+
+    tbl_depmats <- dplyr::tbl(con, "deployment_materials") |>
+        dplyr::filter(deployment_id == deploymentid) |>
+        dplyr::collect()
+
+    dm <- tbl_depmats |>
+        dplyr::left_join(tbl_materials, by = "material_id") |>
+        dplyr::left_join(tbl_deployments, by = "deployment_id") |>
+        dplyr::left_join(tbl_models, by = "model_id") |>
+        dplyr::left_join(tbl_species, by = "species_id") |>
+        db_timestamp()
+
+    dm
+}

@@ -37,5 +37,7 @@ get_user_roles <- function(role) {
             }
         }
     }
-    as.data.frame(out)
+    out <- as.data.frame(out)
+    rownames(out) <- NULL
+    out
 }
