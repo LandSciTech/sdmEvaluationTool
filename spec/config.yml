@@ -468,7 +468,6 @@ components:
   observations:
     description: Detections or counts by location and timestamp for a single or multiple species.
     mandatory: Yes
-    evaluation_allowed: Yes
     upload:
       type: table
       input:
@@ -506,13 +505,25 @@ components:
         We can use unique(method) and year of survey as dropdown filters.
         Method, time, status should be part of popup message on click.
       placement: "page.tab.section" # TBD
+      materials_settings:
+        legend:
+          en: "Observations."
+          fr:
+        units:
+          en: "Counts"
+          fr:
     evaluation:
-    reporting:
+      evaluation_allowed: Yes
+      questions:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the observations?
+          fr:
 
   model_metadata:
     description: ODMAP protocol metadata.
     mandatory: Yes
-    evaluation_allowed: No
     upload:
       type: table
       input:
@@ -529,12 +540,11 @@ components:
       description: TBD once we integrate ODMAP into the UI.
       placement: "page.tab.section" # TBD
     evaluation:
-    reporting:
+      evaluation_allowed: No
 
   predictor_metadata:
     description: Predictor metadata.
     mandatory: Yes
-    evaluation_allowed: Yes
     upload:
       type: table
       input:
@@ -556,13 +566,22 @@ components:
       description: >
         The table is displayed as a reactable table.
       placement: "page.tab.section" # TBD
+      materials_settings:
+        legend:
+          en: "Predictor metadata table."
+          fr:
     evaluation:
-    reporting:
+      evaluation_allowed: Yes
+      questions:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the predictor metadata table?
+          fr:
 
   predictor_raster:
     description: Predictor raster, a multi-band TIF with spatial predictors as bands.
     mandatory: No
-    evaluation_allowed: No
     upload:
       type: raster
       input:
@@ -583,40 +602,16 @@ components:
         A raster map in Leaflet, bands are added as layers and can be selected
         from the layers icon of the map.
       placement: "page.tab.section" # TBD
+      materials_settings:
+        legend:
+          en: "Predictor rasters."
+          fr:
     evaluation:
-    reporting:
-
-  deployment_subunits:
-    description: Spatial polygons defining subunits over the spatial predictions.
-    mandatory: No
-    evaluation_allowed: No
-    upload:
-      type: polygon
-      input:
-        description: >
-          A spatial polygons file with geometries and a key called
-          `subunit_id`. Each deployment can have its own subunits.
-        file_ext: [gpkg]
-        columns: [subunit_id]
-      output:
-        description: >
-          Same file structure as the input file including subunit IDs and
-          geometries, saved as a Geopackage
-        path: "deployments/{deployment_id}/deployment_subunits.gpkg"
-    display:
-      type: map
-      title: Prediction Subunits
-      description: >
-        The subunits layer is overlaid on top of the spatial prediction (raster) 
-        map.
-      placement: "page.tab.section" # TBD
-    evaluation:
-    reporting:
+      evaluation_allowed: No
 
   spatial_prediction:
     description: Expected value as band 1, variation as band 2.
     mandatory: Yes
-    evaluation_allowed: Yes
     upload:
       type: raster
       input:
@@ -643,128 +638,16 @@ components:
         We need a dropdown to choose which map to compare against.
         Same species & different model, same model & different species.
       placement: "page.tab.section" # TBD
+      materials_settings:
+        legend:
+          en: "Spatial predictions."
+          fr:
+        units:
+          en: "Density [inds/ha]"
+          fr:
     evaluation:
-    reporting:
-
-  model_summary:
-    description: Model summary including variable importance metrics or coefficients for predictor variables.
-    mandatory: Yes
-    evaluation_allowed: Yes
-    upload:
-      type: table
-      input:
-        description: >
-          A table summarizing the models, usually predictors as rows
-          (listed in the column called predictor). The multi-species
-          version lists Species IDs in the column species_id.
-          The predictors should match names in the predictor metadata.
-          Other columns can be named freely, e.g. var_importance, coefficient,
-          StdError etc.
-        file_ext: [csv, rds, parquet]
-        columns: [species_id, predictor]
-      output:
-        description: >
-          The input file is filtered for individual species and saved.
-        path: "materials/{model_id}/species/{species_id}/model_summary.parquet"
-    display:
-      type: table
-      title: Model Summary
-      description: >
-        The table is displayed as a reactable table.
-      placement: "page.tab.section" # TBD
-    evaluation:
-    reporting:
-
-  model_fit:
-    description: Model fit statistics.
-    mandatory: Yes
-    evaluation_allowed: Yes
-    upload:
-      type: table
-      input:
-        description: >
-          A table summarizing the model fit, statistics as rows
-          (listed in the column called statistic). The multi-species
-          version lists Species IDs in the column species_id.
-          The value of the fit statistic is in the column called value.
-          Fit metrics are also listed in the project metadata.
-        file_ext: [csv, rds, parquet]
-        columns: [species_id, statistic, value]
-      output:
-        description: >
-          The input file is filtered for individual species and saved.
-        path: "materials/{model_id}/species/{species_id}/model_fit.parquet"
-    display:
-      type: table
-      title: Model Fit
-      description: >
-        The table is displayed as a reactable table.
-      placement: "page.tab.section" # TBD
-    evaluation:
-    reporting:
-
-templates:
-
-  # these settings apply to materials uploaded for a model
-  # complementing the ODMAP metadata
-  materials_settings:
-    spatial_prediction:
-      legend:
-        en: "Spatial predictions."
-        fr:
-      units:
-        en: "Density [inds/ha]"
-        fr:
-    observations:
-      legend:
-        en: "Observations."
-        fr:
-      units:
-        en: "Counts"
-        fr:
-    predictor_metadata:
-      legend:
-        en: "Predictor metadata table."
-        fr:
-    predictor_raster:
-      legend:
-        en: "Predictor rasters."
-        fr:
-      units:
-        en: ""
-        fr:
-    model_summary:
-      legend:
-        en: "Model summary."
-        fr:
-    model_fit:
-      legend:
-        en: "Model goodness-of-fit metrics."
-        fr:
-
-  # placeholders for the inputs
-  deployment_settings:
-    instructions_to_evaluators:
-      en: "Provide instructions for the evaluation."
-      fr:
-    deployment_subunits:
-      en: "Provide a description for the subunits."
-      fr:
-    use_cases:
-      - en: "Use case 1"
-        fr: "Cas d'utilisation 1"
-      - en: "Use case 2"
-        fr: "Cas d'utilisation 2"
-    comments_allowed: No
-    preferred_language: "en"
-
-  # questions are provided by the modeler for each deployment
-  # if not provided, this template is used as the default
-  # the list version of the questions can be used as a template for the
-  # evaluation body by attaching the `response` to it as JSON
-  questions:
-
-    spatial_prediction:
+      evaluation_allowed: Yes
+      questions:
       - order: 0
         type: heading
         question_body:
@@ -795,28 +678,100 @@ templates:
         question_body:
           en: Can you suggest options for addressing the problem?
           fr:
-    observations:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the observations?
+
+  model_summary:
+    description: Model summary including variable importance metrics or coefficients for predictor variables.
+    mandatory: Yes
+    upload:
+      type: table
+      input:
+        description: >
+          A table summarizing the models, usually predictors as rows
+          (listed in the column called predictor). The multi-species
+          version lists Species IDs in the column species_id.
+          The predictors should match names in the predictor metadata.
+          Other columns can be named freely, e.g. var_importance, coefficient,
+          StdError etc.
+        file_ext: [csv, rds, parquet]
+        columns: [species_id, predictor]
+      output:
+        description: >
+          The input file is filtered for individual species and saved.
+        path: "materials/{model_id}/species/{species_id}/model_summary.parquet"
+    display:
+      type: table
+      title: Model Summary
+      description: >
+        The table is displayed as a reactable table.
+      placement: "page.tab.section" # TBD
+      materials_settings:
+        legend:
+          en: "Model summary."
           fr:
-    predictor_metadata:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the predictor metadata table?
-          fr:
-    model_summary:
+    evaluation:
+      evaluation_allowed: Yes
+      questions:
       - order: 0
         type: text
         question_body:
           en: Do you have any feedback about the model summary?
           fr:
-    model_fit:
+
+  model_fit:
+    description: Model fit statistics.
+    mandatory: Yes
+    upload:
+      type: table
+      input:
+        description: >
+          A table summarizing the model fit, statistics as rows
+          (listed in the column called statistic). The multi-species
+          version lists Species IDs in the column species_id.
+          The value of the fit statistic is in the column called value.
+          Fit metrics are also listed in the project metadata.
+        file_ext: [csv, rds, parquet]
+        columns: [species_id, statistic, value]
+      output:
+        description: >
+          The input file is filtered for individual species and saved.
+        path: "materials/{model_id}/species/{species_id}/model_fit.parquet"
+    display:
+      type: table
+      title: Model Fit
+      description: >
+        The table is displayed as a reactable table.
+      placement: "page.tab.section" # TBD
+      materials_settings:
+      model_fit:
+        legend:
+          en: "Model goodness-of-fit metrics."
+          fr:
+    evaluation:
+      evaluation_allowed: Yes
+      questions:
       - order: 0
         type: text
         question_body:
           en: Do you have any feedback about the model fit?
           fr:
 
+templates:
+
+  deployment_settings:
+    instructions_to_evaluators:
+      en: "Provide instructions for the evaluation."
+      fr:
+    deployment_subunits_description:
+      en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
+      fr:
+    deployment_subunits_legend:
+      en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
+      fr:
+    deployment_subunits_path: "deployments/{deployment_id}/deployment_subunits.gpkg"
+    use_cases:
+      - en: "Use case 1"
+        fr: "Cas d'utilisation 1"
+      - en: "Use case 2"
+        fr: "Cas d'utilisation 2"
+    comments_allowed: No
+    preferred_language: "en"
