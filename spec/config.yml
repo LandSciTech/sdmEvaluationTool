@@ -490,13 +490,13 @@ components:
         We can use unique(method) and year of survey as dropdown filters.
         Method, time, status should be part of popup message on click.
       placement: "page.tab.section" # TBD
-      materials_settings:
+      material_settings:
         legend:
           en: "Observations."
-          fr:
+          fr: ""
         units:
           en: "Counts"
-          fr:
+          fr: ""
     evaluation:
       evaluation_allowed: Yes
       questions:
@@ -504,7 +504,7 @@ components:
         type: text
         question_body:
           en: Do you have any feedback about the observations?
-          fr:
+          fr: ""
 
   model_metadata:
     description: ODMAP protocol metadata.
@@ -551,10 +551,10 @@ components:
       description: >
         The table is displayed as a reactable table.
       placement: "page.tab.section" # TBD
-      materials_settings:
+      material_settings:
         legend:
           en: "Predictor metadata table."
-          fr:
+          fr: ""
     evaluation:
       evaluation_allowed: Yes
       questions:
@@ -562,7 +562,7 @@ components:
         type: text
         question_body:
           en: Do you have any feedback about the predictor metadata table?
-          fr:
+          fr: ""
 
   predictor_raster:
     description: Predictor raster, a multi-band TIF with spatial predictors as bands.
@@ -587,10 +587,10 @@ components:
         A raster map in Leaflet, bands are added as layers and can be selected
         from the layers icon of the map.
       placement: "page.tab.section" # TBD
-      materials_settings:
+      material_settings:
         legend:
           en: "Predictor rasters."
-          fr:
+          fr: ""
     evaluation:
       evaluation_allowed: No
 
@@ -623,13 +623,13 @@ components:
         We need a dropdown to choose which map to compare against.
         Same species & different model, same model & different species.
       placement: "page.tab.section" # TBD
-      materials_settings:
+      material_settings:
         legend:
           en: "Spatial predictions."
-          fr:
+          fr: ""
         units:
           en: "Density [inds/ha]"
-          fr:
+          fr: ""
     evaluation:
       evaluation_allowed: Yes
       questions:
@@ -637,32 +637,32 @@ components:
         type: heading
         question_body:
           en: What is the accuracy of model predictions based on your expert knowledge?
-          fr:
+          fr: ""
       - order: 1
         type: gold_standard
         question_body:
           en: How confident are you about model predictions?
-          fr:
+          fr: ""
       - order: 2
         type: text
         question_body:
           en: Why is it a problem?
-          fr:
+          fr: ""
       - order: 3
         type: ordinal
         question_body:
           en: How important is it to fix the problem?
-          fr:
+          fr: ""
       - order: 4
         type: ordinal
         question_body:
           en: How difficult/expensive is it to fix the problem?
-          fr:
+          fr: ""
       - order: 5
         type: text
         question_body:
           en: Can you suggest options for addressing the problem?
-          fr:
+          fr: ""
 
   model_summary:
     description: Model summary including variable importance metrics or coefficients for predictor variables.
@@ -689,10 +689,10 @@ components:
       description: >
         The table is displayed as a reactable table.
       placement: "page.tab.section" # TBD
-      materials_settings:
+      material_settings:
         legend:
           en: "Model summary."
-          fr:
+          fr: ""
     evaluation:
       evaluation_allowed: Yes
       questions:
@@ -700,7 +700,7 @@ components:
         type: text
         question_body:
           en: Do you have any feedback about the model summary?
-          fr:
+          fr: ""
 
   model_fit:
     description: Model fit statistics.
@@ -726,11 +726,10 @@ components:
       description: >
         The table is displayed as a reactable table.
       placement: "page.tab.section" # TBD
-      materials_settings:
-      model_fit:
+      material_settings:
         legend:
           en: "Model goodness-of-fit metrics."
-          fr:
+          fr: ""
     evaluation:
       evaluation_allowed: Yes
       questions:
@@ -738,20 +737,20 @@ components:
         type: text
         question_body:
           en: Do you have any feedback about the model fit?
-          fr:
+          fr: ""
 
 templates:
 
   deployment_settings:
     instructions_to_evaluators:
       en: "Provide instructions for the evaluation."
-      fr:
+      fr: ""
     deployment_subunits_description:
       en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
-      fr:
+      fr: ""
     deployment_subunits_legend:
       en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
-      fr:
+      fr: ""
     deployment_subunits_path: "deployments/{deployment_id}/deployment_subunits.gpkg"
     use_cases:
       - en: "Use case 1"

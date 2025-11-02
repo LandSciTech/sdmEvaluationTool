@@ -5,6 +5,7 @@ library(terra)
 library(mefa4)
 library(DBI)
 library(RSQLite)
+library(jsonlite)
 
 path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
 conf <- yaml::read_yaml("spec/config.yml")
@@ -112,14 +113,14 @@ model_id <- "bam_v5_can71"
 # ------- users table -----------
 
 users <- data.frame(
-    user_id = c("dcooper", "lpalmer", "sjohnson"),
-    user_name = c("Dale Cooper", "Laura Palmer", "Shelly Johnson"),
+    user_id = c("holden", "draper", "okoye"),
+    user_name = c("James Holden", "Bobbie Draper", "Elvi Okoye"),
     user_email = c(
-        "agent_cooper@fbi.gov",
-        "laura@mealsonwheels.org",
-        "shelly@drd.com"
+        "jim@rocinante.org",
+        "bdraper@mcrn.gov",
+        "okoye@rce.com"
     ),
-    user_affiliation = c("FBI", "Meals on Wheels", "Double R Diner"),
+    user_affiliation = c("Rocinante", "MCRN", "RCE"),
     admin = c(TRUE, FALSE, FALSE)
 )
 
@@ -162,7 +163,7 @@ materials_fun <- function(
             model_id = model_id,
             species_id = as.character(species_id),
             component_id = component_id,
-            material_create_user = "dcooper",
+            material_create_user = "holden",
             material_create_time = timestamp_to(now()),
             material_modify_user = NA_character_,
             material_modify_time = NA_character_,
@@ -184,7 +185,9 @@ x <- x[, rule$columns]
 fo <- make_target_path(rule$output$path, data = list(model_id = model_id))
 write_file(x, fo)
 
-materials <- materials_fun(materials, model_id, NA, "predictor_metadata")
+drule <- get_comp_rule("predictor_metadata", "display")
+ms <- jsonlite::toJSON(drule$materials_settings)
+materials <- materials_fun(materials, model_id, NA, "predictor_metadata", ms)
 
 # ------- predictor_raster EXCLUDED ------
 
@@ -215,6 +218,9 @@ spp <- colnames(x)[colnames(x) %in% species$species_id]
 # set date/time to POSIX
 x$date <- as.POSIXct(x$date)
 
+drule <- get_comp_rule("observations", "display")
+ms <- jsonlite::toJSON(drule$materials_settings)
+
 for (species_id in spp) {
     z <- x[, c("lat", "lon", "date", "method", species_id)]
     colnames(z) <- c("latitude", "longitude", "time", "method", "status")
@@ -229,12 +235,20 @@ for (species_id in spp) {
     )
     write_file(z, fo)
 
-    materials <- materials_fun(materials, model_id, species_id, "observations")
+    materials <- materials_fun(
+        materials,
+        model_id,
+        species_id,
+        "observations",
+        ms
+    )
 }
 
 # -------- spatial_prediction ----
 
 rule <- get_comp_rule("spatial_prediction", "upload")
+drule <- get_comp_rule("spatial_prediction", "display")
+ms <- jsonlite::toJSON(drule$materials_settings)
 for (species_id in SPP) {
     fi <- file.path(path, "predictions", paste0(species_id, "_can71_2020.tif"))
     x <- read_file(fi)
@@ -249,7 +263,8 @@ for (species_id in SPP) {
         materials,
         model_id,
         species_id,
-        "spatial_prediction"
+        "spatial_prediction",
+        ms
     )
 }
 
@@ -259,6 +274,9 @@ rule <- get_comp_rule("model_summary", "upload")
 fi <- file.path(path, "predictors", "predictor_importance.csv")
 x <- read_file(fi)
 
+drule <- get_comp_rule("model_summary", "display")
+ms <- jsonlite::toJSON(drule$materials_settings)
+
 for (species_id in SPP) {
     z <- x[x$spp == species_id, -(1:2)]
     fo <- make_target_path(
@@ -267,7 +285,13 @@ for (species_id in SPP) {
     )
     write_file(z, fo)
 
-    materials <- materials_fun(materials, model_id, species_id, "model_summary")
+    materials <- materials_fun(
+        materials,
+        model_id,
+        species_id,
+        "model_summary",
+        ms
+    )
 }
 
 # -------- model fit -----------
@@ -275,6 +299,9 @@ for (species_id in SPP) {
 rule <- get_comp_rule("model_fit", "upload")
 fi <- file.path(path, "reliability", "validation_can71.csv")
 x <- read_file(fi)
+
+drule <- get_comp_rule("model_fit", "display")
+ms <- jsonlite::toJSON(drule$materials_settings)
 
 for (species_id in SPP) {
     z <- x[x$id == species_id, -(1:4)]
@@ -285,7 +312,7 @@ for (species_id in SPP) {
     )
     write_file(z, fo)
 
-    materials <- materials_fun(materials, model_id, species_id, "model_fit")
+    materials <- materials_fun(materials, model_id, species_id, "model_fit", ms)
 }
 
 # --------- DEPLOYMENTS -----------
@@ -294,7 +321,7 @@ deployments <- data.frame(
     deployment_id = c("deployment1", "deployment2"),
     deployment_name = c("Deployment 1", "Deployment 2"),
     deployment_description = c("Deployment 1.", "Deployment 2."),
-    deployment_create_user = c("dcooper", "dcooper"),
+    deployment_create_user = c("holden", "holden"),
     deployment_create_time = c(
         timestamp_to(now()),
         timestamp_to(now() + 60 * 60)
@@ -311,14 +338,14 @@ deployments$deployment_settings[2] <- jsonlite::toJSON(d2)
 # --------- ACCESS -----------
 
 access <- data.frame(
-    user_id = "dcooper",
+    user_id = "holden",
     deployment_id = c("deployment1"),
     user_roles = "modeler,commenter"
 )
 access <- rbind(
     access,
     data.frame(
-        user_id = c("lpalmer", "sjohnson", "lpalmer", "sjohnson"),
+        user_id = c("draper", "sjohnson", "draper", "sjohnson"),
         deployment_id = c(
             "deployment1",
             "deployment1",
@@ -370,7 +397,13 @@ write_file(sdmEvalToolCore::default_questions, fo)
 
 # ./deployments/<deployment_id>/deployment_subunits.gpkg
 su <- sf::st_read(file.path(path, "subunits", "ecoprovinces.shp"))
-su <- sf::st_simplify(su, TRUE, 100)
+su <- sf::st_simplify(su, TRUE, 10)
+r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+bbox <- sf::st_as_sfc(sf::st_bbox(r))
+su <- sf::st_transform(su, sf::st_crs(r))
+su <- sf::st_intersection(su, bbox)
+su$subunit_id <- su$ECOPROVINC
+su <- su[, "subunit_id"]
 fo <- make_target_path(
     "deployments/{deployment_id}/deployment_subunits.gpkg",
     data = list(deployment_id = "deployment1")
@@ -383,7 +416,7 @@ comments <- data.frame(
     deployment_id = "deployment1",
     model_id = model_id,
     species_id = "CAWA",
-    comment_create_user = c("lpalmer", "dcooper"),
+    comment_create_user = c("draper", "holden"),
     comment_create_time = c(timestamp_to(now()), timestamp_to(now() + 60 * 15)),
     comment_body = c("These results look good.", "All right.")
 )
@@ -396,7 +429,7 @@ evaluations <- data.frame(
         "deployment1_bam_v5_can71_CAWA_observations bam_v5_can71"
     ),
     use_cases = "",
-    evaluation_create_user = "lpalmer",
+    evaluation_create_user = "draper",
     evaluation_create_time = c(timestamp_to(now()), timestamp_to(now() + 60)),
     evaluation_modify_user = NA_character_,
     evaluation_modify_time = NA_character_,
@@ -459,6 +492,7 @@ dbListTables(con)
 dbDisconnect(con)
 
 # the output from this script can be found here:
+# https://www.dropbox.com/scl/fi/1khm6hhoosgkjtmldqxg7/base.zip?rlkey=xwywv6s5cgjr0ufrxosxnx95w&dl=0
 # https://www.dropbox.com/scl/fi/1khm6hhoosgkjtmldqxg7/base.zip?rlkey=xwywv6s5cgjr0ufrxosxnx95w&dl=0
 # we can put this inside the ./misc/base folder and use it as the folder location
 # (./misc is git ignored)
