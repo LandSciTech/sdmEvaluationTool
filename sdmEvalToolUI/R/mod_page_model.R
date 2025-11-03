@@ -3,14 +3,14 @@
 #' @param id
 #' @param title
 #'
-#' @returns 
+#' @returns
 #'
 #' @export
 #' @examples
 mod_page_model_ui <- function(id = "model", title = "Model") {
   nav_panel(
     title,
-    h2(textOutput(NS(id, "title")))        
+    h2(textOutput(NS(id, "title")))
   )
 }
 
@@ -24,8 +24,7 @@ mod_page_model_ui <- function(id = "model", title = "Model") {
 #' @examples
 mod_page_model_server <- function(id = "model", ...) {
   moduleServer(id, function(input, output, session) {
-    rlang::env_bind(rlang::current_env(), !!!list(...))
+    expand_dots(...)
     output$title <- renderText(paste0("Model statistics for model ", mod()))
   })
 }
-

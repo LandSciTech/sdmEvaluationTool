@@ -24,7 +24,7 @@ mod_page_predictors_ui <- function(id = "predictors", title = "Predictors") {
 #' @examples
 mod_page_predictors_server <- function(id = "predictors", ...) {
   moduleServer(id, function(input, output, session) {
-    rlang::env_bind(rlang::current_env(), !!!list(...))
+    expand_dots(...)
     output$title <- renderText(paste0("Model predictors for model ", mod()))
   })
 }

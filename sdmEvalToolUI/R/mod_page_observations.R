@@ -25,8 +25,7 @@ mod_page_observations_ui <- function(id = "observations", title = "Observations"
 #' @examples
 mod_page_observations_server <- function(id = "observations", ...) {
   moduleServer(id, function(input, output, session) {
-
-    rlang::env_bind(rlang::current_env(), !!!list(...))
+    expand_dots(...)
 
     output$title <- renderText(paste0("Observations for Model: ", mod(), " and species ", sp()))
 

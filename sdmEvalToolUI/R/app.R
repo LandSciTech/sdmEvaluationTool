@@ -8,33 +8,17 @@
 #' sdm_tool()
 sdm_tool <- function() {
 
-  # TODO: define location, pages, etc. elsewhere
-  sdmEvalToolCore::sdmevaltool_options(base = "../misc/base")
+  # TODO: define pages, etc. elsewhere
   page_options <- c("overview", "predictions", "observations", "model", "predictors", "model_metadata")
   lang <- "english"
-
-  # App settings
-  path_data <- file.path(
-    sdmEvalToolCore::sdmevaltool_options()$base, 
-    "sdm_evaluation_db.sqlite"
-  )
 
   # Pages
   pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
   pages_server <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_server")))
 
   # Data 
-  db <- DBI::dbConnect(path_data, drv = RSQLite::SQLite())
-  tbl_models <- dplyr::tbl(db, "models") |>
-    dplyr::collect()
-  tbl_species <- dplyr::tbl(db, "species") |>
-    dplyr::collect() |>
-    dplyr::mutate(
-      species_display = paste0(
-        .data[[paste0(lang, "_name")]], 
-        " (", .data$scientific_name, ")"))
-  tbl_materials <- dplyr::tbl(db, "materials") |>
-    dplyr::collect()
+  prep_data() |> expand_list()
+
 
   ui <- bslib::page_navbar(
     title = "SDM Tool",

@@ -26,8 +26,7 @@ mod_page_overview_ui <- function(id = "overview", title = "Overview") {
 #' @examples
 mod_page_overview_server <- function(id = "overview", ...) {
   moduleServer(id, function(input, output, session) {
-
-    rlang::env_bind(rlang::current_env(), !!!list(...))
+    expand_dots(...)
 
     table <- reactive(tbl_overview(tbl_models, tbl_species, tbl_materials))
 
