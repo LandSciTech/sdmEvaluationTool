@@ -1,5 +1,34 @@
 #' Title
 #'
+#' @returns
+#'
+#' @export
+#' @examples
+#' test_page_observations()
+test_page_observations <- function() {
+  # TODO: define location, pages, etc. elsewhere
+  prep_data() |> expand_list()
+
+  ui <- bslib::page_navbar(
+    title = "SDM Tool Testing",
+    mod_page_observations_ui()
+  )
+
+  server <- function(input, output, session) {
+    mod_page_observations_server(
+      mod = reactive("bam_v5_can71"),
+      sp = reactive("BBWO"),
+      tbl_materials = tbl_materials,
+      tbl_models = tbl_models,
+      tbl_species = tbl_species
+    )
+  }
+
+  shiny::shinyApp(ui, server, options = list(port = 8080))
+}
+
+#' Title
+#'
 #' @param id
 #' @param title
 #'
