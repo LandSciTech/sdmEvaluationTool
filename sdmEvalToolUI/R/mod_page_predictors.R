@@ -3,14 +3,14 @@
 #' @param id
 #' @param title
 #'
-#' @returns 
+#' @returns
 #'
 #' @export
 #' @examples
 mod_page_predictors_ui <- function(id = "predictors", title = "Predictors") {
   nav_panel(
     title,
-    h2(textOutput(NS(id, "title")))        
+    h2(textOutput(NS(id, "title")))
   )
 }
 
@@ -28,4 +28,3 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
     output$title <- renderText(paste0("Model predictors for model ", mod()))
   })
 }
-

@@ -3,17 +3,16 @@
 #' @param id
 #' @param title
 #'
-#' @returns 
+#' @returns
 #'
 #' @export
 #' @examples
 mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   nav_panel(
     title,
-    "Current status of review", 
+    "Current status of review",
     reactable::reactableOutput(NS(id, "table"))
   )
-
 }
 
 #' Title
@@ -32,12 +31,13 @@ mod_page_overview_server <- function(id = "overview", ...) {
 
     # TODO: Option to click on species/model combination on table to select
     output$table <- reactable::renderReactable({
-
       reactable::reactable(
         table(),
         highlight = TRUE,
         rowStyle = function(index) {
-          if (isTruthy(sp()) && index == which(table()[["species_id"]] == sp())) {
+          if (
+            isTruthy(sp()) && index == which(table()[["species_id"]] == sp())
+          ) {
             list(background = "rgba(0, 0, 0, 0.5)")
           }
         },
@@ -59,7 +59,6 @@ mod_page_overview_server <- function(id = "overview", ...) {
         )
       )
     })
-
   })
 }
 
@@ -69,20 +68,32 @@ tbl_overview <- function(tbl_models, tbl_species, tbl_materials) {
     dplyr::filter(!stringr::str_detect(component_id, "^predictor")) |>
     dplyr::mutate(
       done = "yes",
-      ready = attr(sdmEvalToolCore::get_comp_ready(.data$component_id), "percent_ready"), 
-      .by = c("model_id", "species_id")) |>
-    tidyr::complete(tidyr::nesting(model_id, species_id), component_id, fill = list(done = "no")) |>
+      ready = attr(
+        sdmEvalToolCore::get_comp_ready(.data$component_id),
+        "percent_ready"
+      ),
+      .by = c("model_id", "species_id")
+    ) |>
+    tidyr::complete(
+      tidyr::nesting(model_id, species_id),
+      component_id,
+      fill = list(done = "no")
+    ) |>
     tidyr::pivot_wider(names_from = component_id, values_from = done) |>
     fmt_tbl(tbl_models, tbl_species)
 }
 
 fmt_tbl <- function(tbl, tbl_models, tbl_species) {
-  # TODO: Get pretty column names  
+  # TODO: Get pretty column names
   tbl |>
-    dplyr::left_join(dplyr::select(tbl_species, "species_id", "species_display"), by = "species_id") |>
-    dplyr::left_join(dplyr::select(tbl_models, "model_id", "model_name"), by = "model_id") |>
+    dplyr::left_join(
+      dplyr::select(tbl_species, "species_id", "species_display"),
+      by = "species_id"
+    ) |>
+    dplyr::left_join(
+      dplyr::select(tbl_models, "model_id", "model_name"),
+      by = "model_id"
+    ) |>
     dplyr::select(-"model_id", "species_id") |>
     dplyr::relocate("model_name", "species_display")
 }
-
-

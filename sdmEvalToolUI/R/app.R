@@ -1,4 +1,3 @@
-
 #' Title
 #'
 #' @returns
@@ -7,18 +6,25 @@
 #' @examples
 #' sdm_tool()
 sdm_tool <- function() {
-
   # TODO: define pages, etc. elsewhere
-  page_options <- c("overview", "predictions", "observations", "model", "predictors", "model_metadata")
+  page_options <- c(
+    "overview",
+    "predictions",
+    "observations",
+    "model",
+    "predictors",
+    "model_metadata"
+  )
   lang <- "english"
 
   # Pages
   pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
-  pages_server <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_server")))
+  pages_server <- lapply(page_options, \(p) {
+    get(paste0("mod_page_", p, "_server"))
+  })
 
-  # Data 
+  # Data
   prep_data() |> expand_list()
-
 
   ui <- bslib::page_navbar(
     title = "SDM Tool",
@@ -27,11 +33,17 @@ sdm_tool <- function() {
   )
 
   server <- function(input, output, session) {
-
     vals <- mod_sidebar_server(id = "sidebar")
 
-    for(t in pages_server) t(mod = vals$mod, sp = vals$sp, tbl_models = tbl_models,
-    tbl_species = tbl_species, tbl_materials = tbl_materials)
+    for (t in pages_server) {
+      t(
+        mod = vals$mod,
+        sp = vals$sp,
+        tbl_models = tbl_models,
+        tbl_species = tbl_species,
+        tbl_materials = tbl_materials
+      )
+    }
     # mod_overview_server(
     #   "overview",
     #   mod = vals$mod,
@@ -68,12 +80,21 @@ mod_sidebar_ui <- function(id, tbl_models, tbl_species) {
       selectInput(
         NS(id, "sp"),
         label = "Species",
-        choices = c("Select a species" = "", setNames(tbl_species[["species_id"]], nm = tbl_species[["english_name"]]))
+        choices = c(
+          "Select a species" = "",
+          setNames(
+            tbl_species[["species_id"]],
+            nm = tbl_species[["english_name"]]
+          )
+        )
       ),
       selectInput(
         NS(id, "mod"),
         label = "Model",
-        choices = c("Select a model" = "", setNames(tbl_models[["model_id"]], nm = tbl_models[["model_name"]]))
+        choices = c(
+          "Select a model" = "",
+          setNames(tbl_models[["model_id"]], nm = tbl_models[["model_name"]])
+        )
       )
     )
   )

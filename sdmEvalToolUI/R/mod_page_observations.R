@@ -3,11 +3,14 @@
 #' @param id
 #' @param title
 #'
-#' @returns 
+#' @returns
 #'
 #' @export
 #' @examples
-mod_page_observations_ui <- function(id = "observations", title = "Observations") {
+mod_page_observations_ui <- function(
+  id = "observations",
+  title = "Observations"
+) {
   nav_panel(
     title,
     h2(textOutput(NS(id, "title"))),

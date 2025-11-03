@@ -3,14 +3,14 @@
 #' @param id
 #' @param title
 #'
-#' @returns 
+#' @returns
 #'
 #' @export
 #' @examples
 mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
   nav_panel(
     title,
-    h2(textOutput(NS(id, "title")))        
+    h2(textOutput(NS(id, "title")))
   )
 }
 
@@ -25,7 +25,11 @@ mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
 mod_page_predictions_server <- function(id = "predictions", ...) {
   moduleServer(id, function(input, output, session) {
     rlang::env_bind(rlang::current_env(), !!!list(...))
-    output$title <- renderText(paste0("Model predictions for model ", mod(), " and species ", sp()))
+    output$title <- renderText(paste0(
+      "Model predictions for model ",
+      mod(),
+      " and species ",
+      sp()
+    ))
   })
 }
-

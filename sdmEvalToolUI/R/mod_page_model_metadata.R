@@ -3,14 +3,17 @@
 #' @param id
 #' @param title
 #'
-#' @returns 
+#' @returns
 #'
 #' @export
 #' @examples
-mod_page_model_metadata_ui <- function(id = "model_metadata", title = "Model_Metadata") {
+mod_page_model_metadata_ui <- function(
+  id = "model_metadata",
+  title = "Model_Metadata"
+) {
   nav_panel(
     title,
-    h2(textOutput(NS(id, "title")))    
+    h2(textOutput(NS(id, "title")))
   )
 }
 
@@ -25,7 +28,11 @@ mod_page_model_metadata_ui <- function(id = "model_metadata", title = "Model_Met
 mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
   moduleServer(id, function(input, output, session) {
     rlang::env_bind(rlang::current_env(), !!!list(...))
-    output$title <- renderText(paste0("Model Metadata: ", mod(), " and species ", sp()))
+    output$title <- renderText(paste0(
+      "Model Metadata: ",
+      mod(),
+      " and species ",
+      sp()
+    ))
   })
 }
-

@@ -1,1 +1,3 @@
 ^LICENSE\.md$
+^\.vscode$
+^[.]?air[.]toml$
