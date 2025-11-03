@@ -498,7 +498,6 @@ dbDisconnect(con)
 
 # the output from this script can be found here:
 # https://www.dropbox.com/scl/fi/1khm6hhoosgkjtmldqxg7/base.zip?rlkey=xwywv6s5cgjr0ufrxosxnx95w&dl=0
-# https://www.dropbox.com/scl/fi/1khm6hhoosgkjtmldqxg7/base.zip?rlkey=xwywv6s5cgjr0ufrxosxnx95w&dl=0
 # we can put this inside the ./misc/base folder and use it as the folder location
 # (./misc is git ignored)
 
