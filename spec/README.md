@@ -1,5 +1,15 @@
 # SDM Model Evaluation Tool (MET)
 
+What is in this folder:
+
+``` bash
+spec
+├── config.yml     # centralized configuration
+├── glossary.yml   # terminology
+├── README.md      # this file
+└── README.Rmd     # the source of the md file
+```
+
 ## Objective
 
 MET that will enable NOBMWG members to:
