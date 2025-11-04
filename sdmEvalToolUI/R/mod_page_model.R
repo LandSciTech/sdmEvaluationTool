@@ -25,6 +25,11 @@ mod_page_model_ui <- function(id = "model", title = "Model") {
 mod_page_model_server <- function(id = "model", ...) {
   moduleServer(id, function(input, output, session) {
     expand_dots(...)
-    output$title <- renderText(paste0("Model statistics for model ", mod()))
+    output$title <- renderText(paste0(
+      "Model statistics for model ",
+      model_id(),
+      " and species ",
+      species_id()
+    ))
   })
 }

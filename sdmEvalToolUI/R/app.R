@@ -37,35 +37,13 @@ sdm_tool <- function() {
 
     for (t in pages_server) {
       t(
-        mod = vals$mod,
-        sp = vals$sp,
+        model_id = vals$model_id,
+        species_id = vals$species_id,
         tbl_models = tbl_models,
         tbl_species = tbl_species,
         tbl_materials = tbl_materials
       )
     }
-    # mod_overview_server(
-    #   "overview",
-    #   mod = vals$mod,
-    #   sp = vals$sp,
-    #   tbl_models,
-    #   tbl_species,
-    #   tbl_materials
-    # )
-    # mod_predictions_server(
-    #   "predictions",
-    #   mod = vals$mod,
-    #   sp = vals$sp,
-    #   tbl_materials
-    # )
-    # mod_observations_server(
-    #   "observations",
-    #   mod = vals$mod,
-    #   sp = vals$sp,
-    #   tbl_materials
-    # )
-    # mod_model_server("model", mod = vals$mod, tbl_materials)
-    # mod_predictors_server("predictors", mod = vals$mod, tbl_materials)
   }
 
   shiny::shinyApp(ui, server, options = list(port = 8080))
@@ -78,7 +56,15 @@ mod_sidebar_ui <- function(id, tbl_models, tbl_species) {
   sidebar(
     tagList(
       selectInput(
-        NS(id, "sp"),
+        NS(id, "model_id"),
+        label = "Model",
+        choices = c(
+          "Select a model" = "",
+          setNames(tbl_models[["model_id"]], nm = tbl_models[["model_name"]])
+        )
+      ),
+      selectInput(
+        NS(id, "species_id"),
         label = "Species",
         choices = c(
           "Select a species" = "",
@@ -86,14 +72,6 @@ mod_sidebar_ui <- function(id, tbl_models, tbl_species) {
             tbl_species[["species_id"]],
             nm = tbl_species[["english_name"]]
           )
-        )
-      ),
-      selectInput(
-        NS(id, "mod"),
-        label = "Model",
-        choices = c(
-          "Select a model" = "",
-          setNames(tbl_models[["model_id"]], nm = tbl_models[["model_name"]])
         )
       )
     )
@@ -103,8 +81,8 @@ mod_sidebar_ui <- function(id, tbl_models, tbl_species) {
 mod_sidebar_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     list(
-      sp = reactive(input$sp),
-      mod = reactive(input$mod)
+      model_id = reactive(input$model_id),
+      species_id = reactive(input$species_id)
     )
   })
 }

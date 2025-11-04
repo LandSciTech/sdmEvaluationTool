@@ -25,6 +25,10 @@ mod_page_predictors_ui <- function(id = "predictors", title = "Predictors") {
 mod_page_predictors_server <- function(id = "predictors", ...) {
   moduleServer(id, function(input, output, session) {
     expand_dots(...)
-    output$title <- renderText(paste0("Model predictors for model ", mod()))
+    output$title <- renderText(paste0(
+      "Model predictors for model ",
+      model_id()
+    ))
+
   })
 }

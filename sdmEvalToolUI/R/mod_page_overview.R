@@ -36,7 +36,8 @@ mod_page_overview_server <- function(id = "overview", ...) {
         highlight = TRUE,
         rowStyle = function(index) {
           if (
-            isTruthy(sp()) && index == which(table()[["species_id"]] == sp())
+            isTruthy(species_id()) &&
+              index == which(table()[["species_id"]] == species_id())
           ) {
             list(background = "rgba(0, 0, 0, 0.5)")
           }

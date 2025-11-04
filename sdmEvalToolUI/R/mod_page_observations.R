@@ -16,8 +16,8 @@ test_page_observations <- function() {
 
   server <- function(input, output, session) {
     mod_page_observations_server(
-      mod = reactive("bam_v5_can71"),
-      sp = reactive("BBWO"),
+      model_id = reactive("bam_v5_can71"),
+      species_id = reactive("BBWO"),
       tbl_materials = tbl_materials,
       tbl_models = tbl_models,
       tbl_species = tbl_species
@@ -61,11 +61,15 @@ mod_page_observations_server <- function(id = "observations", ...) {
 
     output$title <- renderText(paste0(
       "Observations for Model: ",
-      mod(),
+      model_id(),
       " and species ",
-      sp()
+      species_id()
     ))
 
-    mod_comp_observations_server("comp_obs", sp = sp, mod = mod)
+    mod_comp_observations_server(
+      "comp_obs",
+      model_id = model_id,
+      species_id = species_id
+    )
   })
 }

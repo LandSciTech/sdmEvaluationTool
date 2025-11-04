@@ -21,6 +21,8 @@ Imports:
     sdmEvalToolCore,
     shiny
 Suggests: 
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 Remotes:
     LandSciTech/sdmEvaluationTool/sdmEvalToolCore
+Config/testthat/edition: 3

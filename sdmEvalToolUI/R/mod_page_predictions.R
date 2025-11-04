@@ -24,12 +24,13 @@ mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
 #' @examples
 mod_page_predictions_server <- function(id = "predictions", ...) {
   moduleServer(id, function(input, output, session) {
-    rlang::env_bind(rlang::current_env(), !!!list(...))
+    expand_dots(...)
+
     output$title <- renderText(paste0(
-      "Model predictions for model ",
-      mod(),
+      "Spatial predictions for model ",
+      model_id(),
       " and species ",
-      sp()
+      species_id()
     ))
   })
 }

@@ -28,11 +28,7 @@ mod_page_model_metadata_ui <- function(
 mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
   moduleServer(id, function(input, output, session) {
     rlang::env_bind(rlang::current_env(), !!!list(...))
-    output$title <- renderText(paste0(
-      "Model Metadata: ",
-      mod(),
-      " and species ",
-      sp()
-    ))
+    output$title <- renderText(paste0("Model Metadata: ", model_id()))
+
   })
 }

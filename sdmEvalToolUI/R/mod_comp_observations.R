@@ -6,12 +6,12 @@
 #' @examples
 #' test_comp_observations()
 test_comp_observations <- function() {
-  ui <- mod_page_observations_ui()
+  ui <- mod_comp_observations_ui()
 
   server <- function(input, output, session) {
-    mod_page_observations_server(
-      mod = reactive("bam_v5_can71"),
-      sp = reactive("BBWO")
+    mod_comp_observations_server(
+      model_id = reactive("bam_v5_can71"),
+      species_id = reactive("BBWO")
     )
   }
 
@@ -38,7 +38,11 @@ mod_comp_observations_ui <- function(id = "comp_observations") {
 }
 
 
-mod_comp_observations_server <- function(id = "comp_observations", sp, mod) {
+mod_comp_observations_server <- function(
+  id = "comp_observations",
+  model_id,
+  species_id
+) {
   moduleServer(id, function(input, output, session) {
     #TODO:  Display non-detections (status == 0) detections (status > 0) in
     # different colors. Show detections by default (green), allow an option to turn
@@ -48,7 +52,7 @@ mod_comp_observations_server <- function(id = "comp_observations", sp, mod) {
 
     # TODO: Options for when materials don't exist
 
-    obs <- reactive(obs_prep(mod(), sp()))
+    obs <- reactive(obs_prep(model_id(), species_id()))
 
     output$ui_selectors <- renderUI({
       tagList(
@@ -74,7 +78,7 @@ mod_comp_observations_server <- function(id = "comp_observations", sp, mod) {
 #'
 #' @export
 #' @examples
-#' obs_prep(mod = "bam_v5_can71", sp = "BBWO") |>
+#' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
 #'   obs_map()
 
 obs_map <- function(obs) {
@@ -95,15 +99,10 @@ obs_map <- function(obs) {
 #'
 #' @export
 #' @examples
-#' obs_prep(mod = "bam_v5_can71", sp = "BBWO")
+#' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
-obs_prep <- function(mod, sp) {
-  req(sp, mod)
-  sdmEvalToolCore:::make_target_path(
-    paste0("materials/{mod}/species/{sp}/observations.gpkg"),
-    data = list(mod = mod, sp = sp)
-  ) |>
-    sdmEvalToolCore:::read_file() |>
+obs_prep <- function(model_id, species_id) {
+  prep_files("observations", model_id = model_id, species_id = species_id) |>
     dplyr::mutate(
       year = lubridate::year(.data$time),
       detections = dplyr::na_if(.data$status > 0, 0),
