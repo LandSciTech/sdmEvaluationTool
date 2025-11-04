@@ -54,8 +54,10 @@ mod_page_predictors_ui <- function(id = "predictors", title = "Predictors") {
 #' @export
 #' @examples
 mod_page_predictors_server <- function(id = "predictors", ...) {
+  expand_dots(...)
+  stopifnot(is.reactive(model_id))
+
   moduleServer(id, function(input, output, session) {
-    expand_dots(...)
     output$title <- renderText(paste0(
       "Model predictors for model ",
       model_id()

@@ -43,6 +43,9 @@ mod_comp_observations_server <- function(
   model_id,
   species_id
 ) {
+  stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(species_id))
+
   moduleServer(id, function(input, output, session) {
     #TODO:  Display non-detections (status == 0) detections (status > 0) in
     # different colors. Show detections by default (green), allow an option to turn
@@ -84,7 +87,7 @@ mod_comp_observations_server <- function(
 obs_map <- function(obs) {
   pal <- leaflet::colorFactor("darkgreen", obs$detections)
   obs |>
-    dplyr::filter(!is.na(detections)) |>
+    dplyr::filter(!is.na(.data$detections)) |>
     sf::st_transform(crs = 4326) |>
     leaflet::leaflet() |>
     leaflet::addTiles() |>
@@ -104,7 +107,7 @@ obs_map <- function(obs) {
 obs_prep <- function(model_id, species_id) {
   prep_files("observations", model_id = model_id, species_id = species_id) |>
     dplyr::mutate(
-      year = lubridate::year(.data$time),
+      year = as.numeric(stringr::str_extract(.data$time, "^\\d{4}")),
       detections = dplyr::na_if(.data$status > 0, 0),
       # fmt: skip
       popup = paste0(

@@ -20,7 +20,6 @@ test_comp_model_metadata <- function() {
 #' Title
 #'
 #' @param id
-#' @param title
 #'
 #' @returns
 #'
@@ -35,9 +34,11 @@ mod_comp_model_metadata_ui <- function(id = "comp_model_metadata") {
 
 mod_comp_model_metadata_server <- function(
   id = "comp_model_metadata",
-  mod
+  model_id
 ) {
   moduleServer(id, function(input, output, session) {
+    stopifnot(is.reactive(model_id))
+
     model_metadata <- reactive(model_metadata_prep(model_id()))
     output$model_metadata <- leaflet::renderLeaflet({
       model_metadata() |>
@@ -72,6 +73,6 @@ model_metadata_XXXX <- function(model_metadata) {
 #' @examples
 #' model_metadata_prep(model_id = "bam_v5_can71")
 
-model_metadata_prep <- function(mod) {
-  prep_files("model_metadata", model_id = model_id, species_id = species_id)
+model_metadata_prep <- function(model_id) {
+  prep_files("model_metadata", model_id = model_id)
 }

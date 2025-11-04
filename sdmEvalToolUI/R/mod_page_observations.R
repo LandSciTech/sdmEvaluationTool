@@ -57,9 +57,11 @@ mod_page_observations_ui <- function(
 #' @export
 #' @examples
 mod_page_observations_server <- function(id = "observations", ...) {
-  moduleServer(id, function(input, output, session) {
-    expand_dots(...)
+  expand_dots(...)
+  stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(species_id))
 
+  moduleServer(id, function(input, output, session) {
     output$title <- renderText(paste0(
       "Observations for Model: ",
       model_id(),

@@ -59,8 +59,10 @@ mod_page_model_ui <- function(id = "model", title = "Model") {
 #' @export
 #' @examples
 mod_page_model_server <- function(id = "model", ...) {
+  expand_dots(...)
+  stopifnot(is.reactive(species_id))
+
   moduleServer(id, function(input, output, session) {
-    expand_dots(...)
     output$title <- renderText(paste0(
       "Model statistics for model ",
       model_id(),

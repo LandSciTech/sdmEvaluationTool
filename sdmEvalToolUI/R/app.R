@@ -60,7 +60,10 @@ mod_sidebar_ui <- function(id, tbl_models, tbl_species) {
         label = "Model",
         choices = c(
           "Select a model" = "",
-          setNames(tbl_models[["model_id"]], nm = tbl_models[["model_name"]])
+          stats::setNames(
+            tbl_models[["model_id"]],
+            nm = tbl_models[["model_name"]]
+          )
         )
       ),
       selectInput(
@@ -68,7 +71,7 @@ mod_sidebar_ui <- function(id, tbl_models, tbl_species) {
         label = "Species",
         choices = c(
           "Select a species" = "",
-          setNames(
+          stats::setNames(
             tbl_species[["species_id"]],
             nm = tbl_species[["english_name"]]
           )

@@ -11,7 +11,7 @@ test_comp_model_summary <- function() {
   server <- function(input, output, session) {
     mod_comp_model_summary_server(
       model_id = reactive("bam_v5_can71"),
-      species_uid = reactive("BBWO")
+      species_id = reactive("BBWO")
     )
   }
 

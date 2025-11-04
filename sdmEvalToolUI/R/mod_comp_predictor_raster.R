@@ -37,7 +37,7 @@ mod_comp_predictor_raster_ui <- function(id = "comp_predictor_raster") {
 
 mod_comp_predictor_raster_server <- function(
   id = "comp_predictor_raster",
-  mod
+  model_id
 ) {
   moduleServer(id, function(input, output, session) {
     predictor_raster <- reactive(predictor_raster_prep(model_id()))
@@ -75,6 +75,6 @@ predictor_raster_map <- function(predictor_raster) {
 #' @examples
 #' predictor_raster_prep(model_id = "bam_v5_can71")
 
-predictor_raster_prep <- function(mod) {
+predictor_raster_prep <- function(model_id) {
   prep_files("predictor_raster", model_id = model_id)
 }

@@ -57,10 +57,12 @@ mod_page_model_metadata_ui <- function(
 #' @export
 #' @examples
 mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
+  expand_dots(...)
+  stopifnot(is.reactive(model_id))
+
   moduleServer(id, function(input, output, session) {
-    rlang::env_bind(rlang::current_env(), !!!list(...))
     output$title <- renderText(paste0("Model Metadata: ", model_id()))
 
-    mod_comp_model_metadata_server("model_metadata", model_id())
+    mod_comp_model_metadata_server("model_metadata", model_id)
   })
 }

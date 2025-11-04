@@ -54,9 +54,11 @@ mod_page_overview_ui <- function(id = "overview", title = "Overview") {
 #' @export
 #' @examples
 mod_page_overview_server <- function(id = "overview", ...) {
-  moduleServer(id, function(input, output, session) {
-    expand_dots(...)
+  expand_dots(...)
+  stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(species_id))
 
+  moduleServer(id, function(input, output, session) {
     table <- reactive(tbl_overview(tbl_models, tbl_species, tbl_materials))
 
     # TODO: Option to click on species/model combination on table to select
@@ -96,21 +98,14 @@ mod_page_overview_server <- function(id = "overview", ...) {
 tbl_overview <- function(tbl_models, tbl_species, tbl_materials) {
   tbl_materials |>
     dplyr::select("model_id", "species_id", "component_id") |>
-    dplyr::filter(!stringr::str_detect(component_id, "^predictor")) |>
-    dplyr::mutate(
-      done = "yes",
-      ready = attr(
-        sdmEvalToolCore::get_comp_ready(.data$component_id),
-        "percent_ready"
-      ),
-      .by = c("model_id", "species_id")
-    ) |>
+    dplyr::mutate(done = TRUE) |>
     tidyr::complete(
-      tidyr::nesting(model_id, species_id),
-      component_id,
-      fill = list(done = "no")
+      .data$model_id,
+      .data$species_id,
+      "component_id" := sdmEvalToolCore::components$component,
+      fill = list(done = FALSE)
     ) |>
-    tidyr::pivot_wider(names_from = component_id, values_from = done) |>
+    tidyr::pivot_wider(names_from = "component_id", values_from = "done") |>
     fmt_tbl(tbl_models, tbl_species)
 }
 

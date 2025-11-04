@@ -54,9 +54,11 @@ mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
 #' @export
 #' @examples
 mod_page_predictions_server <- function(id = "predictions", ...) {
-  moduleServer(id, function(input, output, session) {
-    expand_dots(...)
+  expand_dots(...)
+  stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(species_id))
 
+  moduleServer(id, function(input, output, session) {
     output$title <- renderText(paste0(
       "Spatial predictions for model ",
       model_id(),

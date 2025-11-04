@@ -43,7 +43,7 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 #'
 #' @param name Character. File name.
 #' @param ext Character. File extension.
-#' @param ... `model_id`, `species_id`, or `deploymen_id` for the "Model", "Species", or "Deployment"
+#' @param ... `model_id`, `species_id`, or `deployment_id` for the "Model", "Species", or "Deployment"
 #'   to read
 #'
 #' @returns Loaded file as an R object
@@ -73,7 +73,7 @@ prep_files <- function(component, ext, ...) {
     sdmEvalToolCore::components,
     .data$component == .env$component
   ) |>
-    #TODO: Is there a reason to have a sublist? i.e. 1?
+    #TODO: Is there a reason to have a sub list? i.e. 1?
     purrr::pluck("upload", 1, "output", "path")
 
   # For the user
@@ -99,7 +99,7 @@ prep_files <- function(component, ext, ...) {
     )
   ))
 
-  sdmEvalToolCore:::read_file(path)
+  sdmEvalToolCore::read_file(path)
 }
 
 pretty <- function(x) {
