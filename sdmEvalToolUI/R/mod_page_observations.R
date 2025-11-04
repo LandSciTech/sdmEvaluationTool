@@ -1,10 +1,11 @@
 #' Title
 #'
 #' @returns
+#' @noRd
 #'
-#' @export
 #' @examples
 #' test_page_observations()
+
 test_page_observations <- function() {
   # TODO: define location, pages, etc. elsewhere
   prep_data() |> expand_list()
