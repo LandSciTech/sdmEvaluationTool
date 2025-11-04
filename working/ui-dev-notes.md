@@ -5,6 +5,10 @@
 - Specs README -> https://github.com/LandSciTech/sdmEvaluationTool/blob/main/spec/README.md
 - Testing in terminal -> `R -q -e "devtools::load_all(); test_page_observations()"`
 
+## Definitions
+- Comments are a page - Option to add a comment to that species/model combination
+- Species pages are - Comments, and then the components pages
+
 ## Things to consider
 
 - Use `brand.yml` for theming to allow easy changes? - https://posit-dev.github.io/brand-yml/
@@ -16,11 +20,11 @@
         - TODO: What about `mod_comp_<component_id>`?
 
 ## To Do
-
-- Side bar - Deployment / Model / Species
 - Overview - Table depends on the role of the viewer
-- Comments are a page - Option to add a comment to that species/model combination
-- Species pages are - Comments, and then the components pages
+- Add loading spinners
+- Add caching
+
+
 
 
 ## Questions 
