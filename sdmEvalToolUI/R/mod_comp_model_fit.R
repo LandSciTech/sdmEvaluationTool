@@ -3,7 +3,7 @@
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' test_comp_model_fit()
 test_comp_model_fit <- function() {
   ui <- mod_comp_model_fit_ui()
@@ -53,7 +53,7 @@ mod_comp_model_fit_server <- function(
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' model_fit_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
 #'   model_fit_table()
 
@@ -68,7 +68,7 @@ model_fit_table <- function(model_fit) {
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' model_fit_prep(model_ = "bam_v5_can71", species_id = "BBWO")
 
 model_fit_prep <- function(model_id, species_id) {

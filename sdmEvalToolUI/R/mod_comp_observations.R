@@ -3,8 +3,9 @@
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' test_comp_observations()
+
 test_comp_observations <- function() {
   ui <- mod_comp_observations_ui()
 
@@ -80,7 +81,7 @@ mod_comp_observations_server <- function(
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
 #'   obs_map()
 
@@ -101,7 +102,7 @@ obs_map <- function(obs) {
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
 obs_prep <- function(model_id, species_id) {

@@ -3,8 +3,9 @@
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' test_comp_model_summary()
+
 test_comp_model_summary <- function() {
   ui <- mod_comp_model_summary_ui()
 
@@ -53,7 +54,7 @@ mod_comp_model_summary_server <- function(
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' model_summary_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
 #'   model_summary_table()
 
@@ -68,7 +69,7 @@ model_summary_table <- function(model_summary) {
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' model_summary_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
 model_summary_prep <- function(model_id, species_id) {

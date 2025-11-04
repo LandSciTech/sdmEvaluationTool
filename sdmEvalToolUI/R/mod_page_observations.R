@@ -3,7 +3,7 @@
 #' @returns
 #' @noRd
 #'
-#' @examples
+#' @examplesIf have_data()
 #' test_page_observations()
 
 test_page_observations <- function() {

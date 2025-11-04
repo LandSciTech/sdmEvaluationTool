@@ -3,7 +3,7 @@
 #' @returns
 #' @noRd
 #'
-#' @examples
+#' @examplesIf have_data()
 #' test_page_model()
 
 test_page_model <- function() {
@@ -60,6 +60,7 @@ mod_page_model_ui <- function(id = "model", title = "Model") {
 #' @examples
 mod_page_model_server <- function(id = "model", ...) {
   expand_dots(...)
+  stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {

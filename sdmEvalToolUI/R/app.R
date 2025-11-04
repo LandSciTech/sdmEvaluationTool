@@ -3,8 +3,9 @@
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' sdm_tool()
+
 sdm_tool <- function() {
   # TODO: define pages, etc. elsewhere
   page_options <- c(

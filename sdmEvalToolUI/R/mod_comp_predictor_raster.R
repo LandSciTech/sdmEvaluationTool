@@ -3,8 +3,9 @@
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' test_comp_predictor_raster()
+
 test_comp_predictor_raster <- function() {
   ui <- mod_comp_predictor_raster_ui()
 
@@ -56,9 +57,6 @@ mod_comp_predictor_raster_server <- function(
 #' @returns
 #'
 #' @export
-#' @examples
-#' predictor_raster_prep(model_id = "bam_v5_can71") |>
-#'   predictor_raster_map()
 
 predictor_raster_map <- function(predictor_raster) {
   leaflet::leaflet() |>
@@ -72,8 +70,6 @@ predictor_raster_map <- function(predictor_raster) {
 #' @returns
 #'
 #' @export
-#' @examples
-#' predictor_raster_prep(model_id = "bam_v5_can71")
 
 predictor_raster_prep <- function(model_id) {
   prep_files("predictor_raster", model_id = model_id)

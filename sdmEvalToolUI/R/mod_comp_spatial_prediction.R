@@ -3,8 +3,9 @@
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' test_comp_spatial_prediction()
+
 test_comp_spatial_prediction <- function() {
   ui <- mod_comp_spatial_prediction_ui()
 
@@ -63,7 +64,7 @@ mod_comp_spatial_prediction_server <- function(
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
 #'   spatial_prediction_map()
 
@@ -79,7 +80,7 @@ spatial_prediction_map <- function(spatial_prediction) {
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
 spatial_prediction_prep <- function(model_id, species_id) {

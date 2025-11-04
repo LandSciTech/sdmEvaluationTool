@@ -3,8 +3,9 @@
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' test_comp_predictor_metadata()
+
 test_comp_predictor_metadata <- function() {
   ui <- mod_comp_predictor_metadata_ui()
 
@@ -54,9 +55,6 @@ mod_comp_predictor_metadata_server <- function(
 #' @returns
 #'
 #' @export
-#' @examples
-#' predictor_metadata_prep(model_id = "bam_v5_can71") |>
-#'   predictor_metadata_table()
 
 predictor_metadata_table <- function(predictor_metadata) {
   validate(need(
@@ -73,8 +71,6 @@ predictor_metadata_table <- function(predictor_metadata) {
 #' @returns
 #'
 #' @export
-#' @examples
-#' predictor_metadata_prep(model_id = "bam_v5_can71")
 
 predictor_metadata_prep <- function(model_id) {
   prep_files("predictor_metadata", model_id = model_id)

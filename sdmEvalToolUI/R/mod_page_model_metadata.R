@@ -3,7 +3,7 @@
 #' @returns
 #' @noRd
 #'
-#' @examples
+#' @examplesIf have_data()
 #' test_page_model_metadata()
 
 test_page_model_metadata <- function() {

@@ -3,8 +3,9 @@
 #' @returns
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' test_comp_model_metadata()
+
 test_comp_model_metadata <- function() {
   ui <- mod_comp_model_metadata_ui()
 
@@ -55,9 +56,6 @@ mod_comp_model_metadata_server <- function(
 #' @returns
 #'
 #' @export
-#' @examples
-#' model_metadata_prep(model_id = "bam_v5_can71") |>
-#'   model_metadata_XXXX()
 
 model_metadata_XXXX <- function(model_metadata) {
   #TODO: Model metadata display
@@ -70,8 +68,6 @@ model_metadata_XXXX <- function(model_metadata) {
 #' @returns
 #'
 #' @export
-#' @examples
-#' model_metadata_prep(model_id = "bam_v5_can71")
 
 model_metadata_prep <- function(model_id) {
   prep_files("model_metadata", model_id = model_id)

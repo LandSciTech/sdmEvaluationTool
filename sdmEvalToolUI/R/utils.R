@@ -49,7 +49,7 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 #' @returns Loaded file as an R object
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' prep_files("observations", species_id = "BBWO", model_id = "bam_v5_can71")
 #' #prep_files("model_metadata", model_id = "bam_v5_can71")
 #' prep_files("predictor_metadata", model_id = "bam_v5_can71")
@@ -106,4 +106,17 @@ pretty <- function(x) {
   x |>
     stringr::str_replace_all("_", " ") |>
     stringr::str_to_title()
+}
+
+#' Have local data?
+#'
+#' Checks whether the user has local data available for this tool.
+#'
+#' @returns TRUE/FALSE
+#'
+#' @export
+#' @examples
+#' have_data()
+have_data <- function() {
+  dir.exists(sdmEvalToolCore::sdmevaltool_options()$base)
 }
