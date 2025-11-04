@@ -13,7 +13,8 @@ mod_page_model_metadata_ui <- function(
 ) {
   nav_panel(
     title,
-    h2(textOutput(NS(id, "title")))
+    h2(textOutput(NS(id, "title"))),
+    mod_comp_model_metadata_ui(NS(id, "model_metadata"))
   )
 }
 
@@ -30,5 +31,6 @@ mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
     rlang::env_bind(rlang::current_env(), !!!list(...))
     output$title <- renderText(paste0("Model Metadata: ", model_id()))
 
+    mod_comp_model_metadata_server("model_metadata", model_id())
   })
 }

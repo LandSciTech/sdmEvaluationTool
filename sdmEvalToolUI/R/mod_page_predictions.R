@@ -10,7 +10,8 @@
 mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
   nav_panel(
     title,
-    h2(textOutput(NS(id, "title")))
+    h2(textOutput(NS(id, "title"))),
+    mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
   )
 }
 
@@ -32,5 +33,11 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
       " and species ",
       species_id()
     ))
+
+    mod_comp_spatial_prediction_server(
+      "spatial_prediction",
+      model_id = model_id,
+      species_id = species_id
+    )
   })
 }
