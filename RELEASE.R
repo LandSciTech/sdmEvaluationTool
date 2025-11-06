@@ -107,6 +107,7 @@ save(
 devtools::document(pkg)
 rcmdcheck::rcmdcheck(pkg)
 # devtools::install(pkg, upgrade = "never")
+# remotes::install_github("LandSciTech/sdmEvaluationTool/sdmEvalToolCore")
 
 devtools::load_all(pkg)
 
@@ -121,5 +122,6 @@ pkg <- "sdmEvalToolUI"
 devtools::document(pkg)
 rcmdcheck::rcmdcheck(pkg)
 # devtools::install(pkg, upgrade = "never")
+# remotes::install_github("LandSciTech/sdmEvaluationTool/sdmEvalToolUI")
 
 devtools::load_all(pkg)
