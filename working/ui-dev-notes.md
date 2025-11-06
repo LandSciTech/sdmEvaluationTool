@@ -9,6 +9,12 @@
 - Comments are a page - Option to add a comment to that species/model combination
 - Species pages are - Comments, and then the components pages
 
+## App Layout
+- page_navbar()
+  - sidebar - Overall sidebar `mod_sidebar_ui()` / `mod_sidebar_server()`
+  - nav_panel() - Page Modules (e.g., `mod_page_observations_ui()`)
+    - sidebar() - *Right-side* sidebar for page-related evaluation questions
+
 ## Things to consider
 
 - Use `brand.yml` for theming to allow easy changes? - https://posit-dev.github.io/brand-yml/
