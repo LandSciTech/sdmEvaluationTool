@@ -19,7 +19,7 @@ test_page_overview <- function() {
     mod_page_overview_server(
       model_id = reactive("bam_v5_can71"),
       species_id = reactive("BBWO"),
-      tbl_materials = tbl_materials,
+      tbl_deployments = tbl_deployments,
       tbl_models = tbl_models,
       tbl_species = tbl_species
     )
@@ -55,11 +55,18 @@ mod_page_overview_ui <- function(id = "overview", title = "Overview") {
 #' @examples
 mod_page_overview_server <- function(id = "overview", ...) {
   expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
-    table <- reactive(tbl_overview(tbl_models, tbl_species, tbl_materials))
+    table <- reactive({
+      tbl_materials <- db_read_deployment_materials(
+        db_connect(),
+        deploymentid = deployment_id()
+      )
+      tbl_overview(tbl_models, tbl_species, tbl_materials)
+    })
 
     # TODO: Option to click on species/model combination on table to select
     output$table <- reactable::renderReactable({

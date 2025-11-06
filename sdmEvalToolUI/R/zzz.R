@@ -4,7 +4,7 @@ utils::globalVariables(c(
   # Inputs
   "model_id", "species_id", "deployment_id",
   # Tables
-  "tbl_models", "tbl_species", "tbl_materials"
+  "tbl_models", "tbl_species", "tbl_deployments"
 ))
 
 

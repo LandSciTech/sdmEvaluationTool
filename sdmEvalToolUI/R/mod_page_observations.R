@@ -58,6 +58,7 @@ mod_page_observations_ui <- function(
 #' @examples
 mod_page_observations_server <- function(id = "observations", ...) {
   expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
 

@@ -19,7 +19,7 @@ test_page_predictors <- function() {
     mod_page_predictors_server(
       model_id = reactive("bam_v5_can71"),
       species_id = reactive("BBWO"),
-      tbl_materials = tbl_materials,
+      tbl_deployments = tbl_deployments,
       tbl_models = tbl_models,
       tbl_species = tbl_species
     )

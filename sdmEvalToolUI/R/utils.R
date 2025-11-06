@@ -5,13 +5,12 @@ prep_data <- function() {
   db <- db_connect()
   tbl_models <- db_read_models(db)
   tbl_species <- db_read_species(db)
-  tbl_materials <- dplyr::tbl(db, "materials") |>
-    dplyr::collect()
+  tbl_deployments <- dplyr::tbl(db, "deployments") |> dplyr::collect()
 
   list(
+    "tbl_deployments" = tbl_deployments,
     "tbl_models" = tbl_models,
-    "tbl_species" = tbl_species,
-    "tbl_materials" = tbl_materials
+    "tbl_species" = tbl_species
   )
 }
 
@@ -41,25 +40,24 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 #' prep_materials("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
 #' prep_materials("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
 #' prep_materials("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
+#'
+#' # Errors
+#' # prep_materials("observations", model_id = "", species_id = "")
+#' # prep_materials("observations", model_id = "bam_v5_can71", species_id = "")
 
-prep_materials <- function(component, model_id, species_id = NULL) {
+prep_materials <- function(component_id, model_id, species_id = NULL) {
   path <- dplyr::filter(
     sdmEvalToolCore::components,
-    .data$component == .env$component
+    .data$component == .env$component_id
   ) |>
     #TODO: Is there a reason to have a sub list? i.e. 1?
     purrr::pluck("upload", 1, "output", "path")
 
-  # For the user
-  validate(need(model_id, "Please select a model"))
-  if (!is.null(species_id)) {
-    validate(need(model_id, "Please select a model"))
-    validate(need(species_id, "Please select a species"))
-  }
+  validate_ids(model_id = model_id, species_id = species_id)
 
   prep_files(
     path,
-    name = component,
+    name = component_id,
     model_id = model_id,
     species_id = species_id
   )
@@ -79,7 +77,7 @@ prep_materials <- function(component, model_id, species_id = NULL) {
 #' prep_deployments("deployment2", "questions")
 
 prep_deployments <- function(deployment_id, type) {
-  validate(need(deployment_id, "Please select a Deployment"))
+  validate_ids(deployment_id = deployment_id)
 
   #TODO: Get this from sdmEvalToolCore?
   ext <- ifelse(type == "questions", "csv", "gpkg")
@@ -90,7 +88,13 @@ prep_deployments <- function(deployment_id, type) {
     name = paste("Deployment", type),
     deployment_id = deployment_id,
     type = type
-  )
+  ) |>
+    dplyr::mutate(
+      french = as.character(.data$french),
+      french = tidyr::replace_na(.data$french, "")
+    ) |>
+    # TODO: This shouldn't be in the data
+    dplyr::select(-dplyr::any_of("X"))
 }
 
 prep_files <- function(path, name, ...) {
@@ -111,6 +115,7 @@ prep_files <- function(path, name, ...) {
 pretty <- function(x) {
   x |>
     stringr::str_replace_all("_", " ") |>
+    stringr::str_remove_all("id") |>
     stringr::str_to_title()
 }
 
