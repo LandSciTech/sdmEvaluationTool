@@ -72,5 +72,5 @@ predictor_raster_map <- function(predictor_raster) {
 #' @export
 
 predictor_raster_prep <- function(model_id) {
-  prep_files("predictor_raster", model_id = model_id)
+  prep_materials("predictor_raster", model_id = model_id)
 }

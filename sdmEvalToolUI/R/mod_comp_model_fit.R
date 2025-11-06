@@ -72,5 +72,5 @@ model_fit_table <- function(model_fit) {
 #' model_fit_prep(model_ = "bam_v5_can71", species_id = "BBWO")
 
 model_fit_prep <- function(model_id, species_id) {
-  prep_files("model_fit", model_id = model_id, species_id = species_id)
+  prep_materials("model_fit", model_id = model_id, species_id = species_id)
 }

@@ -73,5 +73,5 @@ predictor_metadata_table <- function(predictor_metadata) {
 #' @export
 
 predictor_metadata_prep <- function(model_id) {
-  prep_files("predictor_metadata", model_id = model_id)
+  prep_materials("predictor_metadata", model_id = model_id)
 }

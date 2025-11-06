@@ -70,5 +70,5 @@ model_metadata_XXXX <- function(model_metadata) {
 #' @export
 
 model_metadata_prep <- function(model_id) {
-  prep_files("model_metadata", model_id = model_id)
+  prep_materials("model_metadata", model_id = model_id)
 }

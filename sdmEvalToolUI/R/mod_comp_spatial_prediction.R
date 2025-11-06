@@ -84,5 +84,9 @@ spatial_prediction_map <- function(spatial_prediction) {
 #' spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
 spatial_prediction_prep <- function(model_id, species_id) {
-  prep_files("spatial_prediction", model_id = model_id, species_id = species_id)
+  prep_materials(
+    "spatial_prediction",
+    model_id = model_id,
+    species_id = species_id
+  )
 }

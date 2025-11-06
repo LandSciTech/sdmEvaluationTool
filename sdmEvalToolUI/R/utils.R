@@ -24,36 +24,25 @@ expand_dots <- function(..., env = rlang::caller_env()) {
   rlang::env_bind(env, !!!list(...))
 }
 
-#' Load files
+#' Load material files
 #'
-#' @param name Character. File name.
-#' @param ext Character. File extension.
-#' @param ... `model_id`, `species_id`, or `deployment_id` for the "Model", "Species", or "Deployment"
-#'   to read
+#' @param component Character. Type of material to load.
+#' @param model_id Character.
+#' @param species_id Character.
 #'
 #' @returns Loaded file as an R object
 #'
 #' @export
 #' @examplesIf have_data()
-#' prep_files("observations", species_id = "BBWO", model_id = "bam_v5_can71")
-#' #prep_files("model_metadata", model_id = "bam_v5_can71")
-#' prep_files("predictor_metadata", model_id = "bam_v5_can71")
-#' #prep_files("predictor_raster", model_id = "bam_v5_can71")
-#' prep_files("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
-#' prep_files("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
-#' prep_files("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_materials("observations", species_id = "BBWO", model_id = "bam_v5_can71")
+#' #prep_materials("model_metadata", model_id = "bam_v5_can71")
+#' prep_materials("predictor_metadata", model_id = "bam_v5_can71")
+#' #prep_materials("predictor_raster", model_id = "bam_v5_can71")
+#' prep_materials("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_materials("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_materials("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
 
-prep_files <- function(component, ext, ...) {
-  expand_dots(...)
-
-  # For developer
-  if (exists("model_id") && exists("species_id") && exists("dep")) {
-    stop(
-      "Incorrect usage: Cannot supply 'model_id', 'species_id', and ",
-      "'deployment_id' all together"
-    )
-  }
-
+prep_materials <- function(component, model_id, species_id = NULL) {
   path <- dplyr::filter(
     sdmEvalToolCore::components,
     .data$component == .env$component
@@ -62,23 +51,55 @@ prep_files <- function(component, ext, ...) {
     purrr::pluck("upload", 1, "output", "path")
 
   # For the user
-  if (exists("model_id")) {
-    validate(need(model_id, "Please select a model"))
-  }
-  if (exists("species_id")) {
+  validate(need(model_id, "Please select a model"))
+  if (!is.null(species_id)) {
     validate(need(model_id, "Please select a model"))
     validate(need(species_id, "Please select a species"))
   }
-  if (exists("deployment_id")) {
-    validate(need(deployment_id, "Please select a Deployment"))
-  }
 
-  path <- sdmEvalToolCore::make_target_path(path, data = list(...))
+  prep_files(
+    path,
+    name = component,
+    model_id = model_id,
+    species_id = species_id
+  )
+}
+
+#' Title
+#'
+#' @param deployment_id
+#' @param type
+#'
+#' @returns
+#'
+#' @export
+#' @examplesIf have_data()
+#' prep_deployments("deployment1", "questions")
+#' prep_deployments("deployment1", "subunits")
+#' prep_deployments("deployment2", "questions")
+
+prep_deployments <- function(deployment_id, type) {
+  validate(need(deployment_id, "Please select a Deployment"))
+
+  #TODO: Get this from sdmEvalToolCore?
+  ext <- ifelse(type == "questions", "csv", "gpkg")
+  path <- paste0("deployments/{deployment_id}/deployment_{type}.", ext)
+
+  prep_files(
+    path,
+    name = paste("Deployment", type),
+    deployment_id = deployment_id,
+    type = type
+  )
+}
+
+prep_files <- function(path, name, ...) {
+  path <- make_target_path(path, data = list(...))
 
   validate(need(
     file.exists(path),
     paste0(
-      pretty(component),
+      pretty(name),
       " doesn't exist. Have you supplied the correct base path?\n",
       path
     )

@@ -73,5 +73,5 @@ model_summary_table <- function(model_summary) {
 #' model_summary_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
 model_summary_prep <- function(model_id, species_id) {
-  prep_files("model_summary", model_id = model_id, species_id = species_id)
+  prep_materials("model_summary", model_id = model_id, species_id = species_id)
 }
