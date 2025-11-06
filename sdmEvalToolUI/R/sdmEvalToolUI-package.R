@@ -1,5 +1,6 @@
 #' @import shiny
 #' @import bslib
+#' @import sdmEvalToolCore
 
 #' @keywords internal
 "_PACKAGE"

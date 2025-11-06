@@ -166,3 +166,46 @@ db_read_evaluations <- function(con, deploymentid) {
 # TODO:
 # insert new values with dplyr::rows_insert(), only for new key values
 # update existing rows with dplyr::rows_update(), all values
+
+#' Get models from DB
+#'
+#' @param con DB connection.
+#' @param model_id Model ID (optional).
+#'
+#' @return A data frame with models. Optionally filtered to model_id.
+#'
+#' @export
+db_read_models <- function(con, model_id = NULL) {
+    out <- dplyr::tbl(con, "models")
+    if (!is.null(model_id)) {
+        out <- dplyr::filter(out, .data$model_id %in% .env$model_id)
+    }
+    out <- dplyr::collect(out)
+    out
+}
+
+#' Get species from DB
+#'
+#' @param con DB connection. 
+#' @param species_id Species ID (optional).
+#'
+#' @return A data frame with species and display names. Optionally filtered to
+#'   species_id.
+#'
+#' @export
+db_read_species <- function(con, species_id = NULL, lang = "english") {
+    out <- dplyr::tbl(con, "species")
+    if (!is.null(species_id)) {
+        out <- dplyr::filter(out, .data$species_id %in% .env$species_id)
+    }
+    out <- out |>
+        dplyr::collect() |>
+        dplyr::mutate(
+            #fmt: skip
+            species_display = paste0(
+                .data[[paste0(lang, "_name")]], # cannot use .env inside .data
+                " (", .data$scientific_name, ")"
+            )
+        )
+    out
+}

@@ -84,7 +84,7 @@ prep_files <- function(component, ext, ...) {
     )
   ))
 
-  sdmEvalToolCore::read_file(path)
+  read_file(path)
 }
 
 pretty <- function(x) {
