@@ -16,7 +16,6 @@ sdm_tool <- function() {
     "predictors",
     "model_metadata"
   )
-  lang <- "english"
 
   # Pages
   pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
@@ -74,7 +73,7 @@ mod_sidebar_ui <- function(id, tbl_models, tbl_species) {
           "Select a species" = "",
           stats::setNames(
             tbl_species[["species_id"]],
-            nm = tbl_species[["english_name"]]
+            nm = tbl_species[["display_name"]]
           )
         )
       )

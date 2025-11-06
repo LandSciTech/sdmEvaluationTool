@@ -193,7 +193,11 @@ db_read_models <- function(con, model_id = NULL) {
 #'   species_id.
 #'
 #' @export
-db_read_species <- function(con, species_id = NULL, lang = "english") {
+db_read_species <- function(
+    con, 
+    species_id = NULL, 
+    lang = sdmevaltool_options()$lang
+) {
     out <- dplyr::tbl(con, "species")
     if (!is.null(species_id)) {
         out <- dplyr::filter(out, .data$species_id %in% .env$species_id)

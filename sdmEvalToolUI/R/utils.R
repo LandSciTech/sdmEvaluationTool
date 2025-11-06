@@ -1,4 +1,4 @@
-prep_data <- function(lang = "english") {
+prep_data <- function() {
   # TODO: Assign this elsewhere?
   sdmevaltool_options(base = "../misc/base")
 

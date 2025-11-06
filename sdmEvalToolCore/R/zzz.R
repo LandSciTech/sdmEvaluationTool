@@ -16,7 +16,8 @@ options_set <- FALSE
             "sdmevaltool_options" = list(
                 base = "../results",
                 db = "sqlite",
-                tz = "" # time zone for unix dates
+                tz = "", # time zone for unix dates
+                lang = "english"
             )
         )
     }
