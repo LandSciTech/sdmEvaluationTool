@@ -4,14 +4,14 @@
 \alias{db_read_user_info}
 \title{Get User Info from DB}
 \usage{
-db_read_user_info(con, userid, deploymentid)
+db_read_user_info(con, user_id, deployment_id)
 }
 \arguments{
 \item{con}{DB connection.}
 
-\item{userid}{User ID.}
+\item{user_id}{User ID.}
 
-\item{deploymentid}{Deployment ID.}
+\item{deployment_id}{Deployment ID.}
 }
 \value{
 A data frame with user info and access roles.

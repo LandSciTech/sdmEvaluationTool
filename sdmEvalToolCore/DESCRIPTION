@@ -20,7 +20,8 @@ Imports:
     glue,
     sf,
     RSQLite,
-    terra
+    terra,
+    rlang
 Suggests: 
     rmarkdown
 LazyData: true
