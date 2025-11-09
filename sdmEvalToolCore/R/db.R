@@ -51,37 +51,36 @@ db_connect <- function(...) {
 #' Get User Info from DB
 #'
 #' @param con DB connection.
-#' @param userid User ID.
-#' @param deploymentid Deployment ID.
+#' @param user_id User ID.
+#' @param deployment_id Deployment ID.
 #'
 #' @return A data frame with user info and access roles.
 #'   The `"user_roles"` attribute gives the user roles as a vector.
 #'
 #' @export
-db_read_user_info <- function(con, userid, deploymentid) {
-    # dealing with NSE
-    user_id <- admin <- deployment_id <- NULL
+
+db_read_user_info <- function(con, user_id, deployment_id) {
     # user info
     tbl_user <- dplyr::tbl(con, "users") |>
-        dplyr::filter(user_id == userid) |>
+        dplyr::filter(.data$user_id == .env$user_id) |>
         dplyr::collect() |>
-        dplyr::mutate(admin = as.logical(admin))
+        dplyr::mutate(admin = as.logical(.data$admin))
     if (nrow(tbl_user) < 0L) {
-        stop("User ", sQuote(userid), " unknown.")
+        stop("User ", sQuote(user_id), " unknown.")
     }
     # user roles
     tbl_access <- dplyr::tbl(con, "access") |>
         dplyr::filter(
-            deployment_id == deploymentid,
-            user_id == userid
+            .data$deployment_id == .env$deployment_id,
+            .data$user_id == .env$user_id
         ) |>
         dplyr::collect()
     if (nrow(tbl_access) < 0L) {
         stop(
             "User ",
-            sQuote(userid),
+            sQuote(user_id),
             " has no access to deployment ",
-            sQuote(deploymentid)
+            sQuote(deployment_id)
         )
     }
     v <- strsplit(tbl_access$user_roles, ",")[[1L]]
@@ -95,16 +94,14 @@ db_read_user_info <- function(con, userid, deploymentid) {
 #' Get Deployment Materials from DB
 #'
 #' @param con DB connection.
-#' @param deploymentid Deployment ID.
+#' @param deployment_id Deployment ID.
 #'
 #' @return A data frame with joined deployment materials.
 #'
 #' @export
-db_read_deployment_materials <- function(con, deploymentid) {
-    # dealing with NSE
-    deployment_id <- NULL
+db_read_deployment_materials <- function(con, deployment_id) {
     dm <- dplyr::tbl(con, "deployment_materials") |>
-        dplyr::filter(deployment_id == deploymentid) |>
+        dplyr::filter(.data$deployment_id == .env$deployment_id) |>
         dplyr::left_join(
             dplyr::tbl(con, "deployments"),
             by = "deployment_id"
@@ -130,16 +127,14 @@ db_read_deployment_materials <- function(con, deploymentid) {
 #' Get Comments from DB
 #'
 #' @param con DB connection.
-#' @param deploymentid Deployment ID.
+#' @param deployment_id Deployment ID.
 #'
 #' @return A data frame with comments for the deployment.
 #'
 #' @export
-db_read_comments <- function(con, deploymentid) {
-    # dealing with NSE
-    deployment_id <- NULL
+db_read_comments <- function(con, deployment_id) {
     out <- dplyr::tbl(con, "comments") |>
-        dplyr::filter(deployment_id == deploymentid) |>
+        dplyr::filter(.data$deployment_id == .env$deployment_id) |>
         dplyr::collect() |>
         db_timestamp()
     out
@@ -148,16 +143,14 @@ db_read_comments <- function(con, deploymentid) {
 #' Get Comments from DB
 #'
 #' @param con DB connection.
-#' @param deploymentid Deployment ID.
+#' @param deployment_id Deployment ID.
 #'
 #' @return A data frame with evaluations for the deployment.
 #'
 #' @export
-db_read_evaluations <- function(con, deploymentid) {
-    # dealing with NSE
-    deployment_id <- NULL
+db_read_evaluations <- function(con, deployment_id) {
     out <- dplyr::tbl(con, "evaluations") |>
-        dplyr::filter(deployment_id == deploymentid) |>
+        dplyr::filter(.data$deployment_id == .env$deployment_id) |>
         dplyr::collect() |>
         db_timestamp()
     out

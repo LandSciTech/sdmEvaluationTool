@@ -4,12 +4,12 @@
 \alias{db_read_evaluations}
 \title{Get Comments from DB}
 \usage{
-db_read_evaluations(con, deploymentid)
+db_read_evaluations(con, deployment_id)
 }
 \arguments{
 \item{con}{DB connection.}
 
-\item{deploymentid}{Deployment ID.}
+\item{deployment_id}{Deployment ID.}
 }
 \value{
 A data frame with evaluations for the deployment.
