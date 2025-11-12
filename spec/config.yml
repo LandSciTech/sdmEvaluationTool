@@ -210,7 +210,7 @@ tables:
     fields:
       material_id:
         name: Material ID
-        description: ID for uploaded model materials (in the form of `<species_id>_<model_id>_<component_id>`).
+        description: ID for uploaded model materials (in the form of `<model_id>_<species_id>_<component_id>`), for model materials that apply to multiple species use `ALL` in place of the `species_id`.
         type: text
         constraint: PRIMARY KEY
       model_id:
@@ -302,7 +302,7 @@ tables:
     fields:
       deployment_material_id:
         name: Deployment Material ID
-        description: Compound ID for joining feedback to deployment materials (in the form of `<deployment_id>_<species_id>_<model_id>_<component_id>`).
+        description: Compound ID for joining feedback to deployment materials (in the form of `<deployment_id>_<model_id>_<species_id>_<component_id>`).
         type: text
         constraint: PRIMARY KEY
       deployment_id:

@@ -163,7 +163,7 @@ materials.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `material_id` | text | `PRIMARY KEY` | ID for uploaded model materials (in the form of `<species_id>_<model_id>_<component_id>`). |
+| `material_id` | text | `PRIMARY KEY` | ID for uploaded model materials (in the form of `<model_id>_<species_id>_<component_id>`), for model materials that apply to multiple species use `ALL` in place of the `species_id`. |
 | `model_id` | text | `REFERENCES models` | Model ID (foreign key), can be missing. |
 | `species_id` | text | `REFERENCES species` | Species ID (foreign key). |
 | `component_id` | text | `REFERENCES components` | Component ID (foreign key). |
@@ -197,7 +197,7 @@ basis for evaluations and are defined by the **modeler**.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `deployment_material_id` | text | `PRIMARY KEY` | Compound ID for joining feedback to deployment materials (in the form of `<deployment_id>_<species_id>_<model_id>_<component_id>`). |
+| `deployment_material_id` | text | `PRIMARY KEY` | Compound ID for joining feedback to deployment materials (in the form of `<deployment_id>_<model_id>_<species_id>_<component_id>`). |
 | `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
 | `material_id` | text | `REFERENCES materials` | Material ID. |
 
