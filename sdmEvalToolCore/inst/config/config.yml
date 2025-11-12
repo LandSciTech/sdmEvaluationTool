@@ -1,0 +1,771 @@
+version: 0.1
+
+roles:
+
+  viewer:
+    name: Viewer
+    materials_read: Yes
+    materials_create_new: No
+    materials_edit_own: No
+    materials_edit_all: No
+    materials_delete: No
+    evaluations_read: Yes
+    evaluations_create_new: No
+    evaluations_edit_own: No
+    evaluations_edit_all: No
+    evaluations_delete: No
+    discussions_read: No
+    discussions_write: No
+
+  commenter:
+    name: Commenter
+    materials_read: Yes
+    materials_create_new: No
+    materials_edit_own: No
+    materials_edit_all: No
+    materials_delete: No
+    evaluations_read: Yes
+    evaluations_create_new: No
+    evaluations_edit_own: No
+    evaluations_edit_all: No
+    evaluations_delete: No
+    discussions_read: Yes
+    discussions_write: Yes
+
+  evaluator:
+    name: Evaluator
+    materials_read: Yes
+    materials_create_new: No
+    materials_edit_own: No
+    materials_edit_all: No
+    materials_delete: No
+    evaluations_read: Yes
+    evaluations_create_new: Yes
+    evaluations_edit_own: Yes
+    evaluations_edit_all: No
+    evaluations_delete: No
+    discussions_read: Yes
+    discussions_write: Yes
+
+  modeler:
+    name: Modeler
+    materials_read: Yes
+    materials_create_new: Yes
+    materials_edit_own: Yes
+    materials_edit_all: No
+    materials_delete: No
+    evaluations_read: Yes
+    evaluations_create_new: No
+    evaluations_edit_own: No
+    evaluations_edit_all: No
+    evaluations_delete: No
+    discussions_read: Yes
+    discussions_write: Yes
+
+  admin:
+    name: Admin
+    materials_read: Yes
+    materials_create_new: Yes
+    materials_edit_own: Yes
+    materials_edit_all: Yes
+    materials_delete: Yes
+    evaluations_read: Yes
+    evaluations_create_new: Yes
+    evaluations_edit_own: Yes
+    evaluations_edit_all: Yes
+    evaluations_delete: Yes
+    discussions_read: Yes
+    discussions_write: Yes
+
+tables:
+
+  users:
+    name: Users
+    description: >
+      This table contains user names and admin roles, and IDs be used as foreign keys in 
+      other tables to track change history. This table needs to be updated 
+      regularly, requires **admin** access and writing directly to the database. 
+      See the list of user roles for specific permissions.
+      In the future, this table might be a 3rd party authorization tool.
+    fields:
+      user_id:
+        name: User ID
+        description: User ID (a unique ID).
+        type: text
+        constraint: PRIMARY KEY
+      user_name:
+        name: User Name
+        description: The user's full name.
+        type: text
+        constraint: NOT NULL
+      user_email:
+        name: User Email
+        description: The user's email address.
+        type: text
+        constraint: UNIQUE NOT NULL
+      user_affiliation:
+        name: User Affiliation
+        description: The user's primary affiliation, e.g. ECCC, BAM, etc.
+        type: text
+        constraint: NOT NULL
+      admin:
+        name: Admin User Flag
+        description: Boolean flag for admin users.
+        type: boolean
+        constraint: NOT NULL
+
+  species:
+    name: Species
+    description: >
+      A table that lists all potential species, in our case, birds in Canada. 
+      This table is saved to the database once, changes to the `species` 
+      table require **admin** access directly in the database.
+    fields:
+      species_id:
+        name: Species ID
+        description: Upper case 4-letter code, e.g. `OVEN` for Ovenbird.
+        type: text
+        constraint: PRIMARY KEY
+      scientific_name:
+        name: Scientific Name
+        description: Scientific name.
+        type: text
+        constraint: UNIQUE NOT NULL
+      english_name:
+        name: English Name
+        description: Common name in English.
+        type: text
+        constraint: UNIQUE NOT NULL
+      french_name:
+        name: French Name
+        description: Common name in French (use UTF-8 encoding).
+        type: text
+        constraint: UNIQUE NOT NULL
+
+  components:
+    name: Components
+    description: >
+      Components are SDM results that can be uploaded and evaluated. 
+      Each component will have its Shiny module implementing the expected 
+      behavior for upload, display, and evaluation. e.g. a component can have 
+      corresponding `mod_<component_id>_ui` and `mod_<component_id>_server` 
+      module functions. Mandatory components are prerequisites for starting 
+      evaluations. Updates are done via parsing the `components` section of the
+      `config.yaml` file by **admins** and **tool developers**. 
+      After initial development, versioning and backward compatibility should 
+      be a concern so that previous entries will not break.
+    fields:
+      component_id:
+        name: Component ID
+        description: Component ID, lower case with `_`, also used in Shiny module names.
+        type: text
+        constraint: PRIMARY KEY
+      component_description:
+        name: Component Description
+        description: Component description.
+        type: text
+        constraint: NOT NULL
+      component_mandatory:
+        name: Mandatory
+        description: Is the component mandatory (value is `TRUE`).
+        type: boolean
+        constraint: NOT NULL
+
+  models:
+    name: Models
+    description: >
+      A table listing models. The model name and ID acts as an abbreviation of 
+      the model approach/extent/etc. and also acts as a version identifier, 
+      e.g. `can_glm_v1.1` would mean that GLM models were used for models with 
+      Canadian extent and this is version 1.1. Updates are done 
+      by **modelers** via uploading or creating a method metadata file.
+    fields:
+      model_id:
+        name: Model ID
+        description: Model ID, lower case, alphanumeric, `.` and `_` allowed.
+        type: text
+        constraint: PRIMARY KEY
+      model_name:
+        name: Model Name
+        description: A human readable version of `model_id` displayed in the app, can include spaces.
+        type: text
+        constraint: UNIQUE NOT NULL
+      model_description:
+        name: Model Description
+        description: A human readable version of `model_id` displayed in the app.
+        type: text
+        constraint: NOT NULL
+      model_metadata:
+        name: Model Metadata
+        description: A file path or URL used to find the ODMAP metadata for the model.
+        type: text
+        constraint: NOT NULL
+
+  materials:
+    name: Materials
+    description: >
+      Upload materials are used to be displayed and evaluated. 
+      Updates to the file system and the database will be regular as 
+      **modelers** upload new materials.
+    fields:
+      material_id:
+        name: Material ID
+        description: ID for uploaded model materials (in the form of `<model_id>_<species_id>_<component_id>`), for model materials that apply to multiple species use `ALL` in place of the `species_id`.
+        type: text
+        constraint: PRIMARY KEY
+      model_id:
+        name: Model ID
+        description: Model ID (foreign key), can be missing.
+        type: text
+        constraint: REFERENCES models
+      species_id:
+        name: Species ID
+        description: Species ID (foreign key).
+        type: text
+        constraint: REFERENCES species
+      component_id:
+        name: Component ID
+        description: Component ID (foreign key).
+        type: text
+        constraint: REFERENCES components
+      material_create_user:
+        name: Create User
+        description: User who uploaded the model material (foreign key).
+        type: text
+        constraint: REFERENCES users (user_id)
+      material_create_time:
+        name: Create Time
+        description: Time of initial upload.
+        type: timestamp
+        constraint: NOT NULL
+      material_modify_user:
+        name: Modify User
+        description: User who modified the model material (foreign key).
+        type: text
+        constraint: REFERENCES users (user_id)
+      material_modify_time:
+        name: Modify Time
+        description: Time of last modification.
+        type: timestamp
+        constraint: NOT NULL
+      material_settings:
+        name: Material Settings
+        description: Material settings, see `templates`.
+        type: json
+        constraint: NOT NULL
+
+  deployments:
+    name: Deployments
+    description: >
+      Deployment is a set of results organized for a specific audience for
+      evaluation. Deployments make materials reusable without having to
+      repeatedly upload the same set of files. A deployment is defined
+      by the **modeler** based on model materials that they are the
+      owners (creators) of.
+    fields:
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID.
+        type: text
+        constraint: PRIMARY KEY
+      deployment_name:
+        name: Deployment Name
+        description: Deployment name.
+        type: text
+        constraint: NOT NULL
+      deployment_description:
+        name: Deployment Description
+        description: Deployment name.
+        type: text
+        constraint: NOT NULL
+      deployment_create_user:
+        name: Create User
+        description: User who created the deployment (foreign key).
+        type: text
+        constraint: REFERENCES users (user_id)
+      deployment_create_time:
+        name: Create Time
+        description: Time of deployment creation.
+        type: timestamp
+        constraint: NOT NULL
+      deployment_settings:
+        name: Deployment Settings
+        description: Deployment settings, see `templates`.
+        type: json
+        constraint: NOT NULL
+
+  deployment_materials:
+    name: Deployment Materials
+    description: >
+      Materials selected for a deployment. Entries in this table form the
+      basis for evaluations and are defined by the **modeler**.
+    fields:
+      deployment_material_id:
+        name: Deployment Material ID
+        description: Compound ID for joining feedback to deployment materials (in the form of `<deployment_id>_<model_id>_<species_id>_<component_id>`).
+        type: text
+        constraint: PRIMARY KEY
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID (foreign key).
+        type: text
+        constraint: REFERENCES deployments
+      material_id:
+        name: Material ID
+        description: Material ID.
+        type: text
+        constraint: REFERENCES materials
+
+  evaluations:
+    name: Evaluations
+    description: >
+      Evaluations are the basic feedback on the materials within the context of
+      a deployment. There is no explicitly defined primary key, sort and filter 
+      to find entries to display. The body has to conform with component display 
+      rules which is not checked by the database and is the job for the UI to 
+      enforce. Updates to evaluations will be frequent as 
+      **evaluators** provide more data feedback. Notes can be provided for
+      evaluations, these function like flags marking feedback that needs
+      to be addressed later (i.e. such notes can be identified later when
+      synthesizing the evaluations).
+    fields:
+      deployment_material_id:
+        name: Deployment Material ID
+        description: Deployment Material ID.
+        type: text
+        constraint: REFERENCES deployment_materials
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID (foreign key).
+        type: text
+        constraint: REFERENCES deployments
+      material_id:
+        name: Material ID
+        description: Material ID.
+        type: text
+        constraint: REFERENCES materials
+      use_cases:
+        name: Use Cases
+        description: One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment.
+        type: text # should this be json?
+        constraint: NOT NULL
+      evaluation_create_user:
+        name: Create User
+        description: User who created the initial evaluation (foreign key).
+        type: text
+        constraint: REFERENCES users (user_id)
+      evaluation_create_time:
+        name: Create Time
+        description: Time of initial the initial evaluation.
+        type: timestamp
+        constraint: NOT NULL
+      evaluation_modify_user:
+        name: Modify User
+        description: User who last modified (foreign key).
+        type: text
+        constraint: REFERENCES users (user_id)
+      evaluation_modify_time:
+        name: Modify Time
+        description: Time of last modification.
+        type: timestamp
+        constraint: NOT NULL
+      evaluation_body:
+        name: Evaluation
+        description: JSON blob with the evaluation according to component display rules reflecting last modification.
+        type: json
+        constraint: NOT NULL
+      note_create_user:
+        name: Note Create User
+        description: User who created the note.
+        type: text
+        constraint: REFERENCES users (user_id)
+      note_create_time:
+        name: Note Create Time
+        description: Time of note creation.
+        type: timestamp
+        constraint: NOT NULL
+      note_body:
+        name: Note Body
+        description: JSON blob with the note on an evaluation reflecting last modification.
+        type: json
+        constraint: NOT NULL
+
+  comments:
+    name: Comments
+    description: >
+      Comments are chat-like exchanges of ideas tied to a model-species 
+      combination, visible to users with discussion roles.
+      Display rule for comments are simpler than for evaluations, 
+      we consider text comments. Users with **commenter**
+      privileges can leave comments (like discussions back and forth) if
+      comments are enabled for the deployment.
+    fields:
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID (foreign key).
+        type: text
+        constraint: REFERENCES deployments
+      model_id:
+        name: Model ID
+        description: Model ID (foreign key).
+        type: text
+        constraint: REFERENCES models
+      species_id:
+        name: Species ID
+        description: Species ID (foreign key).
+        type: text
+        constraint: REFERENCES species
+      comment_create_user:
+        name: Comment Create User
+        description: User who created the note.
+        type: text
+        constraint: REFERENCES users (user_id)
+      comment_create_time:
+        name: Comment Create Time
+        description: Time of comment creation.
+        type: timestamp
+        constraint: NOT NULL
+      comment_body:
+        name: Comment Body
+        description: JSON blob with the note on an evaluation reflecting last modification.
+        type: json
+        constraint: NOT NULL
+
+  access:
+    name: User Access
+    description: >
+      Describe what access users have for deployments, i.e. who the **modeler**
+      wants to be an evaluator. This is a table that will be required for
+      later phases of the tool development. We might have to consider
+      access based on user groups as well to avoid having to set permissions
+      for individuals, using existing groups instead.
+    fields:
+      user_id:
+        name: User ID
+        description: User ID (foreign key).
+        type: text
+        constraint: REFERENCES users
+      deployment_id:
+        name: Deployment ID
+        description: Deployment ID (foreign key).
+        type: text
+        constraint: REFERENCES deployments
+      user_roles:
+        name: User Role
+        description: A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not set by the user granting the access.
+        type: text
+        constraint: NOT NULL
+
+
+components:
+# note: properties used in the ui will have to take `en` and `fr` values.
+
+  observations:
+    description: Detections or counts by location and timestamp for a single or multiple species.
+    mandatory: Yes
+    upload:
+      type: table
+      input:
+        description: >
+          Observations are organized as survey events as rows (unique combinations
+          of location [longitude/latitude] and date/time). The table has the
+          following mandatory fields: latitude, longitude, time, and method.
+          Latitude and longitude are coordinates as decimal degrees (EPSG:4326).
+          Time is in a format coercible to POSIX time, e.g. 2019-06-01 7:21:00 AM.
+          Method is a string denoting the survey method. Other columns holding
+          the observations should be named using Species IDs, i.e. 4-letter codes
+          (e.g. OVEN, TEWA, etc.) consistent with the species list being used.
+          The cell values in the species columns should be non-negative integers
+          (i.e. 0, 1, 2, ... or 0/1) indicating the detections (>0) and 
+          non-detections of the species during the survey events.
+          The single-species and multi-species data format are identical except
+          for the number of species whose data is in the table.
+          The table can be in csv (make sure that time is formatted properly),
+          rds and parquet (these latter formats should have time as POSIX).
+        file_ext: [csv, rds, parquet]
+        columns: [latitude:double, longitude:double, time:timestamp, method:text]
+      output:
+        description: >
+          The output is a spatial point data frame with columns:
+          time, method, and status (coordinates are part of the geometry column).
+        columns: [time:timestamp, method:text, status:integer]
+        path: "materials/{model_id}/species/{species_id}/observations.gpkg"
+    display:
+      type: map
+      title: Observations
+      description: >
+        Display non-detections (status == 0) detections (status > 0) in
+        different colors. Show detections by default (green), allow an option to turn
+        on non-detections (grey). Use circle markers in Leaflet.
+        We can use unique(method) and year of survey as dropdown filters.
+        Method, time, status should be part of popup message on click.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: "Observations."
+          fr: ""
+        units:
+          en: "Counts"
+          fr: ""
+    evaluation:
+      evaluation_allowed: Yes
+      questions:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the observations?
+          fr: ""
+
+  model_metadata:
+    description: ODMAP protocol metadata.
+    mandatory: Yes
+    upload:
+      type: table
+      input:
+        description: TBD once we integrate ODMAP into the UI.
+        file_ext: [csv, rds, parquet]
+        columns: []
+      output:
+        description: TBD once we integrate ODMAP into the UI.
+        columns: []
+        path: "materials/{model_id}/metadata/model_metadata.parquet"
+    display:
+      type: table
+      title: Model Metadata
+      description: TBD once we integrate ODMAP into the UI.
+      placement: "page.tab.section" # TBD
+    evaluation:
+      evaluation_allowed: No
+
+  predictor_metadata:
+    description: Predictor metadata.
+    mandatory: Yes
+    upload:
+      type: table
+      input:
+        description: >
+          The file should contain the recommended columns but is not
+          strictly enforced. The table should give information about the
+          predictors (one predictor per row). The file can be csv, rds, or parquet.
+          The predictor column should list the short names of the predictors
+          that match the band names in the predictor raster.
+        file_ext: [csv, rds, parquet]
+        columns: [predictor, definition, predictor_class, resolution, source, provider, citation, covariate_extraction, prediction_resolution, years, temporal_matching]
+      output:
+        description: A file is written with the listed columns.
+        columns: [predictor, definition, predictor_class, resolution, source, provider, citation, covariate_extraction, prediction_resolution, years, temporal_matching]
+        path: "materials/{model_id}/predictors/predictor_metadata.parquet"
+    display:
+      type: table
+      title: Predictor Metadata
+      description: >
+        The table is displayed as a reactable table.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: "Predictor metadata table."
+          fr: ""
+    evaluation:
+      evaluation_allowed: Yes
+      questions:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the predictor metadata table?
+          fr: ""
+
+  predictor_raster:
+    description: Predictor raster, a multi-band TIF with spatial predictors as bands.
+    mandatory: No
+    upload:
+      type: raster
+      input:
+        description: >
+          A spatial raster file in tif format where bands are different spatial
+          predictors. Names of the layers should match the predictor column in 
+          the predictor metadata.
+        file_ext: [tif]
+        columns: []
+      output:
+        description: >
+          The tif file is saved as is.
+        path: "materials/{model_id}/predictors/predictor_raster.tif"
+    display:
+      type: map
+      title: Predictor Raster
+      description: >
+        A raster map in Leaflet, bands are added as layers and can be selected
+        from the layers icon of the map.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: "Predictor rasters."
+          fr: ""
+    evaluation:
+      evaluation_allowed: No
+
+  spatial_prediction:
+    description: Expected value as band 1, variation as band 2.
+    mandatory: Yes
+    upload:
+      type: raster
+      input:
+        description: >
+          A spatial raster in tif format. The 1st band is interpreted as
+          the distribution layer (abundance, occurrence probability, density)
+          with non-negative real values.
+          The second layer, if present, is interpreted as a layer with
+          uncertainty (non-negative values, SE, CoV, CI or PI width, etc.).
+        file_ext: [tif]
+        columns: []
+      output:
+        description: >
+          The file is saved as is. The metadata will be used to
+          label the map appropriately (what the units are etc.).
+        path: "materials/{model_id}/species/{species_id}/spatial_prediction.tif"
+    display:
+      type: map
+      title: Spatial Prediction
+      description: >
+        A raster map in Leaflet, with 2 bands: one for "abundance" one for
+        "uncertainty". There is a single-species mode, and a comparison
+        model. In comparison mode, we use a slider to reveal differences.
+        We need a dropdown to choose which map to compare against.
+        Same species & different model, same model & different species.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: "Spatial predictions."
+          fr: ""
+        units:
+          en: "Density [inds/ha]"
+          fr: ""
+    evaluation:
+      evaluation_allowed: Yes
+      questions:
+      - order: 0
+        type: heading
+        question_body:
+          en: What is the accuracy of model predictions based on your expert knowledge?
+          fr: ""
+      - order: 1
+        type: gold_standard
+        question_body:
+          en: How confident are you about model predictions?
+          fr: ""
+      - order: 2
+        type: text
+        question_body:
+          en: Why is it a problem?
+          fr: ""
+      - order: 3
+        type: ordinal
+        question_body:
+          en: How important is it to fix the problem?
+          fr: ""
+      - order: 4
+        type: ordinal
+        question_body:
+          en: How difficult/expensive is it to fix the problem?
+          fr: ""
+      - order: 5
+        type: text
+        question_body:
+          en: Can you suggest options for addressing the problem?
+          fr: ""
+
+  model_summary:
+    description: Model summary including variable importance metrics or coefficients for predictor variables.
+    mandatory: Yes
+    upload:
+      type: table
+      input:
+        description: >
+          A table summarizing the models, usually predictors as rows
+          (listed in the column called predictor). The multi-species
+          version lists Species IDs in the column species_id.
+          The predictors should match names in the predictor metadata.
+          Other columns can be named freely, e.g. var_importance, coefficient,
+          StdError etc.
+        file_ext: [csv, rds, parquet]
+        columns: [species_id, predictor]
+      output:
+        description: >
+          The input file is filtered for individual species and saved.
+        path: "materials/{model_id}/species/{species_id}/model_summary.parquet"
+    display:
+      type: table
+      title: Model Summary
+      description: >
+        The table is displayed as a reactable table.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: "Model summary."
+          fr: ""
+    evaluation:
+      evaluation_allowed: Yes
+      questions:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the model summary?
+          fr: ""
+
+  model_fit:
+    description: Model fit statistics.
+    mandatory: Yes
+    upload:
+      type: table
+      input:
+        description: >
+          A table summarizing the model fit, statistics as rows
+          (listed in the column called statistic). The multi-species
+          version lists Species IDs in the column species_id.
+          The value of the fit statistic is in the column called value.
+          Fit metrics are also listed in the project metadata.
+        file_ext: [csv, rds, parquet]
+        columns: [species_id, statistic, value]
+      output:
+        description: >
+          The input file is filtered for individual species and saved.
+        path: "materials/{model_id}/species/{species_id}/model_fit.parquet"
+    display:
+      type: table
+      title: Model Fit
+      description: >
+        The table is displayed as a reactable table.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: "Model goodness-of-fit metrics."
+          fr: ""
+    evaluation:
+      evaluation_allowed: Yes
+      questions:
+      - order: 0
+        type: text
+        question_body:
+          en: Do you have any feedback about the model fit?
+          fr: ""
+
+templates:
+
+  deployment_settings:
+    instructions_to_evaluators:
+      en: "Provide instructions for the evaluation."
+      fr: ""
+    deployment_subunits_description:
+      en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
+      fr: ""
+    deployment_subunits_legend:
+      en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
+      fr: ""
+    deployment_subunits_path: "deployments/{deployment_id}/deployment_subunits.gpkg"
+    use_cases:
+      - en: "Use case 1"
+        fr: "Cas d'utilisation 1"
+      - en: "Use case 2"
+        fr: "Cas d'utilisation 2"
+    comments_allowed: No
+    preferred_language: "en"
