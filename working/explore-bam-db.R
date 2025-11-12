@@ -156,7 +156,7 @@ materials_fun <- function(
             material_id = paste0(
                 model_id,
                 "_",
-                as.character(species_id),
+                ifelse(is.na(species_id), "ALL", as.character(species_id)),
                 "_",
                 component_id
             ),
