@@ -1,3 +1,12 @@
+#' Validate input ids
+#'
+#' @param ...
+#' @param .call
+#'
+#' @returns
+#'
+#' @export
+#' @examples
 validate_ids <- function(..., .call = rlang::caller_env()) {
   expand_dots(...)
   nms <- names(list(...))

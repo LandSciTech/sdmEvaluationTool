@@ -142,3 +142,63 @@ pretty <- function(x) {
 have_data <- function() {
   dir.exists(sdmEvalToolCore::sdmevaltool_options()$base)
 }
+
+
+#' Title
+#'
+#' @param component_id
+#' @param deployment_id
+#' @param model_id
+#' @param species_id
+#'
+#' @returns
+#'
+#' @export
+#' @examples
+#' prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
+#' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+
+prep_questions <- function(
+  component_id,
+  deployment_id,
+  model_id,
+  species_id = NA
+) {
+  validate_ids(
+    deployment_id = deployment_id,
+    model_id = model_id,
+    species_id = species_id
+  )
+
+  q <- dplyr::rows_upsert(
+    sdmEvalToolCore::default_questions,
+    prep_deployments(deployment_id, "questions"),
+    by = c("component", "order")
+  )
+
+  if (component_id != "test") {
+    q <- dplyr::filter(q, .data$component == .env$component_id)
+  }
+
+  q |>
+    dplyr::rename("label" = sdmevaltool_options()$lang) |>
+    dplyr::mutate(
+      ui = dplyr::case_match(
+        .data$type,
+        "text" ~ "text_input",
+        "heading" ~ "h2",
+        "gold_standard" ~ "gold_standard_input",
+        "ordinal" ~ "slider_input"
+      ),
+      id = paste(
+        .env$deployment_id,
+        .env$model_id,
+        .env$species_id,
+        .data$component,
+        .data$order,
+        sep = "_"
+      )
+    )
+}
+
+dummy_session <- list(ns = \(x) paste0("session-", x))
