@@ -14,7 +14,8 @@ sdm_tool <- function() {
     "observations",
     "model",
     "predictors",
-    "model_metadata"
+    "model_metadata",
+    "test"
   )
 
   # Pages
