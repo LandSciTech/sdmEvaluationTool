@@ -15,26 +15,12 @@
   - nav_panel() - Page Modules (e.g., `mod_page_observations_ui()`)
     - sidebar() - *Right-side* sidebar for page-related evaluation questions
 
-## Things to consider
-
-- Use `brand.yml` for theming to allow easy changes? - https://posit-dev.github.io/brand-yml/
+## General
 - Use Air formatter (use `#fmt: skip` to skip formatting specific sections
 - Use bslib for Shiny dashboard 
 - Module naming
-    - Top level tabs `mod_tab_<name_.R` - `mod_tab_<name>_ui()` and `mod_tab_<name>_server()`
-    - Components `mod_<component_id>_ui` and `mod_<component_id>_server` (spec/README.md)
-        - TODO: What about `mod_comp_<component_id>`?
+    - Top level pages `mod_page_<name_.R` - `mod_page_<name>_ui()` and `mod_page_<name>_server()`
+    - Components `mod_comp_<component_id>_ui` and `mod_comp_<component_id>_server` (spec/README.md)
 
-## To Do
-- Overview - Table depends on the role of the viewer
-- Add loading spinners
-- Add caching
-
-
-
-
-## Questions 
-- The model level materials should apply to all species. I am thinking of using a set of tags for the components where we can color-code the model and species level components. e.g. [Metadata:blue] [Predictor summary:blue] [Predictions:green] [Model fit:green] (imagine that each if these tags have background color applied). This would also make the table more compact because these could be places in the same single column called Materials.
-    - TODO: How would this be more compact? A single cell that lists all the materials finished?
-
-- one column with labels (like 'observations')
+## Things to consider
+- Use `brand.yml` for theming to allow easy changes? - https://posit-dev.github.io/brand-yml/
