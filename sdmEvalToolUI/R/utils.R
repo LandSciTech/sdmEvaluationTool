@@ -53,7 +53,11 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
     #TODO: Is there a reason to have a sub list? i.e. 1?
     purrr::pluck("upload", 1, "output", "path")
 
-  validate_ids(model_id = model_id, species_id = species_id)
+  if (stringr::str_detect(path, "species_id")) {
+    validate_ids(model_id = model_id, species_id = species_id)
+  } else {
+    validate_ids(model_id = model_id)
+  }
 
   prep_files(
     path,
@@ -78,23 +82,30 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
 
 prep_deployments <- function(deployment_id, type) {
   validate_ids(deployment_id = deployment_id)
+  stopifnot(type %in% c("questions", "subunits"))
 
   #TODO: Get this from sdmEvalToolCore?
   ext <- ifelse(type == "questions", "csv", "gpkg")
   path <- paste0("deployments/{deployment_id}/deployment_{type}.", ext)
 
-  prep_files(
+  dep <- prep_files(
     path,
     name = paste("Deployment", type),
     deployment_id = deployment_id,
     type = type
-  ) |>
-    dplyr::mutate(
+  )
+
+  if (type != "subunits") {
+    dep <- dplyr::mutate(
+      dep,
       french = as.character(.data$french),
       french = tidyr::replace_na(.data$french, "")
     ) |>
-    # TODO: This shouldn't be in the data
-    dplyr::select(-dplyr::any_of("X"))
+      # TODO: This shouldn't be in the data
+      dplyr::select(-dplyr::any_of("X"))
+  }
+
+  dep
 }
 
 prep_files <- function(path, name, ...) {
