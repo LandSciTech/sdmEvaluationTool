@@ -2,13 +2,22 @@
 % Please edit documentation in R/mod_comp_model_metadata.R
 \name{model_metadata_XXXX}
 \alias{model_metadata_XXXX}
-\title{Title}
+\title{Display Model Metadata}
 \usage{
 model_metadata_XXXX(model_metadata)
 }
 \arguments{
-\item{obs}{}
+\item{model_metadata}{Object}
+}
+\value{
+Output
 }
 \description{
-Title
+Display Model Metadata
+}
+\examples{
+\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+skip_eg()
+# model_metadata_prep("bam_v5_can71") |> model_metadata_XXXX()
+\dontshow{\}) # examplesIf}
 }

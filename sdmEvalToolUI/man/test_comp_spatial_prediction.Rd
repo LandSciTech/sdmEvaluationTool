@@ -2,12 +2,15 @@
 % Please edit documentation in R/mod_comp_spatial_prediction.R
 \name{test_comp_spatial_prediction}
 \alias{test_comp_spatial_prediction}
-\title{Title}
+\title{Test the Spatial Prediction Component}
 \usage{
 test_comp_spatial_prediction()
 }
+\value{
+A Shiny app object
+}
 \description{
-Title
+Test the Spatial Prediction Component
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

@@ -2,13 +2,19 @@
 % Please edit documentation in R/mod_comp_model_summary.R
 \name{mod_comp_model_summary_ui}
 \alias{mod_comp_model_summary_ui}
-\title{Title}
+\title{Model Summary Component UI}
 \usage{
 mod_comp_model_summary_ui(id = "comp_model_summary")
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Model Summary Component UI
+}
+\examples{
+mod_comp_model_summary_ui()
 }

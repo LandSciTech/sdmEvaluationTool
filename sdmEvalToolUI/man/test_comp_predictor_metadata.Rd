@@ -2,12 +2,15 @@
 % Please edit documentation in R/mod_comp_predictor_metadata.R
 \name{test_comp_predictor_metadata}
 \alias{test_comp_predictor_metadata}
-\title{Title}
+\title{Test the Predictor Metadata Component}
 \usage{
 test_comp_predictor_metadata()
 }
+\value{
+A Shiny app object
+}
 \description{
-Title
+Test the Predictor Metadata Component
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

@@ -1,6 +1,6 @@
-#' Title
+#' Test the Model Summary Component
 #'
-#' @returns
+#' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -19,15 +19,16 @@ test_comp_model_summary <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Model Summary Component UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_comp_model_summary_ui()
+
 mod_comp_model_summary_ui <- function(id = "comp_model_summary") {
   tagList(
     reactable::reactableOutput(NS(id, "model_summary"))
@@ -47,11 +48,11 @@ mod_comp_model_summary_server <- function(
 }
 
 
-#' Title
+#' Create a Table for Model Summary Data
 #'
-#' @param obs
+#' @param model_summary Data frame. Model summary information
 #'
-#' @returns
+#' @returns A reactable table object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -62,11 +63,12 @@ model_summary_table <- function(model_summary) {
   reactable::reactable(model_summary)
 }
 
-#' Title
+#' Prepare Model Summary Data
 #'
-#' @param obs
+#' @param model_id Character. Model ID
+#' @param species_id Character. Species ID
 #'
-#' @returns
+#' @returns Data frame
 #'
 #' @export
 #' @examplesIf have_data()

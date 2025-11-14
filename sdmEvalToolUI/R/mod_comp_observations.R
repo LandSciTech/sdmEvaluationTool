@@ -1,6 +1,6 @@
-#' Title
+#' Test the Observations Component
 #'
-#' @returns
+#' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -19,15 +19,16 @@ test_comp_observations <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Observations Component UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_comp_observations_ui()
+
 mod_comp_observations_ui <- function(id = "comp_observations") {
   tagList(
     div(
@@ -74,11 +75,11 @@ mod_comp_observations_server <- function(
 }
 
 
-#' Title
+#' Create a Leaflet Map of Observation Data
 #'
-#' @param obs
+#' @param obs sf data frame. Observations
 #'
-#' @returns
+#' @returns A leaflet map object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -95,11 +96,12 @@ obs_map <- function(obs) {
     leaflet::addCircleMarkers(color = ~ pal(detections), popup = ~popup)
 }
 
-#' Title
+#' Prepare Observation Data
 #'
-#' @param obs
+#' @param model_id Character. Model ID
+#' @param species_id Character. Species ID
 #'
-#' @returns
+#' @returns Spatial data frame
 #'
 #' @export
 #' @examplesIf have_data()

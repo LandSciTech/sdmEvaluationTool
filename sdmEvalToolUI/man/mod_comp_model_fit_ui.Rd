@@ -2,13 +2,19 @@
 % Please edit documentation in R/mod_comp_model_fit.R
 \name{mod_comp_model_fit_ui}
 \alias{mod_comp_model_fit_ui}
-\title{Title}
+\title{Model Fit Component UI}
 \usage{
 mod_comp_model_fit_ui(id = "comp_model_fit")
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Model Fit Component UI
+}
+\examples{
+mod_comp_model_fit_ui()
 }

@@ -2,13 +2,22 @@
 % Please edit documentation in R/mod_comp_predictor_metadata.R
 \name{predictor_metadata_prep}
 \alias{predictor_metadata_prep}
-\title{Title}
+\title{Prepare Predictor Metadata Data}
 \usage{
 predictor_metadata_prep(model_id)
 }
 \arguments{
-\item{obs}{}
+\item{model_id}{Character. Model ID}
+}
+\value{
+Data frame
 }
 \description{
-Title
+Prepare Predictor Metadata Data
+}
+\examples{
+\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+skip_eg()
+predictor_metadata_prep("bam_v5_can71")
+\dontshow{\}) # examplesIf}
 }

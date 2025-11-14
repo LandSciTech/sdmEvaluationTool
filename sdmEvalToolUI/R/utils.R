@@ -67,12 +67,12 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
   )
 }
 
-#' Title
+#' Prepare Deployments
 #'
-#' @param deployment_id
-#' @param type
+#' @param deployment_id Character. Deployment ID
+#' @param type Character. Type of data to load ("questions" or "subunits")
 #'
-#' @returns
+#' @returns Data frame of deployments
 #'
 #' @export
 #' @examplesIf have_data()
@@ -144,14 +144,16 @@ have_data <- function() {
 }
 
 
-#' Title
+#' Prepare Evaluation Questions
 #'
-#' @param component_id
-#' @param deployment_id
-#' @param model_id
-#' @param species_id
+#' Reads, combines and prepares questions for use in UIs.
 #'
-#' @returns
+#' @param component_id Character. Component ID
+#' @param deployment_id Character. Deployment ID
+#' @param model_id Character. Model ID
+#' @param species_id Character. Species ID
+#'
+#' @returns Data frame of questions
 #'
 #' @export
 #' @examples
@@ -202,3 +204,18 @@ prep_questions <- function(
 }
 
 dummy_session <- list(ns = \(x) paste0("session-", x))
+
+#' Temporarily skip examples
+#'
+#' Examples using @examplesIf, will fail if there is nothing to run (i.e.
+#' becaues the example is commented out waiting for a working version).
+#'
+#' @returns Nothing
+#'
+#' @export
+#' @examples
+#' skip_eg()
+
+skip_eg <- function() {
+  invisible()
+}

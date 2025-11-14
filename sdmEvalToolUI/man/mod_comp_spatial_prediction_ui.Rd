@@ -2,13 +2,19 @@
 % Please edit documentation in R/mod_comp_spatial_prediction.R
 \name{mod_comp_spatial_prediction_ui}
 \alias{mod_comp_spatial_prediction_ui}
-\title{Title}
+\title{Spatial Prediction Component UI}
 \usage{
 mod_comp_spatial_prediction_ui(id = "comp_spatial_prediction")
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Spatial Prediction Component UI
+}
+\examples{
+mod_comp_spatial_prediction_ui()
 }

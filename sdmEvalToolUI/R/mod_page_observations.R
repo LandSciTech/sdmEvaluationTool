@@ -1,6 +1,10 @@
-#' Title
+#' Test the Observations Page
 #'
-#' @returns
+#' @param deployment_id Character. Deployment ID
+#' @param model_id Character. Model ID
+#' @param species_id Character. Species ID
+#'
+#' @returns A Shiny app object
 #' @noRd
 #'
 #' @examplesIf have_data()
@@ -34,15 +38,17 @@ test_page_observations <- function(
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Observations Page UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
+#' @param title Page title
+#' @param review_width Character. Width of the review sidebar in percentage of the screen
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_page_observations_ui()
 mod_page_observations_ui <- function(
   id = "observations",
   title = "Observations",
@@ -63,14 +69,15 @@ mod_page_observations_ui <- function(
   )
 }
 
-#' Title
+#' Observations Page Server
 #'
-#' @param id
+#' @param id Shiny module ID
+#' @param ... Additional arguments passed via expand_dots including deployment_id, model_id, species_id, tbl_models, tbl_species
 #'
-#' @returns
+#' @returns Server function for Shiny module
 #'
 #' @export
-#' @examples
+
 mod_page_observations_server <- function(id = "observations", ...) {
   expand_dots(...)
   stopifnot(is.reactive(deployment_id))

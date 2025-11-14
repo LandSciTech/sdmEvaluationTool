@@ -2,13 +2,21 @@
 % Please edit documentation in R/mod_page_model.R
 \name{mod_page_model_ui}
 \alias{mod_page_model_ui}
-\title{Title}
+\title{Model Page UI}
 \usage{
 mod_page_model_ui(id = "model", title = "Model")
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+
+\item{title}{Page title}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Model Page UI
+}
+\examples{
+mod_page_model_ui()
 }

@@ -1,13 +1,13 @@
 #' Validate input ids
 #'
-#' @param ...
-#' @param .call
+#' @param ... Named arguments containing id values to validate (e.g.,
+#' deployment_id, model_id, species_id)
 #'
-#' @returns
+#' @returns NULL (invisibly), or throws validation error if any id is missing
 #'
 #' @export
-#' @examples
-validate_ids <- function(..., .call = rlang::caller_env()) {
+
+validate_ids <- function(...) {
   expand_dots(...)
   nms <- names(list(...))
   n <- purrr::map(nms, \(w) need(get(w), paste("Please select a", pretty(w))))

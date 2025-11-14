@@ -2,13 +2,22 @@
 % Please edit documentation in R/mod_comp_predictor_raster.R
 \name{predictor_raster_prep}
 \alias{predictor_raster_prep}
-\title{Title}
+\title{Prepare Predictor Raster Data}
 \usage{
 predictor_raster_prep(model_id)
 }
 \arguments{
-\item{obs}{}
+\item{model_id}{Character. Model ID}
+}
+\value{
+terra Raster
 }
 \description{
-Title
+Prepare Predictor Raster Data
+}
+\examples{
+\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+skip_eg()
+# predictor_raster_prep("bam_v5_can71")
+\dontshow{\}) # examplesIf}
 }

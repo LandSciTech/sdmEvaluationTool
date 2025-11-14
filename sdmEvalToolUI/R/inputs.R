@@ -33,6 +33,7 @@ gold_standard_input <- function(...) {
 #' q <- prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
 #' ui_questions(q, dummy_session)
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+
 ui_questions <- function(questions, session) {
   ui <- dplyr::select(questions, "ui", "id", "label") |>
     purrr::pmap(\(ui, id, label) {

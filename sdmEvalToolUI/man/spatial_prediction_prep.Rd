@@ -2,15 +2,20 @@
 % Please edit documentation in R/mod_comp_spatial_prediction.R
 \name{spatial_prediction_prep}
 \alias{spatial_prediction_prep}
-\title{Title}
+\title{Prepare Spatial Prediction Data}
 \usage{
 spatial_prediction_prep(model_id, species_id)
 }
 \arguments{
-\item{obs}{}
+\item{model_id}{Character. Model ID}
+
+\item{species_id}{Character. Model ID}
+}
+\value{
+terra Raster
 }
 \description{
-Title
+Prepare Spatial Prediction Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

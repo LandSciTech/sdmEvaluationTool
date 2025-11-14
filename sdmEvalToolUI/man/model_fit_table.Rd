@@ -2,15 +2,18 @@
 % Please edit documentation in R/mod_comp_model_fit.R
 \name{model_fit_table}
 \alias{model_fit_table}
-\title{Title}
+\title{Create a Table for Model Fit Data}
 \usage{
 model_fit_table(model_fit)
 }
 \arguments{
-\item{obs}{}
+\item{model_fit}{Data frame with model fit information}
+}
+\value{
+Reactable table
 }
 \description{
-Title
+Create a Table for Model Fit Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

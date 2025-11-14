@@ -1,6 +1,6 @@
-#' Title
+#' Test the Model Fit Component
 #'
-#' @returns
+#' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -18,15 +18,16 @@ test_comp_model_fit <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Model Fit Component UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_comp_model_fit_ui()
+
 mod_comp_model_fit_ui <- function(id = "comp_model_fit") {
   tagList(
     reactable::reactableOutput(NS(id, "model_fit"))
@@ -46,11 +47,11 @@ mod_comp_model_fit_server <- function(
 }
 
 
-#' Title
+#' Create a Table for Model Fit Data
 #'
-#' @param obs
+#' @param model_fit Data frame with model fit information
 #'
-#' @returns
+#' @returns Reactable table
 #'
 #' @export
 #' @examplesIf have_data()
@@ -61,11 +62,12 @@ model_fit_table <- function(model_fit) {
   reactable::reactable(model_fit)
 }
 
-#' Title
+#' Prepare Model Fit Data
 #'
-#' @param obs
+#' @param model_id Character. Model ID
+#' @param species_id Character. Species ID
 #'
-#' @returns
+#' @returns Data frame
 #'
 #' @export
 #' @examplesIf have_data()

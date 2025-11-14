@@ -2,13 +2,19 @@
 % Please edit documentation in R/mod_comp_predictor_raster.R
 \name{mod_comp_predictor_raster_ui}
 \alias{mod_comp_predictor_raster_ui}
-\title{Title}
+\title{Predictor Raster Component UI}
 \usage{
 mod_comp_predictor_raster_ui(id = "comp_predictor_raster")
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Predictor Raster Component UI
+}
+\examples{
+mod_comp_predictor_raster_ui()
 }

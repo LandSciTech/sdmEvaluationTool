@@ -1,6 +1,6 @@
-#' Title
+#' Launch the SDM Evaluation Tool Shiny Application
 #'
-#' @returns
+#' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()

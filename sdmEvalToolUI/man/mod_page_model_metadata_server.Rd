@@ -2,13 +2,18 @@
 % Please edit documentation in R/mod_page_model_metadata.R
 \name{mod_page_model_metadata_server}
 \alias{mod_page_model_metadata_server}
-\title{Title}
+\title{Model Metadata Page Server}
 \usage{
 mod_page_model_metadata_server(id = "model_metadata", ...)
 }
 \arguments{
-\item{id}{}
+\item{id}{Shiny module ID}
+
+\item{...}{Additional arguments passed via expand_dots including model_id, species_id, tbl_models, tbl_species}
+}
+\value{
+Server function for Shiny module
 }
 \description{
-Title
+Model Metadata Page Server
 }

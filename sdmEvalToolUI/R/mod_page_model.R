@@ -1,6 +1,6 @@
-#' Title
+#' Test the Model Page
 #'
-#' @returns
+#' @returns A Shiny app object
 #' @noRd
 #'
 #' @examplesIf have_data()
@@ -28,15 +28,16 @@ test_page_model <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Model Page UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
+#' @param title Page title
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_page_model_ui()
 mod_page_model_ui <- function(id = "model", title = "Model") {
   nav_panel(
     title,
@@ -50,14 +51,15 @@ mod_page_model_ui <- function(id = "model", title = "Model") {
   )
 }
 
-#' Title
+#' Model Page Server
 #'
-#' @param id
+#' @param id Shiny module ID
+#' @param ... Additional arguments passed via expand_dots including model_id, species_id, tbl_models, tbl_species
 #'
-#' @returns
+#' @returns Server function for Shiny module
 #'
 #' @export
-#' @examples
+
 mod_page_model_server <- function(id = "model", ...) {
   expand_dots(...)
   stopifnot(is.reactive(model_id))

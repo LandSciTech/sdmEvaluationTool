@@ -2,13 +2,21 @@
 % Please edit documentation in R/mod_page_predictors.R
 \name{mod_page_predictors_ui}
 \alias{mod_page_predictors_ui}
-\title{Title}
+\title{Predictors Page UI}
 \usage{
 mod_page_predictors_ui(id = "predictors", title = "Predictors")
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+
+\item{title}{Page title}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Predictors Page UI
+}
+\examples{
+mod_page_predictors_ui()
 }

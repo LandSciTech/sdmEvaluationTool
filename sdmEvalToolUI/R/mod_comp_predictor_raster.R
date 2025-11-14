@@ -1,6 +1,6 @@
-#' Title
+#' Test the Predictor Raster Component
 #'
-#' @returns
+#' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -18,15 +18,15 @@ test_comp_predictor_raster <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Predictor Raster Component UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_comp_predictor_raster_ui()
 mod_comp_predictor_raster_ui <- function(id = "comp_predictor_raster") {
   tagList(
     tagList(
@@ -50,26 +50,32 @@ mod_comp_predictor_raster_server <- function(
 }
 
 
-#' Title
+#' Create a Leaflet Map of Predictor Raster Data
 #'
-#' @param obs
+#' @param predictor_raster terra Raster. Predictor information
 #'
-#' @returns
+#' @returns A leaflet map object
 #'
 #' @export
+#' @examplesIf have_data()
+#' skip_eg()
+#' # predictor_raster_prep("bam_v5_can71") |> predictor_raster_map()
 
 predictor_raster_map <- function(predictor_raster) {
   leaflet::leaflet() |>
     leaflet::addRasterImage(predictor_raster[[1]])
 }
 
-#' Title
+#' Prepare Predictor Raster Data
 #'
-#' @param obs
+#' @param model_id Character. Model ID
 #'
-#' @returns
+#' @returns terra Raster
 #'
 #' @export
+#' @examplesIf have_data()
+#' skip_eg()
+#' # predictor_raster_prep("bam_v5_can71")
 
 predictor_raster_prep <- function(model_id) {
   prep_materials("predictor_raster", model_id = model_id)

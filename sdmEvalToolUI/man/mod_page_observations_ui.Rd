@@ -2,13 +2,27 @@
 % Please edit documentation in R/mod_page_observations.R
 \name{mod_page_observations_ui}
 \alias{mod_page_observations_ui}
-\title{Title}
+\title{Observations Page UI}
 \usage{
-mod_page_observations_ui(id = "observations", title = "Observations")
+mod_page_observations_ui(
+  id = "observations",
+  title = "Observations",
+  review_width = "50\%"
+)
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+
+\item{title}{Page title}
+
+\item{review_width}{Character. Width of the review sidebar in percentage of the screen}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Observations Page UI
+}
+\examples{
+mod_page_observations_ui()
 }

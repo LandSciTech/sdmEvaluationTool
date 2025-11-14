@@ -2,13 +2,19 @@
 % Please edit documentation in R/mod_comp_observations.R
 \name{mod_comp_observations_ui}
 \alias{mod_comp_observations_ui}
-\title{Title}
+\title{Observations Component UI}
 \usage{
 mod_comp_observations_ui(id = "comp_observations")
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Observations Component UI
+}
+\examples{
+mod_comp_observations_ui()
 }
