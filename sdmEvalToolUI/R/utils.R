@@ -25,9 +25,9 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 
 #' Load material files
 #'
-#' @param component Character. Type of material to load.
-#' @param model_id Character.
-#' @param species_id Character.
+#' @param component_id Character. Component ID
+#' @param model_id Character. Model ID
+#' @param species_id Character. Model ID
 #'
 #' @returns Loaded file as an R object
 #'
@@ -156,7 +156,7 @@ have_data <- function() {
 #' @returns Data frame of questions
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
 

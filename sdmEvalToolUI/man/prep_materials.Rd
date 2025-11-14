@@ -7,11 +7,11 @@
 prep_materials(component_id, model_id, species_id = NULL)
 }
 \arguments{
-\item{model_id}{Character.}
+\item{component_id}{Character. Component ID}
 
-\item{species_id}{Character.}
+\item{model_id}{Character. Model ID}
 
-\item{component}{Character. Type of material to load.}
+\item{species_id}{Character. Model ID}
 }
 \value{
 Loaded file as an R object

@@ -20,7 +20,10 @@ data frame. This is programatically created in the server module and
 therefore requires the Shiny session object for namespacing.
 }
 \examples{
+\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 q <- prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
 ui_questions(q, dummy_session)
-prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+ui_questions(q, dummy_session)
+\dontshow{\}) # examplesIf}
 }

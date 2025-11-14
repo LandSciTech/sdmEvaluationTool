@@ -29,10 +29,11 @@ gold_standard_input <- function(...) {
 #' @returns Shiny tagList of UI elements
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' q <- prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
 #' ui_questions(q, dummy_session)
-#' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+#' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+#' ui_questions(q, dummy_session)
 
 ui_questions <- function(questions, session) {
   ui <- dplyr::select(questions, "ui", "id", "label") |>

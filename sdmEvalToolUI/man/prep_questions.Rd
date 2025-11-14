@@ -22,6 +22,8 @@ Data frame of questions
 Reads, combines and prepares questions for use in UIs.
 }
 \examples{
+\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
 prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+\dontshow{\}) # examplesIf}
 }
