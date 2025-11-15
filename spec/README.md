@@ -443,6 +443,38 @@ Output path:
 
 **Display**: The table is displayed as a reactable table.
 
+### Deployment Subunits (`deployment_subunits`)
+
+Deployment subunits.
+
+**Mandatory**: No
+
+**Input**: A geospatial polygons file. It needs to have a `subunit_id`
+column and the geometry column. Subunits can be used to make evaluations
+more specific.
+
+**Output**: The input file is saved.
+
+Output path: `deployments/{deployment_id}/deployment_subunits.gpkg`
+
+**Display**: Subunits are overlaid in top of raster maps.
+
+### Questions (`deployment_questions`)
+
+Deployment questions.
+
+**Mandatory**: No
+
+**Input**: A csv file specifying the questions according to a default
+version.
+
+**Output**: The input file is saved.
+
+Output path: `deployments/{deployment_id}/deployment_questions.csv`
+
+**Display**: Questions will be displayed according to material type
+component specifications.
+
 ## Materials upload
 
 When materials are uploaded, we expect the following sequence of
