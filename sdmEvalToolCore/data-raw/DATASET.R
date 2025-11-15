@@ -35,6 +35,7 @@ components <- data.frame(
     component = character(0L),
     description = character(0L),
     mandatory = logical(0L),
+    type = character(0L),
     upload = character(0L),
     display = character(0L),
     evaluation = character(0L)
@@ -45,6 +46,7 @@ for (i in names(cmp)) {
         component = i,
         description = l$description,
         mandatory = l$mandatory,
+        type = l$type,
         upload = NA_character_,
         display = NA_character_,
         evaluation = NA_character_
