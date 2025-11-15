@@ -54,7 +54,6 @@ show_comps <- function(tn, ...) {
     cat("Output path: ", code(conf$components[[tn]]$upload$output$path), "\n\n")
     cat("**Display**: ", conf$components[[tn]]$display$description, "\n\n")
 }
-
 ```
 
 # SDM Model Evaluation Tool (MET)

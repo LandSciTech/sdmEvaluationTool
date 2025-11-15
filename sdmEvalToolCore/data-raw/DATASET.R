@@ -36,6 +36,7 @@ components <- data.frame(
     description = character(0L),
     mandatory = logical(0L),
     type = character(0L),
+    path = character(0L),
     upload = character(0L),
     display = character(0L),
     evaluation = character(0L)
@@ -47,6 +48,7 @@ for (i in names(cmp)) {
         description = l$description,
         mandatory = l$mandatory,
         type = l$type,
+        path = l$upload$output$path,
         upload = NA_character_,
         display = NA_character_,
         evaluation = NA_character_
