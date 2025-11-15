@@ -179,18 +179,22 @@ db_read_models <- function(con, model_id = NULL) {
 
 #' Get species from DB
 #'
-#' @param con DB connection. 
+#' @param con DB connection.
 #' @param species_id Species ID (optional).
+#' @param lang Language, the `lang` option is used if left `NULL`.
 #'
 #' @return A data frame with species and display names. Optionally filtered to
 #'   species_id.
 #'
 #' @export
 db_read_species <- function(
-    con, 
-    species_id = NULL, 
-    lang = sdmevaltool_options()$lang
+    con,
+    species_id = NULL,
+    lang = NULL
 ) {
+    if (is.null(lang)) {
+        lang <- sdmevaltool_options()$lang
+    }
     out <- dplyr::tbl(con, "species")
     if (!is.null(species_id)) {
         out <- dplyr::filter(out, .data$species_id %in% .env$species_id)
