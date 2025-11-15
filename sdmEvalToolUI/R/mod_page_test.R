@@ -1,4 +1,4 @@
-#' Test the Observations Page
+#' Test the 'test' page
 #'
 #' @param deployment_id Character. Deployment ID
 #' @param model_id Character. Model ID
@@ -8,10 +8,10 @@
 #' @noRd
 #'
 #' @examplesIf have_data()
-#' test_page_observations()
-#' test_page_observations(NULL, NULL, NULL)
+#' test_page_test()
+#' test_page_test(NULL, NULL, NULL)
 
-test_page_observations <- function(
+test_page_test <- function(
   deployment_id = "deployment1",
   model_id = "bam_v5_can71",
   species_id = "BBWO"
@@ -21,11 +21,11 @@ test_page_observations <- function(
 
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",
-    mod_page_observations_ui()
+    mod_page_test_ui()
   )
 
   server <- function(input, output, session) {
-    mod_page_observations_server(
+    mod_page_test_server(
       deployment_id = reactive(deployment_id),
       model_id = reactive(model_id),
       species_id = reactive(species_id),
@@ -38,24 +38,23 @@ test_page_observations <- function(
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Observations Page UI
+#' Test Page UI
 #'
 #' @param id Shiny module ID
-#' @param title Page title
-#' @param review_width Character. Width of the review sidebar in percentage of the screen
+#' @param review_width Character. Width of the review sidebar in percentage.
 #'
 #' @returns Shiny UI
 #'
 #' @export
 #' @examples
-#' mod_page_observations_ui()
-mod_page_observations_ui <- function(
-  id = "observations",
-  title = "Observations",
+#' mod_page_test_ui()
+
+mod_page_test_ui <- function(
+  id = "test",
   review_width = "50%"
 ) {
   nav_panel(
-    title,
+    "Test",
     layout_sidebar(
       sidebar = sidebar(
         width = review_width,
@@ -64,12 +63,13 @@ mod_page_observations_ui <- function(
         uiOutput(NS(id, "ui_questions"))
       ),
       h2(textOutput(NS(id, "title"))),
-      mod_comp_observations_ui(NS(id, "comp_obs"))
+      textOutput(NS(id, "details")),
+      tableOutput(NS(id, "saved"))
     )
   )
 }
 
-#' Observations Page Server
+#' Test Page Server
 #'
 #' @param id Shiny module ID
 #' @param ... Additional arguments passed via expand_dots including deployment_id, model_id, species_id, tbl_models, tbl_species
@@ -78,16 +78,17 @@ mod_page_observations_ui <- function(
 #'
 #' @export
 
-mod_page_observations_server <- function(id = "observations", ...) {
+mod_page_test_server <- function(id = "test", ...) {
   expand_dots(...)
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
-    output$title <- renderText({
+    output$title <- renderText("Test")
+    output$details <- renderText({
       paste0(
-        "Observations for Model: ",
+        "Test for Model: ",
         model_id(),
         " and species ",
         species_id()
@@ -98,7 +99,7 @@ mod_page_observations_server <- function(id = "observations", ...) {
     questions_init <- reactive({
       #TODO: Read values from disk?
       prep_questions(
-        component_id = "observations",
+        component_id = "test",
         deployment_id = deployment_id(),
         model_id = model_id(),
         species_id = species_id()
@@ -121,19 +122,17 @@ mod_page_observations_server <- function(id = "observations", ...) {
       #TODO: Warn user if overwriting?
       dplyr::mutate(
         questions_init(),
-        evaluations = purrr::map(.data$id, \(q) rlang::set_names(input[[q]], q))
+        evaluations = purrr::map(.data$id, \(q) {
+          # Grab the value; if NULL use ""
+          rlang::set_names(input[[q]] %||% "", q)
+        })
       )
     }) |>
       bindEvent(input$save)
 
-    output$saved <- renderText({
-      questions()$evaluations[1][[1]]
+    output$saved <- renderTable({
+      s <- unlist(questions()$evaluations)
+      data.frame(question = names(s), value = unname(s))
     })
-
-    mod_comp_observations_server(
-      "comp_obs",
-      model_id = model_id,
-      species_id = species_id
-    )
   })
 }

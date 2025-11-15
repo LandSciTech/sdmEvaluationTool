@@ -2,12 +2,15 @@
 % Please edit documentation in R/app.R
 \name{sdm_tool}
 \alias{sdm_tool}
-\title{Title}
+\title{Launch the SDM Evaluation Tool Shiny Application}
 \usage{
 sdm_tool()
 }
+\value{
+A Shiny app object
+}
 \description{
-Title
+Launch the SDM Evaluation Tool Shiny Application
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

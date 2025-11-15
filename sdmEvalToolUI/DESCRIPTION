@@ -14,13 +14,11 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports:
     bslib,
-    DBI,
     dplyr (>= 1.1.4),
     leaflet,
     purrr (>= 1.1.0),
     reactable,
     rlang,
-    RSQLite,
     sdmEvalToolCore,
     sf (>= 1.0.21),
     shiny,

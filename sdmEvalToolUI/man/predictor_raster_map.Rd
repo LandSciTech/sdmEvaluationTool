@@ -2,13 +2,22 @@
 % Please edit documentation in R/mod_comp_predictor_raster.R
 \name{predictor_raster_map}
 \alias{predictor_raster_map}
-\title{Title}
+\title{Create a Leaflet Map of Predictor Raster Data}
 \usage{
 predictor_raster_map(predictor_raster)
 }
 \arguments{
-\item{obs}{}
+\item{predictor_raster}{terra Raster. Predictor information}
+}
+\value{
+A leaflet map object
 }
 \description{
-Title
+Create a Leaflet Map of Predictor Raster Data
+}
+\examples{
+\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+skip_eg()
+# predictor_raster_prep("bam_v5_can71") |> predictor_raster_map()
+\dontshow{\}) # examplesIf}
 }

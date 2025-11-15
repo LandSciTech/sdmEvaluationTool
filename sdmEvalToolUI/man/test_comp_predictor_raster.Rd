@@ -2,12 +2,15 @@
 % Please edit documentation in R/mod_comp_predictor_raster.R
 \name{test_comp_predictor_raster}
 \alias{test_comp_predictor_raster}
-\title{Title}
+\title{Test the Predictor Raster Component}
 \usage{
 test_comp_predictor_raster()
 }
+\value{
+A Shiny app object
+}
 \description{
-Title
+Test the Predictor Raster Component
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

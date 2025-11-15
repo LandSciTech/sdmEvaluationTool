@@ -1,6 +1,6 @@
-#' Title
+#' Test the Spatial Prediction Component
 #'
-#' @returns
+#' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -19,15 +19,16 @@ test_comp_spatial_prediction <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Spatial Prediction Component UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_comp_spatial_prediction_ui()
+
 mod_comp_spatial_prediction_ui <- function(id = "comp_spatial_prediction") {
   tagList(
     div(
@@ -57,11 +58,11 @@ mod_comp_spatial_prediction_server <- function(
 }
 
 
-#' Title
+#' Create a Leaflet Map of Spatial Prediction Data
 #'
-#' @param obs
+#' @param spatial_prediction terra Raster. Spatial predictions
 #'
-#' @returns
+#' @returns A leaflet map object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -73,16 +74,21 @@ spatial_prediction_map <- function(spatial_prediction) {
     leaflet::addRasterImage(spatial_prediction[[1]])
 }
 
-#' Title
+#' Prepare Spatial Prediction Data
 #'
-#' @param obs
+#' @param model_id Character. Model ID
+#' @param species_id Character. Model ID
 #'
-#' @returns
+#' @returns terra Raster
 #'
 #' @export
 #' @examplesIf have_data()
 #' spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
 spatial_prediction_prep <- function(model_id, species_id) {
-  prep_files("spatial_prediction", model_id = model_id, species_id = species_id)
+  prep_materials(
+    "spatial_prediction",
+    model_id = model_id,
+    species_id = species_id
+  )
 }

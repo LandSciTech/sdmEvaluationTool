@@ -1,6 +1,6 @@
-#' Title
+#' Test the Predictor Metadata Component
 #'
-#' @returns
+#' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -18,15 +18,15 @@ test_comp_predictor_metadata <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Predictor Metadata Component UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_comp_predictor_metadata_ui()
 mod_comp_predictor_metadata_ui <- function(id = "comp_predictor_metadata") {
   tagList(
     reactable::reactableOutput(NS(id, "predictor_metadata"))
@@ -48,13 +48,16 @@ mod_comp_predictor_metadata_server <- function(
 }
 
 
-#' Title
+#' Create a Table for Predictor Metadata
 #'
-#' @param obs
+#' @param predictor_metadata Data frame. Predictor metadata
 #'
-#' @returns
+#' @returns A reactable table object
 #'
 #' @export
+#' @examplesIf have_data()
+#' skip_eg()
+#' # predictor_metadata_prep("bam_v5_can71") |> predictor_metadata_table()
 
 predictor_metadata_table <- function(predictor_metadata) {
   validate(need(
@@ -64,14 +67,17 @@ predictor_metadata_table <- function(predictor_metadata) {
   reactable::reactable(predictor_metadata)
 }
 
-#' Title
+#' Prepare Predictor Metadata Data
 #'
-#' @param obs
+#' @param model_id Character. Model ID
 #'
-#' @returns
+#' @returns Data frame
 #'
 #' @export
+#' @examplesIf have_data()
+#' skip_eg()
+#' predictor_metadata_prep("bam_v5_can71")
 
 predictor_metadata_prep <- function(model_id) {
-  prep_files("predictor_metadata", model_id = model_id)
+  prep_materials("predictor_metadata", model_id = model_id)
 }

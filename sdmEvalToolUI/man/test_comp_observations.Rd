@@ -2,12 +2,15 @@
 % Please edit documentation in R/mod_comp_observations.R
 \name{test_comp_observations}
 \alias{test_comp_observations}
-\title{Title}
+\title{Test the Observations Component}
 \usage{
 test_comp_observations()
 }
+\value{
+A Shiny app object
+}
 \description{
-Title
+Test the Observations Component
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

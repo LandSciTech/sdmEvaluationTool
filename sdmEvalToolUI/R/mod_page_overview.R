@@ -1,6 +1,6 @@
-#' Title
+#' Test the Overview Page
 #'
-#' @returns
+#' @returns A Shiny app object
 #' @noRd
 #'
 #' @examplesIf have_data()
@@ -19,7 +19,7 @@ test_page_overview <- function() {
     mod_page_overview_server(
       model_id = reactive("bam_v5_can71"),
       species_id = reactive("BBWO"),
-      tbl_materials = tbl_materials,
+      tbl_deployments = tbl_deployments,
       tbl_models = tbl_models,
       tbl_species = tbl_species
     )
@@ -28,15 +28,17 @@ test_page_overview <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Overview Page UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
+#' @param title Page title
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_page_overview_ui()
+
 mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   nav_panel(
     title,
@@ -45,21 +47,29 @@ mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   )
 }
 
-#' Title
+#' Overview Page Server
 #'
-#' @param id
+#' @param id Shiny module ID
+#' @param ... Additional arguments passed via expand_dots including deployment_id, model_id, species_id, tbl_models, tbl_species
 #'
-#' @returns
+#' @returns Server function for Shiny module
 #'
 #' @export
-#' @examples
+
 mod_page_overview_server <- function(id = "overview", ...) {
   expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
-    table <- reactive(tbl_overview(tbl_models, tbl_species, tbl_materials))
+    table <- reactive({
+      tbl_materials <- db_read_deployment_materials(
+        db_connect(),
+        deploymentid = deployment_id()
+      )
+      tbl_overview(tbl_models, tbl_species, tbl_materials)
+    })
 
     # TODO: Option to click on species/model combination on table to select
     output$table <- reactable::renderReactable({

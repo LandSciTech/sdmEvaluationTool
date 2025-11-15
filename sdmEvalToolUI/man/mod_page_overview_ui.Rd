@@ -2,13 +2,21 @@
 % Please edit documentation in R/mod_page_overview.R
 \name{mod_page_overview_ui}
 \alias{mod_page_overview_ui}
-\title{Title}
+\title{Overview Page UI}
 \usage{
 mod_page_overview_ui(id = "overview", title = "Overview")
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+
+\item{title}{Page title}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Overview Page UI
+}
+\examples{
+mod_page_overview_ui()
 }

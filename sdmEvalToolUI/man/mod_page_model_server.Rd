@@ -2,13 +2,18 @@
 % Please edit documentation in R/mod_page_model.R
 \name{mod_page_model_server}
 \alias{mod_page_model_server}
-\title{Title}
+\title{Model Page Server}
 \usage{
 mod_page_model_server(id = "model", ...)
 }
 \arguments{
-\item{id}{}
+\item{id}{Shiny module ID}
+
+\item{...}{Additional arguments passed via expand_dots including model_id, species_id, tbl_models, tbl_species}
+}
+\value{
+Server function for Shiny module
 }
 \description{
-Title
+Model Page Server
 }

@@ -2,13 +2,21 @@
 % Please edit documentation in R/mod_page_model_metadata.R
 \name{mod_page_model_metadata_ui}
 \alias{mod_page_model_metadata_ui}
-\title{Title}
+\title{Model Metadata Page UI}
 \usage{
 mod_page_model_metadata_ui(id = "model_metadata", title = "Model_Metadata")
 }
 \arguments{
-\item{title}{}
+\item{id}{Shiny module ID}
+
+\item{title}{Page title}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Model Metadata Page UI
+}
+\examples{
+mod_page_model_metadata_ui()
 }

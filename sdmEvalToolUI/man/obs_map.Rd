@@ -2,15 +2,18 @@
 % Please edit documentation in R/mod_comp_observations.R
 \name{obs_map}
 \alias{obs_map}
-\title{Title}
+\title{Create a Leaflet Map of Observation Data}
 \usage{
 obs_map(obs)
 }
 \arguments{
-\item{obs}{}
+\item{obs}{sf data frame. Observations}
+}
+\value{
+A leaflet map object
 }
 \description{
-Title
+Create a Leaflet Map of Observation Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

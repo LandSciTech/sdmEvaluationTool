@@ -1,6 +1,6 @@
-#' Title
+#' Test the Model Metadata Component
 #'
-#' @returns
+#' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
@@ -18,14 +18,15 @@ test_comp_model_metadata <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Model Metadata Component UI
 #'
-#' @param id
+#' @param id Shiny module ID
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_comp_model_metadata_ui()
 mod_comp_model_metadata_ui <- function(id = "comp_model_metadata") {
   tagList(
     "Placeholder for UI elements"
@@ -49,26 +50,32 @@ mod_comp_model_metadata_server <- function(
 }
 
 
-#' Title
+#' Display Model Metadata
 #'
-#' @param obs
+#' @param model_metadata Object
 #'
-#' @returns
+#' @returns Output
 #'
 #' @export
+#' @examplesIf have_data()
+#' skip_eg()
+#' # model_metadata_prep("bam_v5_can71") |> model_metadata_XXXX()
 
 model_metadata_XXXX <- function(model_metadata) {
   #TODO: Model metadata display
 }
 
-#' Title
+#' Prepare Model Metadata Data
 #'
-#' @param obs
+#' @param model_id Character. Model ID
 #'
-#' @returns
+#' @returns Data frame
 #'
 #' @export
+#' @examplesIf have_data()
+#' skip_eg()
+#' # model_metadata_prep("bam_v5_can71")
 
 model_metadata_prep <- function(model_id) {
-  prep_files("model_metadata", model_id = model_id)
+  prep_materials("model_metadata", model_id = model_id)
 }

@@ -1,6 +1,6 @@
-#' Title
+#' Test the Model Metadata Page
 #'
-#' @returns
+#' @returns A Shiny app object
 #' @noRd
 #'
 #' @examplesIf have_data()
@@ -19,7 +19,7 @@ test_page_model_metadata <- function() {
     mod_page_model_metadata_server(
       model_id = reactive("bam_v5_can71"),
       species_id = reactive("BBWO"),
-      tbl_materials = tbl_materials,
+      tbl_deployments = tbl_deployments,
       tbl_models = tbl_models,
       tbl_species = tbl_species
     )
@@ -28,15 +28,16 @@ test_page_model_metadata <- function() {
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
-#' Title
+#' Model Metadata Page UI
 #'
-#' @param id
-#' @param title
+#' @param id Shiny module ID
+#' @param title Page title
 #'
-#' @returns
+#' @returns Shiny UI
 #'
 #' @export
 #' @examples
+#' mod_page_model_metadata_ui()
 mod_page_model_metadata_ui <- function(
   id = "model_metadata",
   title = "Model_Metadata"
@@ -48,14 +49,15 @@ mod_page_model_metadata_ui <- function(
   )
 }
 
-#' Title
+#' Model Metadata Page Server
 #'
-#' @param id
+#' @param id Shiny module ID
+#' @param ... Additional arguments passed via expand_dots including model_id, species_id, tbl_models, tbl_species
 #'
-#' @returns
+#' @returns Server function for Shiny module
 #'
 #' @export
-#' @examples
+
 mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
   expand_dots(...)
   stopifnot(is.reactive(model_id))

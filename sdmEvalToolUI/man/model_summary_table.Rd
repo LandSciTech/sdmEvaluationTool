@@ -2,15 +2,18 @@
 % Please edit documentation in R/mod_comp_model_summary.R
 \name{model_summary_table}
 \alias{model_summary_table}
-\title{Title}
+\title{Create a Table for Model Summary Data}
 \usage{
 model_summary_table(model_summary)
 }
 \arguments{
-\item{obs}{}
+\item{model_summary}{Data frame. Model summary information}
+}
+\value{
+A reactable table object
 }
 \description{
-Title
+Create a Table for Model Summary Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

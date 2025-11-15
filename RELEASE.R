@@ -29,6 +29,8 @@ pkg <- "sdmEvalToolUI"
 
 devtools::document(pkg)
 rcmdcheck::rcmdcheck(pkg)
+devtools::run_examples() # Will be skipped in package check because missing data
+
 # devtools::install(pkg, upgrade = "never")
 # remotes::install_github("LandSciTech/sdmEvaluationTool/sdmEvalToolUI")
 

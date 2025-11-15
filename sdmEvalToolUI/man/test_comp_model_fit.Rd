@@ -2,12 +2,15 @@
 % Please edit documentation in R/mod_comp_model_fit.R
 \name{test_comp_model_fit}
 \alias{test_comp_model_fit}
-\title{Title}
+\title{Test the Model Fit Component}
 \usage{
 test_comp_model_fit()
 }
+\value{
+A Shiny app object
+}
 \description{
-Title
+Test the Model Fit Component
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

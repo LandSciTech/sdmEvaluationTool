@@ -2,15 +2,18 @@
 % Please edit documentation in R/mod_comp_spatial_prediction.R
 \name{spatial_prediction_map}
 \alias{spatial_prediction_map}
-\title{Title}
+\title{Create a Leaflet Map of Spatial Prediction Data}
 \usage{
 spatial_prediction_map(spatial_prediction)
 }
 \arguments{
-\item{obs}{}
+\item{spatial_prediction}{terra Raster. Spatial predictions}
+}
+\value{
+A leaflet map object
 }
 \description{
-Title
+Create a Leaflet Map of Spatial Prediction Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

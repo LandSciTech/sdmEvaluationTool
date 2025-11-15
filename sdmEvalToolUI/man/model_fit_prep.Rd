@@ -2,15 +2,20 @@
 % Please edit documentation in R/mod_comp_model_fit.R
 \name{model_fit_prep}
 \alias{model_fit_prep}
-\title{Title}
+\title{Prepare Model Fit Data}
 \usage{
 model_fit_prep(model_id, species_id)
 }
 \arguments{
-\item{obs}{}
+\item{model_id}{Character. Model ID}
+
+\item{species_id}{Character. Species ID}
+}
+\value{
+Data frame
 }
 \description{
-Title
+Prepare Model Fit Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

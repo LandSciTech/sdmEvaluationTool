@@ -2,13 +2,22 @@
 % Please edit documentation in R/mod_comp_predictor_metadata.R
 \name{predictor_metadata_table}
 \alias{predictor_metadata_table}
-\title{Title}
+\title{Create a Table for Predictor Metadata}
 \usage{
 predictor_metadata_table(predictor_metadata)
 }
 \arguments{
-\item{obs}{}
+\item{predictor_metadata}{Data frame. Predictor metadata}
+}
+\value{
+A reactable table object
 }
 \description{
-Title
+Create a Table for Predictor Metadata
+}
+\examples{
+\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+skip_eg()
+# predictor_metadata_prep("bam_v5_can71") |> predictor_metadata_table()
+\dontshow{\}) # examplesIf}
 }

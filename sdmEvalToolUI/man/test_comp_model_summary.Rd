@@ -2,12 +2,15 @@
 % Please edit documentation in R/mod_comp_model_summary.R
 \name{test_comp_model_summary}
 \alias{test_comp_model_summary}
-\title{Title}
+\title{Test the Model Summary Component}
 \usage{
 test_comp_model_summary()
 }
+\value{
+A Shiny app object
+}
 \description{
-Title
+Test the Model Summary Component
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

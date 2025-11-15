@@ -2,13 +2,18 @@
 % Please edit documentation in R/mod_page_predictors.R
 \name{mod_page_predictors_server}
 \alias{mod_page_predictors_server}
-\title{Title}
+\title{Predictors Page Server}
 \usage{
 mod_page_predictors_server(id = "predictors", ...)
 }
 \arguments{
-\item{id}{}
+\item{id}{Shiny module ID}
+
+\item{...}{Additional arguments passed via expand_dots including model_id, tbl_models, tbl_species}
+}
+\value{
+Server function for Shiny module
 }
 \description{
-Title
+Predictors Page Server
 }

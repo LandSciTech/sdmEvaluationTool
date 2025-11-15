@@ -1,32 +1,16 @@
-prep_data <- function(lang = "english") {
+prep_data <- function() {
   # TODO: Assign this elsewhere?
-  sdmEvalToolCore::sdmevaltool_options(base = "../misc/base")
+  sdmevaltool_options(base = "../misc/base")
 
-  path_data <- file.path(
-    sdmEvalToolCore::sdmevaltool_options()$base,
-    "sdm_evaluation_db.sqlite"
-  )
-
-  db <- DBI::dbConnect(path_data, drv = RSQLite::SQLite())
-  tbl_models <- dplyr::tbl(db, "models") |>
-    dplyr::collect()
-  tbl_species <- dplyr::tbl(db, "species") |>
-    dplyr::collect() |>
-    dplyr::mutate(
-      species_display = paste0(
-        .data[[paste0(lang, "_name")]],
-        " (",
-        .data$scientific_name,
-        ")"
-      )
-    )
-  tbl_materials <- dplyr::tbl(db, "materials") |>
-    dplyr::collect()
+  db <- db_connect()
+  tbl_models <- db_read_models(db)
+  tbl_species <- db_read_species(db)
+  tbl_deployments <- dplyr::tbl(db, "deployments") |> dplyr::collect()
 
   list(
+    "tbl_deployments" = tbl_deployments,
     "tbl_models" = tbl_models,
-    "tbl_species" = tbl_species,
-    "tbl_materials" = tbl_materials
+    "tbl_species" = tbl_species
   )
 }
 
@@ -39,72 +23,110 @@ expand_dots <- function(..., env = rlang::caller_env()) {
   rlang::env_bind(env, !!!list(...))
 }
 
-#' Load files
+#' Load material files
 #'
-#' @param name Character. File name.
-#' @param ext Character. File extension.
-#' @param ... `model_id`, `species_id`, or `deployment_id` for the "Model", "Species", or "Deployment"
-#'   to read
+#' @param component_id Character. Component ID
+#' @param model_id Character. Model ID
+#' @param species_id Character. Model ID
 #'
 #' @returns Loaded file as an R object
 #'
 #' @export
 #' @examplesIf have_data()
-#' prep_files("observations", species_id = "BBWO", model_id = "bam_v5_can71")
-#' #prep_files("model_metadata", model_id = "bam_v5_can71")
-#' prep_files("predictor_metadata", model_id = "bam_v5_can71")
-#' #prep_files("predictor_raster", model_id = "bam_v5_can71")
-#' prep_files("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
-#' prep_files("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
-#' prep_files("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_materials("observations", species_id = "BBWO", model_id = "bam_v5_can71")
+#' #prep_materials("model_metadata", model_id = "bam_v5_can71")
+#' prep_materials("predictor_metadata", model_id = "bam_v5_can71")
+#' #prep_materials("predictor_raster", model_id = "bam_v5_can71")
+#' prep_materials("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_materials("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_materials("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
+#'
+#' # Errors
+#' # prep_materials("observations", model_id = "", species_id = "")
+#' # prep_materials("observations", model_id = "bam_v5_can71", species_id = "")
 
-prep_files <- function(component, ext, ...) {
-  expand_dots(...)
-
-  # For developer
-  if (exists("model_id") && exists("species_id") && exists("dep")) {
-    stop(
-      "Incorrect usage: Cannot supply 'model_id', 'species_id', and ",
-      "'deployment_id' all together"
-    )
-  }
-
+prep_materials <- function(component_id, model_id, species_id = NULL) {
   path <- dplyr::filter(
     sdmEvalToolCore::components,
-    .data$component == .env$component
+    .data$component == .env$component_id
   ) |>
     #TODO: Is there a reason to have a sub list? i.e. 1?
     purrr::pluck("upload", 1, "output", "path")
 
-  # For the user
-  if (exists("model_id")) {
-    validate(need(model_id, "Please select a model"))
-  }
-  if (exists("species_id")) {
-    validate(need(model_id, "Please select a model"))
-    validate(need(species_id, "Please select a species"))
-  }
-  if (exists("deployment_id")) {
-    validate(need(deployment_id, "Please select a Deployment"))
+  if (stringr::str_detect(path, "species_id")) {
+    validate_ids(model_id = model_id, species_id = species_id)
+  } else {
+    validate_ids(model_id = model_id)
   }
 
-  path <- sdmEvalToolCore::make_target_path(path, data = list(...))
+  prep_files(
+    path,
+    name = component_id,
+    model_id = model_id,
+    species_id = species_id
+  )
+}
+
+#' Prepare Deployments
+#'
+#' @param deployment_id Character. Deployment ID
+#' @param type Character. Type of data to load ("questions" or "subunits")
+#'
+#' @returns Data frame of deployments
+#'
+#' @export
+#' @examplesIf have_data()
+#' prep_deployments("deployment1", "questions")
+#' prep_deployments("deployment1", "subunits")
+#' prep_deployments("deployment2", "questions")
+
+prep_deployments <- function(deployment_id, type) {
+  validate_ids(deployment_id = deployment_id)
+  stopifnot(type %in% c("questions", "subunits"))
+
+  #TODO: Get this from sdmEvalToolCore?
+  ext <- ifelse(type == "questions", "csv", "gpkg")
+  path <- paste0("deployments/{deployment_id}/deployment_{type}.", ext)
+
+  dep <- prep_files(
+    path,
+    name = paste("Deployment", type),
+    deployment_id = deployment_id,
+    type = type
+  )
+
+  if (type != "subunits") {
+    dep <- dplyr::mutate(
+      dep,
+      french = as.character(.data$french),
+      french = tidyr::replace_na(.data$french, "")
+    ) |>
+      # TODO: This shouldn't be in the data
+      dplyr::select(-dplyr::any_of("X"))
+  }
+
+  dep
+}
+
+prep_files <- function(path, name, ...) {
+  path <- make_target_path(path, data = list(...))
 
   validate(need(
     file.exists(path),
     paste0(
-      pretty(component),
+      pretty(name),
       " doesn't exist. Have you supplied the correct base path?\n",
       path
     )
   ))
 
-  sdmEvalToolCore::read_file(path)
+  read_file(path)
 }
 
 pretty <- function(x) {
   x |>
     stringr::str_replace_all("_", " ") |>
+    stringr::str_remove_all("id") |>
     stringr::str_to_title()
 }
 
@@ -119,4 +141,81 @@ pretty <- function(x) {
 #' have_data()
 have_data <- function() {
   dir.exists(sdmEvalToolCore::sdmevaltool_options()$base)
+}
+
+
+#' Prepare Evaluation Questions
+#'
+#' Reads, combines and prepares questions for use in UIs.
+#'
+#' @param component_id Character. Component ID
+#' @param deployment_id Character. Deployment ID
+#' @param model_id Character. Model ID
+#' @param species_id Character. Species ID
+#'
+#' @returns Data frame of questions
+#'
+#' @export
+#' @examplesIf have_data()
+#' prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
+#' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+
+prep_questions <- function(
+  component_id,
+  deployment_id,
+  model_id,
+  species_id = NA
+) {
+  validate_ids(
+    deployment_id = deployment_id,
+    model_id = model_id,
+    species_id = species_id
+  )
+
+  q <- dplyr::rows_upsert(
+    sdmEvalToolCore::default_questions,
+    prep_deployments(deployment_id, "questions"),
+    by = c("component", "order")
+  )
+
+  if (component_id != "test") {
+    q <- dplyr::filter(q, .data$component == .env$component_id)
+  }
+
+  q |>
+    dplyr::rename("label" = sdmevaltool_options()$lang) |>
+    dplyr::mutate(
+      ui = dplyr::case_match(
+        .data$type,
+        "text" ~ "text_input",
+        "heading" ~ "h2",
+        "gold_standard" ~ "gold_standard_input",
+        "ordinal" ~ "slider_input"
+      ),
+      id = paste(
+        .env$deployment_id,
+        .env$model_id,
+        .env$species_id,
+        .data$component,
+        .data$order,
+        sep = "_"
+      )
+    )
+}
+
+dummy_session <- list(ns = \(x) paste0("session-", x))
+
+#' Temporarily skip examples
+#'
+#' Examples using @examplesIf, will fail if there is nothing to run (i.e.
+#' becaues the example is commented out waiting for a working version).
+#'
+#' @returns Nothing
+#'
+#' @export
+#' @examples
+#' skip_eg()
+
+skip_eg <- function() {
+  invisible()
 }

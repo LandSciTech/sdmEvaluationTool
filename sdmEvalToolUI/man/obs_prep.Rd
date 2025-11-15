@@ -2,15 +2,20 @@
 % Please edit documentation in R/mod_comp_observations.R
 \name{obs_prep}
 \alias{obs_prep}
-\title{Title}
+\title{Prepare Observation Data}
 \usage{
 obs_prep(model_id, species_id)
 }
 \arguments{
-\item{obs}{}
+\item{model_id}{Character. Model ID}
+
+\item{species_id}{Character. Species ID}
+}
+\value{
+Spatial data frame
 }
 \description{
-Title
+Prepare Observation Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

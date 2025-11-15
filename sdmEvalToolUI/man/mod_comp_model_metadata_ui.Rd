@@ -2,13 +2,19 @@
 % Please edit documentation in R/mod_comp_model_metadata.R
 \name{mod_comp_model_metadata_ui}
 \alias{mod_comp_model_metadata_ui}
-\title{Title}
+\title{Model Metadata Component UI}
 \usage{
 mod_comp_model_metadata_ui(id = "comp_model_metadata")
 }
 \arguments{
-\item{id}{}
+\item{id}{Shiny module ID}
+}
+\value{
+Shiny UI
 }
 \description{
-Title
+Model Metadata Component UI
+}
+\examples{
+mod_comp_model_metadata_ui()
 }

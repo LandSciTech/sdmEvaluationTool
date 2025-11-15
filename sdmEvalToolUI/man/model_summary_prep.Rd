@@ -2,15 +2,20 @@
 % Please edit documentation in R/mod_comp_model_summary.R
 \name{model_summary_prep}
 \alias{model_summary_prep}
-\title{Title}
+\title{Prepare Model Summary Data}
 \usage{
 model_summary_prep(model_id, species_id)
 }
 \arguments{
-\item{obs}{}
+\item{model_id}{Character. Model ID}
+
+\item{species_id}{Character. Species ID}
+}
+\value{
+Data frame
 }
 \description{
-Title
+Prepare Model Summary Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
