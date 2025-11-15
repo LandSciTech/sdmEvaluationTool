@@ -3,7 +3,11 @@
 pkg <- "sdmEvalToolCore"
 
 # update the config file before running data-raw script
-file.copy("spec/config.yml", paste0(pkg, "/inst/config/config.yml"))
+file.copy(
+    "spec/config.yml",
+    paste0(pkg, "/inst/config/config.yml"),
+    overwrite = TRUE
+)
 
 # update data sets based on config
 o <- setwd(pkg)
