@@ -463,6 +463,7 @@ components:
   observations:
     description: Detections or counts by location and timestamp for a single or multiple species.
     mandatory: Yes
+    type: "material"
     upload:
       type: table
       input:
@@ -519,6 +520,7 @@ components:
   model_metadata:
     description: ODMAP protocol metadata.
     mandatory: Yes
+    type: "material"
     upload:
       type: table
       input:
@@ -540,6 +542,7 @@ components:
   predictor_metadata:
     description: Predictor metadata.
     mandatory: Yes
+    type: "material"
     upload:
       type: table
       input:
@@ -577,6 +580,7 @@ components:
   predictor_raster:
     description: Predictor raster, a multi-band TIF with spatial predictors as bands.
     mandatory: No
+    type: "material"
     upload:
       type: raster
       input:
@@ -607,6 +611,7 @@ components:
   spatial_prediction:
     description: Expected value as band 1, variation as band 2.
     mandatory: Yes
+    type: "material"
     upload:
       type: raster
       input:
@@ -677,6 +682,7 @@ components:
   model_summary:
     description: Model summary including variable importance metrics or coefficients for predictor variables.
     mandatory: Yes
+    type: "material"
     upload:
       type: table
       input:
@@ -715,6 +721,7 @@ components:
   model_fit:
     description: Model fit statistics.
     mandatory: Yes
+    type: "material"
     upload:
       type: table
       input:
@@ -748,6 +755,68 @@ components:
         question_body:
           en: Do you have any feedback about the model fit?
           fr: ""
+
+  deployment_subunits:
+    description: Deployment subunits.
+    mandatory: No
+    type: "deployment"
+    upload:
+      type: polygons
+      input:
+        description: >
+          A geospatial polygons file. It needs to have a `subunit_id` column
+          and the geometry column.
+          Subunits can be used to make evaluations more specific.
+        file_ext: [gpkg]
+        columns: [subunit_id, geometry]
+      output:
+        description: >
+          The input file is saved.
+        path: "deployments/{deployment_id}/deployment_subunits.gpkg"
+    display:
+      type: polygons
+      title: Deployment Subunits
+      description: >
+        Subunits are overlaid in top of raster maps.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: ""
+          fr: ""
+    evaluation:
+      evaluation_allowed: No
+      questions:
+
+  deployment_questions:
+    description: Deployment questions.
+    mandatory: No
+    type: "deployment"
+    upload:
+      type: table
+      input:
+        description: >
+          A csv file specifying the questions according to a default version.
+        file_ext: [csv]
+        columns: []
+      output:
+        description: >
+          The input file is saved.
+        path: "deployments/{deployment_id}/deployment_questions.csv"
+    display:
+      type: evaluations
+      title: Questions
+      description: >
+        Questions will be displayed according to material type component
+        specifications.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: ""
+          fr: ""
+    evaluation:
+      evaluation_allowed: No
+      questions:
+
 
 templates:
 
