@@ -48,10 +48,10 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 prep_materials <- function(component_id, model_id, species_id = NULL) {
   path <- dplyr::filter(
     sdmEvalToolCore::components,
+    .data$type == "material",
     .data$component == .env$component_id
   ) |>
-    #TODO: Is there a reason to have a sub list? i.e. 1?
-    purrr::pluck("upload", 1, "output", "path")
+    dplyr::pull(.data$path)
 
   if (stringr::str_detect(path, "species_id")) {
     validate_ids(model_id = model_id, species_id = species_id)
@@ -70,32 +70,33 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
 #' Prepare Deployments
 #'
 #' @param deployment_id Character. Deployment ID
-#' @param type Character. Type of data to load ("questions" or "subunits")
+#' @param type Character. Type of data to load ("deployment_questions" or "deployment_subunits")
 #'
 #' @returns Data frame of deployments
 #'
 #' @export
 #' @examplesIf have_data()
-#' prep_deployments("deployment1", "questions")
-#' prep_deployments("deployment1", "subunits")
-#' prep_deployments("deployment2", "questions")
+#' prep_deployments("deployment1", "deployment_questions")
+#' prep_deployments("deployment1", "deployment_subunits")
+#' prep_deployments("deployment2", "deployment_questions")
 
-prep_deployments <- function(deployment_id, type) {
+prep_deployments <- function(deployment_id, deployment_type) {
+  path <- dplyr::filter(
+    sdmEvalToolCore::components,
+    .data$type == "deployment",
+    .data$component == .env$deployment_type
+  ) |>
+    dplyr::pull(.data$path)
+
   validate_ids(deployment_id = deployment_id)
-  stopifnot(type %in% c("questions", "subunits"))
-
-  #TODO: Get this from sdmEvalToolCore?
-  ext <- ifelse(type == "questions", "csv", "gpkg")
-  path <- paste0("deployments/{deployment_id}/deployment_{type}.", ext)
 
   dep <- prep_files(
     path,
-    name = paste("Deployment", type),
-    deployment_id = deployment_id,
-    type = type
+    name = deployment_type,
+    deployment_id = deployment_id
   )
 
-  if (type != "subunits") {
+  if (deployment_type != "deployment_subunits") {
     dep <- dplyr::mutate(
       dep,
       french = as.character(.data$french),
@@ -174,7 +175,7 @@ prep_questions <- function(
 
   q <- dplyr::rows_upsert(
     sdmEvalToolCore::default_questions,
-    prep_deployments(deployment_id, "questions"),
+    prep_deployments(deployment_id, "deployment_questions"),
     by = c("component", "order")
   )
 
