@@ -313,11 +313,7 @@ are the material specific components:
 Here are the deployment specific components:
 
 - **deployment_settings** (madatory): Deployment settings.
-
-- **deployment_subunits** (optional): Deployment subunits. A spatial
-  polygons file with geometries and a key called `subunit_id`. Each
-  deployment can have its own subunits.
-
+- **deployment_subunits** (optional): Deployment subunits.
 - **deployment_questions** (optional): Deployment questions.
 
 ### Observations (`observations`)
@@ -486,14 +482,13 @@ can attach general evaluations to this component.
 
 ### Deployment Subunits (`deployment_subunits`)
 
-Deployment subunits. A spatial polygons file with geometries and a key
-called `subunit_id`. Each deployment can have its own subunits.
+Deployment subunits.
 
 **Mandatory**: No
 
-**Input**: A geospatial polygons file. It needs to have a `subunit_id`
-column and the geometry column. Subunits can be used to make evaluations
-more specific.
+**Input**: A spatial polygons file with geometries and a key called
+`subunit_id`. Each deployment can have its own subunits. Subunits can be
+used to make evaluations more specific.
 
 **Output**: The input file is saved.
 

@@ -788,17 +788,15 @@ components:
       questions:
 
   deployment_subunits:
-    description: >
-      Deployment subunits. A spatial polygons file with geometries 
-      and a key called `subunit_id`. Each deployment can have its own subunits.
+    description: Deployment subunits.
     mandatory: No
     type: "deployment"
     upload:
       type: polygons
       input:
         description: >
-          A geospatial polygons file. It needs to have a `subunit_id` column
-          and the geometry column.
+          A spatial polygons file with geometries and a key called 
+          `subunit_id`. Each deployment can have its own subunits.
           Subunits can be used to make evaluations more specific.
         file_ext: [gpkg]
         columns: [subunit_id, geometry]
