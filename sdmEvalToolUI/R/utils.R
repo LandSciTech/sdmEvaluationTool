@@ -124,6 +124,7 @@ prep_files <- function(path, name, ...) {
   read_file(path)
 }
 
+
 pretty <- function(x) {
   x |>
     stringr::str_replace_all("_", " ") |>
@@ -160,28 +161,29 @@ have_data <- function() {
 #' @examplesIf have_data()
 #' prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+#' prep_questions("model_fit", "deployment1", "bam_v5_can71")
 
 prep_questions <- function(
   component_id,
   deployment_id,
   model_id,
-  species_id = NA
+  species_id
 ) {
-  validate_ids(
-    deployment_id = deployment_id,
-    model_id = model_id,
-    species_id = species_id
-  )
-
-  q <- dplyr::rows_upsert(
-    sdmEvalToolCore::default_questions,
-    prep_deployments(deployment_id, "deployment_questions"),
-    by = c("component", "order")
-  )
-
-  if (component_id != "test") {
-    q <- dplyr::filter(q, .data$component == .env$component_id)
+  if (missing(species_id) || species_id == "ALL") {
+    validate_ids(
+      deployment_id = deployment_id,
+      model_id = model_id
+    )
+    species_id <- "ALL"
+  } else {
+    validate_ids(
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id
+    )
   }
+
+  q <- fetch_questions(deploymen_id, component_id)
 
   q |>
     dplyr::rename("label" = sdmevaltool_options()$lang) |>
@@ -193,15 +195,33 @@ prep_questions <- function(
         "gold_standard" ~ "gold_standard_input",
         "ordinal" ~ "slider_input"
       ),
-      id = paste(
-        .env$deployment_id,
+      material_id = paste(
         .env$model_id,
         .env$species_id,
         .data$component,
+        sep = "_"
+      ),
+      id = paste(
+        .env$deployment_id,
+        .data$material_id,
         .data$order,
         sep = "_"
       )
     )
+}
+
+fetch_questions <- function(deployment_id, component_id) {
+  q <- dplyr::rows_upsert(
+    sdmEvalToolCore::default_questions,
+    prep_deployments(deployment_id, "deployment_questions"),
+    by = c("component", "order")
+  )
+
+  if (component_id != "test") {
+    q <- dplyr::filter(q, .data$component == .env$component_id)
+  }
+
+  q
 }
 
 dummy_session <- list(ns = \(x) paste0("session-", x))
