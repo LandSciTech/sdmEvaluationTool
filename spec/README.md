@@ -215,9 +215,9 @@ synthesizing the evaluations).
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `deployment_material_id` | text | `REFERENCES deployment_materials` | Deployment Material ID. |
+| `deployment_material_id` | text | `REFERENCES deployment_materials` | Deployment Material ID (foreign key). |
 | `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
-| `material_id` | text | `REFERENCES materials` | Material ID. |
+| `material_id` | text | `REFERENCES materials` | Material ID (foreign key). |
 | `use_cases` | text | `NOT NULL` | One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment. |
 | `evaluation_create_user` | text | `REFERENCES users (user_id)` | User who created the initial evaluation (foreign key). |
 | `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial the initial evaluation. |
@@ -294,6 +294,31 @@ of functionality is required. We have corresponding
 `mod_<component_id>_ui` and `mod_<component_id>_server` module functions
 to be used in the Shiny app. The placement of the component can also be
 determined here, i.e. which page/tab/section it will be displayed.
+
+Components can be defined for **materials** or for \*\*deployments. Here
+are the material specific components:
+
+- **observations** (madatory): Detections or counts by location and
+  timestamp for a single or multiple species.
+- **model_metadata** (madatory): ODMAP protocol metadata.
+- **predictor_metadata** (madatory): Predictor metadata.
+- **predictor_raster** (optional): Predictor raster, a multi-band TIF
+  with spatial predictors as bands.
+- **spatial_prediction** (madatory): Expected value as band 1, variation
+  as band 2.
+- **model_summary** (madatory): Model summary including variable
+  importance metrics or coefficients for predictor variables.
+- **model_fit** (madatory): Model fit statistics.
+
+Here are the deployment specific components:
+
+- **deployment_settings** (madatory): Deployment settings.
+
+- **deployment_subunits** (optional): Deployment subunits. A spatial
+  polygons file with geometries and a key called `subunit_id`. Each
+  deployment can have its own subunits.
+
+- **deployment_questions** (optional): Deployment questions.
 
 ### Observations (`observations`)
 
@@ -443,9 +468,26 @@ Output path:
 
 **Display**: The table is displayed as a reactable table.
 
+### Settings (`deployment_settings`)
+
+Deployment settings.
+
+**Mandatory**: Yes
+
+**Input**: A JSON file specifying the settings according to the template
+`templates.deployment_settings`.
+
+**Output**: Settings saved into a JSON file.
+
+Output path: `deployments/{deployment_id}/deployment_settings.json`
+
+**Display**: These settings define some aspects of the deployments. We
+can attach general evaluations to this component.
+
 ### Deployment Subunits (`deployment_subunits`)
 
-Deployment subunits.
+Deployment subunits. A spatial polygons file with geometries and a key
+called `subunit_id`. Each deployment can have its own subunits.
 
 **Mandatory**: No
 

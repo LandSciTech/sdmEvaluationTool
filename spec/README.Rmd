@@ -24,6 +24,36 @@ fields <- do.call(rbind, lapply(names(conf$tables), \(i) {
         data.frame(field=j, as.data.frame(k))
     })))
 }))
+cmp <- conf$components
+components <- data.frame(
+    component = character(0L),
+    description = character(0L),
+    mandatory = logical(0L),
+    type = character(0L),
+    path = character(0L),
+    upload = character(0L),
+    display = character(0L),
+    evaluation = character(0L)
+)
+for (i in names(cmp)) {
+    l <- cmp[[i]]
+    c1 <- data.frame(
+        component = i,
+        description = l$description,
+        mandatory = l$mandatory,
+        type = l$type,
+        path = l$upload$output$path,
+        upload = NA_character_,
+        display = NA_character_,
+        evaluation = NA_character_
+    )
+    for (j in c("upload", "display", "evaluation")) {
+        if (!is.null(l[[j]])) {
+            c1[[j]] <- list(l[[j]])
+        }
+    }
+    components <- rbind(components, c1)
+}
 code <- function(x, link=FALSE)  {
     q <- paste0("`", x, "`")
     if (link) {
@@ -186,6 +216,27 @@ functionality is required. We have corresponding `mod_<component_id>_ui` and
 `mod_<component_id>_server` module functions to be used in the Shiny app.
 The placement of the component can also be determined here, i.e. which
 page/tab/section it will be displayed.
+
+Components can be defined for **materials** or for **deployments.
+Here are the material specific components:
+
+```{r}
+for (i in which(components$type == "material")) {
+    cat("- **", components$component[i], "** ", 
+        if (components$mandatory[i]) "(madatory): " else "(optional): ", 
+        components$description[i], "\n", sep = "")
+}
+```
+
+Here are the deployment specific components:
+
+```{r}
+for (i in which(components$type == "deployment")) {
+    cat("- **", components$component[i], "** ", 
+        if (components$mandatory[i]) "(madatory): " else "(optional): ", 
+        components$description[i], "\n", sep = "")
+}
+```
 
 ```{r}
 for (i in names(conf$components))
