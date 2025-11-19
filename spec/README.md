@@ -295,24 +295,24 @@ of functionality is required. We have corresponding
 to be used in the Shiny app. The placement of the component can also be
 determined here, i.e. which page/tab/section it will be displayed.
 
-Components can be defined for **materials** or for \*\*deployments. Here
+Components can be defined for **materials** or for **deployments**. Here
 are the material specific components:
 
-- **observations** (madatory): Detections or counts by location and
+- **observations** (mandatory): Detections or counts by location and
   timestamp for a single or multiple species.
-- **model_metadata** (madatory): ODMAP protocol metadata.
-- **predictor_metadata** (madatory): Predictor metadata.
+- **model_metadata** (mandatory): ODMAP protocol metadata.
+- **predictor_metadata** (mandatory): Predictor metadata.
 - **predictor_raster** (optional): Predictor raster, a multi-band TIF
   with spatial predictors as bands.
-- **spatial_prediction** (madatory): Expected value as band 1, variation
-  as band 2.
-- **model_summary** (madatory): Model summary including variable
+- **spatial_prediction** (mandatory): Expected value as band 1,
+  variation as band 2.
+- **model_summary** (mandatory): Model summary including variable
   importance metrics or coefficients for predictor variables.
-- **model_fit** (madatory): Model fit statistics.
+- **model_fit** (mandatory): Model fit statistics.
 
 Here are the deployment specific components:
 
-- **deployment_settings** (madatory): Deployment settings.
+- **deployment_settings** (mandatory): Deployment settings.
 - **deployment_subunits** (optional): Deployment subunits.
 - **deployment_questions** (optional): Deployment questions.
 

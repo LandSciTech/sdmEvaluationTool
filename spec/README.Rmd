@@ -217,13 +217,13 @@ functionality is required. We have corresponding `mod_<component_id>_ui` and
 The placement of the component can also be determined here, i.e. which
 page/tab/section it will be displayed.
 
-Components can be defined for **materials** or for **deployments.
+Components can be defined for **materials** or for **deployments**.
 Here are the material specific components:
 
 ```{r}
 for (i in which(components$type == "material")) {
     cat("- **", components$component[i], "** ", 
-        if (components$mandatory[i]) "(madatory): " else "(optional): ", 
+        if (components$mandatory[i]) "(mandatory): " else "(optional): ", 
         components$description[i], "\n", sep = "")
 }
 ```
@@ -233,7 +233,7 @@ Here are the deployment specific components:
 ```{r}
 for (i in which(components$type == "deployment")) {
     cat("- **", components$component[i], "** ", 
-        if (components$mandatory[i]) "(madatory): " else "(optional): ", 
+        if (components$mandatory[i]) "(mandatory): " else "(optional): ", 
         components$description[i], "\n", sep = "")
 }
 ```
