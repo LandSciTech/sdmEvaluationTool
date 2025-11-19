@@ -331,7 +331,7 @@ tables:
     fields:
       deployment_material_id:
         name: Deployment Material ID
-        description: Deployment Material ID.
+        description: Deployment Material ID (foreign key).
         type: text
         constraint: REFERENCES deployment_materials
       deployment_id:
@@ -341,7 +341,7 @@ tables:
         constraint: REFERENCES deployments
       material_id:
         name: Material ID
-        description: Material ID.
+        description: Material ID (foreign key).
         type: text
         constraint: REFERENCES materials
       use_cases:
