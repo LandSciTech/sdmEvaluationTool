@@ -99,9 +99,14 @@ db_read_user_info <- function(con, user_id, deployment_id) {
 #' @return A data frame with joined deployment materials.
 #'
 #' @export
-db_read_deployment_materials <- function(con, deployment_id) {
-    dm <- dplyr::tbl(con, "deployment_materials") |>
-        dplyr::filter(.data$deployment_id == .env$deployment_id) |>
+db_read_deployment_materials <- function(con, deployment_id = NULL) {
+    dm <- dplyr::tbl(con, "deployment_materials")
+
+    if(!is.null(deployment_id)) {
+        dm <- dplyr::filter(dm, .data$deployment_id == .env$deployment_id)
+    }
+    
+    dm <- dm |>
         dplyr::left_join(
             dplyr::tbl(con, "deployments"),
             by = "deployment_id"
@@ -148,12 +153,17 @@ db_read_comments <- function(con, deployment_id) {
 #' @return A data frame with evaluations for the deployment.
 #'
 #' @export
-db_read_evaluations <- function(con, deployment_id) {
-    out <- dplyr::tbl(con, "evaluations") |>
-        dplyr::filter(.data$deployment_id == .env$deployment_id) |>
-        dplyr::collect() |>
-        db_timestamp()
-    out
+db_read_evaluations <- function(con, deployment_id = NULL) {
+  out <- dplyr::tbl(con, "evaluations")
+  if(!is.null(deployment_id)) {
+    out <- dplyr::filter(out, .data$deployment_id == .env$deployment_id)
+  }
+  
+  out <- out
+    dplyr::collect() |>
+    db_timestamp()
+  
+  out
 }
 
 # TODO:
