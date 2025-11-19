@@ -7,7 +7,6 @@
 #' test_page_overview()
 
 test_page_overview <- function() {
-  # TODO: define location, pages, etc. elsewhere
   prep_data() |> expand_list()
 
   ui <- bslib::page_navbar(
@@ -17,6 +16,7 @@ test_page_overview <- function() {
 
   server <- function(input, output, session) {
     mod_page_overview_server(
+      deployment_id = reactive("deployment1"),
       model_id = reactive("bam_v5_can71"),
       species_id = reactive("BBWO"),
       tbl_deployments = tbl_deployments,
@@ -43,7 +43,7 @@ mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   nav_panel(
     title,
     "Current status of review",
-    reactable::reactableOutput(NS(id, "table"))
+    #reactable::reactableOutput(NS(id, "table"))
   )
 }
 
@@ -63,12 +63,54 @@ mod_page_overview_server <- function(id = "overview", ...) {
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
-    table <- reactive({
-      tbl_materials <- db_read_deployment_materials(
-        db_connect(),
-        deploymentid = deployment_id()
-      )
-      tbl_overview(tbl_models, tbl_species, tbl_materials)
+    # table <- reactive({
+    #   tbl_overview(
+    #     role,
+    #     deployment_id,
+    #     model_id,
+    #     species_id,
+    #     tbl_models,
+    #     tbl_species,
+    #     tbl_materials
+    #   )
+    # })
+
+    output$tbl_overview <- reactable::renderReactable({
+      tbl <- df_details()
+
+      # If evaluator only show evaluations created
+      # If modeler only show deployments created
+      if (input$role == "evaluator") {
+        tbl <- dplyr::filter(tbl, .data$evaluation_create_user == user())
+      } else if (input$role == "modeler") {
+        tbl <- dplyr::filter(tbl, .data$deployment_create_user == user())
+      }
+
+      # Nested tables https://glin.github.io/reactable/articles/examples.html?q=collaps#nested-tables
+
+      tbl0 <- dplyr::select(
+        tbl,
+        "deployment_name",
+        "model_name",
+        "species_display",
+        "component_id",
+        "complete"
+      ) |>
+        dplyr::arrange("deployment_name", "model_name", "species_display")
+
+      tbl |>
+        dplyr::mutate(
+          species_display = tidyr::replace_na(.data$species_id, "Model")
+        ) |>
+        dplyr::summarize(
+          last_eval = max(.data$evaluation_create_time, na.rm = TRUE),
+          last_edit = max(.data$evaluation_modify_time, na.rm = TRUE),
+          last_change = pmax(.data$last_eval, .data$last_edit, na.rm = TRUE),
+          n = dplyr::n(),
+          n_complete = sum(.data$complete, na.rm = TRUE),
+          n_display = paste0(.data$n_complete, "/", .data$n),
+          .by = c("deployment_name", "model_name", "species_display")
+        )
     })
 
     # TODO: Option to click on species/model combination on table to select
@@ -105,31 +147,82 @@ mod_page_overview_server <- function(id = "overview", ...) {
   })
 }
 
-tbl_overview <- function(tbl_models, tbl_species, tbl_materials) {
-  tbl_materials |>
-    dplyr::select("model_id", "species_id", "component_id") |>
-    dplyr::mutate(done = TRUE) |>
-    tidyr::complete(
-      .data$model_id,
-      .data$species_id,
-      "component_id" := sdmEvalToolCore::components$component,
-      fill = list(done = FALSE)
+df_details <- function() {
+  con <- withr::local_db_connection(db_connect())
+  tbl_materials <- db_read_deployment_materials(con)
+  tbl_questions <- tbl_materials |>
+    dplyr::select("deployment_id", "component_id") |>
+    dplyr::distinct() |>
+    dplyr::mutate(
+      n_q = purrr::map2(
+        .data$deployment_id,
+        .data$component_id,
+        fetch_questions
+      ),
+      n_q = purrr::map_int(.data$n_q, nrow)
+    )
+
+  # TODO: Pull out evaluations to see which are actually responded to.
+  df <- db_read_evaluations(con) |>
+    #TODO: Temporary
+    dplyr::mutate(
+      deployment_material_id = stringr::str_remove(
+        .data$deployment_material_id,
+        " bam\\_v5\\_can71$"
+      ),
+      material_id = stringr::str_remove(.data$material_id, " bam\\_v5\\_can71$")
     ) |>
-    tidyr::pivot_wider(names_from = "component_id", values_from = "done") |>
-    fmt_tbl(tbl_models, tbl_species)
+    dplyr::mutate(
+      evals = purrr::map(.data$evaluation_body, evals_extract),
+      evals = purrr::map(.data$evals, evals_answered)
+    ) |>
+    tidyr::unnest("evals") |>
+    dplyr::full_join(
+      tbl_materials,
+      by = c("deployment_id", "material_id", "deployment_material_id")
+    ) |>
+    dplyr::full_join(
+      tbl_questions,
+      by = c("deployment_id", "component_id"),
+      suffix = c("", ".eval")
+    ) |>
+    dplyr::mutate(
+      species_id = tidyr::replace_na(.data$species_id, "ALL")
+    )
+
+  dplyr::mutate(
+    start = any(.data$n_q_complete),
+    complete = .data$n_q_complete == .data$n_q,
+    .by = "deployment_id"
+  ) |>
+    dplyr::full_join(
+      tbl_materials,
+      by = c("deployment_id", "material_id", "deployment_material_id")
+    ) |>
+    fmt_species() |>
+    # fmt:skip
+    dplyr::select(
+      "deployment_id", "deployment_name", "deployment_description", "deployment_create_user", #"use_cases", 
+      "model_id", "model_name", 
+      "species_id", "species_display", 
+      "evaluation_create_user", "evaluation_create_time", "evaluation_modify_user", "evaluation_modify_time",
+      dplyr::starts_with("n_q"),
+      "component_id"
+    )
+
+  df
 }
 
-fmt_tbl <- function(tbl, tbl_models, tbl_species) {
-  # TODO: Get pretty column names
-  tbl |>
-    dplyr::left_join(
-      dplyr::select(tbl_species, "species_id", "species_display"),
-      by = "species_id"
-    ) |>
-    dplyr::left_join(
-      dplyr::select(tbl_models, "model_id", "model_name"),
-      by = "model_id"
-    ) |>
-    dplyr::select(-"model_id", "species_id") |>
-    dplyr::relocate("model_name", "species_display")
+
+evals_extract <- function(json) {
+  jsonlite::fromJSON(json)
+}
+
+evals_answered <- function(eval) {
+  dplyr::summarize(
+    eval,
+    n_q = dplyr::n(),
+    n_q_complete = sum(purrr::map_lgl(.data$response, isTruthy)),
+    n_q_display = glue::glue("{n_q}/{n_q_complete}")
+  )
 }
