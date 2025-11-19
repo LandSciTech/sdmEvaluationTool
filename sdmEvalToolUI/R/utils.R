@@ -220,3 +220,32 @@ dummy_session <- list(ns = \(x) paste0("session-", x))
 skip_eg <- function() {
   invisible()
 }
+
+
+named_ids <- function(df_db, id = "id", name = "name") {
+  pattern <- glue::glue("\\_{id}|\\_{name}")
+  type <- stringr::str_subset(colnames(df_db), pattern) |>
+    sort()
+  if (
+    length(type) != 2 ||
+      length(unique(stringr::str_remove(type, pattern))) != 1
+  ) {
+    stop("Non-matching id/name column pairs", call. = FALSE)
+  }
+
+  rlang::set_names(
+    dplyr::pull(df_db, .data[[type[1]]]),
+    dplyr::pull(df_db, .data[[type[2]]])
+  )
+}
+
+
+set_options <- function(...) {
+  # TODO: Perhaps integrate with sdmEvalToolCore?
+  opts <- getOption("sdmevaltool_options")
+  options("sdmevaltool_options" = utils::modifyList(opts, list(...)))
+}
+
+user <- function() {
+  sdmevaltool_options()$user_id
+}
