@@ -756,8 +756,41 @@ components:
           en: Do you have any feedback about the model fit?
           fr: ""
 
+  deployment_settings:
+    description: Deployment settings.
+    mandatory: Yes
+    type: "deployment"
+    upload:
+      type: list
+      input:
+        description: >
+          A JSON file specifying the settings according to the template
+          `templates.deployment_settings`.
+        file_ext: [json]
+        columns: []
+      output:
+        description: >
+          Settings saved into a JSON file.
+        path: "deployments/{deployment_id}/deployment_settings.json"
+    display:
+      type: settings
+      title: Settings
+      description: >
+        These settings define some aspects of the deployments.
+        We can attach general evaluations to this component.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: ""
+          fr: ""
+    evaluation:
+      evaluation_allowed: Yes
+      questions:
+
   deployment_subunits:
-    description: Deployment subunits.
+    description: >
+      Deployment subunits. A spatial polygons file with geometries 
+      and a key called `subunit_id`. Each deployment can have its own subunits.
     mandatory: No
     type: "deployment"
     upload:
@@ -817,20 +850,12 @@ components:
       evaluation_allowed: No
       questions:
 
-
 templates:
 
   deployment_settings:
     instructions_to_evaluators:
       en: "Provide instructions for the evaluation."
       fr: ""
-    deployment_subunits_description:
-      en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
-      fr: ""
-    deployment_subunits_legend:
-      en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
-      fr: ""
-    deployment_subunits_path: "deployments/{deployment_id}/deployment_subunits.gpkg"
     use_cases:
       - en: "Use case 1"
         fr: "Cas d'utilisation 1"
