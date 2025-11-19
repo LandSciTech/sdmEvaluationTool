@@ -199,24 +199,13 @@ db_read_models <- function(con, model_id = NULL) {
 #' @export
 db_read_species <- function(
     con,
-    species_id = NULL,
-    lang = NULL
+    species_id = NULL
 ) {
-    if (is.null(lang)) {
-        lang <- sdmevaltool_options()$lang
-    }
+    
     out <- dplyr::tbl(con, "species")
     if (!is.null(species_id)) {
         out <- dplyr::filter(out, .data$species_id %in% .env$species_id)
     }
-    out <- out |>
-        dplyr::collect() |>
-        dplyr::mutate(
-            #fmt: skip
-            species_display = paste0(
-                .data[[paste0(lang, "_name")]], # cannot use .env inside .data
-                " (", .data$scientific_name, ")"
-            )
-        )
+    out <- dplyr::collect(out)
     out
 }
