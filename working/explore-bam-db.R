@@ -425,13 +425,13 @@ comments <- data.frame(
 
 evaluations <- data.frame(
     deployment_material_id = c(
-        "deployment1_bam_v5_can71_CAWA_observations bam_v5_can71",
-        "deployment1_bam_v5_can71_CAWA_observations bam_v5_can71"
+        "deployment1_bam_v5_can71_CAWA_observations",
+        "deployment1_bam_v5_can71_CAWA_spatial_prediction"
     ),
     deployment_id = c("deployment1", "deployment1"),
     material_id = c(
-        "bam_v5_can71_CAWA_observations bam_v5_can71",
-        "bam_v5_can71_CAWA_observations bam_v5_can71"
+        "bam_v5_can71_CAWA_observations",
+        "bam_v5_can71_CAWA_spatial_prediction"
     ),
     use_cases = "Forestry",
     evaluation_create_user = "draper",

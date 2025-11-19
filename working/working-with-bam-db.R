@@ -22,4 +22,10 @@ dm <- db_read_deployment_materials(con, deploymentid)
 comms <- db_read_comments(con, deploymentid)
 evals <- db_read_evaluations(con, deploymentid)
 
+
+z <- dplyr::tbl(con, "materials") |> dplyr::collect()
+z$material_id
+e <- dplyr::tbl(con, "evaluations") |> dplyr::collect()
+dm <- dplyr::tbl(con, "deployment_materials") |> dplyr::collect()
+
 DBI::dbDisconnect(con)
