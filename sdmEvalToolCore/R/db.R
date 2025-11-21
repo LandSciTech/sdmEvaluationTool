@@ -51,7 +51,7 @@ db_connect <- function(...) {
 #' Get User Info from DB
 #'
 #' @param con DB connection.
-#' @param user_id User ID.
+#' @param user_id User ID. Multiple allowed
 #' @param deployment_id Deployment ID.
 #'
 #' @return A data frame with user info and access roles.
@@ -59,10 +59,10 @@ db_connect <- function(...) {
 #'
 #' @export
 
-db_read_user_info <- function(con, user_id, deployment_id) {
+db_read_user_info <- function(con, user_id, deployment_id = NULL) {
     # user info
     tbl_user <- dplyr::tbl(con, "users") |>
-        dplyr::filter(.data$user_id == .env$user_id) |>
+        dplyr::filter(.data$user_id %in% .env$user_id) |>
         dplyr::collect() |>
         dplyr::mutate(admin = as.logical(.data$admin))
     if (nrow(tbl_user) < 0L) {
@@ -71,8 +71,8 @@ db_read_user_info <- function(con, user_id, deployment_id) {
     # user roles
     tbl_access <- dplyr::tbl(con, "access") |>
         dplyr::filter(
-            .data$deployment_id == .env$deployment_id,
-            .data$user_id == .env$user_id
+            if(!is.null(deployment_id)) .data$deployment_id == .env$deployment_id,
+            .data$user_id %in% .env$user_id
         ) |>
         dplyr::collect()
     if (nrow(tbl_access) < 0L) {
@@ -94,16 +94,16 @@ db_read_user_info <- function(con, user_id, deployment_id) {
 #' Get Deployment Materials from DB
 #'
 #' @param con DB connection.
-#' @param deployment_id Deployment ID.
+#' @param deployment_id Deployment IDs (multiple permitted)
 #'
 #' @return A data frame with joined deployment materials.
 #'
 #' @export
-db_read_deployment_materials <- function(con, deployment_id = NULL) {
+db_read_deployment_materials <- function(con, deployment_id = NULL, user_id = NULL) {
     dm <- dplyr::tbl(con, "deployment_materials")
 
     if(!is.null(deployment_id)) {
-        dm <- dplyr::filter(dm, .data$deployment_id == .env$deployment_id)
+        dm <- dplyr::filter(dm, .data$deployment_id %in% .env$deployment_id)
     }
     
     dm <- dm |>
@@ -122,9 +122,15 @@ db_read_deployment_materials <- function(con, deployment_id = NULL) {
         dplyr::left_join(
             dplyr::tbl(con, "species"),
             by = "species_id"
-        ) |>
-        dplyr::collect() |>
-        db_timestamp()
+        )
+  
+     if(!is.null(user_id)) {
+          dm <- dplyr::filter(dm, .data$deployment_create_user == .env$user_id)
+     }
+  
+    dm <- dm |>
+       dplyr::collect() |>
+       db_timestamp()
 
     dm
 }
@@ -149,17 +155,22 @@ db_read_comments <- function(con, deployment_id) {
 #'
 #' @param con DB connection.
 #' @param deployment_id Deployment ID.
+#' @param user_id Evaluation create user IDs (multiple allowed).
 #'
 #' @return A data frame with evaluations for the deployment.
 #'
 #' @export
-db_read_evaluations <- function(con, deployment_id = NULL) {
+db_read_evaluations <- function(con, deployment_id = NULL, user_id = NULL) {
   out <- dplyr::tbl(con, "evaluations")
   if(!is.null(deployment_id)) {
     out <- dplyr::filter(out, .data$deployment_id == .env$deployment_id)
   }
+
+  if(!is.null(user_id)) {
+    out <- dplyr::filter(out, .data$evaluation_create_user %in% .env$user_id)
+  }
   
-  out <- out
+  out <- out |>
     dplyr::collect() |>
     db_timestamp()
   
