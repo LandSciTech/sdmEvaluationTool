@@ -15,6 +15,7 @@ test_page_overview <- function() {
   )
 
   server <- function(input, output, session) {
+    set_options("user_id" = "holden", "user_role" = "modeler")
     mod_page_overview_server(
       deployment_id = reactive("deployment1"),
       model_id = reactive("bam_v5_can71"),
@@ -43,7 +44,7 @@ mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   nav_panel(
     title,
     "Current status of review",
-    #reactable::reactableOutput(NS(id, "table"))
+    reactable::reactableOutput(NS(id, "tbl_overview"))
   )
 }
 
@@ -63,54 +64,130 @@ mod_page_overview_server <- function(id = "overview", ...) {
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
-    # table <- reactive({
-    #   tbl_overview(
-    #     role,
-    #     deployment_id,
-    #     model_id,
-    #     species_id,
-    #     tbl_models,
-    #     tbl_species,
-    #     tbl_materials
-    #   )
-    # })
+    tbl <- reactive({
+      eval_details(user_id(), user_role())
+    })
 
     output$tbl_overview <- reactable::renderReactable({
-      tbl <- df_details()
+      validate(
+        need(user_id(), "Please select a user"),
+        need(user_role(), "Please select a user role")
+      )
+
+      # TODO: TEmp for testing
+      #tbl <- eval_details("draper", "evaluator")
+      #tbl <- eval_details("draper", "modeler")
+      #tbl <- eval_details("holden", "modeler")
 
       # If evaluator only show evaluations created
       # If modeler only show deployments created
-      if (input$role == "evaluator") {
-        tbl <- dplyr::filter(tbl, .data$evaluation_create_user == user())
-      } else if (input$role == "modeler") {
-        tbl <- dplyr::filter(tbl, .data$deployment_create_user == user())
-      }
 
+      # Grouped tables https://glin.github.io/reactable/articles/examples.html?q=collaps#grouping-and-aggregation
       # Nested tables https://glin.github.io/reactable/articles/examples.html?q=collaps#nested-tables
 
-      tbl0 <- dplyr::select(
-        tbl,
-        "deployment_name",
-        "model_name",
-        "species_display",
-        "component_id",
-        "complete"
-      ) |>
-        dplyr::arrange("deployment_name", "model_name", "species_display")
+      pal <- c("white", colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
+      pal_text <- c(rep("black", 50), rep("white", 51))
 
-      tbl |>
-        dplyr::mutate(
-          species_display = tidyr::replace_na(.data$species_id, "Model")
-        ) |>
-        dplyr::summarize(
-          last_eval = max(.data$evaluation_create_time, na.rm = TRUE),
-          last_edit = max(.data$evaluation_modify_time, na.rm = TRUE),
-          last_change = pmax(.data$last_eval, .data$last_edit, na.rm = TRUE),
-          n = dplyr::n(),
-          n_complete = sum(.data$complete, na.rm = TRUE),
-          n_display = paste0(.data$n_complete, "/", .data$n),
-          .by = c("deployment_name", "model_name", "species_display")
-        )
+      #TODO: Fix No evaluator names for "draper", "modeler"
+
+      group_by <- "deployment_model_name"
+      if (user_role() == "modeler") {
+        group_by <- c(group_by, "evaluation_create_user_name")
+      }
+      group_by <- c(group_by, "species_display")
+      browser()
+      reactable::reactable(
+        dplyr::select(
+          tbl(),
+          -started,
+          -deployment_name,
+          -model_name
+        ),
+        groupBy = group_by,
+        columns = list(
+          deployment_model_name = reactable::colDef(
+            name = "Deployment - Model",
+            html = TRUE,
+            grouped = reactable::JS(
+              "function(cellInfo, state) {
+              let [d, m] = cellInfo.value.split('---');
+
+              d = `<span style = 'font-weight:600'>${d}</span>`
+              m = `<div style = 'padding-left:20px; font-size:0.75rem'>${m}</div>`
+
+            return `${d}<br>${m}`
+            }"
+            )
+          ),
+          evaluation_create_user_name = reactable::colDef(
+            name = "Evaluator",
+            show = user_role() == "modeler"
+          ),
+          species_display = reactable::colDef(
+            name = "Species",
+            html = TRUE,
+            grouped = reactable::JS(
+              "function(cellInfo) {
+             let out = cellInfo.value
+             out = out.replaceAll('(', '(<em>')
+             out = out.replaceAll(')', '</emf>)')
+             return out
+            }"
+            )
+          ),
+          component_name = reactable::colDef(name = "Component"),
+          n_q_display = reactable::colDef(show = FALSE),
+          n_q = reactable::colDef(show = FALSE),
+          n_q_complete = reactable::colDef(show = FALSE),
+          completed = reactable::colDef(
+            name = "Progress",
+            aggregate = reactable::JS(
+              "function(values, rows) {
+            let out = 0
+
+            if(values.length === 1) {
+              out = rows['n_q_display']
+            } else {             
+              rows.forEach(function(row) {
+                out += row['completed']
+              })
+              out = Math.round(out / values.length * 10 ** 2) / 10 ** 2
+            }
+      
+            return out
+      }"
+            ),
+            cell = reactable::JS(
+              "function(cellInfo, state) {
+              let out = 'Yes'
+              if(!cellInfo.aggregated) out = cellInfo.row.n_q_display
+              return out
+            }"
+            ),
+            format = reactable::colFormat(percent = TRUE, digits = 0),
+
+            # Colour by percent complete
+            style = reactable::JS(
+              "function(rowInfo, column, state) {
+              const pal = state.meta.pal
+              const pal_text = state.meta.pal_text
+              let value = 0
+              let completed = 0
+
+              if(rowInfo.aggregated) {
+                completed = rowInfo.row['completed']
+              } else {
+                completed = rowInfo.values['n_q_complete'] / rowInfo.values['n_q']
+              }
+              value = (Math.round(completed * 10 ** 2) / 10 ** 2) * 100
+              return { backgroundColor: pal[value] , color: pal_text[value]}
+          }"
+            )
+          )
+        ),
+        meta = list(pal = pal, pal_text = pal_text),
+        highlight = TRUE
+      )
     })
 
     # TODO: Option to click on species/model combination on table to select
@@ -147,10 +224,73 @@ mod_page_overview_server <- function(id = "overview", ...) {
   })
 }
 
-df_details <- function() {
+#' Title
+#'
+#' @param user_id
+#' @param user_role
+#'
+#' @returns
+#'
+#' @export
+#' @examples
+#' eval_details("holden", "modeler")
+#' eval_details("holden", "evaluator")
+#' eval_details("draper", "modeler")
+#' eval_details("draper", "evaluator")
+
+eval_details <- function(user_id, user_role) {
   con <- withr::local_db_connection(db_connect())
-  tbl_materials <- db_read_deployment_materials(con)
-  tbl_questions <- tbl_materials |>
+
+  # Deployment details we're working with
+  deployments <- dplyr::tbl(con, "access") |>
+    dplyr::collect() |>
+    dplyr::mutate(
+      modeler = stringr::str_detect(.data$user_roles, "modeler"),
+      evaluator = stringr::str_detect(.data$user_roles, "evaluator")
+    )
+
+  deployment_ids <- deployments |>
+    dplyr::filter(
+      .data$user_id == .env$user_id,
+      stringr::str_detect(.data$user_roles, .env$user_role)
+    ) |>
+    dplyr::pull(.data$deployment_id)
+
+  if (user_role == "modeler") {
+    deploy_user <- user_id
+    # Which ussers expected to have evaluations modeler wants to check progress on?
+    eval_user <- deployments |>
+      dplyr::filter(
+        .data$deployment_id %in% .env$deployment_ids,
+        stringr::str_detect(.data$user_roles, "evaluator")
+      ) |>
+      dplyr::pull(.data$user_id)
+  } else if (user_role == "evaluator") {
+    # Don't care who the deployer/modeller is when looking at own evaluations
+    deploy_user <- NULL
+    eval_user <- user_id
+  }
+
+  eval_expect <- db_read_deployment_materials(
+    con,
+    deployment_id = deployment_ids
+  ) |>
+    #fmt: skip
+    dplyr::select(
+      "deployment_id",
+      "material_id",
+      "model_id",
+      "species_id", 
+      dplyr::contains("name"),
+      "component_id"
+    ) |>
+    tidyr::expand_grid(data.frame(evaluation_create_user = eval_user))
+
+  if (nrow(eval_expect) == 0) {
+    return(data.frame())
+  }
+
+  eval_questions <- eval_expect |>
     dplyr::select("deployment_id", "component_id") |>
     dplyr::distinct() |>
     dplyr::mutate(
@@ -162,55 +302,99 @@ df_details <- function() {
       n_q = purrr::map_int(.data$n_q, nrow)
     )
 
-  # TODO: Pull out evaluations to see which are actually responded to.
-  df <- db_read_evaluations(con) |>
-    #TODO: Temporary
-    dplyr::mutate(
-      deployment_material_id = stringr::str_remove(
-        .data$deployment_material_id,
-        " bam\\_v5\\_can71$"
-      ),
-      material_id = stringr::str_remove(.data$material_id, " bam\\_v5\\_can71$")
+  eval_complete <- db_read_evaluations(con, user_id = eval_user) |>
+    dplyr::select(
+      "deployment_id",
+      "material_id",
+      "evaluation_create_user",
+      "evaluation_body"
     ) |>
     dplyr::mutate(
       evals = purrr::map(.data$evaluation_body, evals_extract),
       evals = purrr::map(.data$evals, evals_answered)
     ) |>
-    tidyr::unnest("evals") |>
+    tidyr::unnest("evals")
+
+  if (nrow(eval_complete) == 0) {
+    eval_complete <- eval_expect |>
+      dplyr::select("deployment_id", "material_id", "evaluation_create_user") |>
+      dplyr::mutate(n_q = NA, n_q_complete = 0)
+  }
+
+  evals <- eval_expect |>
     dplyr::full_join(
-      tbl_materials,
-      by = c("deployment_id", "material_id", "deployment_material_id")
+      eval_questions,
+      by = c("deployment_id", "component_id")
     ) |>
     dplyr::full_join(
-      tbl_questions,
-      by = c("deployment_id", "component_id"),
+      eval_complete,
+      by = c(
+        "evaluation_create_user",
+        "deployment_id",
+        "material_id"
+      ),
       suffix = c("", ".eval")
     ) |>
     dplyr::mutate(
-      species_id = tidyr::replace_na(.data$species_id, "ALL")
+      species_id = tidyr::replace_na(.data$species_id, "ALL"),
+      n_q_complete = tidyr::replace_na(.data$n_q_complete, 0)
     )
 
-  dplyr::mutate(
-    start = any(.data$n_q_complete),
-    complete = .data$n_q_complete == .data$n_q,
-    .by = "deployment_id"
-  ) |>
-    dplyr::full_join(
-      tbl_materials,
-      by = c("deployment_id", "material_id", "deployment_material_id")
+  check_q_mismatch(evals$n_q, evals$n_q.eval)
+
+  user <- dplyr::tbl(con, "users") |>
+    dplyr::filter(.data$user_id %in% .env$eval_user) |>
+    dplyr::select(
+      "evaluation_create_user" = "user_id",
+      "evaluation_create_user_name" = "user_name"
     ) |>
+    dplyr::collect()
+
+  evals <- evals |>
+    dplyr::select(-"n_q.eval") |>
+    dplyr::mutate(
+      started = any(.data$n_q_complete > 0, na.rm = TRUE),
+      completed = .data$n_q_complete == .data$n_q,
+      completed = tidyr::replace_na(completed, FALSE),
+      n_q_display = paste0(.data$n_q_complete, "/", .data$n_q),
+      n_q_display = dplyr::if_else(
+        .data$completed,
+        paste0(.data$n_q_display, " \u2714\ufe0f"),
+        .data$n_q_display
+      ),
+      .by = c("deployment_id", "model_id", "species_id", "component_id")
+    ) |>
+    dplyr::left_join(user, by = "evaluation_create_user") |>
     fmt_species() |>
+    dplyr::mutate(
+      deployment_model_name = paste0(
+        .data$deployment_name,
+        "---",
+        .data$model_name
+      ),
+      component_name = pretty(.data$component_id)
+    ) |>
     # fmt:skip
     dplyr::select(
-      "deployment_id", "deployment_name", "deployment_description", "deployment_create_user", #"use_cases", 
-      "model_id", "model_name", 
-      "species_id", "species_display", 
-      "evaluation_create_user", "evaluation_create_time", "evaluation_modify_user", "evaluation_modify_time",
-      dplyr::starts_with("n_q"),
-      "component_id"
+      #"deployment_id", #"deployment_description", "deployment_create_user", #"use_cases", 
+      # , "species_id",
+      #"evaluation_create_time", "evaluation_modify_user", "evaluation_modify_time",
+
+      "deployment_model_name",
+      "evaluation_create_user_name",
+      "deployment_name", "model_name", "species_display", "component_name", 
+      "completed", "started", 
+      "n_q_display",           
+      dplyr::starts_with("n_q")      
+    ) |>
+    dplyr::arrange(
+      .data$deployment_model_name,
+      .data$evaluation_create_user_name,
+      .data$species_display,
+      .data$component_name
     )
 
-  df
+  evals
 }
 
 
@@ -222,7 +406,30 @@ evals_answered <- function(eval) {
   dplyr::summarize(
     eval,
     n_q = dplyr::n(),
-    n_q_complete = sum(purrr::map_lgl(.data$response, isTruthy)),
-    n_q_display = glue::glue("{n_q}/{n_q_complete}")
+    n_q_complete = sum(purrr::map_lgl(.data$response, isTruthy))
+    #n_q_display = glue::glue("{n_q_complete}/{n_q}")
   )
+}
+
+
+#' Compare number of questions
+#'
+#' Compares the number of questions from those evaluated (`q2`) to those
+#' calculated from the question data (`q1`) Questions from evaluated (`q2`) may
+#' be `NA` if evaluations haven't been finished. Will error if values don't
+#' match (ignoring `NA`s)
+#'
+#' @param q1 Vector of Integers, number of questions calculated from Question data.
+#' @param q2 Vector of Integers, number of questions evaluated.
+#'
+#' @returns invisible or error if there is a mismatch.
+#'
+#' @examples
+#' check_q_mismatch(c(1, 1, 2, 10, 6), c(1, 1, 2, 10, 6))
+#' check_q_mismatch(c(10, 7, 1), c(10, NA, NA))
+#' # check_q_mismatch(c(10, 11, 1), c(10, 10, NA)) # Error
+check_q_mismatch <- function(q1, q2) {
+  if (any(!is.na(q2)) && any(q1[!is.na(q2)] != q2[!is.na(q2)], na.rm = TRUE)) {
+    stop("Mismatch between evaluated and deployed questions", call. = FALSE)
+  }
 }

@@ -55,6 +55,8 @@ sdm_tool <- function() {
         deployment_id = vals$deployment_id,
         model_id = vals$model_id,
         species_id = vals$species_id,
+        user_id = vals$user_id,
+        user_role = vals$user_role,
         tbl_models = tbl_models,
         tbl_species = tbl_species
       )
@@ -144,7 +146,7 @@ mod_sidebar_server <- function(id) {
         choices <- c("First select a User" = "")
       } else {
         con <- withr::local_db_connection(db_connect())
-        u <- user() # Cannot put in filter() before collection, lazy evaluation goes funny
+        u <- user_id() # Cannot put in filter() before collection, lazy evaluation goes funny
         roles <- dplyr::tbl(con, "access") |>
           dplyr::filter(.data$user_id == .env$u) |>
           dplyr::pull(.data$user_roles) |>
