@@ -1044,6 +1044,31 @@ question_types:
 # severe overprediction, moderate overprediction, accurate, moderate underprediction, severe underprediction, unknown
 
 
+question_types:
+  simple_text:
+    description: Free form text input.
+  yes_no:
+    description: A Yes or No question.
+    values: ["Yes", "No"]
+  gold_standard:
+    description: A 1-5 scale (Unk - Gold) ordinal response presented as a dropdown.
+    values: ["Gold", "Silver", "Bronze", "Deficient", "Unknown"]
+  categorical_pred3u:
+    description: Categorical description applicable for predictions, 3 levels + unknown.
+    values: ["Overpredicted", "Agreement", "Underpredicted", "Unknown"]
+  categorical_pred5u:
+    description: Categorical description applicable for predictions, 5 levels + unknown.
+    values: ["Severely over", "Moderately over", "Agreement", "Moderately under", "Severely under", "Unknown"]
+  categorical_gen3:
+    description: "Ordinal for importance or difficulty (-1 -- +1) to answer questions such as: To what degree ..."
+    values: ["Extremely", "Moderately", "Not at all"]
+  categorical_gen5:
+    description: "Ordinal for importance or difficulty (-2 -- +2) to answer questions such as: To what degree ..."
+    values: ["Extremely", "Very", "Moderately", "Slightly", "Not at all"]
+  spatial:
+    description: A list of subunit IDs saved for which question's criteria applies and the answer is Yes.
+    values: []
+
 templates:
 
   deployment_settings:
