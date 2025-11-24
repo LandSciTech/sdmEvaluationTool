@@ -509,12 +509,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the observations?
-          fr: ""
 
   model_metadata:
     description: ODMAP protocol metadata.
@@ -536,7 +530,7 @@ components:
       description: TBD once we integrate ODMAP into the UI.
       placement: "page.tab.section" # TBD
     evaluation:
-      evaluation_allowed: No
+      evaluation_allowed: Yes
 
   predictor_metadata:
     description: Predictor metadata.
@@ -569,12 +563,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the predictor metadata table?
-          fr: ""
 
   predictor_raster:
     description: Predictor raster, a multi-band TIF with spatial predictors as bands.
@@ -605,7 +593,7 @@ components:
           en: "Predictor rasters."
           fr: ""
     evaluation:
-      evaluation_allowed: No
+      evaluation_allowed: Yes
 
   spatial_prediction:
     description: Expected value as band 1, variation as band 2.
@@ -646,37 +634,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: heading
-        question_body:
-          en: What is the accuracy of model predictions based on your expert knowledge?
-          fr: ""
-      - order: 1
-        type: gold_standard
-        question_body:
-          en: How confident are you about model predictions?
-          fr: ""
-      - order: 2
-        type: text
-        question_body:
-          en: Why is it a problem?
-          fr: ""
-      - order: 3
-        type: ordinal
-        question_body:
-          en: How important is it to fix the problem?
-          fr: ""
-      - order: 4
-        type: ordinal
-        question_body:
-          en: How difficult/expensive is it to fix the problem?
-          fr: ""
-      - order: 5
-        type: text
-        question_body:
-          en: Can you suggest options for addressing the problem?
-          fr: ""
 
   model_summary:
     description: Model summary including variable importance metrics or coefficients for predictor variables.
@@ -710,12 +667,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the model summary?
-          fr: ""
 
   model_fit:
     description: Model fit statistics.
@@ -748,12 +699,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the model fit?
-          fr: ""
 
   deployment_settings:
     description: Deployment settings.
@@ -784,7 +729,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
 
   deployment_subunits:
     description: Deployment subunits.
@@ -815,7 +759,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: No
-      questions:
 
   deployment_questions:
     description: Deployment questions.
@@ -845,30 +788,331 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: No
-      questions:
+
+default_questions:
+# ---------- deployment settings --------
+- component: deployment_settings
+  question_type: yes_no
+  question_order: 1
+  question_part: 1
+  question_body:
+    en: >
+      Are there any non-target applications that you think this model is unsuitable for?
+    fr: ""
+- component: deployment_settings
+  question_type: yes_no
+  question_order: 1
+  question_part: 2
+  question_body:
+    en: >
+      Which applications is the model unsuitable for and why?
+    fr: ""
+- component: deployment_settings
+  question_type: ordinal
+  question_order: 2
+  question_part: 0
+  question_body:
+    en: >
+      To what degree are you concerned about how well suited the model is for the intended application of the model?
+    fr: ""
+- component: deployment_settings
+  question_type: simple_text
+  question_order: 3
+  question_part: 0
+  question_body:
+    en: >
+      What other concerns or comments do you have about using the model for the intended model applications?
+    fr: ""
+# --------- spatial prediction --------
+- component: spatial_prediction
+  question_type: yes_no
+  question_order: 1
+  question_part: 1
+  question_body:
+    en: >
+      Can you identify any prediction inaccuracies on the map?
+    fr: ""
+- component: spatial_prediction
+  question_type: spatial
+  question_order: 1
+  question_part: 2 # need multiple parts to spatial Q
+  question_body:
+    en: >
+      Identify the areas on the map where predictions are higher than expected (overpredicted).
+    fr: ""
+- component: spatial_prediction
+  question_type: spatial
+  question_order: 1
+  question_part: 3
+  question_body:
+    en: >
+      Identify the areas on the map where predictions are lower than expected (underpredicted).
+    fr: ""
+- component: spatial_prediction
+  question_type: yes_no
+  question_order: 2
+  question_part: 1 # need multiple parts to spatial Q
+  question_body:
+    en: >
+      Can you identify any uncertainty inaccuracies on the map?
+    fr: ""
+- component: spatial_prediction
+  question_type: spatial
+  question_order: 2
+  question_part: 2
+  question_body:
+    en: >
+      Identify areas on the map where uncertainty does not align with your understanding of data limitations, known habitat complexities, or other sources of uncertainty.
+    fr: ""
+## ------------ model fit ------------
+- component: model_fit
+  question_type: yes_no
+  question_order: 1
+  question_part: 1 # need multiple parts to spatial Q
+  question_body:
+    en: >
+      Are you concerned about the adequacy or appropriateness of the validation metrics?
+    fr: ""
+- component: model_fit
+  question_type: simple_text
+  question_order: 1
+  question_part: 2 # need multiple parts to spatial Q
+  question_body:
+    en: >
+      What are the metrics that should be used and why?
+    fr: ""
+- component: model_fit
+  question_type: simple_text
+  question_order: 2
+  question_part: 0 # 0 indicates no further drilldown Qs
+  question_body:
+    en: >
+      What other concerns do you have about model performance?
+    fr: ""
+## ------------ model summary ------------
+- component: model_summary
+  question_type: yes_no
+  question_order: 1
+  question_part: 1
+  question_body:
+    en: >
+      Are you concerned about missing predictor interactions or nonlinear relationships?
+    fr: ""
+- component: model_summary
+  question_type: simple_text
+  question_order: 1
+  question_part: 2
+  question_body:
+    en: >
+      What interactions or nonlinear relationships are missing?
+    fr: ""
+- component: model_summary
+  question_type: yes_no
+  question_order: 2
+  question_part: 1
+  question_body:
+    en: >
+      Are you concerned about the reported relative importance of predictors?
+    fr: ""
+- component: model_summary
+  question_type: simple_text
+  question_order: 2
+  question_part: 2
+  question_body:
+    en: >
+      Which predictors would you expect to be more or less important and why?
+    fr: ""
+- component: model_summary
+  question_type: ordinal
+  question_order: 3
+  question_part: 0
+  question_body:
+    en: >
+      To what degree are you concerned about the appropriateness of the modeling algorithm for the model objectives and application?
+    fr: ""
+- component: model_summary
+  question_type: ordinal
+  question_order: 4
+  question_part: 0
+  question_body:
+    en: >
+      To what degree are you concerned about how well the modelling framework addresses important statistical assumptions?
+    fr: ""
+- component: model_summary
+  question_type: ordinal
+  question_order: 5
+  question_part: 0
+  question_body:
+    en: >
+      To what degree are you concerned about how well important biological assumptions are explained and justified?
+    fr: ""
+- component: model_summary
+  question_type: simple_text
+  question_order: 6
+  question_part: 0
+  question_body:
+    en: >
+      What other concerns or comments do you have about model complexity?
+    fr: ""
+# ---------- observations ------------
+- component: observations
+  question_type: yes_no
+  question_order: 1
+  question_part: 1
+  question_body:
+    en: >
+      Are there areas where you are concerned about potential bias in the data?
+    fr: ""
+- component: observations
+  question_type: spatial
+  question_order: 1
+  question_part: 2
+  question_body:
+    en: >
+      Identify areas with potential bias in the data.
+    fr: ""
+- component: observations
+  question_type: yes_no
+  question_order: 2
+  question_part: 1
+  question_body:
+    en: >
+      Are there areas where this species is not sufficiently sampled?
+    fr: ""
+- component: observations
+  question_type: spatial
+  question_order: 2
+  question_part: 2
+  question_body:
+    en: >
+      Identify areas that are not sufficiently sampled?
+    fr: ""
+- component: observations
+  question_type: yes_no
+  question_order: 3
+  question_part: 1
+  question_body:
+    en: >
+      Are you concerned about the distribution of counts?
+    fr: ""
+- component: observations
+  question_type: simple_text
+  question_order: 3
+  question_part: 2
+  question_body:
+    en: >
+      Explain what is an appropriate truncation value (i.e. highest count).
+    fr: ""
+- component: observations
+  question_type: yes_no
+  question_order: 4
+  question_part: 1
+  question_body:
+    en: >
+      Are you concerned about the temporal distribution of detections?
+    fr: ""
+- component: observations
+  question_type: simple_text
+  question_order: 4
+  question_part: 2
+  question_body:
+    en: >
+      Explain what is an appropriate truncation value (i.e. minimum year).
+    fr: ""
+- component: observations
+  question_type: ordinal
+  question_order: 5
+  question_part: 0
+  question_body:
+    en: >
+      To what degree are you concerned about the description and treatment of potential biases in the data, as described in the model metadata?
+    fr: ""
+# ------------ model metadata -----------
+- component: model_metadata
+  question_type: ordinal
+  question_order: 1
+  question_part: 0
+  question_body:
+    en: >
+      Are you concerned about the description and treatment of predictor data, as described in the model metadata.
+    fr: ""
+# ------------ predictor metadata -----------
+- component: predictor_metadata
+  question_type: yes_no
+  question_order: 1
+  question_part: 1
+  question_body:
+    en: >
+      Are you concerned about missing predictors?
+    fr: ""
+- component: predictor_metadata
+  question_type: simple_text
+  question_order: 1
+  question_part: 2
+  question_body:
+    en: >
+      What predictors are missing and why?
+    fr: ""
+- component: predictor_metadata
+  question_type: yes_no
+  question_order: 2
+  question_part: 1
+  question_body:
+    en: >
+      Are you concerned about superfluous or inappropriate predictors?
+    fr: ""
+- component: predictor_metadata
+  question_type: simple_text
+  question_order: 2
+  question_part: 2
+  question_body:
+    en: >
+      Which predictors should be removed and why?
+    fr: ""
+# ------------ predictor raster -----------
+- component: predictor_raster
+  question_type: yes_no
+  question_order: 1
+  question_part: 1
+  question_body:
+    en: >
+      Are you concerned about inaccuracy in the model predictors?
+    fr: ""
+- component: predictor_raster
+  question_type: spatial
+  question_order: 1
+  question_part: 2
+  question_body:
+    en: >
+      Identify the predictor(s) and the areas of concern.
+    fr: ""
+- component: predictor_raster
+  question_type: ordinal
+  question_order: 2
+  question_part: 0
+  question_body:
+    en: >
+      To what degree are you concerned about the spatial resolution of the predictor variables?
+    fr: ""
 
 question_types:
   simple_text:
+    name: Simple Text Input
     description: Free form text input.
   yes_no:
+    name: Yes/No Question
     description: A Yes or No question. Follow up questions are conditional on Yes.
     values: ["Yes", "No"]
   gold_standard:
+    name: Gold Standard
     description: A 1-5 scale (Unk - Gold) ordinal response presented as a dropdown.
     values: ["Gold", "Silver", "Bronze", "Deficient", "Unknown"]
-  categorical_pred3u:
-    description: Categorical description applicable for predictions, 3 levels + unknown.
-    values: ["Overpredicted", "Agreement", "Underpredicted", "Unknown"]
-  categorical_pred5u:
-    description: Categorical description applicable for predictions, 5 levels + unknown.
-    values: ["Severely over", "Moderately over", "Agreement", "Moderately under", "Severely under", "Unknown"]
-  categorical_gen3:
-    description: "Ordinal for importance or difficulty (-1 -- +1) to answer questions such as: To what degree ..."
-    values: ["Extremely", "Moderately", "Not at all"]
-  categorical_gen5:
+  ordinal:
+    name: Ordinal
     description: "Ordinal for importance or difficulty (-2 -- +2) to answer questions such as: To what degree ..."
     values: ["Extremely", "Very", "Moderately", "Slightly", "Not at all"]
   spatial:
+    name: Spatial
     description: A list of subunit IDs saved for which question's criteria applies and the answer is Yes.
     values: []
 
