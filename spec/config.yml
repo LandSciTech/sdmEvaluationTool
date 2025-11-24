@@ -851,7 +851,7 @@ question_types:
   simple_text:
     description: Free form text input.
   yes_no:
-    description: A Yes or No question.
+    description: A Yes or No question. Follow up questions are conditional on Yes.
     values: ["Yes", "No"]
   gold_standard:
     description: A 1-5 scale (Unk - Gold) ordinal response presented as a dropdown.
