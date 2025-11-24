@@ -792,305 +792,305 @@ components:
 default_questions:
 # ---------- deployment settings --------
 - component: deployment_settings
-  question_type: yes_no
-  question_order: 1
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 1
+  part: 1
+  body:
     en: >
       Are there any non-target applications that you think this model is unsuitable for?
     fr: ""
 - component: deployment_settings
-  question_type: yes_no
-  question_order: 1
-  question_part: 2
-  question_body:
+  type: yes_no
+  order: 1
+  part: 2
+  body:
     en: >
       Which applications is the model unsuitable for and why?
     fr: ""
 - component: deployment_settings
-  question_type: ordinal
-  question_order: 2
-  question_part: 0
-  question_body:
+  type: ordinal
+  order: 2
+  part: 0
+  body:
     en: >
       To what degree are you concerned about how well suited the model is for the intended application of the model?
     fr: ""
 - component: deployment_settings
-  question_type: simple_text
-  question_order: 3
-  question_part: 0
-  question_body:
+  type: simple_text
+  order: 3
+  part: 0
+  body:
     en: >
       What other concerns or comments do you have about using the model for the intended model applications?
     fr: ""
 # --------- spatial prediction --------
 - component: spatial_prediction
-  question_type: yes_no
-  question_order: 1
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 1
+  part: 1
+  body:
     en: >
       Can you identify any prediction inaccuracies on the map?
     fr: ""
 - component: spatial_prediction
-  question_type: spatial
-  question_order: 1
-  question_part: 2 # need multiple parts to spatial Q
-  question_body:
+  type: spatial
+  order: 1
+  part: 2 # need multiple parts to spatial Q
+  body:
     en: >
       Identify the areas on the map where predictions are higher than expected (overpredicted).
     fr: ""
 - component: spatial_prediction
-  question_type: spatial
-  question_order: 1
-  question_part: 3
-  question_body:
+  type: spatial
+  order: 1
+  part: 3
+  body:
     en: >
       Identify the areas on the map where predictions are lower than expected (underpredicted).
     fr: ""
 - component: spatial_prediction
-  question_type: yes_no
-  question_order: 2
-  question_part: 1 # need multiple parts to spatial Q
-  question_body:
+  type: yes_no
+  order: 2
+  part: 1 # need multiple parts to spatial Q
+  body:
     en: >
       Can you identify any uncertainty inaccuracies on the map?
     fr: ""
 - component: spatial_prediction
-  question_type: spatial
-  question_order: 2
-  question_part: 2
-  question_body:
+  type: spatial
+  order: 2
+  part: 2
+  body:
     en: >
       Identify areas on the map where uncertainty does not align with your understanding of data limitations, known habitat complexities, or other sources of uncertainty.
     fr: ""
 ## ------------ model fit ------------
 - component: model_fit
-  question_type: yes_no
-  question_order: 1
-  question_part: 1 # need multiple parts to spatial Q
-  question_body:
+  type: yes_no
+  order: 1
+  part: 1 # need multiple parts to spatial Q
+  body:
     en: >
       Are you concerned about the adequacy or appropriateness of the validation metrics?
     fr: ""
 - component: model_fit
-  question_type: simple_text
-  question_order: 1
-  question_part: 2 # need multiple parts to spatial Q
-  question_body:
+  type: simple_text
+  order: 1
+  part: 2 # need multiple parts to spatial Q
+  body:
     en: >
       What are the metrics that should be used and why?
     fr: ""
 - component: model_fit
-  question_type: simple_text
-  question_order: 2
-  question_part: 0 # 0 indicates no further drilldown Qs
-  question_body:
+  type: simple_text
+  order: 2
+  part: 0 # 0 indicates no further drilldown Qs
+  body:
     en: >
       What other concerns do you have about model performance?
     fr: ""
 ## ------------ model summary ------------
 - component: model_summary
-  question_type: yes_no
-  question_order: 1
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 1
+  part: 1
+  body:
     en: >
       Are you concerned about missing predictor interactions or nonlinear relationships?
     fr: ""
 - component: model_summary
-  question_type: simple_text
-  question_order: 1
-  question_part: 2
-  question_body:
+  type: simple_text
+  order: 1
+  part: 2
+  body:
     en: >
       What interactions or nonlinear relationships are missing?
     fr: ""
 - component: model_summary
-  question_type: yes_no
-  question_order: 2
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 2
+  part: 1
+  body:
     en: >
       Are you concerned about the reported relative importance of predictors?
     fr: ""
 - component: model_summary
-  question_type: simple_text
-  question_order: 2
-  question_part: 2
-  question_body:
+  type: simple_text
+  order: 2
+  part: 2
+  body:
     en: >
       Which predictors would you expect to be more or less important and why?
     fr: ""
 - component: model_summary
-  question_type: ordinal
-  question_order: 3
-  question_part: 0
-  question_body:
+  type: ordinal
+  order: 3
+  part: 0
+  body:
     en: >
       To what degree are you concerned about the appropriateness of the modeling algorithm for the model objectives and application?
     fr: ""
 - component: model_summary
-  question_type: ordinal
-  question_order: 4
-  question_part: 0
-  question_body:
+  type: ordinal
+  order: 4
+  part: 0
+  body:
     en: >
       To what degree are you concerned about how well the modelling framework addresses important statistical assumptions?
     fr: ""
 - component: model_summary
-  question_type: ordinal
-  question_order: 5
-  question_part: 0
-  question_body:
+  type: ordinal
+  order: 5
+  part: 0
+  body:
     en: >
       To what degree are you concerned about how well important biological assumptions are explained and justified?
     fr: ""
 - component: model_summary
-  question_type: simple_text
-  question_order: 6
-  question_part: 0
-  question_body:
+  type: simple_text
+  order: 6
+  part: 0
+  body:
     en: >
       What other concerns or comments do you have about model complexity?
     fr: ""
 # ---------- observations ------------
 - component: observations
-  question_type: yes_no
-  question_order: 1
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 1
+  part: 1
+  body:
     en: >
       Are there areas where you are concerned about potential bias in the data?
     fr: ""
 - component: observations
-  question_type: spatial
-  question_order: 1
-  question_part: 2
-  question_body:
+  type: spatial
+  order: 1
+  part: 2
+  body:
     en: >
       Identify areas with potential bias in the data.
     fr: ""
 - component: observations
-  question_type: yes_no
-  question_order: 2
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 2
+  part: 1
+  body:
     en: >
       Are there areas where this species is not sufficiently sampled?
     fr: ""
 - component: observations
-  question_type: spatial
-  question_order: 2
-  question_part: 2
-  question_body:
+  type: spatial
+  order: 2
+  part: 2
+  body:
     en: >
       Identify areas that are not sufficiently sampled?
     fr: ""
 - component: observations
-  question_type: yes_no
-  question_order: 3
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 3
+  part: 1
+  body:
     en: >
       Are you concerned about the distribution of counts?
     fr: ""
 - component: observations
-  question_type: simple_text
-  question_order: 3
-  question_part: 2
-  question_body:
+  type: simple_text
+  order: 3
+  part: 2
+  body:
     en: >
       Explain what is an appropriate truncation value (i.e. highest count).
     fr: ""
 - component: observations
-  question_type: yes_no
-  question_order: 4
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 4
+  part: 1
+  body:
     en: >
       Are you concerned about the temporal distribution of detections?
     fr: ""
 - component: observations
-  question_type: simple_text
-  question_order: 4
-  question_part: 2
-  question_body:
+  type: simple_text
+  order: 4
+  part: 2
+  body:
     en: >
       Explain what is an appropriate truncation value (i.e. minimum year).
     fr: ""
 - component: observations
-  question_type: ordinal
-  question_order: 5
-  question_part: 0
-  question_body:
+  type: ordinal
+  order: 5
+  part: 0
+  body:
     en: >
       To what degree are you concerned about the description and treatment of potential biases in the data, as described in the model metadata?
     fr: ""
 # ------------ model metadata -----------
 - component: model_metadata
-  question_type: ordinal
-  question_order: 1
-  question_part: 0
-  question_body:
+  type: ordinal
+  order: 1
+  part: 0
+  body:
     en: >
       Are you concerned about the description and treatment of predictor data, as described in the model metadata.
     fr: ""
 # ------------ predictor metadata -----------
 - component: predictor_metadata
-  question_type: yes_no
-  question_order: 1
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 1
+  part: 1
+  body:
     en: >
       Are you concerned about missing predictors?
     fr: ""
 - component: predictor_metadata
-  question_type: simple_text
-  question_order: 1
-  question_part: 2
-  question_body:
+  type: simple_text
+  order: 1
+  part: 2
+  body:
     en: >
       What predictors are missing and why?
     fr: ""
 - component: predictor_metadata
-  question_type: yes_no
-  question_order: 2
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 2
+  part: 1
+  body:
     en: >
       Are you concerned about superfluous or inappropriate predictors?
     fr: ""
 - component: predictor_metadata
-  question_type: simple_text
-  question_order: 2
-  question_part: 2
-  question_body:
+  type: simple_text
+  order: 2
+  part: 2
+  body:
     en: >
       Which predictors should be removed and why?
     fr: ""
 # ------------ predictor raster -----------
 - component: predictor_raster
-  question_type: yes_no
-  question_order: 1
-  question_part: 1
-  question_body:
+  type: yes_no
+  order: 1
+  part: 1
+  body:
     en: >
       Are you concerned about inaccuracy in the model predictors?
     fr: ""
 - component: predictor_raster
-  question_type: spatial
-  question_order: 1
-  question_part: 2
-  question_body:
+  type: spatial
+  order: 1
+  part: 2
+  body:
     en: >
       Identify the predictor(s) and the areas of concern.
     fr: ""
 - component: predictor_raster
-  question_type: ordinal
-  question_order: 2
-  question_part: 0
-  question_body:
+  type: ordinal
+  order: 2
+  part: 0
+  body:
     en: >
       To what degree are you concerned about the spatial resolution of the predictor variables?
     fr: ""
@@ -1099,6 +1099,7 @@ question_types:
   simple_text:
     name: Simple Text Input
     description: Free form text input.
+    values: []
   yes_no:
     name: Yes/No Question
     description: A Yes or No question. Follow up questions are conditional on Yes.
