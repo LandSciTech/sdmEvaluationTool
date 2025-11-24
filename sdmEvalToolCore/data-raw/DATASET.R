@@ -61,33 +61,19 @@ for (i in names(cmp)) {
     components <- rbind(components, c1)
 }
 
-default_questions <- data.frame(
-    component = character(0L),
-    order = integer(0L),
-    type = logical(0L),
-    english = character(0L),
-    frenchy = character(0L)
-)
-for (i in names(cmp)) {
-    e <- cmp[[i]][["evaluation"]]
-    if (e$evaluation_allowed) {
-        for (j in seq_along(e$questions)) {
-            qj <- e$questions[[j]]
-            q1 <- data.frame(
-                component = i,
-                order = qj$order,
-                type = qj$type,
-                english = qj$question_body$en,
-                french = if (is.null(qj$question_body$fr)) {
-                    ""
-                } else {
-                    qj$question_body$fr
-                }
-            )
-            default_questions <- rbind(default_questions, q1)
-        }
+e <- do.call(rbind, lapply(conf$default_questions, as.data.frame))
+colnames(e)[colnames(e) == "body.en"] <- "english"
+colnames(e)[colnames(e) == "body.fr"] <- "french"
+e$values <- NA_character_
+v <- lapply(conf$question_types, \(x) x$values)
+for (i in 1:nrow(e)) {
+    e$values[[i]] <- if (is.list(v[[e$type[i]]])) {
+        list()
+    } else {
+        list(v[[e$type[i]]])
     }
 }
+default_questions <- e
 
 usethis::use_data(
     components,

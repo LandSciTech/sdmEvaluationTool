@@ -331,7 +331,7 @@ tables:
     fields:
       deployment_material_id:
         name: Deployment Material ID
-        description: Deployment Material ID.
+        description: Deployment Material ID (foreign key).
         type: text
         constraint: REFERENCES deployment_materials
       deployment_id:
@@ -341,7 +341,7 @@ tables:
         constraint: REFERENCES deployments
       material_id:
         name: Material ID
-        description: Material ID.
+        description: Material ID (foreign key).
         type: text
         constraint: REFERENCES materials
       use_cases:
@@ -456,7 +456,6 @@ tables:
         type: text
         constraint: NOT NULL
 
-
 components:
 # note: properties used in the ui will have to take `en` and `fr` values.
 
@@ -510,12 +509,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the observations?
-          fr: ""
 
   model_metadata:
     description: ODMAP protocol metadata.
@@ -537,7 +530,7 @@ components:
       description: TBD once we integrate ODMAP into the UI.
       placement: "page.tab.section" # TBD
     evaluation:
-      evaluation_allowed: No
+      evaluation_allowed: Yes
 
   predictor_metadata:
     description: Predictor metadata.
@@ -570,12 +563,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the predictor metadata table?
-          fr: ""
 
   predictor_raster:
     description: Predictor raster, a multi-band TIF with spatial predictors as bands.
@@ -606,7 +593,7 @@ components:
           en: "Predictor rasters."
           fr: ""
     evaluation:
-      evaluation_allowed: No
+      evaluation_allowed: Yes
 
   spatial_prediction:
     description: Expected value as band 1, variation as band 2.
@@ -647,37 +634,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: heading
-        question_body:
-          en: What is the accuracy of model predictions based on your expert knowledge?
-          fr: ""
-      - order: 1
-        type: gold_standard
-        question_body:
-          en: How confident are you about model predictions?
-          fr: ""
-      - order: 2
-        type: text
-        question_body:
-          en: Why is it a problem?
-          fr: ""
-      - order: 3
-        type: ordinal
-        question_body:
-          en: How important is it to fix the problem?
-          fr: ""
-      - order: 4
-        type: ordinal
-        question_body:
-          en: How difficult/expensive is it to fix the problem?
-          fr: ""
-      - order: 5
-        type: text
-        question_body:
-          en: Can you suggest options for addressing the problem?
-          fr: ""
 
   model_summary:
     description: Model summary including variable importance metrics or coefficients for predictor variables.
@@ -711,12 +667,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the model summary?
-          fr: ""
 
   model_fit:
     description: Model fit statistics.
@@ -749,12 +699,36 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: Yes
-      questions:
-      - order: 0
-        type: text
-        question_body:
-          en: Do you have any feedback about the model fit?
+
+  deployment_settings:
+    description: Deployment settings.
+    mandatory: Yes
+    type: "deployment"
+    upload:
+      type: list
+      input:
+        description: >
+          A JSON file specifying the settings according to the template
+          `templates.deployment_settings`.
+        file_ext: [json]
+        columns: []
+      output:
+        description: >
+          Settings saved into a JSON file.
+        path: "deployments/{deployment_id}/deployment_settings.json"
+    display:
+      type: settings
+      title: Settings
+      description: >
+        These settings define some aspects of the deployments.
+        We can attach general evaluations to this component.
+      placement: "page.tab.section" # TBD
+      material_settings:
+        legend:
+          en: ""
           fr: ""
+    evaluation:
+      evaluation_allowed: Yes
 
   deployment_subunits:
     description: Deployment subunits.
@@ -764,8 +738,8 @@ components:
       type: polygons
       input:
         description: >
-          A geospatial polygons file. It needs to have a `subunit_id` column
-          and the geometry column.
+          A spatial polygons file with geometries and a key called 
+          `subunit_id`. Each deployment can have its own subunits.
           Subunits can be used to make evaluations more specific.
         file_ext: [gpkg]
         columns: [subunit_id, geometry]
@@ -785,7 +759,6 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: No
-      questions:
 
   deployment_questions:
     description: Deployment questions.
@@ -815,8 +788,334 @@ components:
           fr: ""
     evaluation:
       evaluation_allowed: No
-      questions:
 
+default_questions:
+# ---------- deployment settings --------
+- component: deployment_settings
+  type: yes_no
+  order: 1
+  part: 1
+  body:
+    en: >
+      Are there any non-target applications that you think this model is unsuitable for?
+    fr: ""
+- component: deployment_settings
+  type: yes_no
+  order: 1
+  part: 2
+  body:
+    en: >
+      Which applications is the model unsuitable for and why?
+    fr: ""
+- component: deployment_settings
+  type: ordinal
+  order: 2
+  part: 0
+  body:
+    en: >
+      To what degree are you concerned about how well suited the model is for the intended application of the model?
+    fr: ""
+- component: deployment_settings
+  type: simple_text
+  order: 3
+  part: 0
+  body:
+    en: >
+      What other concerns or comments do you have about using the model for the intended model applications?
+    fr: ""
+# --------- spatial prediction --------
+- component: spatial_prediction
+  type: yes_no
+  order: 1
+  part: 1
+  body:
+    en: >
+      Can you identify any prediction inaccuracies on the map?
+    fr: ""
+- component: spatial_prediction
+  type: spatial
+  order: 1
+  part: 2 # need multiple parts to spatial Q
+  body:
+    en: >
+      Identify the areas on the map where predictions are higher than expected (overpredicted).
+    fr: ""
+- component: spatial_prediction
+  type: spatial
+  order: 1
+  part: 3
+  body:
+    en: >
+      Identify the areas on the map where predictions are lower than expected (underpredicted).
+    fr: ""
+- component: spatial_prediction
+  type: yes_no
+  order: 2
+  part: 1 # need multiple parts to spatial Q
+  body:
+    en: >
+      Can you identify any uncertainty inaccuracies on the map?
+    fr: ""
+- component: spatial_prediction
+  type: spatial
+  order: 2
+  part: 2
+  body:
+    en: >
+      Identify areas on the map where uncertainty does not align with your understanding of data limitations, known habitat complexities, or other sources of uncertainty.
+    fr: ""
+## ------------ model fit ------------
+- component: model_fit
+  type: yes_no
+  order: 1
+  part: 1 # need multiple parts to spatial Q
+  body:
+    en: >
+      Are you concerned about the adequacy or appropriateness of the validation metrics?
+    fr: ""
+- component: model_fit
+  type: simple_text
+  order: 1
+  part: 2 # need multiple parts to spatial Q
+  body:
+    en: >
+      What are the metrics that should be used and why?
+    fr: ""
+- component: model_fit
+  type: simple_text
+  order: 2
+  part: 0 # 0 indicates no further drilldown Qs
+  body:
+    en: >
+      What other concerns do you have about model performance?
+    fr: ""
+## ------------ model summary ------------
+- component: model_summary
+  type: yes_no
+  order: 1
+  part: 1
+  body:
+    en: >
+      Are you concerned about missing predictor interactions or nonlinear relationships?
+    fr: ""
+- component: model_summary
+  type: simple_text
+  order: 1
+  part: 2
+  body:
+    en: >
+      What interactions or nonlinear relationships are missing?
+    fr: ""
+- component: model_summary
+  type: yes_no
+  order: 2
+  part: 1
+  body:
+    en: >
+      Are you concerned about the reported relative importance of predictors?
+    fr: ""
+- component: model_summary
+  type: simple_text
+  order: 2
+  part: 2
+  body:
+    en: >
+      Which predictors would you expect to be more or less important and why?
+    fr: ""
+- component: model_summary
+  type: ordinal
+  order: 3
+  part: 0
+  body:
+    en: >
+      To what degree are you concerned about the appropriateness of the modeling algorithm for the model objectives and application?
+    fr: ""
+- component: model_summary
+  type: ordinal
+  order: 4
+  part: 0
+  body:
+    en: >
+      To what degree are you concerned about how well the modelling framework addresses important statistical assumptions?
+    fr: ""
+- component: model_summary
+  type: ordinal
+  order: 5
+  part: 0
+  body:
+    en: >
+      To what degree are you concerned about how well important biological assumptions are explained and justified?
+    fr: ""
+- component: model_summary
+  type: simple_text
+  order: 6
+  part: 0
+  body:
+    en: >
+      What other concerns or comments do you have about model complexity?
+    fr: ""
+# ---------- observations ------------
+- component: observations
+  type: yes_no
+  order: 1
+  part: 1
+  body:
+    en: >
+      Are there areas where you are concerned about potential bias in the data?
+    fr: ""
+- component: observations
+  type: spatial
+  order: 1
+  part: 2
+  body:
+    en: >
+      Identify areas with potential bias in the data.
+    fr: ""
+- component: observations
+  type: yes_no
+  order: 2
+  part: 1
+  body:
+    en: >
+      Are there areas where this species is not sufficiently sampled?
+    fr: ""
+- component: observations
+  type: spatial
+  order: 2
+  part: 2
+  body:
+    en: >
+      Identify areas that are not sufficiently sampled?
+    fr: ""
+- component: observations
+  type: yes_no
+  order: 3
+  part: 1
+  body:
+    en: >
+      Are you concerned about the distribution of counts?
+    fr: ""
+- component: observations
+  type: simple_text
+  order: 3
+  part: 2
+  body:
+    en: >
+      Explain what is an appropriate truncation value (i.e. highest count).
+    fr: ""
+- component: observations
+  type: yes_no
+  order: 4
+  part: 1
+  body:
+    en: >
+      Are you concerned about the temporal distribution of detections?
+    fr: ""
+- component: observations
+  type: simple_text
+  order: 4
+  part: 2
+  body:
+    en: >
+      Explain what is an appropriate truncation value (i.e. minimum year).
+    fr: ""
+- component: observations
+  type: ordinal
+  order: 5
+  part: 0
+  body:
+    en: >
+      To what degree are you concerned about the description and treatment of potential biases in the data, as described in the model metadata?
+    fr: ""
+# ------------ model metadata -----------
+- component: model_metadata
+  type: ordinal
+  order: 1
+  part: 0
+  body:
+    en: >
+      Are you concerned about the description and treatment of predictor data, as described in the model metadata.
+    fr: ""
+# ------------ predictor metadata -----------
+- component: predictor_metadata
+  type: yes_no
+  order: 1
+  part: 1
+  body:
+    en: >
+      Are you concerned about missing predictors?
+    fr: ""
+- component: predictor_metadata
+  type: simple_text
+  order: 1
+  part: 2
+  body:
+    en: >
+      What predictors are missing and why?
+    fr: ""
+- component: predictor_metadata
+  type: yes_no
+  order: 2
+  part: 1
+  body:
+    en: >
+      Are you concerned about superfluous or inappropriate predictors?
+    fr: ""
+- component: predictor_metadata
+  type: simple_text
+  order: 2
+  part: 2
+  body:
+    en: >
+      Which predictors should be removed and why?
+    fr: ""
+# ------------ predictor raster -----------
+- component: predictor_raster
+  type: yes_no
+  order: 1
+  part: 1
+  body:
+    en: >
+      Are you concerned about inaccuracy in the model predictors?
+    fr: ""
+- component: predictor_raster
+  type: spatial
+  order: 1
+  part: 2
+  body:
+    en: >
+      Identify the predictor(s) and the areas of concern.
+    fr: ""
+- component: predictor_raster
+  type: ordinal
+  order: 2
+  part: 0
+  body:
+    en: >
+      To what degree are you concerned about the spatial resolution of the predictor variables?
+    fr: ""
+
+question_types:
+  simple_text:
+    name: Simple Text Input
+    description: Free form text input.
+    values: []
+  yes_no:
+    name: Yes/No Question
+    description: A Yes or No question. Follow up questions are conditional on Yes.
+    values: ["Yes", "No"]
+  gold_standard:
+    name: Gold Standard
+    description: A 1-5 scale (Unk - Gold) ordinal response presented as a dropdown.
+    values: ["Gold", "Silver", "Bronze", "Deficient", "Unknown"]
+  ordinal:
+    name: Ordinal
+    description: "Ordinal for importance or difficulty (-2 -- +2) to answer questions such as: To what degree ..."
+    values: ["Extremely", "Very", "Moderately", "Slightly", "Not at all"]
+  spatial:
+    name: Spatial
+    description: A list of subunit IDs saved for which question's criteria applies and the answer is Yes.
+    values: []
 
 templates:
 
@@ -824,13 +1123,6 @@ templates:
     instructions_to_evaluators:
       en: "Provide instructions for the evaluation."
       fr: ""
-    deployment_subunits_description:
-      en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
-      fr: ""
-    deployment_subunits_legend:
-      en: "A spatial polygons file with geometries and a key called `subunit_id`. Each deployment can have its own subunits."
-      fr: ""
-    deployment_subunits_path: "deployments/{deployment_id}/deployment_subunits.gpkg"
     use_cases:
       - en: "Use case 1"
         fr: "Cas d'utilisation 1"
