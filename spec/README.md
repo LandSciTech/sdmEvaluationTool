@@ -553,6 +553,7 @@ When the info is uploaded, we organize the files inside the
 ./materials/<model_id>/species/<species_id>/model_summary.parquet
 ./materials/<model_id>/species/<species_id>/model_fit.parquet
 
+./deployments/<deployment_id>/deployment_settings.json
 ./deployments/<deployment_id>/deployment_questions.csv
 ./deployments/<deployment_id>/deployment_subunits.gpkg
 ```
@@ -595,6 +596,41 @@ user can function as `modeler,commenter` for one and
 When making a new deployment, the modeler can select from (1) starting
 new materials upload or (2) reusing existing model materials from
 previous uploads.
+
+## Questions
+
+Question types:
+
+- **Simple Text Input**: Free form text input.
+- **Yes/No Question**: A Yes or No question. Follow up questions are
+  conditional on Yes.
+- **Gold Standard**: A 1-5 scale (Unk - Gold) ordinal response presented
+  as a dropdown.
+- **Ordinal**: Ordinal for importance or difficulty (-2 – +2) to answer
+  questions such as: To what degree …
+- **Spatial**: A list of subunit IDs saved for which question’s criteria
+  applies and the answer is Yes.
+
+Questions are organized by **components** and **question order**. For
+each component, questions are displayed in the order from smallest to
+largest order number.
+
+Each question also has a **part** identifier. When the part number is 0,
+it indicates that there are no follow up (or drill down) questions. When
+the part number is \>0, it indicates that the question has multiple
+parts. The 1st part of the questions is usually a Yes/No question. The
+2nd question can be a text input, i.e. if the answer to part 1 was Yes,
+the evaluator will explain further.
+
+Another scenario is that the follow up question(s) are spatial, in which
+case spatial subunits that apply to the question will be interactively
+selected and their IDs saved as the answer. It is assumed that IDs
+listed as part of parts belonging to the same question number are
+mutually exclusive.
+
+The **default** questions are part of the configuration, accessible for
+the modelers as a CSV file that can be customized and uploaded for a
+given deployment.
 
 ## Future changes to consider
 
