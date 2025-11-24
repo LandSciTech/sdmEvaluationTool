@@ -321,7 +321,7 @@ deployments <- data.frame(
     deployment_id = c("deployment1", "deployment2"),
     deployment_name = c("Deployment 1", "Deployment 2"),
     deployment_description = c("Deployment 1.", "Deployment 2."),
-    deployment_create_user = c("holden", "holden"),
+    deployment_create_user = c("holden", "draper"),
     deployment_create_time = c(
         timestamp_to(now()),
         timestamp_to(now() + 60 * 60)
