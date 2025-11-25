@@ -37,8 +37,6 @@ test_page_overview <- function() {
 #' @returns Shiny UI
 #'
 #' @export
-#' @examples
-#' mod_page_overview_ui()
 
 mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   nav_panel(
@@ -51,7 +49,8 @@ mod_page_overview_ui <- function(id = "overview", title = "Overview") {
 #' Overview Page Server
 #'
 #' @param id Shiny module ID
-#' @param ... Additional arguments passed via expand_dots including deployment_id, model_id, species_id, tbl_models, tbl_species
+#' @param ... Additional arguments passed via expand_dots including
+#' deployment_id, model_id, species_id
 #'
 #' @returns Server function for Shiny module
 #'
@@ -111,12 +110,16 @@ mod_page_overview_server <- function(id = "overview", ...) {
   })
 }
 
-#' Title
+#' Create a Reactable Overview table
 #'
-#' @param tbl
-#' @param user_role
+#' Creates reactable table displaying evaluation progress for either modelers or
+#' evaluators. The table shows deployment-model combinations, species,
+#' components, and their completion status.
 #'
-#' @returns
+#' @param tbl Data frame. Evaluation details from `evals_details()`
+#' @param user_role Character. User role ("modeler" or "evaluator")
+#'
+#' @returns A reactable table object
 #'
 #' @export
 #' @examples
@@ -250,12 +253,28 @@ evals_table <- function(tbl, user_role) {
 }
 
 
-#' Title
+#' Get Evaluation Details for User
 #'
-#' @param user_id
-#' @param user_role
+#' Retrieves evaluation details for a specific user based on their
+#' role. For modelers, shows all evaluations across users for their deployments.
+#' For evaluators, shows only their own evaluations. Returns a data frame with
+#' deployment, model, species, component, and completion information.
 #'
-#' @returns
+#' @param user_id Character string. User identifier
+#' @param user_role Character string. User role ("modeler" or "evaluator")
+#'
+#' @returns Data frame with columns:
+#'   - `deployment_model_name`
+#'   - `evaluation_create_user_name`
+#'   - `deployment_name`
+#'   - `model_name`
+#'   - `species_display`
+#'   - `component_name`
+#'   - `completed`
+#'   - `started`
+#'   - `n_q_display`
+#'   - `n_q`
+#'   - `n_q_complete`
 #'
 #' @export
 #' @examples
@@ -429,9 +448,34 @@ evals_details <- function(user_id, user_role) {
 }
 
 
+#' Extract evaluations from JSON
+#'
+#' Parses JSON-formatted evaluation body into a data frame.
+#'
+#' @param json Character. JSON-formatted evaluation data
+#'
+#' @returns Data frame with evaluation information
+#'
+#' @examples
+#' body <- '[{"question": "Q1", "response": "Yes"}]'
+#' evals_extract(body)
+
 evals_extract <- function(json) {
   jsonlite::fromJSON(json)
 }
+
+#' Calculate number of answered questions
+#'
+#' Summarizes evaluation data to count total questions and completed questions.
+#'
+#' @param eval Data frame. Evaluation data with response column
+#'
+#' @returns Data frame with columns: n_q (total questions), n_q_complete (completed questions)
+#'
+#' @examples
+#' body <- '[{"question": "Q1", "response": "Yes"}, {"question": "Q2", "response": ""}]'
+#' eval_data <- evals_extract(body)
+#' evals_answered(eval_data)
 
 evals_answered <- function(eval) {
   dplyr::summarize(
@@ -459,6 +503,7 @@ evals_answered <- function(eval) {
 #' check_q_mismatch(c(1, 1, 2, 10, 6), c(1, 1, 2, 10, 6))
 #' check_q_mismatch(c(10, 7, 1), c(10, NA, NA))
 #' # check_q_mismatch(c(10, 11, 1), c(10, 10, NA)) # Error
+
 check_q_mismatch <- function(q1, q2) {
   if (any(!is.na(q2)) && any(q1[!is.na(q2)] != q2[!is.na(q2)], na.rm = TRUE)) {
     stop("Mismatch between evaluated and deployed questions", call. = FALSE)
