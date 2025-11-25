@@ -146,11 +146,13 @@ mod_sidebar_server <- function(id) {
         choices <- c("First select a User" = "")
       } else {
         con <- withr::local_db_connection(db_connect())
-        u <- user_id() # Cannot put in filter() before collection, lazy evaluation goes funny
+        u <- user_id() # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
         roles <- dplyr::tbl(con, "access") |>
           dplyr::filter(.data$user_id == .env$u) |>
           dplyr::pull(.data$user_roles) |>
-          stringr::str_split_1(", ?")
+          stringr::str_split(", ?") |>
+          unlist() |>
+          unique()
         choices <- rlang::set_names(roles, pretty(roles))
       }
 

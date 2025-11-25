@@ -244,8 +244,7 @@ skip_eg <- function() {
 
 named_ids <- function(df_db, id = "id", name = "name") {
   pattern <- glue::glue("\\_{id}|\\_{name}")
-  type <- stringr::str_subset(colnames(df_db), pattern) |>
-    sort()
+  type <- stringr::str_subset(colnames(df_db), pattern)
   if (
     length(type) != 2 ||
       length(unique(stringr::str_remove(type, pattern))) != 1
