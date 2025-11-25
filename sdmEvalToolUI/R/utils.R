@@ -183,7 +183,7 @@ prep_questions <- function(
     )
   }
 
-  q <- fetch_questions(deploymen_id, component_id)
+  q <- fetch_questions(deployment_id, component_id)
 
   q |>
     dplyr::rename("label" = sdmevaltool_options()$lang) |>
