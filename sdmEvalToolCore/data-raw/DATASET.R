@@ -73,6 +73,8 @@ for (i in 1:nrow(e)) {
         list(v[[e$type[i]]])
     }
 }
+e$english <- gsub("[\r\n\t]", "", e$english)
+e$french <- gsub("[\r\n\t]", "", e$french)
 default_questions <- e
 
 usethis::use_data(
