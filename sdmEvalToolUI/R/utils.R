@@ -259,10 +259,18 @@ named_ids <- function(df_db, id = "id", name = "name") {
 }
 
 
+#' Set sdmEvalTool options
+#'
+#' @param ... Named list of options to set
+#'
+#' @returns list of options currently set
+#'
+#' @export
 set_options <- function(...) {
   # TODO: Perhaps integrate with sdmEvalToolCore?
   opts <- getOption("sdmevaltool_options")
-  options("sdmevaltool_options" = utils::modifyList(opts, list(...)))
+  o <- options("sdmevaltool_options" = utils::modifyList(opts, list(...)))
+  o
 }
 
 user_id <- function() {

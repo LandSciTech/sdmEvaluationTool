@@ -132,7 +132,7 @@ evals_table <- function(tbl, user_role) {
   # If evaluator only show evaluations created
   # If modeler only show deployments created
   group_by <- "deployment_model_name"
-  if (user_role() == "modeler") {
+  if (user_role == "modeler") {
     group_by <- c(group_by, "evaluation_create_user_name")
   }
   group_by <- c(group_by, "species_display")
@@ -481,7 +481,10 @@ evals_answered <- function(eval) {
   dplyr::summarize(
     eval,
     n_q = dplyr::n(),
-    n_q_complete = sum(purrr::map_lgl(.data$response, isTruthy))
+    n_q_complete = sum(purrr::map_lgl(.data$response, \(x) {
+      # Only NULL, NA, "" should be considered missing
+      !is.null(x) && !is.na(x) && x != ""
+    }))
     #n_q_display = glue::glue("{n_q_complete}/{n_q}")
   )
 }
