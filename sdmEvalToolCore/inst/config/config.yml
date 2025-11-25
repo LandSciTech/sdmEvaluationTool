@@ -1111,7 +1111,7 @@ question_types:
   ordinal:
     name: Ordinal
     description: "Ordinal for importance or difficulty (-2 -- +2) to answer questions such as: To what degree ..."
-    values: ["Extremely", "Very", "Moderately", "Slightly", "Not at all"]
+    values: ["Extremely", "Very", "Moderately", "Slightly", "Not at all", "Uncertain"]
   spatial:
     name: Spatial
     description: A list of subunit IDs saved for which question's criteria applies and the answer is Yes.
