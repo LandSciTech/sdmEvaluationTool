@@ -64,130 +64,17 @@ mod_page_overview_server <- function(id = "overview", ...) {
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
+    validate(
+      need(user_id(), "Please select a user"),
+      need(user_role(), "Please select a user role")
+    )
+
     tbl <- reactive({
       eval_details(user_id(), user_role())
     })
 
     output$tbl_overview <- reactable::renderReactable({
-      validate(
-        need(user_id(), "Please select a user"),
-        need(user_role(), "Please select a user role")
-      )
-
-      # TODO: TEmp for testing
-      #tbl <- eval_details("draper", "evaluator")
-      #tbl <- eval_details("draper", "modeler")
-      #tbl <- eval_details("holden", "modeler")
-
-      # If evaluator only show evaluations created
-      # If modeler only show deployments created
-
-      # Grouped tables https://glin.github.io/reactable/articles/examples.html?q=collaps#grouping-and-aggregation
-      # Nested tables https://glin.github.io/reactable/articles/examples.html?q=collaps#nested-tables
-
-      pal <- c("white", colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
-      pal_text <- c(rep("black", 50), rep("white", 51))
-
-      #TODO: Fix No evaluator names for "draper", "modeler"
-
-      group_by <- "deployment_model_name"
-      if (user_role() == "modeler") {
-        group_by <- c(group_by, "evaluation_create_user_name")
-      }
-      group_by <- c(group_by, "species_display")
-      browser()
-      reactable::reactable(
-        dplyr::select(
-          tbl(),
-          -started,
-          -deployment_name,
-          -model_name
-        ),
-        groupBy = group_by,
-        columns = list(
-          deployment_model_name = reactable::colDef(
-            name = "Deployment - Model",
-            html = TRUE,
-            grouped = reactable::JS(
-              "function(cellInfo, state) {
-              let [d, m] = cellInfo.value.split('---');
-
-              d = `<span style = 'font-weight:600'>${d}</span>`
-              m = `<div style = 'padding-left:20px; font-size:0.75rem'>${m}</div>`
-
-            return `${d}<br>${m}`
-            }"
-            )
-          ),
-          evaluation_create_user_name = reactable::colDef(
-            name = "Evaluator",
-            show = user_role() == "modeler"
-          ),
-          species_display = reactable::colDef(
-            name = "Species",
-            html = TRUE,
-            grouped = reactable::JS(
-              "function(cellInfo) {
-             let out = cellInfo.value
-             out = out.replaceAll('(', '(<em>')
-             out = out.replaceAll(')', '</emf>)')
-             return out
-            }"
-            )
-          ),
-          component_name = reactable::colDef(name = "Component"),
-          n_q_display = reactable::colDef(show = FALSE),
-          n_q = reactable::colDef(show = FALSE),
-          n_q_complete = reactable::colDef(show = FALSE),
-          completed = reactable::colDef(
-            name = "Progress",
-            aggregate = reactable::JS(
-              "function(values, rows) {
-            let out = 0
-
-            if(values.length === 1) {
-              out = rows['n_q_display']
-            } else {             
-              rows.forEach(function(row) {
-                out += row['completed']
-              })
-              out = Math.round(out / values.length * 10 ** 2) / 10 ** 2
-            }
-      
-            return out
-      }"
-            ),
-            cell = reactable::JS(
-              "function(cellInfo, state) {
-              let out = 'Yes'
-              if(!cellInfo.aggregated) out = cellInfo.row.n_q_display
-              return out
-            }"
-            ),
-            format = reactable::colFormat(percent = TRUE, digits = 0),
-
-            # Colour by percent complete
-            style = reactable::JS(
-              "function(rowInfo, column, state) {
-              const pal = state.meta.pal
-              const pal_text = state.meta.pal_text
-              let value = 0
-              let completed = 0
-
-              if(rowInfo.aggregated) {
-                completed = rowInfo.row['completed']
-              } else {
-                completed = rowInfo.values['n_q_complete'] / rowInfo.values['n_q']
-              }
-              value = (Math.round(completed * 10 ** 2) / 10 ** 2) * 100
-              return { backgroundColor: pal[value] , color: pal_text[value]}
-          }"
-            )
-          )
-        ),
-        meta = list(pal = pal, pal_text = pal_text),
-        highlight = TRUE
-      )
+      evals_table(tbl(), user_role())
     })
 
     # TODO: Option to click on species/model combination on table to select
@@ -226,6 +113,145 @@ mod_page_overview_server <- function(id = "overview", ...) {
 
 #' Title
 #'
+#' @param tbl
+#' @param user_role
+#'
+#' @returns
+#'
+#' @export
+#' @examples
+#' tbl <- evals_details("holden", "modeler")
+#' evals_table(tbl, "modeler")
+#' tbl <- evals_details("draper", "evaluator")
+#' evals_table(tbl, "evaluator")
+
+evals_table <- function(tbl, user_role) {
+  # If evaluator only show evaluations created
+  # If modeler only show deployments created
+  group_by <- "deployment_model_name"
+  if (user_role() == "modeler") {
+    group_by <- c(group_by, "evaluation_create_user_name")
+  }
+  group_by <- c(group_by, "species_display")
+
+  # Grouped tables https://glin.github.io/reactable/articles/examples.html?q=collaps#grouping-and-aggregation
+  # Nested tables https://glin.github.io/reactable/articles/examples.html?q=collaps#nested-tables
+
+  pal <- c("white", colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
+  pal_text <- c(rep("black", 50), rep("white", 51))
+
+  reactable::reactable(
+    dplyr::select(
+      tbl,
+      -"started",
+      -"deployment_name",
+      -"model_name"
+    ),
+    groupBy = group_by,
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerVAlign = "bottom",
+    ),
+    columns = list(
+      deployment_model_name = reactable::colDef(
+        name = "Deployment - Model",
+        html = TRUE,
+        minWidth = 200,
+        maxWidth = 250,
+        grouped = reactable::JS(
+          "function(cellInfo, state) {
+        let [d, m] = cellInfo.value.split('---');
+
+        d = `<span style = 'font-weight:600'>${d}</span>`
+        m = `<div style = 'padding-left:20px; font-size:0.75rem'>${m}</div>`
+
+      return `${d}<br>${m}`
+      }"
+        )
+      ),
+      evaluation_create_user_name = reactable::colDef(
+        name = "Evaluator",
+        minWidth = 200,
+        maxWidth = 250,
+        show = user_role() == "modeler"
+      ),
+      species_display = reactable::colDef(
+        name = "Species",
+        html = TRUE,
+        minWidth = 500,
+        grouped = reactable::JS(
+          "function(cellInfo) {
+       let out = cellInfo.value
+       out = out.replaceAll('(', '(<em>')
+       out = out.replaceAll(')', '</emf>)')
+       return out
+      }"
+        )
+      ),
+      component_name = reactable::colDef(
+        name = "Component",
+        minWidth = 200,
+        maxWidth = 350,
+      ),
+      n_q_display = reactable::colDef(show = FALSE),
+      n_q = reactable::colDef(show = FALSE),
+      n_q_complete = reactable::colDef(show = FALSE),
+      completed = reactable::colDef(
+        name = "Progress",
+        minWidth = 100,
+        maxWidth = 150,
+        aggregate = reactable::JS(
+          "function(values, rows) {
+      let out = 0
+
+      if(values.length === 1) {
+        out = rows['n_q_display']
+      } else {             
+        rows.forEach(function(row) {
+          out += row['completed']
+        })
+        out = Math.round(out / values.length * 10 ** 2) / 10 ** 2
+      }
+
+      return out
+}"
+        ),
+        cell = reactable::JS(
+          "function(cellInfo, state) {
+        let out = 'Yes'
+        if(!cellInfo.aggregated) out = cellInfo.row.n_q_display
+        return out
+      }"
+        ),
+        format = reactable::colFormat(percent = TRUE, digits = 0),
+
+        # Colour by percent complete
+        style = reactable::JS(
+          "function(rowInfo, column, state) {
+        const pal = state.meta.pal
+        const pal_text = state.meta.pal_text
+        let value = 0
+        let completed = 0
+
+        if(rowInfo.aggregated) {
+          completed = rowInfo.row['completed']
+        } else {
+          completed = rowInfo.values['n_q_complete'] / rowInfo.values['n_q']
+        }
+        value = (Math.round(completed * 10 ** 2) / 10 ** 2) * 100
+        return { backgroundColor: pal[value] , color: pal_text[value]}
+    }"
+        )
+      )
+    ),
+    meta = list(pal = pal, pal_text = pal_text),
+    highlight = TRUE
+  )
+}
+
+
+#' Title
+#'
 #' @param user_id
 #' @param user_role
 #'
@@ -233,13 +259,18 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #'
 #' @export
 #' @examples
-#' eval_details("holden", "modeler")
-#' eval_details("holden", "evaluator")
-#' eval_details("draper", "modeler")
-#' eval_details("draper", "evaluator")
+#' evals_details("holden", "modeler")
+#' evals_details("holden", "evaluator")
+#' evals_details("draper", "modeler")
+#' evals_details("draper", "evaluator")
 
-eval_details <- function(user_id, user_role) {
+evals_details <- function(user_id, user_role) {
   con <- withr::local_db_connection(db_connect())
+
+  validate(need(
+    user_role %in% c("modeler", "evaluator"),
+    "Overview table only relevant for modelers and evaluators"
+  ))
 
   # Deployment details we're working with
   deployments <- dplyr::tbl(con, "access") |>
