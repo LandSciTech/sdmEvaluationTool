@@ -51,7 +51,7 @@ db_connect <- function(...) {
 #' Get User Info from DB
 #'
 #' @param con DB connection.
-#' @param user_id User ID. Multiple allowed
+#' @param user_id User ID.
 #' @param deployment_id Deployment ID.
 #'
 #' @return A data frame with user info and access roles.
@@ -59,10 +59,10 @@ db_connect <- function(...) {
 #'
 #' @export
 
-db_read_user_info <- function(con, user_id, deployment_id = NULL) {
+db_read_user_info <- function(con, user_id, deployment_id) {
     # user info
     tbl_user <- dplyr::tbl(con, "users") |>
-        dplyr::filter(.data$user_id %in% .env$user_id) |>
+        dplyr::filter(.data$user_id == .env$user_id) |>
         dplyr::collect() |>
         dplyr::mutate(admin = as.logical(.data$admin))
     if (nrow(tbl_user) < 0L) {
@@ -71,8 +71,8 @@ db_read_user_info <- function(con, user_id, deployment_id = NULL) {
     # user roles
     tbl_access <- dplyr::tbl(con, "access") |>
         dplyr::filter(
-            if(!is.null(deployment_id)) .data$deployment_id == .env$deployment_id,
-            .data$user_id %in% .env$user_id
+            .data$deployment_id == .env$deployment_id,
+            .data$user_id == .env$user_id
         ) |>
         dplyr::collect()
     if (nrow(tbl_access) < 0L) {
