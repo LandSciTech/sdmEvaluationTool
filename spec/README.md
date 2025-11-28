@@ -608,8 +608,7 @@ Question types:
   as a dropdown.
 - **Ordinal**: Ordinal for importance or difficulty (-2 – +2) to answer
   questions such as: To what degree …
-- **Spatial**: A list of subunit IDs saved for which question’s criteria
-  applies and the answer is Yes.
+- **Spatial**: A list of subunit IDs saved for each of the values.
 
 Questions are organized by **components** and **question order**. For
 each component, questions are displayed in the order from smallest to
