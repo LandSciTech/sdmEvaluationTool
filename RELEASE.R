@@ -23,6 +23,10 @@ rcmdcheck::rcmdcheck(pkg)
 
 devtools::load_all(pkg)
 
+q <- default_questions
+q$values <- sapply(q$values, \(x) paste0(unlist(x), collapse = ","))
+write.csv(q, row.names = F, file = "_tmp/default_questions.csv")
+
 # --- UI ---
 
 pkg <- "sdmEvalToolUI"

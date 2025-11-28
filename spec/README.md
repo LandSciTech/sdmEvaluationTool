@@ -602,10 +602,6 @@ previous uploads.
 Question types:
 
 - **Simple Text Input**: Free form text input.
-- **Yes/No Question**: A Yes or No question. Follow up questions are
-  conditional on Yes.
-- **Gold Standard**: A 1-5 scale (Unk - Gold) ordinal response presented
-  as a dropdown.
 - **Ordinal**: Ordinal for importance or difficulty (-2 – +2) to answer
   questions such as: To what degree …
 - **Spatial**: A list of subunit IDs saved for each of the values.

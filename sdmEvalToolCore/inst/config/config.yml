@@ -789,36 +789,7 @@ components:
     evaluation:
       evaluation_allowed: No
 
-default_questions:
-# ---------- deployment settings --------
-- component: deployment_settings
-  type: yes_no
-  order: 1
-  part: 1
-  body:
-    en: Are there any non-target applications that you think this model is unsuitable for?
-    fr: ""
-- component: deployment_settings
-  type: yes_no
-  order: 1
-  part: 2
-  body:
-    en: Which applications is the model unsuitable for and why?
-    fr: ""
-- component: deployment_settings
-  type: ordinal
-  order: 2
-  part: 0
-  body:
-    en: To what degree are you concerned about how well suited the model is for the intended application of the model?
-    fr: ""
-- component: deployment_settings
-  type: simple_text
-  order: 3
-  part: 0
-  body:
-    en: What other concerns or comments do you have about using the model for the intended model applications?
-    fr: ""
+default_questions: # where values is missing, we use the values from question_types
 # --------- spatial prediction --------
 - component: spatial_prediction
   type: spatial
@@ -827,6 +798,7 @@ default_questions:
   body:
     en: Identify the areas on the map where predictions are inaccurate.
     fr: ""
+  values: ["Severe over", "Moderate over", "Accurate", "Moderate under", "Severe under", "Unknown"]
 - component: spatial_prediction
   type: spatial
   order: 2
@@ -834,84 +806,28 @@ default_questions:
   body:
     en: Identify areas on the map where uncertainty does not align with your understanding of data limitations, known habitat complexities, or other sources of uncertainty.
     fr: ""
+  values: ["Too high", "Accurate", "Unknown"]
 ## ------------ model fit ------------
 - component: model_fit
-  type: yes_no
+  type: ordinal
   order: 1
-  part: 1
+  part: 0
   body:
-    en: Are you concerned about the adequacy or appropriateness of the validation metrics?
+    en: How concerned are you about the adequacy or appropriateness of the validation metrics?
     fr: ""
 - component: model_fit
   type: simple_text
-  order: 1
-  part: 2
+  order: 2
+  part: 0
   body:
     en: What are the metrics that should be used and why?
     fr: ""
 - component: model_fit
   type: simple_text
-  order: 2
-  part: 0
-  body:
-    en: What other concerns do you have about model performance?
-    fr: ""
-## ------------ model summary ------------
-- component: model_summary
-  type: ordinal
-  order: 1
-  part: 0
-  body:
-    en: How concerned are you about missing predictor interactions or nonlinear relationships?
-    fr: ""
-- component: model_summary
-  type: simple_text
-  order: 2
-  part: 0
-  body:
-    en: What interactions or nonlinear relationships are missing?
-    fr: ""
-- component: model_summary
-  type: ordinal
   order: 3
   part: 0
   body:
-    en: How concerned are your about the reported relative importance of predictors?
-    fr: ""
-- component: model_summary
-  type: simple_text
-  order: 4
-  part: 0
-  body:
-    en: Which predictors would you expect to be more or less important and why?
-    fr: ""
-- component: model_summary
-  type: ordinal
-  order: 5
-  part: 0
-  body:
-    en: How concerned are you about the appropriateness of the modeling algorithm for the model objectives and application?
-    fr: ""
-- component: model_summary
-  type: ordinal
-  order: 6
-  part: 0
-  body:
-    en: To what degree are you concerned about how well the modelling framework addresses important statistical assumptions?
-    fr: ""
-- component: model_summary
-  type: ordinal
-  order: 7
-  part: 0
-  body:
-    en: To what degree are you concerned about how well important biological assumptions are explained and justified?
-    fr: ""
-- component: model_summary
-  type: simple_text
-  order: 8
-  part: 0
-  body:
-    en: What other concerns or comments do you have about model complexity?
+    en: What other concerns do you have about model performance?
     fr: ""
 # ---------- observations ------------
 - component: observations
@@ -921,6 +837,7 @@ default_questions:
   body:
     en: Are there areas where you are concerned about potential bias in the data? Identify areas with potential bias in the data.
     fr: ""
+  values: ["Biased", "Accurate", "Unknown"]
 - component: observations
   type: spatial
   order: 2
@@ -928,6 +845,7 @@ default_questions:
   body:
     en: Are there areas where this species is not sufficiently sampled? Identify areas that are not sufficiently sampled.
     fr: ""
+  values: ["Undersampled", "Accurate", "Unknown"]
 - component: observations
   type: ordinal
   order: 3
@@ -1022,20 +940,99 @@ default_questions:
   body:
     en: To what degree are you concerned about the spatial resolution of the predictor variables?
     fr: ""
+## ------------ model summary ------------
+- component: model_summary
+  type: ordinal
+  order: 1
+  part: 0
+  body:
+    en: How concerned are you about missing predictor interactions or nonlinear relationships?
+    fr: ""
+- component: model_summary
+  type: simple_text
+  order: 2
+  part: 0
+  body:
+    en: What interactions or nonlinear relationships are missing?
+    fr: ""
+- component: model_summary
+  type: ordinal
+  order: 3
+  part: 0
+  body:
+    en: How concerned are your about the reported relative importance of predictors?
+    fr: ""
+- component: model_summary
+  type: simple_text
+  order: 4
+  part: 0
+  body:
+    en: Which predictors would you expect to be more or less important and why?
+    fr: ""
+- component: model_summary
+  type: ordinal
+  order: 5
+  part: 0
+  body:
+    en: How concerned are you about the appropriateness of the modeling algorithm for the model objectives and application?
+    fr: ""
+- component: model_summary
+  type: ordinal
+  order: 6
+  part: 0
+  body:
+    en: To what degree are you concerned about how well the modelling framework addresses important statistical assumptions?
+    fr: ""
+- component: model_summary
+  type: ordinal
+  order: 7
+  part: 0
+  body:
+    en: To what degree are you concerned about how well important biological assumptions are explained and justified?
+    fr: ""
+- component: model_summary
+  type: simple_text
+  order: 8
+  part: 0
+  body:
+    en: What other concerns or comments do you have about model complexity?
+    fr: ""
+# ---------- deployment settings --------
+- component: deployment_settings
+  type: simple_text
+  order: 1
+  part: 0
+  body:
+    en: Are there any non-target applications that you think this model is unsuitable for? Please explain.
+    fr: ""
+- component: deployment_settings
+  type: ordinal
+  order: 2
+  part: 0
+  body:
+    en: To what degree are you concerned about how well suited the model is for the intended application of the model?
+    fr: ""
+- component: deployment_settings
+  type: simple_text
+  order: 3
+  part: 0
+  body:
+    en: What other concerns or comments do you have about using the model for the intended model applications?
+    fr: ""
 
 question_types:
   simple_text:
     name: Simple Text Input
     description: Free form text input.
     values: []
-  yes_no:
-    name: Yes/No Question
-    description: A Yes or No question. Follow up questions are conditional on Yes.
-    values: ["Yes", "No"]
-  gold_standard:
-    name: Gold Standard
-    description: A 1-5 scale (Unk - Gold) ordinal response presented as a dropdown.
-    values: ["Gold", "Silver", "Bronze", "Deficient", "Unknown"]
+  # yes_no:
+  #   name: Yes/No Question
+  #   description: A Yes or No question. Follow up questions are conditional on Yes.
+  #   values: ["Yes", "No"]
+  # gold_standard:
+  #   name: Gold Standard
+  #   description: A 1-5 scale (Unk - Gold) ordinal response presented as a dropdown.
+  #   values: ["Gold", "Silver", "Bronze", "Deficient", "Unknown"]
   ordinal:
     name: Ordinal
     description: "Ordinal for importance or difficulty (-2 -- +2) to answer questions such as: To what degree ..."
@@ -1043,7 +1040,9 @@ question_types:
   spatial:
     name: Spatial
     description: A list of subunit IDs saved for each of the values.
-    values: ["Extremely", "Very", "Moderately", "Slightly", "Not at all", "Uncertain"]
+    values: []
+# severe overprediction, moderate overprediction, accurate, moderate underprediction, severe underprediction, unknown
+
 
 templates:
 

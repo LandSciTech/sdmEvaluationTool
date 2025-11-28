@@ -61,20 +61,30 @@ for (i in names(cmp)) {
     components <- rbind(components, c1)
 }
 
-e <- do.call(rbind, lapply(conf$default_questions, as.data.frame))
+e <- do.call(
+    rbind,
+    lapply(conf$default_questions, \(z) {
+        z$values <- NULL
+        as.data.frame(z)
+    })
+)
 colnames(e)[colnames(e) == "body.en"] <- "english"
 colnames(e)[colnames(e) == "body.fr"] <- "french"
 e$values <- NA_character_
 v <- lapply(conf$question_types, \(x) x$values)
 for (i in 1:nrow(e)) {
-    e$values[[i]] <- if (is.list(v[[e$type[i]]])) {
-        list()
+    if (is.null(conf$default_questions[[i]]$values)) {
+        # if (is.list(v[[e$type[i]]])) {
+        #     e$values[[i]] <- list()
+        # } else {
+        e$values[[i]] <- list(v[[e$type[i]]])
+        # }
     } else {
-        list(v[[e$type[i]]])
+        e$values[[i]] <- list(conf$default_questions[[i]]$values)
     }
 }
-e$english <- gsub("[\r\n\t]", "", e$english)
-e$french <- gsub("[\r\n\t]", "", e$french)
+# e$english <- gsub("[\r\n\t]", "", e$english)
+# e$french <- gsub("[\r\n\t]", "", e$french)
 default_questions <- e
 
 usethis::use_data(
