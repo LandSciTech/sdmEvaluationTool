@@ -164,14 +164,14 @@ materials.
 | field | type | constraint | description |
 |:---|:---|:---|:---|
 | `material_id` | text | `PRIMARY KEY` | ID for uploaded model materials (in the form of `<model_id>_<species_id>_<component_id>`), for model materials that apply to multiple species use `ALL` in place of the `species_id`. |
-| `model_id` | text | `REFERENCES models` | Model ID (foreign key), can be missing. |
-| `species_id` | text | `REFERENCES species` | Species ID (foreign key). |
-| `component_id` | text | `REFERENCES components` | Component ID (foreign key). |
+| `model_id` | text | `REFERENCES models (model_id)` | Model ID (foreign key), can be missing. |
+| `species_id` | text | `REFERENCES species (species_id)` | Species ID (foreign key). |
+| `component_id` | text | `REFERENCES components (component_id)` | Component ID (foreign key). |
 | `material_create_user` | text | `REFERENCES users (user_id)` | User who uploaded the model material (foreign key). |
 | `material_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
 | `material_modify_user` | text | `REFERENCES users (user_id)` | User who modified the model material (foreign key). |
 | `material_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
-| `material_settings` | json | `NOT NULL` | Material settings, see `templates`. |
+| `material_settings` | jsonb | `NOT NULL` | Material settings, see `templates`. |
 
 ### Deployments (`deployments`)
 
@@ -188,7 +188,7 @@ of.
 | `deployment_description` | text | `NOT NULL` | Deployment name. |
 | `deployment_create_user` | text | `REFERENCES users (user_id)` | User who created the deployment (foreign key). |
 | `deployment_create_time` | timestamp | `NOT NULL` | Time of deployment creation. |
-| `deployment_settings` | json | `NOT NULL` | Deployment settings, see `templates`. |
+| `deployment_settings` | jsonb | `NOT NULL` | Deployment settings, see `templates`. |
 
 ### Deployment Materials (`deployment_materials`)
 
@@ -198,8 +198,8 @@ basis for evaluations and are defined by the **modeler**.
 | field | type | constraint | description |
 |:---|:---|:---|:---|
 | `deployment_material_id` | text | `PRIMARY KEY` | Compound ID for joining feedback to deployment materials (in the form of `<deployment_id>_<model_id>_<species_id>_<component_id>`). |
-| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
-| `material_id` | text | `REFERENCES materials` | Material ID. |
+| `deployment_id` | text | `REFERENCES deployments (deployment_id)` | Deployment ID (foreign key). |
+| `material_id` | text | `REFERENCES materials (material_id)` | Material ID. |
 
 ### Evaluations (`evaluations`)
 
@@ -215,18 +215,18 @@ synthesizing the evaluations).
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `deployment_material_id` | text | `REFERENCES deployment_materials` | Deployment Material ID (foreign key). |
-| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
-| `material_id` | text | `REFERENCES materials` | Material ID (foreign key). |
+| `deployment_material_id` | text | `REFERENCES deployment_materials (deployment_material_id)` | Deployment Material ID (foreign key). |
+| `deployment_id` | text | `REFERENCES deployments (deployment_id)` | Deployment ID (foreign key). |
+| `material_id` | text | `REFERENCES materials (material_id)` | Material ID (foreign key). |
 | `use_cases` | text | `NOT NULL` | One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment. |
 | `evaluation_create_user` | text | `REFERENCES users (user_id)` | User who created the initial evaluation (foreign key). |
 | `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial the initial evaluation. |
 | `evaluation_modify_user` | text | `REFERENCES users (user_id)` | User who last modified (foreign key). |
 | `evaluation_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
-| `evaluation_body` | json | `NOT NULL` | JSON blob with the evaluation according to component display rules reflecting last modification. |
+| `evaluation_body` | jsonb | `NOT NULL` | JSON blob with the evaluation according to component display rules reflecting last modification. |
 | `note_create_user` | text | `REFERENCES users (user_id)` | User who created the note. |
 | `note_create_time` | timestamp | `NOT NULL` | Time of note creation. |
-| `note_body` | json | `NOT NULL` | JSON blob with the note on an evaluation reflecting last modification. |
+| `note_body` | jsonb | `NOT NULL` | JSON blob with the note on an evaluation reflecting last modification. |
 
 ### Comments (`comments`)
 
@@ -238,12 +238,12 @@ back and forth) if comments are enabled for the deployment.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
-| `model_id` | text | `REFERENCES models` | Model ID (foreign key). |
-| `species_id` | text | `REFERENCES species` | Species ID (foreign key). |
+| `deployment_id` | text | `REFERENCES deployments (deployment_id)` | Deployment ID (foreign key). |
+| `model_id` | text | `REFERENCES models (model_id)` | Model ID (foreign key). |
+| `species_id` | text | `REFERENCES species (species_id)` | Species ID (foreign key). |
 | `comment_create_user` | text | `REFERENCES users (user_id)` | User who created the note. |
 | `comment_create_time` | timestamp | `NOT NULL` | Time of comment creation. |
-| `comment_body` | json | `NOT NULL` | JSON blob with the note on an evaluation reflecting last modification. |
+| `comment_body` | jsonb | `NOT NULL` | JSON blob with the note on an evaluation reflecting last modification. |
 
 ### User Access (`access`)
 
@@ -255,8 +255,8 @@ permissions for individuals, using existing groups instead.
 
 | field | type | constraint | description |
 |:---|:---|:---|:---|
-| `user_id` | text | `REFERENCES users` | User ID (foreign key). |
-| `deployment_id` | text | `REFERENCES deployments` | Deployment ID (foreign key). |
+| `user_id` | text | `REFERENCES users (user_id)` | User ID (foreign key). |
+| `deployment_id` | text | `REFERENCES deployments (deployment_id)` | Deployment ID (foreign key). |
 | `user_roles` | text | `NOT NULL` | A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not set by the user granting the access. |
 
 ## Users and user roles

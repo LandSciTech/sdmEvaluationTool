@@ -217,17 +217,17 @@ tables:
         name: Model ID
         description: Model ID (foreign key), can be missing.
         type: text
-        constraint: REFERENCES models
+        constraint: REFERENCES models (model_id)
       species_id:
         name: Species ID
         description: Species ID (foreign key).
         type: text
-        constraint: REFERENCES species
+        constraint: REFERENCES species (species_id)
       component_id:
         name: Component ID
         description: Component ID (foreign key).
         type: text
-        constraint: REFERENCES components
+        constraint: REFERENCES components (component_id)
       material_create_user:
         name: Create User
         description: User who uploaded the model material (foreign key).
@@ -251,7 +251,7 @@ tables:
       material_settings:
         name: Material Settings
         description: Material settings, see `templates`.
-        type: json
+        type: jsonb
         constraint: NOT NULL
 
   deployments:
@@ -291,7 +291,7 @@ tables:
       deployment_settings:
         name: Deployment Settings
         description: Deployment settings, see `templates`.
-        type: json
+        type: jsonb
         constraint: NOT NULL
 
   deployment_materials:
@@ -309,12 +309,12 @@ tables:
         name: Deployment ID
         description: Deployment ID (foreign key).
         type: text
-        constraint: REFERENCES deployments
+        constraint: REFERENCES deployments (deployment_id)
       material_id:
         name: Material ID
         description: Material ID.
         type: text
-        constraint: REFERENCES materials
+        constraint: REFERENCES materials (material_id)
 
   evaluations:
     name: Evaluations
@@ -333,17 +333,17 @@ tables:
         name: Deployment Material ID
         description: Deployment Material ID (foreign key).
         type: text
-        constraint: REFERENCES deployment_materials
+        constraint: REFERENCES deployment_materials (deployment_material_id)
       deployment_id:
         name: Deployment ID
         description: Deployment ID (foreign key).
         type: text
-        constraint: REFERENCES deployments
+        constraint: REFERENCES deployments (deployment_id)
       material_id:
         name: Material ID
         description: Material ID (foreign key).
         type: text
-        constraint: REFERENCES materials
+        constraint: REFERENCES materials (material_id)
       use_cases:
         name: Use Cases
         description: One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment.
@@ -372,7 +372,7 @@ tables:
       evaluation_body:
         name: Evaluation
         description: JSON blob with the evaluation according to component display rules reflecting last modification.
-        type: json
+        type: jsonb
         constraint: NOT NULL
       note_create_user:
         name: Note Create User
@@ -387,7 +387,7 @@ tables:
       note_body:
         name: Note Body
         description: JSON blob with the note on an evaluation reflecting last modification.
-        type: json
+        type: jsonb
         constraint: NOT NULL
 
   comments:
@@ -404,17 +404,17 @@ tables:
         name: Deployment ID
         description: Deployment ID (foreign key).
         type: text
-        constraint: REFERENCES deployments
+        constraint: REFERENCES deployments (deployment_id)
       model_id:
         name: Model ID
         description: Model ID (foreign key).
         type: text
-        constraint: REFERENCES models
+        constraint: REFERENCES models (model_id)
       species_id:
         name: Species ID
         description: Species ID (foreign key).
         type: text
-        constraint: REFERENCES species
+        constraint: REFERENCES species (species_id)
       comment_create_user:
         name: Comment Create User
         description: User who created the note.
@@ -428,7 +428,7 @@ tables:
       comment_body:
         name: Comment Body
         description: JSON blob with the note on an evaluation reflecting last modification.
-        type: json
+        type: jsonb
         constraint: NOT NULL
 
   access:
@@ -444,12 +444,12 @@ tables:
         name: User ID
         description: User ID (foreign key).
         type: text
-        constraint: REFERENCES users
+        constraint: REFERENCES users (user_id)
       deployment_id:
         name: Deployment ID
         description: Deployment ID (foreign key).
         type: text
-        constraint: REFERENCES deployments
+        constraint: REFERENCES deployments (deployment_id)
       user_roles:
         name: User Role
         description: A comma separated list of user roles, e.g. `modeler,evaluator`. The default role is `viewer` and is assumed even if not set by the user granting the access.
