@@ -36,7 +36,7 @@ timestamp_from <- function(ms, tz = NULL, ...) {
 #' @rdname timestamp
 ## turning POSIXct to unix time
 timestamp_to <- function(dt) {
-    as.character(round(unclass(as.POSIXct(dt)) * 1000))
+    as.integer(round(unclass(as.POSIXct(dt)) * 1000))
 }
 
 #' @export
