@@ -68,6 +68,7 @@ read_file <- function(path, ...) {
         "parquet" = arrow::read_parquet(path, ...),
         "gpkg" = sf::read_sf(path, ...),
         "tif" = terra::rast(path, ...),
+        "json" = jsonlite::fromJSON(readLines(path), ...),
         stop(sprintf("File extension %s not recognized", ext))
     )
 }
@@ -91,6 +92,7 @@ write_file <- function(x, path, ...) {
         "parquet" = arrow::write_parquet(x, path, ...),
         "gpkg" = sf::write_sf(x, path, delete_dsn = file.exists(path), ...),
         "tif" = terra::writeRaster(x, path, overwrite = TRUE, ...),
+        "json" = writeLines(jsonlite::toJSON(x, ...), path),
         stop(sprintf("File extension %s not recognized", ext))
     )
 }

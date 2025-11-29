@@ -18,6 +18,7 @@ Imports:
     DBI,
     dplyr,
     glue,
+    jsonlite,
     sf,
     RSQLite,
     terra,
