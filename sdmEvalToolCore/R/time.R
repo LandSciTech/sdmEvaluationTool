@@ -1,6 +1,6 @@
 #' Handling Timestamps
 #'
-#' @param ms  Unix time in milliseconds.
+#' @param ms  Unix time in seconds.
 #' @param tz Time zone, when `NULL` it defaults to `sdmevaltool_options()$tz`.
 #' @param dt POSIXct coercible date/time value.
 #' @param ... Other optional arguments passed to [as.POSIXct()].
@@ -23,20 +23,20 @@ NULL
 
 #' @export
 #' @rdname timestamp
-## unix times in milliseconds (sec x1000)
+## unix times in seconds
 ## function to transform unix dates to POSIXct
 timestamp_from <- function(ms, tz = NULL, ...) {
     if (is.null(tz)) {
         tz <- sdmevaltool_options()$tz
     }
-    as.POSIXct(as.numeric(ms) / 1000, tz = tz, origin = "1970-01-01", ...)
+    as.POSIXct(as.numeric(ms), tz = tz, origin = "1970-01-01", ...)
 }
 
 #' @export
 #' @rdname timestamp
 ## turning POSIXct to unix time
 timestamp_to <- function(dt) {
-    as.integer(round(unclass(as.POSIXct(dt)) * 1000))
+    as.integer(round(unclass(as.POSIXct(dt))))
 }
 
 #' @export
