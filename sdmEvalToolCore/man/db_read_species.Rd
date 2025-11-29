@@ -4,14 +4,12 @@
 \alias{db_read_species}
 \title{Get species from DB}
 \usage{
-db_read_species(con, species_id = NULL, lang = NULL)
+db_read_species(con, species_id = NULL)
 }
 \arguments{
 \item{con}{DB connection.}
 
 \item{species_id}{Species ID (optional).}
-
-\item{lang}{Language, the \code{lang} option is used if left \code{NULL}.}
 }
 \value{
 A data frame with species and display names. Optionally filtered to

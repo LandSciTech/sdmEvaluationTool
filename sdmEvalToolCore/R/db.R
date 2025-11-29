@@ -94,18 +94,23 @@ db_read_user_info <- function(con, user_id, deployment_id) {
 #' Get Deployment Materials from DB
 #'
 #' @param con DB connection.
-#' @param deployment_id Deployment IDs (multiple permitted)
+#' @param deployment_id Deployment IDs (multiple permitted).
+#' @param user_id User ID.
 #'
 #' @return A data frame with joined deployment materials.
 #'
 #' @export
-db_read_deployment_materials <- function(con, deployment_id = NULL, user_id = NULL) {
+db_read_deployment_materials <- function(
+    con,
+    deployment_id = NULL,
+    user_id = NULL
+) {
     dm <- dplyr::tbl(con, "deployment_materials")
 
-    if(!is.null(deployment_id)) {
+    if (!is.null(deployment_id)) {
         dm <- dplyr::filter(dm, .data$deployment_id %in% .env$deployment_id)
     }
-    
+
     dm <- dm |>
         dplyr::left_join(
             dplyr::tbl(con, "deployments"),
@@ -123,14 +128,14 @@ db_read_deployment_materials <- function(con, deployment_id = NULL, user_id = NU
             dplyr::tbl(con, "species"),
             by = "species_id"
         )
-  
-     if(!is.null(user_id)) {
-          dm <- dplyr::filter(dm, .data$deployment_create_user == .env$user_id)
-     }
-  
+
+    if (!is.null(user_id)) {
+        dm <- dplyr::filter(dm, .data$deployment_create_user == .env$user_id)
+    }
+
     dm <- dm |>
-       dplyr::collect() |>
-       db_timestamp()
+        dplyr::collect() |>
+        db_timestamp()
 
     dm
 }
@@ -161,20 +166,23 @@ db_read_comments <- function(con, deployment_id) {
 #'
 #' @export
 db_read_evaluations <- function(con, deployment_id = NULL, user_id = NULL) {
-  out <- dplyr::tbl(con, "evaluations")
-  if(!is.null(deployment_id)) {
-    out <- dplyr::filter(out, .data$deployment_id == .env$deployment_id)
-  }
+    out <- dplyr::tbl(con, "evaluations")
+    if (!is.null(deployment_id)) {
+        out <- dplyr::filter(out, .data$deployment_id == .env$deployment_id)
+    }
 
-  if(!is.null(user_id)) {
-    out <- dplyr::filter(out, .data$evaluation_create_user %in% .env$user_id)
-  }
-  
-  out <- out |>
-    dplyr::collect() |>
-    db_timestamp()
-  
-  out
+    if (!is.null(user_id)) {
+        out <- dplyr::filter(
+            out,
+            .data$evaluation_create_user %in% .env$user_id
+        )
+    }
+
+    out <- out |>
+        dplyr::collect() |>
+        db_timestamp()
+
+    out
 }
 
 # TODO:
@@ -202,7 +210,6 @@ db_read_models <- function(con, model_id = NULL) {
 #'
 #' @param con DB connection.
 #' @param species_id Species ID (optional).
-#' @param lang Language, the `lang` option is used if left `NULL`.
 #'
 #' @return A data frame with species and display names. Optionally filtered to
 #'   species_id.
@@ -212,7 +219,6 @@ db_read_species <- function(
     con,
     species_id = NULL
 ) {
-    
     out <- dplyr::tbl(con, "species")
     if (!is.null(species_id)) {
         out <- dplyr::filter(out, .data$species_id %in% .env$species_id)
