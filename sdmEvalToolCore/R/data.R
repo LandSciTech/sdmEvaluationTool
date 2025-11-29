@@ -120,8 +120,8 @@ check_table <- function(x, table_name, dryrun = FALSE) {
             tt$type[k],
             "text" = is.character(x[[tt$field[k]]]),
             "boolean" = is.logical(x[[tt$field[k]]]),
-            "json" = is.character(x[[tt$field[k]]]),
-            "timestamp" = is.character(x[[tt$field[k]]])
+            "jsonb" = is.character(x[[tt$field[k]]]),
+            "timestamp" = is.integer(x[[tt$field[k]]])
         )
         if (!ok_type) {
             ok <- FALSE
