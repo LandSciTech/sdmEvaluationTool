@@ -837,7 +837,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Are there areas where you are concerned about potential bias in the data? Identify areas with potential bias in the data.
     fr: ""
-  values: ["Biased", "Accurate", "Unknown"]
+  values: ["Very biased", "Moderately biased", "Accurate", "Unknown"]
 - component: observations
   type: spatial
   order: 2
@@ -845,7 +845,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Are there areas where this species is not sufficiently sampled? Identify areas that are not sufficiently sampled.
     fr: ""
-  values: ["Undersampled", "Accurate", "Unknown"]
+  values: ["Very undersampled", "Moderately undersampled", "Accurate", "Unknown"]
 - component: observations
   type: ordinal
   order: 3
@@ -858,7 +858,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 3
   part: 2
   body:
-    en: If so, explain. What is an appropriate truncation value (i.e. highest count).
+    en: If so, explain. What is an appropriate truncation value (i.e. highest count)?
     fr: ""
 - component: observations
   type: ordinal
@@ -872,14 +872,14 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 4
   part: 2
   body:
-    en: If so, explain. What is an appropriate truncation value (i.e. minimum year).
+    en: If so, explain. What is an appropriate truncation value (i.e. minimum year)?
     fr: ""
 - component: observations
   type: ordinal
   order: 5
   part: 0
   body:
-    en: To what degree are you concerned about the description and treatment of potential biases in the data, as described in the model metadata?
+    en: How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?
     fr: ""
 # ------------ model metadata -----------
 - component: model_metadata
@@ -938,7 +938,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 2
   part: 0
   body:
-    en: To what degree are you concerned about the spatial resolution of the predictor variables?
+    en: How concerned are you about the spatial resolution of the predictor variables?
     fr: ""
 ## ------------ model summary ------------
 - component: model_summary
@@ -981,14 +981,14 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 6
   part: 0
   body:
-    en: To what degree are you concerned about how well the modelling framework addresses important statistical assumptions?
+    en: How concerned are you about how well the modelling framework addresses important statistical assumptions?
     fr: ""
 - component: model_summary
   type: ordinal
   order: 7
   part: 0
   body:
-    en: To what degree are you concerned about how well important biological assumptions are explained and justified?
+    en: How concerned are you about how well important biological assumptions are explained and justified?
     fr: ""
 - component: model_summary
   type: simple_text
@@ -1010,7 +1010,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 2
   part: 0
   body:
-    en: To what degree are you concerned about how well suited the model is for the intended application of the model?
+    en: How concerned are you about how well suited the model is for the intended application of the model?
     fr: ""
 - component: deployment_settings
   type: simple_text
