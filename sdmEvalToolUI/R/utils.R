@@ -48,10 +48,10 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 prep_materials <- function(component_id, model_id, species_id = NULL) {
   path <- dplyr::filter(
     sdmEvalToolCore::components,
+    .data$type == "material",
     .data$component == .env$component_id
   ) |>
-    #TODO: Is there a reason to have a sub list? i.e. 1?
-    purrr::pluck("upload", 1, "output", "path")
+    dplyr::pull(.data$path)
 
   if (stringr::str_detect(path, "species_id")) {
     validate_ids(model_id = model_id, species_id = species_id)
@@ -70,32 +70,33 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
 #' Prepare Deployments
 #'
 #' @param deployment_id Character. Deployment ID
-#' @param type Character. Type of data to load ("questions" or "subunits")
+#' @param type Character. Type of data to load ("deployment_questions" or "deployment_subunits")
 #'
 #' @returns Data frame of deployments
 #'
 #' @export
 #' @examplesIf have_data()
-#' prep_deployments("deployment1", "questions")
-#' prep_deployments("deployment1", "subunits")
-#' prep_deployments("deployment2", "questions")
+#' prep_deployments("deployment1", "deployment_questions")
+#' prep_deployments("deployment1", "deployment_subunits")
+#' prep_deployments("deployment2", "deployment_questions")
 
-prep_deployments <- function(deployment_id, type) {
+prep_deployments <- function(deployment_id, deployment_type) {
+  path <- dplyr::filter(
+    sdmEvalToolCore::components,
+    .data$type == "deployment",
+    .data$component == .env$deployment_type
+  ) |>
+    dplyr::pull(.data$path)
+
   validate_ids(deployment_id = deployment_id)
-  stopifnot(type %in% c("questions", "subunits"))
-
-  #TODO: Get this from sdmEvalToolCore?
-  ext <- ifelse(type == "questions", "csv", "gpkg")
-  path <- paste0("deployments/{deployment_id}/deployment_{type}.", ext)
 
   dep <- prep_files(
     path,
-    name = paste("Deployment", type),
-    deployment_id = deployment_id,
-    type = type
+    name = deployment_type,
+    deployment_id = deployment_id
   )
 
-  if (type != "subunits") {
+  if (deployment_type != "deployment_subunits") {
     dep <- dplyr::mutate(
       dep,
       french = as.character(.data$french),
@@ -122,6 +123,7 @@ prep_files <- function(path, name, ...) {
 
   read_file(path)
 }
+
 
 pretty <- function(x) {
   x |>
@@ -159,28 +161,29 @@ have_data <- function() {
 #' @examplesIf have_data()
 #' prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+#' prep_questions("model_fit", "deployment1", "bam_v5_can71")
 
 prep_questions <- function(
   component_id,
   deployment_id,
   model_id,
-  species_id = NA
+  species_id
 ) {
-  validate_ids(
-    deployment_id = deployment_id,
-    model_id = model_id,
-    species_id = species_id
-  )
-
-  q <- dplyr::rows_upsert(
-    sdmEvalToolCore::default_questions,
-    prep_deployments(deployment_id, "questions"),
-    by = c("component", "order")
-  )
-
-  if (component_id != "test") {
-    q <- dplyr::filter(q, .data$component == .env$component_id)
+  if (missing(species_id) || species_id == "ALL") {
+    validate_ids(
+      deployment_id = deployment_id,
+      model_id = model_id
+    )
+    species_id <- "ALL"
+  } else {
+    validate_ids(
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id
+    )
   }
+
+  q <- fetch_questions(deployment_id, component_id)
 
   q |>
     dplyr::rename("label" = sdmevaltool_options()$lang) |>
@@ -192,15 +195,33 @@ prep_questions <- function(
         "gold_standard" ~ "gold_standard_input",
         "ordinal" ~ "slider_input"
       ),
-      id = paste(
-        .env$deployment_id,
+      material_id = paste(
         .env$model_id,
         .env$species_id,
         .data$component,
+        sep = "_"
+      ),
+      id = paste(
+        .env$deployment_id,
+        .data$material_id,
         .data$order,
         sep = "_"
       )
     )
+}
+
+fetch_questions <- function(deployment_id, component_id) {
+  q <- dplyr::rows_upsert(
+    sdmEvalToolCore::default_questions,
+    prep_deployments(deployment_id, "deployment_questions"),
+    by = c("component", "order")
+  )
+
+  if (component_id != "test") {
+    q <- dplyr::filter(q, .data$component == .env$component_id)
+  }
+
+  q
 }
 
 dummy_session <- list(ns = \(x) paste0("session-", x))
@@ -218,4 +239,44 @@ dummy_session <- list(ns = \(x) paste0("session-", x))
 
 skip_eg <- function() {
   invisible()
+}
+
+
+named_ids <- function(df_db, id = "id", name = "name") {
+  pattern <- glue::glue("\\_{id}|\\_{name}")
+  type <- stringr::str_subset(colnames(df_db), pattern)
+  if (
+    length(type) != 2 ||
+      length(unique(stringr::str_remove(type, pattern))) != 1
+  ) {
+    stop("Non-matching id/name column pairs", call. = FALSE)
+  }
+
+  rlang::set_names(
+    dplyr::pull(df_db, .data[[type[1]]]),
+    dplyr::pull(df_db, .data[[type[2]]])
+  )
+}
+
+
+#' Set sdmEvalTool options
+#'
+#' @param ... Named list of options to set
+#'
+#' @returns list of options currently set
+#'
+#' @export
+set_options <- function(...) {
+  # TODO: Perhaps integrate with sdmEvalToolCore?
+  opts <- getOption("sdmevaltool_options")
+  o <- options("sdmevaltool_options" = utils::modifyList(opts, list(...)))
+  o
+}
+
+user_id <- function() {
+  sdmevaltool_options()$user_id
+}
+
+user_role <- function() {
+  sdmevaltool_options()$user_role
 }

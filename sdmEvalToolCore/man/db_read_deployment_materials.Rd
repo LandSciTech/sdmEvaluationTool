@@ -4,12 +4,14 @@
 \alias{db_read_deployment_materials}
 \title{Get Deployment Materials from DB}
 \usage{
-db_read_deployment_materials(con, deployment_id)
+db_read_deployment_materials(con, deployment_id = NULL, user_id = NULL)
 }
 \arguments{
 \item{con}{DB connection.}
 
-\item{deployment_id}{Deployment ID.}
+\item{deployment_id}{Deployment IDs (multiple permitted).}
+
+\item{user_id}{User ID.}
 }
 \value{
 A data frame with joined deployment materials.
