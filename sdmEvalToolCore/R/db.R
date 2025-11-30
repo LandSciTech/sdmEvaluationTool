@@ -226,3 +226,121 @@ db_read_species <- function(
     out <- dplyr::collect(out)
     out
 }
+
+
+#' Make table SQL statement
+#'
+#' @param table_name Character, table name.
+#' @force Logical, force (create even if not exists).
+#'
+#' @noRd
+make_table_statement <- function(
+    table_name,
+    force = FALSE
+) {
+    field_types <- data.frame(
+        field_type = c(
+            "date",
+            "jsonb",
+            "real",
+            "text",
+            "timestamp",
+            "uuid",
+            "boolean"
+        ),
+        sqlite = c(
+            "TEXT",
+            "TEXT",
+            "REAL",
+            "TEXT",
+            "INTEGER",
+            "TEXT",
+            "INTEGER"
+        ),
+        postgresql = c(
+            "date",
+            "jsonb",
+            "real",
+            "text",
+            "timestamp",
+            "text",
+            "boolean"
+        )
+    )
+    dbtype <- sdmevaltool_options()$db
+    f <- sdmEvalToolCore::fields
+    f <- f[f$table == table_name, c("field", "type", "constraint")]
+    f$type <- field_types[[dbtype]][match(f$type, field_types$field_type)]
+    # add here table constraints
+    tc <- ""
+    if (tc != "") {
+        tc <- paste0(", ", tc)
+    }
+    v <- paste0(
+        trimws(paste(f$field, f$type, f$constraint)),
+        collapse = ", "
+    )
+    o <- paste0(
+        "CREATE TABLE ",
+        if (force) "" else "IF NOT EXISTS ",
+        table_name,
+        " (",
+        v,
+        tc,
+        ");",
+        collapse = ""
+    )
+    o <- gsub(" ,", ",", o, fixed = TRUE)
+    o <- gsub(",);", ");", o, fixed = TRUE)
+    o
+}
+
+#' Create DB tables
+#'
+#' @param con DB connection.
+#' @param tables Character, table name.
+#' @force Logical, force (create even if not exists).
+#' @param verbose Logical.
+#'
+#' @export
+db_create_tables <- function(
+    con,
+    tables = NULL,
+    force = FALSE,
+    verbose = TRUE
+) {
+    tables_exist <- DBI::dbListTables(con)
+    dbtype <- sdmevaltool_options()$db
+    if (verbose) {
+        cat("Creating tables in ", dbtype, ":\n", sep = "")
+    }
+    # DBI::dbBegin(con)
+    # on.exit(DBI::dbCommit(con))
+    all_tables <- sdmEvalToolCore::tables$table
+    if (is.null(tables)) {
+        tables <- all_tables
+    }
+    tables <- tables[tables %in% all_tables]
+    for (table_name in tables) {
+        if (verbose) {
+            cat(
+                "* Create table '",
+                table_name,
+                if (table_name %in% tables_exist) "' (exists)" else "'",
+                " ...",
+                sep = ""
+            )
+        }
+        q <- make_table_statement(
+            table_name = table_name,
+            force = force
+        )
+        res <- DBI::dbSendQuery(con, q)
+        DBI::dbClearResult(res)
+        if (verbose) {
+            cat(" OK\n")
+        }
+    }
+    # DBI::dbCommit(con)
+    invisible(TRUE)
+}
