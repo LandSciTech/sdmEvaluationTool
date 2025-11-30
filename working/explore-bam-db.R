@@ -105,8 +105,7 @@ species <- structure(
 models <- data.frame(
     model_id = "bam_v5_can71",
     model_name = "BAM v5 Can 71",
-    model_description = "BAM version 5 Canada model in BCR 71",
-    model_metadata = NA_character_
+    model_description = "BAM version 5 Canada model in BCR 71"
 )
 model_id <- "bam_v5_can71"
 
@@ -166,7 +165,7 @@ materials_fun <- function(
             material_create_user = "holden",
             material_create_time = timestamp_to(now()),
             material_modify_user = NA_character_,
-            material_modify_time = NA_character_,
+            material_modify_time = NA_integer_,
             material_settings = material_settings
         )
     )
@@ -345,7 +344,7 @@ access <- data.frame(
 access <- rbind(
     access,
     data.frame(
-        user_id = c("draper", "sjohnson", "draper", "sjohnson"),
+        user_id = c("draper", "okoye", "draper", "okoye"),
         deployment_id = c(
             "deployment1",
             "deployment1",
@@ -381,17 +380,34 @@ deployment_materials <- data.frame(
 # --------- QUESTIONS -----------
 
 # ./deployments/<deployment_id>/deployment_questions.csv
+q <- sdmEvalToolCore::default_questions
+v <- sapply(q$values, \(z) {
+    if (length(z[[1]]) > 1) paste0(z[[1]], collapse = ", ") else ""
+})
+q$values <- ifelse(q$type == "spatial", v, "")
 fo <- make_target_path(
     "deployments/{deployment_id}/deployment_questions.csv",
     data = list(deployment_id = "deployment1")
 )
-write_file(sdmEvalToolCore::default_questions, fo)
+write_file(q[q$order < 6, ], fo)
 fo <- make_target_path(
     "deployments/{deployment_id}/deployment_questions.csv",
     data = list(deployment_id = "deployment2")
 )
-write_file(sdmEvalToolCore::default_questions, fo)
+write_file(q[q$order < 5, ], fo)
 
+# --------- deployment settings -----------
+
+fo <- make_target_path(
+    "deployments/{deployment_id}/deployment_settings.json",
+    data = list(deployment_id = "deployment1")
+)
+write_file(fromJSON(deployments$deployment_settings[1]), fo)
+fo <- make_target_path(
+    "deployments/{deployment_id}/deployment_settings.json",
+    data = list(deployment_id = "deployment2")
+)
+write_file(fromJSON(deployments$deployment_settings[2]), fo)
 
 # --------- SUBUNITS -----------
 
@@ -437,10 +453,10 @@ evaluations <- data.frame(
     evaluation_create_user = "draper",
     evaluation_create_time = c(timestamp_to(now()), timestamp_to(now() + 60)),
     evaluation_modify_user = NA_character_,
-    evaluation_modify_time = NA_character_,
+    evaluation_modify_time = NA_integer_,
     evaluation_body = NA_character_,
     note_create_user = NA_character_,
-    note_create_time = NA_character_,
+    note_create_time = NA_integer_,
     note_body = NA_character_
 )
 e1 <- conf$components$observations$evaluation$questions
@@ -473,26 +489,29 @@ con <- dbConnect(
     RSQLite::SQLite(),
     make_target_path("sdm_evaluation_db.sqlite")
 )
+dbListTables(con)
+db_create_tables(con, force = FALSE)
+dbListTables(con)
 
-dbWriteTable(con, "species", species, overwrite = TRUE)
-dbWriteTable(con, "models", models, overwrite = TRUE)
-dbWriteTable(con, "users", users, overwrite = TRUE)
-dbWriteTable(con, "components", components, overwrite = TRUE)
+db_write_table(con, "species", species)
+db_write_table(con, "models", models)
+db_write_table(con, "users", users)
+db_write_table(con, "components", components)
 
-dbWriteTable(con, "materials", materials, overwrite = TRUE)
-dbWriteTable(
+db_write_table(con, "materials", materials)
+db_write_table(
     con,
     "deployment_materials",
-    deployment_materials,
-    overwrite = TRUE
+    deployment_materials
 )
-dbWriteTable(con, "deployments", deployments, overwrite = TRUE)
-dbWriteTable(con, "access", access, overwrite = TRUE)
+db_write_table(con, "deployments", deployments)
+db_write_table(con, "access", access)
 
-dbWriteTable(con, "comments", comments, overwrite = TRUE)
-dbWriteTable(con, "evaluations", evaluations, overwrite = TRUE)
+db_write_table(con, "comments", comments)
 
-unique(sdmEvalToolCore::fields$table)
+db_write_table(con, "evaluations", evaluations)
+
+sort(unique(sdmEvalToolCore::fields$table))
 dbListTables(con)
 dbDisconnect(con)
 
@@ -500,7 +519,3 @@ dbDisconnect(con)
 # https://www.dropbox.com/scl/fi/1khm6hhoosgkjtmldqxg7/base.zip?rlkey=xwywv6s5cgjr0ufrxosxnx95w&dl=0
 # we can put this inside the ./misc/base folder and use it as the folder location
 # (./misc is git ignored)
-
-# TODO:
-# this now has no notion of keys
-# need to use SQL when creating the tables to define pk's and fk's
