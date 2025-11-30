@@ -231,7 +231,7 @@ db_read_species <- function(
 #' Make table SQL statement
 #'
 #' @param table_name Character, table name.
-#' @force Logical, force (create even if not exists).
+#' @param force Logical, force (create even if not exists).
 #'
 #' @noRd
 make_table_statement <- function(
@@ -299,7 +299,7 @@ make_table_statement <- function(
 #'
 #' @param con DB connection.
 #' @param tables Character, table name.
-#' @force Logical, force (create even if not exists).
+#' @param force Logical, force (create even if not exists).
 #' @param verbose Logical.
 #'
 #' @export
@@ -312,7 +312,7 @@ db_create_tables <- function(
     tables_exist <- DBI::dbListTables(con)
     dbtype <- sdmevaltool_options()$db
     if (verbose) {
-        cat("Creating tables in ", dbtype, ":\n", sep = "")
+        cat("Creating tables in ", sQuote(dbtype), ":\n", sep = "")
     }
     # DBI::dbBegin(con)
     # on.exit(DBI::dbCommit(con))
@@ -324,9 +324,9 @@ db_create_tables <- function(
     for (table_name in tables) {
         if (verbose) {
             cat(
-                "* Create table '",
-                table_name,
-                if (table_name %in% tables_exist) "' (exists)" else "'",
+                "* Create table ",
+                sQuote(table_name),
+                if (table_name %in% tables_exist) " (exists)" else "",
                 " ...",
                 sep = ""
             )
@@ -343,4 +343,30 @@ db_create_tables <- function(
     }
     # DBI::dbCommit(con)
     invisible(TRUE)
+}
+
+#' Write data to a table
+#'
+#' Data will be appended to an existing DB table.
+#'
+#' @param con A database connection.
+#' @param table Table name.
+#' @param data Data frame to append to the DB table.
+#' @param validate Logical, should `data` be validated?
+#' @param verbose Logical.
+#'
+#' @return Invisible `TRUE`.
+#' @export
+db_write_table <- function(con, table, data, validate = TRUE, verbose = TRUE) {
+    if (validate) {
+        check_table(data, table, dryrun = FALSE, verbose = verbose)
+    }
+    if (verbose) {
+        cat("Writing data to table", sQuote(table), "...")
+    }
+    out <- DBI::dbWriteTable(con, name = table, value = data, append = TRUE)
+    if (verbose) {
+        cat("OK\n")
+    }
+    invisible(out)
 }

@@ -14,7 +14,7 @@ timestamp_to(dt)
 now()
 }
 \arguments{
-\item{ms}{Unix time in milliseconds.}
+\item{ms}{Unix time in seconds.}
 
 \item{tz}{Time zone, when \code{NULL} it defaults to \code{sdmevaltool_options()$tz}.}
 

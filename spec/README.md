@@ -153,7 +153,6 @@ Canadian extent and this is version 1.1. Updates are done by
 | `model_id` | text | `PRIMARY KEY` | Model ID, lower case, alphanumeric, `.` and `_` allowed. |
 | `model_name` | text | `UNIQUE NOT NULL` | A human readable version of `model_id` displayed in the app, can include spaces. |
 | `model_description` | text | `NOT NULL` | A human readable version of `model_id` displayed in the app. |
-| `model_metadata` | text | `NOT NULL` | A file path or URL used to find the ODMAP metadata for the model. |
 
 ### Materials (`materials`)
 
@@ -170,8 +169,7 @@ materials.
 | `material_create_user` | text | `REFERENCES users (user_id)` | User who uploaded the model material (foreign key). |
 | `material_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
 | `material_modify_user` | text | `REFERENCES users (user_id)` | User who modified the model material (foreign key). |
-| `material_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
-| `material_settings` | jsonb | `NOT NULL` | Material settings, see `templates`. |
+| `material_modify_time` | timestamp |  | Time of last modification. |
 
 ### Deployments (`deployments`)
 
@@ -222,11 +220,11 @@ synthesizing the evaluations).
 | `evaluation_create_user` | text | `REFERENCES users (user_id)` | User who created the initial evaluation (foreign key). |
 | `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial the initial evaluation. |
 | `evaluation_modify_user` | text | `REFERENCES users (user_id)` | User who last modified (foreign key). |
-| `evaluation_modify_time` | timestamp | `NOT NULL` | Time of last modification. |
+| `evaluation_modify_time` | timestamp |  | Time of last modification. |
 | `evaluation_body` | jsonb | `NOT NULL` | JSON blob with the evaluation according to component display rules reflecting last modification. |
 | `note_create_user` | text | `REFERENCES users (user_id)` | User who created the note. |
-| `note_create_time` | timestamp | `NOT NULL` | Time of note creation. |
-| `note_body` | jsonb | `NOT NULL` | JSON blob with the note on an evaluation reflecting last modification. |
+| `note_create_time` | timestamp |  | Time of note creation. |
+| `note_body` | jsonb |  | JSON blob with the note on an evaluation reflecting last modification. |
 
 ### Comments (`comments`)
 

@@ -195,11 +195,11 @@ tables:
         description: A human readable version of `model_id` displayed in the app.
         type: text
         constraint: NOT NULL
-      model_metadata:
-        name: Model Metadata
-        description: A file path or URL used to find the ODMAP metadata for the model.
-        type: text
-        constraint: NOT NULL
+      # model_metadata:
+      #   name: Model Metadata
+      #   description: A file path or URL used to find the ODMAP metadata for the model.
+      #   type: text
+      #   constraint: NOT NULL
 
   materials:
     name: Materials
@@ -247,12 +247,12 @@ tables:
         name: Modify Time
         description: Time of last modification.
         type: timestamp
-        constraint: NOT NULL
-      material_settings:
-        name: Material Settings
-        description: Material settings, see `templates`.
-        type: jsonb
-        constraint: NOT NULL
+        constraint:
+      # material_settings:
+      #   name: Material Settings
+      #   description: Material settings, see `templates`.
+      #   type: jsonb
+      #   constraint: NOT NULL
 
   deployments:
     name: Deployments
@@ -368,7 +368,7 @@ tables:
         name: Modify Time
         description: Time of last modification.
         type: timestamp
-        constraint: NOT NULL
+        constraint:
       evaluation_body:
         name: Evaluation
         description: JSON blob with the evaluation according to component display rules reflecting last modification.
@@ -383,12 +383,12 @@ tables:
         name: Note Create Time
         description: Time of note creation.
         type: timestamp
-        constraint: NOT NULL
+        constraint:
       note_body:
         name: Note Body
         description: JSON blob with the note on an evaluation reflecting last modification.
         type: jsonb
-        constraint: NOT NULL
+        constraint:
 
   comments:
     name: Comments

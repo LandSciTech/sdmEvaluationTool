@@ -4,7 +4,7 @@
 \alias{check_table}
 \title{Check Table}
 \usage{
-check_table(x, table_name, dryrun = FALSE)
+check_table(x, table_name, dryrun = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{x}{A data frame.}
@@ -13,6 +13,8 @@ check_table(x, table_name, dryrun = FALSE)
 
 \item{dryrun}{Logical, if checks fail and error is produced,
 unless it is a dry run.}
+
+\item{verbose}{Logical.}
 }
 \value{
 Invisible \code{TRUE} if all check passed.
@@ -37,8 +39,7 @@ check_table(users, "users")
 models <- data.frame(
     model_id = "bam_v5_can71",
     model_name = "BAM v5 Can 71",
-    model_description = "BAM version 5 Canada model in BCR 71",
-    model_metadata = NA_character_
+    model_description = "BAM version 5 Canada model in BCR 71"
 )
 check_table(models, "models")
 

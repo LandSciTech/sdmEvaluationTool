@@ -67,6 +67,7 @@ scaffold_table <- function(table_name) {
 #' @param table_name Table name.
 #' @param dryrun Logical, if checks fail and error is produced,
 #'   unless it is a dry run.
+#' @param verbose Logical.
 #'
 #' @return Invisible `TRUE` if all check passed.
 #'
@@ -87,31 +88,40 @@ scaffold_table <- function(table_name) {
 #' models <- data.frame(
 #'     model_id = "bam_v5_can71",
 #'     model_name = "BAM v5 Can 71",
-#'     model_description = "BAM version 5 Canada model in BCR 71",
-#'     model_metadata = NA_character_
+#'     model_description = "BAM version 5 Canada model in BCR 71"
 #' )
 #' check_table(models, "models")
 #'
 #' check_table(models, "users", dryrun = TRUE)
 #'
 #' @export
-check_table <- function(x, table_name, dryrun = FALSE) {
-    cat("Checking table", sQuote(table_name))
+check_table <- function(x, table_name, dryrun = FALSE, verbose = TRUE) {
+    if (verbose) {
+        cat("Checking table", sQuote(table_name))
+    }
     tt <- get_fields(table_name)
     ok <- TRUE
     c1 <- setdiff(colnames(x), tt$field)
     if (length(c1) > 0L) {
         ok <- FALSE
-        cat("\n* Additional fields found:", paste0(c1, collapse = ", "))
+        if (verbose) {
+            cat("\n* Additional fields found:", paste0(c1, collapse = ", "))
+        }
     } else {
-        cat("\n* Checking additional fields ... OK")
+        if (verbose) {
+            cat("\n* Checking additional fields ... OK")
+        }
     }
     c2 <- setdiff(tt$field, colnames(x))
     if (length(c1) > 0L) {
         ok <- FALSE
-        cat("\n* Missing fields:", paste0(c2, collapse = ", "))
+        if (verbose) {
+            cat("\n* Missing fields:", paste0(c2, collapse = ", "))
+        }
     } else {
-        cat("\n* Checking missing fields ... OK")
+        if (verbose) {
+            cat("\n* Checking missing fields ... OK")
+        }
     }
     cn <- intersect(tt$field, colnames(x))
     for (i in cn) {
@@ -125,19 +135,29 @@ check_table <- function(x, table_name, dryrun = FALSE) {
         )
         if (!ok_type) {
             ok <- FALSE
-            cat(
-                "\n* Type for field",
-                sQuote(tt$field[k]),
-                "should be",
-                tt$type[k],
-                "but found",
-                typeof(x[[tt$field[k]]])
-            )
+            if (verbose) {
+                cat(
+                    "\n* Type for field",
+                    sQuote(tt$field[k]),
+                    "should be",
+                    tt$type[k],
+                    "but found",
+                    typeof(x[[tt$field[k]]])
+                )
+            }
         } else {
-            cat("\n* Checking type for field", sQuote(tt$field[k]), "... OK")
+            if (verbose) {
+                cat(
+                    "\n* Checking type for field",
+                    sQuote(tt$field[k]),
+                    "... OK"
+                )
+            }
         }
     }
-    cat("\n")
+    if (verbose) {
+        cat("\n")
+    }
     if (!dryrun && !ok) {
         stop("Check for table ", sQuote(table_name), " failed")
     }
