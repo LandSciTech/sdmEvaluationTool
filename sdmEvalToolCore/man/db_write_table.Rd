@@ -23,3 +23,15 @@ Invisible \code{TRUE}.
 \description{
 Data will be appended to an existing DB table.
 }
+\examples{
+con <- db_connect(":memory:")
+db_create_tables(con, "models", force = FALSE)
+models <- data.frame(
+    model_id = "bam_v5_can71",
+    model_name = "BAM v5 Can 71",
+    model_description = "BAM version 5 Canada model in BCR 71"
+)
+db_write_table(con, "models", models)
+db_disconnect(con)
+
+}

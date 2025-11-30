@@ -18,3 +18,10 @@ db_create_tables(con, tables = NULL, force = FALSE, verbose = TRUE)
 \description{
 Create DB tables
 }
+\examples{
+con <- db_connect(":memory:")
+db_create_tables(con, "models")
+db_create_tables(con)
+db_disconnect(con)
+
+}

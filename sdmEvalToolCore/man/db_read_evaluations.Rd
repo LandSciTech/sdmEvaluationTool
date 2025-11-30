@@ -2,7 +2,7 @@
 % Please edit documentation in R/db.R
 \name{db_read_evaluations}
 \alias{db_read_evaluations}
-\title{Get Comments from DB}
+\title{Get Evaluations from DB}
 \usage{
 db_read_evaluations(con, deployment_id = NULL, user_id = NULL)
 }
@@ -17,5 +17,5 @@ db_read_evaluations(con, deployment_id = NULL, user_id = NULL)
 A data frame with evaluations for the deployment.
 }
 \description{
-Get Comments from DB
+Get Evaluations from DB
 }

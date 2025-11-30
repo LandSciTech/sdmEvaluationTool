@@ -4,10 +4,12 @@
 \alias{db_connect}
 \title{Connect to Database}
 \usage{
-db_connect(...)
+db_connect(dbname = NULL, ...)
 }
 \arguments{
-\item{...}{Arguments bassed to \code{\link[DBI:dbConnect]{DBI::dbConnect()}}.}
+\item{dbname}{DB name.}
+
+\item{...}{Arguments passed to \code{\link[DBI:dbConnect]{DBI::dbConnect()}}.}
 }
 \value{
 A database connection.

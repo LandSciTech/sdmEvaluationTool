@@ -29,23 +29,36 @@ db_timestamp <- function(x) {
 
 #' Connect to Database
 #'
-#' @param ... Arguments bassed to [DBI::dbConnect()].
+#' @param dbname DB name.
+#' @param ... Arguments passed to [DBI::dbConnect()].
 #'
 #' @return A database connection.
 #'
 #' @export
-db_connect <- function(...) {
+db_connect <- function(dbname = NULL, ...) {
     if (sdmevaltool_options()$db == "sqlite") {
-        db_file <- make_target_path("sdm_evaluation_db.sqlite")
+        if (is.null(dbname)) {
+            dbname <- make_target_path("sdm_evaluation_db.sqlite")
+        }
         db_con <- DBI::dbConnect(
             drv = RSQLite::SQLite(),
-            dbname = db_file,
+            dbname = dbname,
             ...
         )
     } else {
         stop("Use SQLite for now...")
     }
     db_con
+}
+
+#' Disconnect from Database
+#'
+#' @param con DB connection.
+#' @param ... Arguments passed to [DBI::dbDisconnect()].
+#'
+#' @export
+db_disconnect <- function(con, ...) {
+    DBI::dbDisconnect(con, ...)
 }
 
 #' Get User Info from DB
@@ -58,7 +71,6 @@ db_connect <- function(...) {
 #'   The `"user_roles"` attribute gives the user roles as a vector.
 #'
 #' @export
-
 db_read_user_info <- function(con, user_id, deployment_id) {
     # user info
     tbl_user <- dplyr::tbl(con, "users") |>
@@ -156,7 +168,7 @@ db_read_comments <- function(con, deployment_id) {
     out
 }
 
-#' Get Comments from DB
+#' Get Evaluations from DB
 #'
 #' @param con DB connection.
 #' @param deployment_id Deployment ID.
@@ -184,10 +196,6 @@ db_read_evaluations <- function(con, deployment_id = NULL, user_id = NULL) {
 
     out
 }
-
-# TODO:
-# insert new values with dplyr::rows_insert(), only for new key values
-# update existing rows with dplyr::rows_update(), all values
 
 #' Get models from DB
 #'
@@ -302,6 +310,12 @@ make_table_statement <- function(
 #' @param force Logical, force (create even if not exists).
 #' @param verbose Logical.
 #'
+#' @examples
+#' con <- db_connect(":memory:")
+#' db_create_tables(con, "models")
+#' db_create_tables(con)
+#' db_disconnect(con)
+#'
 #' @export
 db_create_tables <- function(
     con,
@@ -355,6 +369,17 @@ db_create_tables <- function(
 #' @param validate Logical, should `data` be validated?
 #' @param verbose Logical.
 #'
+#' @examples
+#' con <- db_connect(":memory:")
+#' db_create_tables(con, "models", force = FALSE)
+#' models <- data.frame(
+#'     model_id = "bam_v5_can71",
+#'     model_name = "BAM v5 Can 71",
+#'     model_description = "BAM version 5 Canada model in BCR 71"
+#' )
+#' db_write_table(con, "models", models)
+#' db_disconnect(con)
+#'
 #' @return Invisible `TRUE`.
 #' @export
 db_write_table <- function(con, table, data, validate = TRUE, verbose = TRUE) {
@@ -370,3 +395,6 @@ db_write_table <- function(con, table, data, validate = TRUE, verbose = TRUE) {
     }
     invisible(out)
 }
+# TODO: we used DBI interface, but should we switch to dplyr?
+# insert new values with dplyr::rows_insert(), only for new key values
+# update existing rows with dplyr::rows_update(), all values

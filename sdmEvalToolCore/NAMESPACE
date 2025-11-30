@@ -3,6 +3,7 @@
 export(check_table)
 export(db_connect)
 export(db_create_tables)
+export(db_disconnect)
 export(db_read_comments)
 export(db_read_deployment_materials)
 export(db_read_evaluations)
