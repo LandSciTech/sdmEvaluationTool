@@ -213,14 +213,14 @@ materials <- materials_fun(materials, model_id, NA, "predictor_metadata", ms)
 rule <- get_comp_rule("observations", "upload")
 fi <- file.path(path, "data", "observations_can71.csv")
 x <- read_file(fi)
-spp <- colnames(x)[colnames(x) %in% species$species_id]
+SPP2 <- colnames(x)[colnames(x) %in% species$species_id]
 # set date/time to POSIX
 x$date <- as.POSIXct(x$date)
 
 drule <- get_comp_rule("observations", "display")
 ms <- jsonlite::toJSON(drule$materials_settings)
 
-for (species_id in spp) {
+for (species_id in SPP2) {
     z <- x[, c("lat", "lon", "date", "method", species_id)]
     colnames(z) <- c("latitude", "longitude", "time", "method", "status")
     z <- sf::st_as_sf(z, coords = c("longitude", "latitude"))
@@ -428,47 +428,50 @@ write_file(su, fo)
 
 # --------- COMMENTS -----------
 
-comments <- data.frame(
-    deployment_id = "deployment1",
-    model_id = model_id,
-    species_id = "CAWA",
-    comment_create_user = c("draper", "holden"),
-    comment_create_time = c(timestamp_to(now()), timestamp_to(now() + 60 * 15)),
-    comment_body = c("These results look good.", "All right.")
+comments <- rbind(
+    fake_comment(
+        deployment_id = "deployment1",
+        model_id = model_id,
+        species_id = "CAWA",
+        user_id = "draper",
+        now() - 60 * 15
+    ),
+    fake_comment(
+        deployment_id = "deployment1",
+        model_id = model_id,
+        species_id = "CAWA",
+        user_id = "holden",
+        time = now()
+    )
 )
 
 # --------- EVALUATIONS -----------
 
-evaluations <- data.frame(
-    deployment_material_id = c(
-        "deployment1_bam_v5_can71_CAWA_observations",
-        "deployment1_bam_v5_can71_CAWA_spatial_prediction"
-    ),
-    deployment_id = c("deployment1", "deployment1"),
-    material_id = c(
-        "bam_v5_can71_CAWA_observations",
-        "bam_v5_can71_CAWA_spatial_prediction"
-    ),
-    use_cases = "Forestry",
-    evaluation_create_user = "draper",
-    evaluation_create_time = c(timestamp_to(now()), timestamp_to(now() + 60)),
-    evaluation_modify_user = NA_character_,
-    evaluation_modify_time = NA_integer_,
-    evaluation_body = NA_character_,
-    note_create_user = NA_character_,
-    note_create_time = NA_integer_,
-    note_body = NA_character_
-)
-e1 <- conf$components$observations$evaluation$questions
-e1[[1]]$response <- "Observations look good to me."
-e2 <- conf$components$spatial_prediction$evaluation$questions
-e2[[2]]$response <- "5"
-e2[[3]]$response <- "Not applicable"
-e2[[4]]$response <- "4"
-e2[[5]]$response <- "3"
-e2[[6]]$response <- "Collect more data."
-evaluations$evaluation_body[1] <- jsonlite::toJSON(e1)
-evaluations$evaluation_body[2] <- jsonlite::toJSON(e2)
+q <- sdmEvalToolCore::default_questions
+cmp <- unique(q$component)
+evaluations <- NULL
+t0 <- now()
+for (species_id in SPP) {
+    j <- sample(length(cmp) + 1, 1) - 1
+    for (k in cmp[seq_len(j)]) {
+        t0 <- t0 + 60 * 5
+        evaluations <- rbind(
+            evaluations,
+            fake_evaluation(
+                deployment_id = sprintf(
+                    "deployment1_bam_v5_can71_%s_%s",
+                    species_id,
+                    k
+                ),
+                material_id = sprintf("bam_v5_can71_%s_%s", species_id, k),
+                component_id = k,
+                user_id = "draper",
+                questions = q,
+                time = t0
+            )
+        )
+    }
+}
 
 # -------- DATABASE ------
 
@@ -485,12 +488,9 @@ check_table(comments, "comments")
 check_table(evaluations, "evaluations")
 
 # ./sdm_evaluation_db.sqlite
-con <- dbConnect(
-    RSQLite::SQLite(),
-    make_target_path("sdm_evaluation_db.sqlite")
-)
+con <- db_connect(make_target_path("sdm_evaluation_db.sqlite"))
 dbListTables(con)
-db_create_tables(con, force = FALSE)
+db_create_tables(con)
 dbListTables(con)
 
 db_write_table(con, "species", species)
@@ -513,7 +513,7 @@ db_write_table(con, "evaluations", evaluations)
 
 sort(unique(sdmEvalToolCore::fields$table))
 dbListTables(con)
-dbDisconnect(con)
+db_disconnect(con)
 
 # the output from this script can be found here:
 # https://www.dropbox.com/scl/fi/1khm6hhoosgkjtmldqxg7/base.zip?rlkey=xwywv6s5cgjr0ufrxosxnx95w&dl=0

@@ -7,14 +7,15 @@
 \alias{fake_response}
 \title{Fake DB Entries}
 \usage{
-fake_comment(deployment_id, model_id, species_id, user_id)
+fake_comment(deployment_id, model_id, species_id, user_id, time = NULL)
 
 fake_evaluation(
   deployment_id,
   material_id,
   component_id,
   user_id,
-  questions = NULL
+  questions = NULL,
+  time = NULL
 )
 
 fake_response(question)
@@ -27,6 +28,8 @@ fake_response(question)
 \item{species_id}{Species ID.}
 
 \item{user_id}{User ID.}
+
+\item{time}{Date-time.}
 
 \item{material_id}{Material ID.}
 

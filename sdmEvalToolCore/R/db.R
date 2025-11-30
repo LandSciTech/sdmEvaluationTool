@@ -370,6 +370,7 @@ db_create_tables <- function(
 #' @param data Data frame to append to the DB table.
 #' @param validate Logical, should `data` be validated?
 #' @param verbose Logical.
+#' @param dryrun Logical.
 #'
 #' @examples
 #' con <- db_connect(":memory:")
@@ -384,14 +385,39 @@ db_create_tables <- function(
 #'
 #' @return Invisible `TRUE`.
 #' @export
-db_write_table <- function(con, table, data, validate = TRUE, verbose = TRUE) {
+db_write_table <- function(
+    con,
+    table,
+    data,
+    validate = TRUE,
+    verbose = TRUE,
+    dryrun = FALSE
+) {
     if (validate) {
         check_table(data, table, dryrun = FALSE, verbose = verbose)
     }
     if (verbose) {
         cat("Writing data to table", sQuote(table), "...")
     }
-    out <- DBI::dbWriteTable(con, name = table, value = data, append = TRUE)
+    if (dryrun) {
+        tmp <- make_target_path("_sdm_evaluation_db.csv")
+        h <- sprintf(
+            "--- Writing table %s at %s ---",
+            table,
+            as.character(Sys.time())
+        )
+        txt <- if (file.exists(tmp)) {
+            c(readLines(tmp), h)
+        }
+        txt <- c(
+            txt,
+            # capture.output(write.csv(data, file = "", row.names = FALSE))
+            jsonlite::toJSON(data, auto_unbox = TRUE)
+        )
+        out <- writeLines(txt, tmp)
+    } else {
+        out <- DBI::dbWriteTable(con, name = table, value = data, append = TRUE)
+    }
     if (verbose) {
         cat(" OK\n")
     }

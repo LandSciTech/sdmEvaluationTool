@@ -412,7 +412,7 @@ tables:
       we consider text comments. Users with **commenter**
       privileges can leave comments (like discussions back and forth) if
       comments are enabled for the deployment.
-    table_constraint: PRIMARY KEY (deployment_id, model_id, species_id)
+    table_constraint: PRIMARY KEY (deployment_id, model_id, species_id, comment_create_user)
     fields:
       deployment_id:
         name: Deployment ID

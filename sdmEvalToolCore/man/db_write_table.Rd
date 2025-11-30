@@ -4,7 +4,14 @@
 \alias{db_write_table}
 \title{Write data to a table}
 \usage{
-db_write_table(con, table, data, validate = TRUE, verbose = TRUE)
+db_write_table(
+  con,
+  table,
+  data,
+  validate = TRUE,
+  verbose = TRUE,
+  dryrun = FALSE
+)
 }
 \arguments{
 \item{con}{A database connection.}
@@ -16,6 +23,8 @@ db_write_table(con, table, data, validate = TRUE, verbose = TRUE)
 \item{validate}{Logical, should \code{data} be validated?}
 
 \item{verbose}{Logical.}
+
+\item{dryrun}{Logical.}
 }
 \value{
 Invisible \code{TRUE}.

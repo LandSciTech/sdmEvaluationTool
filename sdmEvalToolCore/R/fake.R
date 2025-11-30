@@ -8,6 +8,7 @@
 #' @param component_id Component ID.
 #' @param question A questions data frame with a single row.
 #' @param questions A questions data frame.
+#' @param time Date-time.
 #'
 #' @examples
 #' fake_comment(
@@ -33,14 +34,18 @@ fake_comment <- function(
     deployment_id,
     model_id,
     species_id,
-    user_id
+    user_id,
+    time = NULL
 ) {
+    if (is.null(time)) {
+        time <- now()
+    }
     data.frame(
         deployment_id = as.character(deployment_id),
         model_id = as.character(model_id),
         species_id = as.character(species_id),
         comment_create_user = as.character(user_id),
-        comment_create_time = timestamp_to(now()),
+        comment_create_time = timestamp_to(time),
         comment_body = as.character(lorem::ipsum(sentence = 1))
     )
 }
@@ -52,8 +57,12 @@ fake_evaluation <- function(
     material_id,
     component_id,
     user_id,
-    questions = NULL
+    questions = NULL,
+    time = NULL
 ) {
+    if (is.null(time)) {
+        time <- now()
+    }
     q <- if (is.null(questions)) {
         sdmEvalToolCore::default_questions
     } else {
@@ -66,9 +75,9 @@ fake_evaluation <- function(
         deployment_id = deployment_id,
         material_id = material_id,
         component_id = component_id,
-        use_cases = "usecase1",
+        use_cases = "Forestry",
         evaluation_create_user = user_id,
-        evaluation_create_time = timestamp_to(now()),
+        evaluation_create_time = timestamp_to(time),
         evaluation_modify_user = NA_character_,
         evaluation_modify_time = NA_integer_,
         evaluation_body = jsonlite::toJSON(qq, auto_unbox = TRUE),
@@ -94,7 +103,20 @@ fake_response <- function(question) {
         for (i in seq_along(v$values)) {
             v$response[[i]] <- list(
                 value = v$values[i],
-                subunits = paste0("id", sample(20, 5))
+                subunits = sort(sample(
+                    c(
+                        "15.1",
+                        "15.2",
+                        "3.2",
+                        "3.3",
+                        "5.1",
+                        "5.2",
+                        "6.1",
+                        "6.1",
+                        "6.2"
+                    ),
+                    2
+                ))
             )
         }
     }
