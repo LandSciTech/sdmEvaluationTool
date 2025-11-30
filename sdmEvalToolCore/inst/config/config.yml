@@ -87,6 +87,7 @@ tables:
       regularly, requires **admin** access and writing directly to the database. 
       See the list of user roles for specific permissions.
       In the future, this table might be a 3rd party authorization tool.
+    table_constraint:
     fields:
       user_id:
         name: User ID
@@ -120,6 +121,7 @@ tables:
       A table that lists all potential species, in our case, birds in Canada. 
       This table is saved to the database once, changes to the `species` 
       table require **admin** access directly in the database.
+    table_constraint:
     fields:
       species_id:
         name: Species ID
@@ -154,6 +156,7 @@ tables:
       `config.yaml` file by **admins** and **tool developers**. 
       After initial development, versioning and backward compatibility should 
       be a concern so that previous entries will not break.
+    table_constraint:
     fields:
       component_id:
         name: Component ID
@@ -179,6 +182,7 @@ tables:
       e.g. `can_glm_v1.1` would mean that GLM models were used for models with 
       Canadian extent and this is version 1.1. Updates are done 
       by **modelers** via uploading or creating a method metadata file.
+    table_constraint:
     fields:
       model_id:
         name: Model ID
@@ -207,6 +211,7 @@ tables:
       Upload materials are used to be displayed and evaluated. 
       Updates to the file system and the database will be regular as 
       **modelers** upload new materials.
+    table_constraint:
     fields:
       material_id:
         name: Material ID
@@ -262,6 +267,7 @@ tables:
       repeatedly upload the same set of files. A deployment is defined
       by the **modeler** based on model materials that they are the
       owners (creators) of.
+    table_constraint:
     fields:
       deployment_id:
         name: Deployment ID
@@ -299,6 +305,7 @@ tables:
     description: >
       Materials selected for a deployment. Entries in this table form the
       basis for evaluations and are defined by the **modeler**.
+    table_constraint:
     fields:
       deployment_material_id:
         name: Deployment Material ID
@@ -328,6 +335,7 @@ tables:
       evaluations, these function like flags marking feedback that needs
       to be addressed later (i.e. such notes can be identified later when
       synthesizing the evaluations).
+    table_constraint: PRIMARY KEY (deployment_material_id, evaluation_create_user)
     fields:
       deployment_material_id:
         name: Deployment Material ID
@@ -399,6 +407,7 @@ tables:
       we consider text comments. Users with **commenter**
       privileges can leave comments (like discussions back and forth) if
       comments are enabled for the deployment.
+    table_constraint: PRIMARY KEY (deployment_id, model_id, species_id)
     fields:
       deployment_id:
         name: Deployment ID
@@ -439,6 +448,7 @@ tables:
       later phases of the tool development. We might have to consider
       access based on user groups as well to avoid having to set permissions
       for individuals, using existing groups instead.
+    table_constraint: PRIMARY KEY (user_id, deployment_id)
     fields:
       user_id:
         name: User ID

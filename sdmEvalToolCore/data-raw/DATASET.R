@@ -8,7 +8,16 @@ tables <- do.call(
     rbind,
     lapply(names(conf$tables), \(i) {
         l <- conf$tables[[i]]
-        data.frame(table = i, name = l$name, description = l$description)
+        data.frame(
+            table = i,
+            name = l$name,
+            description = l$description,
+            table_constraint = if (is.null(l$table_constraint)) {
+                NA_character_
+            } else {
+                l$table_constraint
+            }
+        )
     })
 )
 

@@ -246,6 +246,9 @@ make_table_statement <- function(
     table_name,
     force = FALSE
 ) {
+    if (!(table_name %in% sdmEvalToolCore::tables$table)) {
+        stop(sprintf("Table '%s not part of the spec.", table_name))
+    }
     field_types <- data.frame(
         field_type = c(
             "date",
@@ -280,10 +283,9 @@ make_table_statement <- function(
     f <- f[f$table == table_name, c("field", "type", "constraint")]
     f$type <- field_types[[dbtype]][match(f$type, field_types$field_type)]
     # add here table constraints
-    tc <- ""
-    if (tc != "") {
-        tc <- paste0(", ", tc)
-    }
+    tc <- sdmEvalToolCore::tables
+    tc <- tc[tc$table == table_name, "table_constraint"]
+    tc <- if (!is.na(tc)) paste0(", ", tc) else ""
     v <- paste0(
         trimws(paste(f$field, f$type, f$constraint)),
         collapse = ", "
