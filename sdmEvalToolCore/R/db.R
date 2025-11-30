@@ -310,7 +310,6 @@ make_table_statement <- function(
 #' @param con DB connection.
 #' @param tables Character, table name.
 #' @param force Logical, force (create even if not exists).
-#' @param verbose Logical.
 #'
 #' @examples
 #' con <- db_connect(":memory:")
@@ -322,13 +321,13 @@ make_table_statement <- function(
 db_create_tables <- function(
     con,
     tables = NULL,
-    force = FALSE,
-    verbose = TRUE
+    force = FALSE
 ) {
     tables_exist <- DBI::dbListTables(con)
     dbtype <- sdmevaltool_options()$db
-    if (verbose) {
-        cat("Creating tables in ", sQuote(dbtype), ":\n", sep = "")
+    verbose <- sdmevaltool_options()$verbose
+    if (verbose >= 1) {
+        cat("Creating tables in ", sQuote(dbtype), sep = "")
     }
     # DBI::dbBegin(con)
     # on.exit(DBI::dbCommit(con))
@@ -338,9 +337,9 @@ db_create_tables <- function(
     }
     tables <- tables[tables %in% all_tables]
     for (table_name in tables) {
-        if (verbose) {
+        if (verbose >= 2) {
             cat(
-                "* Create table ",
+                "\n* Create table ",
                 sQuote(table_name),
                 if (table_name %in% tables_exist) " (exists)" else "",
                 " ...",
@@ -354,14 +353,17 @@ db_create_tables <- function(
         res <- DBI::dbSendQuery(con, q)
         DBI::dbClearResult(res)
         if (verbose) {
-            cat(" OK\n")
+            cat(" OK")
         }
+    }
+    if (verbose >= 1) {
+        cat("\n")
     }
     # DBI::dbCommit(con)
     invisible(TRUE)
 }
 
-#' Write data to a table
+#' Append Data to an Existing Table
 #'
 #' Data will be appended to an existing DB table.
 #'
@@ -369,8 +371,8 @@ db_create_tables <- function(
 #' @param table Table name.
 #' @param data Data frame to append to the DB table.
 #' @param validate Logical, should `data` be validated?
-#' @param verbose Logical.
-#' @param dryrun Logical.
+#' @param dryrun Logical, write to a text file when `TRUE`
+#'   and to the database when `FALSE`.
 #'
 #' @examples
 #' con <- db_connect(":memory:")
@@ -390,14 +392,14 @@ db_write_table <- function(
     table,
     data,
     validate = TRUE,
-    verbose = TRUE,
     dryrun = FALSE
 ) {
+    verbose <- sdmevaltool_options()$verbose
     if (validate) {
-        check_table(data, table, dryrun = FALSE, verbose = verbose)
+        check_table(data, table, dryrun = dryrun)
     }
-    if (verbose) {
-        cat("Writing data to table", sQuote(table), "...")
+    if (verbose >= 1) {
+        cat("Appending new data to table", sQuote(table), "...")
     }
     if (dryrun) {
         tmp <- make_target_path("_sdm_evaluation_db.csv")
@@ -416,9 +418,15 @@ db_write_table <- function(
         )
         out <- writeLines(txt, tmp)
     } else {
-        out <- DBI::dbWriteTable(con, name = table, value = data, append = TRUE)
+        out <- DBI::dbWriteTable(
+            con,
+            name = table,
+            value = data,
+            append = TRUE,
+            overwrite = FALSE
+        )
     }
-    if (verbose) {
+    if (verbose >= 1) {
         cat(" OK\n")
     }
     invisible(out)

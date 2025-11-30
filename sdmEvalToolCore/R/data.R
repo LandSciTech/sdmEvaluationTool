@@ -67,7 +67,6 @@ scaffold_table <- function(table_name) {
 #' @param table_name Table name.
 #' @param dryrun Logical, if checks fail and error is produced,
 #'   unless it is a dry run.
-#' @param verbose Logical.
 #'
 #' @return Invisible `TRUE` if all check passed.
 #'
@@ -95,8 +94,9 @@ scaffold_table <- function(table_name) {
 #' check_table(models, "users", dryrun = TRUE)
 #'
 #' @export
-check_table <- function(x, table_name, dryrun = FALSE, verbose = TRUE) {
-    if (verbose) {
+check_table <- function(x, table_name, dryrun = FALSE) {
+    verbose <- sdmevaltool_options()$verbose
+    if (verbose >= 1) {
         cat("Checking table", sQuote(table_name))
     }
     tt <- get_fields(table_name)
@@ -104,22 +104,22 @@ check_table <- function(x, table_name, dryrun = FALSE, verbose = TRUE) {
     c1 <- setdiff(colnames(x), tt$field)
     if (length(c1) > 0L) {
         ok <- FALSE
-        if (verbose) {
+        if (verbose >= 2) {
             cat("\n* Additional fields found:", paste0(c1, collapse = ", "))
         }
     } else {
-        if (verbose) {
+        if (verbose >= 2) {
             cat("\n* Checking additional fields ... OK")
         }
     }
     c2 <- setdiff(tt$field, colnames(x))
     if (length(c1) > 0L) {
         ok <- FALSE
-        if (verbose) {
+        if (verbose >= 2) {
             cat("\n* Missing fields:", paste0(c2, collapse = ", "))
         }
     } else {
-        if (verbose) {
+        if (verbose >= 2) {
             cat("\n* Checking missing fields ... OK")
         }
     }
@@ -135,7 +135,7 @@ check_table <- function(x, table_name, dryrun = FALSE, verbose = TRUE) {
         )
         if (!ok_type) {
             ok <- FALSE
-            if (verbose) {
+            if (verbose >= 2) {
                 cat(
                     "\n* Type for field",
                     sQuote(tt$field[k]),
@@ -146,7 +146,7 @@ check_table <- function(x, table_name, dryrun = FALSE, verbose = TRUE) {
                 )
             }
         } else {
-            if (verbose) {
+            if (verbose >= 2) {
                 cat(
                     "\n* Checking type for field",
                     sQuote(tt$field[k]),
@@ -155,7 +155,7 @@ check_table <- function(x, table_name, dryrun = FALSE, verbose = TRUE) {
             }
         }
     }
-    if (verbose) {
+    if (verbose >= 1) {
         cat("\n")
     }
     if (!dryrun && !ok) {

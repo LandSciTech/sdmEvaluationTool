@@ -17,7 +17,8 @@ options_set <- FALSE
                 base = "../results",
                 db = "sqlite",
                 tz = "", # time zone for unix dates
-                lang = "english"
+                lang = "english",
+                verbose = 2 # 0=none, 1=sparse, 2=all
             )
         )
     }
