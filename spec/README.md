@@ -170,6 +170,7 @@ materials.
 | `material_create_time` | timestamp | `NOT NULL` | Time of initial upload. |
 | `material_modify_user` | text | `REFERENCES users (user_id)` | User who modified the model material (foreign key). |
 | `material_modify_time` | timestamp |  | Time of last modification. |
+| `material_settings` | jsonb | `NOT NULL` | Material settings, see `templates`. |
 
 ### Deployments (`deployments`)
 

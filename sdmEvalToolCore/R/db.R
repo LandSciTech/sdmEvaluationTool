@@ -366,7 +366,7 @@ db_write_table <- function(con, table, data, validate = TRUE, verbose = TRUE) {
     }
     out <- DBI::dbWriteTable(con, name = table, value = data, append = TRUE)
     if (verbose) {
-        cat("OK\n")
+        cat(" OK\n")
     }
     invisible(out)
 }

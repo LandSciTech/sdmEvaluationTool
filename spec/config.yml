@@ -248,11 +248,11 @@ tables:
         description: Time of last modification.
         type: timestamp
         constraint:
-      # material_settings:
-      #   name: Material Settings
-      #   description: Material settings, see `templates`.
-      #   type: jsonb
-      #   constraint: NOT NULL
+      material_settings:
+        name: Material Settings
+        description: Material settings, see `templates`.
+        type: jsonb
+        constraint: NOT NULL
 
   deployments:
     name: Deployments
