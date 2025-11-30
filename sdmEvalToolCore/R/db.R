@@ -102,7 +102,6 @@ db_read_user_info <- function(con, user_id, deployment_id) {
     out
 }
 
-
 #' Get Deployment Materials from DB
 #'
 #' @param con DB connection.
@@ -305,6 +304,31 @@ make_create_table_statement <- function(
     o
 }
 
+#' Check if table exists in DB
+#'
+#' @param con DB connection.
+#' @param table Table name.
+#' @param dryrun Logical.
+#'
+#' @noRd
+check_table_exists <- function(con, table, dryrun = FALSE) {
+    ok <- DBI::dbExistsTable(con, table)
+    if (!ok) {
+        if (dryrun) {
+            if (sdmevaltool_options()$verbose >= 1) {
+                cat("Table ", sQuote(table), " does not exists.\n", sep = "")
+            }
+        } else {
+            stop("Table ", sQuote(table), " does not exists.")
+        }
+    } else {
+        if (sdmevaltool_options()$verbose >= 1) {
+            cat("Table ", sQuote(table), " exists.\n", sep = "")
+        }
+    }
+    invisible(ok)
+}
+
 #' Create DB tables
 #'
 #' @param con DB connection.
@@ -363,51 +387,57 @@ db_create_tables <- function(
     invisible(TRUE)
 }
 
-#' Insert (Append) Data to an Existing Table
+#' Write Data to an Existing Table
 #'
-#' Data will be appended to an existing DB table.
+#' Data will be inserted/updated/upserted in an existing DB table.
 #'
 #' @param con A database connection.
 #' @param table Table name.
 #' @param data Data frame to append to the DB table.
+#' @param mode How to execute the write operation:
+#'   insert (append) new record,
+#'   update existing record, or
+#'  upsert (update existing or insert if not).
 #' @param check Logical, should `data` be validated?
 #' @param dryrun Logical, write to a text file when `TRUE`
 #'   and to the database when `FALSE`.
 #'
 #' @examples
 #' con <- db_connect(":memory:")
-#' db_create_tables(con, "models", force = FALSE)
+#' db_create_tables(con, "models")
 #' models <- data.frame(
 #'     model_id = "bam_v5_can71",
 #'     model_name = "BAM v5 Can 71",
 #'     model_description = "BAM version 5 Canada model in BCR 71"
 #' )
-#' db_insert_table(con, "models", models)
+#' db_write_table(con, "models", models, mode = "insert")
 #' db_disconnect(con)
 #'
-#' @return Invisible `TRUE`.
+#' @return The ouput from the operation, invisibly.
 #' @export
-db_insert_table <- function(
+db_write_table <- function(
     con,
     table,
     data,
+    mode = c("insert", "update", "upsert"),
     check = TRUE,
     dryrun = FALSE
 ) {
+    mode <- match.arg(mode)
     verbose <- sdmevaltool_options()$verbose
-    if (!DBI::dbExistsTable(con, table)) {
-        stop("Table ", sQuote(table), " does not exists.")
-    }
+    check_table_exists(con, table, dryrun = dryrun)
     if (check) {
         check_table(data, table, dryrun = dryrun)
     }
+    w <- paste0(tools::toTitleCase(mode), "ing")
     if (verbose >= 1) {
-        cat("Inserting new data to table", sQuote(table), "... ")
+        cat(w, "data to table ", sQuote(table), "... ")
     }
     if (dryrun) {
         tmp <- make_target_path("_sdm_evaluation_db.csv")
         h <- sprintf(
-            "--- Inserting data to table %s at %s ---",
+            "--- %s data to table %s at %s ---",
+            w,
             sQuote(table),
             as.character(Sys.time())
         )
@@ -420,11 +450,19 @@ db_insert_table <- function(
         )
         out <- writeLines(txt, tmp)
     } else {
-        out <- DBI::dbAppendTable(
-            con,
-            name = table,
-            value = data
-        )
+        if (mode == "insert") {
+            out <- DBI::dbAppendTable(
+                con,
+                name = table,
+                value = data
+            )
+        }
+        if (mode == "update") {
+            stop("DB table update is not yet supported ...")
+        }
+        if (mode == "upsert") {
+            stop("DB table upsert is not yet supported ...")
+        }
     }
     if (verbose >= 1) {
         cat("OK\n")
