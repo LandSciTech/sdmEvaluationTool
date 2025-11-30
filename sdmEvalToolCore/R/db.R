@@ -236,18 +236,18 @@ db_read_species <- function(
 }
 
 
-#' Make table SQL statement
+#' Make create table SQL statement
 #'
 #' @param table_name Character, table name.
 #' @param force Logical, force (create even if not exists).
 #'
 #' @noRd
-make_table_statement <- function(
+make_create_table_statement <- function(
     table_name,
     force = FALSE
 ) {
     if (!(table_name %in% sdmEvalToolCore::tables$table)) {
-        stop(sprintf("Table '%s not part of the spec.", table_name))
+        stop("Table ", sQuote(table_name), " not part of the spec.")
     }
     field_types <- data.frame(
         field_type = c(
@@ -342,18 +342,18 @@ db_create_tables <- function(
                 "\n* Create table ",
                 sQuote(table_name),
                 if (table_name %in% tables_exist) " (exists)" else "",
-                " ...",
+                " ... ",
                 sep = ""
             )
         }
-        q <- make_table_statement(
+        q <- make_create_table_statement(
             table_name = table_name,
             force = force
         )
         res <- DBI::dbSendQuery(con, q)
         DBI::dbClearResult(res)
         if (verbose) {
-            cat(" OK")
+            cat("OK")
         }
     }
     if (verbose >= 1) {
@@ -363,14 +363,14 @@ db_create_tables <- function(
     invisible(TRUE)
 }
 
-#' Append Data to an Existing Table
+#' Insert (Append) Data to an Existing Table
 #'
 #' Data will be appended to an existing DB table.
 #'
 #' @param con A database connection.
 #' @param table Table name.
 #' @param data Data frame to append to the DB table.
-#' @param validate Logical, should `data` be validated?
+#' @param check Logical, should `data` be validated?
 #' @param dryrun Logical, write to a text file when `TRUE`
 #'   and to the database when `FALSE`.
 #'
@@ -382,30 +382,33 @@ db_create_tables <- function(
 #'     model_name = "BAM v5 Can 71",
 #'     model_description = "BAM version 5 Canada model in BCR 71"
 #' )
-#' db_write_table(con, "models", models)
+#' db_insert_table(con, "models", models)
 #' db_disconnect(con)
 #'
 #' @return Invisible `TRUE`.
 #' @export
-db_write_table <- function(
+db_insert_table <- function(
     con,
     table,
     data,
-    validate = TRUE,
+    check = TRUE,
     dryrun = FALSE
 ) {
     verbose <- sdmevaltool_options()$verbose
-    if (validate) {
+    if (!DBI::dbExistsTable(con, table)) {
+        stop("Table ", sQuote(table), " does not exists.")
+    }
+    if (check) {
         check_table(data, table, dryrun = dryrun)
     }
     if (verbose >= 1) {
-        cat("Appending new data to table", sQuote(table), "...")
+        cat("Inserting new data to table", sQuote(table), "... ")
     }
     if (dryrun) {
         tmp <- make_target_path("_sdm_evaluation_db.csv")
         h <- sprintf(
-            "--- Writing table %s at %s ---",
-            table,
+            "--- Inserting data to table %s at %s ---",
+            sQuote(table),
             as.character(Sys.time())
         )
         txt <- if (file.exists(tmp)) {
@@ -413,24 +416,18 @@ db_write_table <- function(
         }
         txt <- c(
             txt,
-            # capture.output(write.csv(data, file = "", row.names = FALSE))
             jsonlite::toJSON(data, auto_unbox = TRUE)
         )
         out <- writeLines(txt, tmp)
     } else {
-        out <- DBI::dbWriteTable(
+        out <- DBI::dbAppendTable(
             con,
             name = table,
-            value = data,
-            append = TRUE,
-            overwrite = FALSE
+            value = data
         )
     }
     if (verbose >= 1) {
-        cat(" OK\n")
+        cat("OK\n")
     }
     invisible(out)
 }
-# TODO: we used DBI interface, but should we switch to dplyr?
-# insert new values with dplyr::rows_insert(), only for new key values
-# update existing rows with dplyr::rows_update(), all values

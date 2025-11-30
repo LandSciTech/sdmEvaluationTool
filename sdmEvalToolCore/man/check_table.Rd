@@ -4,7 +4,7 @@
 \alias{check_table}
 \title{Check Table}
 \usage{
-check_table(x, table_name, dryrun = FALSE, verbose = TRUE)
+check_table(x, table_name, dryrun = FALSE)
 }
 \arguments{
 \item{x}{A data frame.}
@@ -13,8 +13,6 @@ check_table(x, table_name, dryrun = FALSE, verbose = TRUE)
 
 \item{dryrun}{Logical, if checks fail and error is produced,
 unless it is a dry run.}
-
-\item{verbose}{Logical.}
 }
 \value{
 Invisible \code{TRUE} if all check passed.

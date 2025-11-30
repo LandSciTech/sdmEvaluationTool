@@ -4,7 +4,7 @@
 \alias{db_create_tables}
 \title{Create DB tables}
 \usage{
-db_create_tables(con, tables = NULL, force = FALSE, verbose = TRUE)
+db_create_tables(con, tables = NULL, force = FALSE)
 }
 \arguments{
 \item{con}{DB connection.}
@@ -12,8 +12,6 @@ db_create_tables(con, tables = NULL, force = FALSE, verbose = TRUE)
 \item{tables}{Character, table name.}
 
 \item{force}{Logical, force (create even if not exists).}
-
-\item{verbose}{Logical.}
 }
 \description{
 Create DB tables

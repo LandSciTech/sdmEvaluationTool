@@ -337,26 +337,20 @@ deployments$deployment_settings[2] <- jsonlite::toJSON(d2)
 # --------- ACCESS -----------
 
 access <- data.frame(
-    user_id = "holden",
-    deployment_id = c("deployment1"),
-    user_roles = "modeler,commenter"
-)
-access <- rbind(
-    access,
-    data.frame(
-        user_id = c("draper", "okoye", "draper", "okoye"),
-        deployment_id = c(
-            "deployment1",
-            "deployment1",
-            "deployment2",
-            "deployment2"
-        ),
-        user_roles = c(
-            "evaluator,commenter",
-            "evaluator",
-            "modeler,commenter",
-            "evaluator,commenter"
-        )
+    user_id = c("holden", "draper", "okoye", "draper", "okoye"),
+    deployment_id = c(
+        "deployment1",
+        "deployment1",
+        "deployment1",
+        "deployment2",
+        "deployment2"
+    ),
+    user_roles = c(
+        "modeler,commenter",
+        "evaluator,commenter",
+        "evaluator",
+        "modeler,commenter",
+        "evaluator,commenter"
     )
 )
 
@@ -447,6 +441,7 @@ comments <- rbind(
 
 # --------- EVALUATIONS -----------
 
+cmps <- sdmEvalToolCore::components
 q <- sdmEvalToolCore::default_questions
 cmp <- unique(q$component)
 evaluations <- NULL
@@ -455,15 +450,15 @@ for (species_id in SPP) {
     j <- sample(length(cmp) + 1, 1) - 1
     for (k in cmp[seq_len(j)]) {
         t0 <- t0 + 60 * 5
+        sp <- species_id
+        if (!grepl("/species/", cmps$path[cmps$component == k])) {
+            sp <- "ALL"
+        }
         evaluations <- rbind(
             evaluations,
             fake_evaluation(
-                deployment_id = sprintf(
-                    "deployment1_bam_v5_can71_%s_%s",
-                    species_id,
-                    k
-                ),
-                material_id = sprintf("bam_v5_can71_%s_%s", species_id, k),
+                deployment_id = "deployment1",
+                material_id = sprintf("bam_v5_can71_%s_%s", sp, k),
                 component_id = k,
                 user_id = "draper",
                 questions = q,
@@ -472,6 +467,17 @@ for (species_id in SPP) {
         )
     }
 }
+# need to drop IDs with _ALL_
+# table(duplicated(evaluations$deployment_material_id))
+# unique(evaluations$deployment_material_id[duplicated(
+#     evaluations$deployment_material_id
+# )])
+evaluations <- evaluations[!duplicated(evaluations$deployment_material_id), ]
+# we also need to drop evaluations related to components the BAM example do not have yet
+evaluations <- evaluations[
+    evaluations$deployment_material_id %in%
+        deployment_materials$deployment_material_id,
+]
 
 # -------- DATABASE ------
 
@@ -489,27 +495,31 @@ check_table(evaluations, "evaluations")
 
 # ./sdm_evaluation_db.sqlite
 con <- db_connect(make_target_path("sdm_evaluation_db.sqlite"))
+
+rs <- DBI::dbSendQuery(con, "PRAGMA foreign_keys = ON;")
+DBI::dbClearResult(rs)
+
 dbListTables(con)
 db_create_tables(con)
 dbListTables(con)
 
-db_write_table(con, "species", species)
-db_write_table(con, "models", models)
-db_write_table(con, "users", users)
-db_write_table(con, "components", components)
+db_insert_table(con, "species", species)
+db_insert_table(con, "models", models)
+db_insert_table(con, "users", users)
+db_insert_table(con, "components", components)
 
-db_write_table(con, "materials", materials)
-db_write_table(
+db_insert_table(con, "materials", materials)
+db_insert_table(con, "deployments", deployments)
+db_insert_table(
     con,
     "deployment_materials",
     deployment_materials
 )
-db_write_table(con, "deployments", deployments)
-db_write_table(con, "access", access)
+db_insert_table(con, "access", access)
 
-db_write_table(con, "comments", comments)
+db_insert_table(con, "comments", comments)
+db_insert_table(con, "evaluations", evaluations)
 
-db_write_table(con, "evaluations", evaluations)
 
 sort(unique(sdmEvalToolCore::fields$table))
 dbListTables(con)
