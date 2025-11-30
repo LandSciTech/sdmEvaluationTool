@@ -352,6 +352,11 @@ tables:
         description: Material ID (foreign key).
         type: text
         constraint: REFERENCES materials (material_id)
+      component_id:
+        name: Component ID
+        description: Component ID (foreign key).
+        type: text
+        constraint: REFERENCES components (component_id)
       use_cases:
         name: Use Cases
         description: One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment.
