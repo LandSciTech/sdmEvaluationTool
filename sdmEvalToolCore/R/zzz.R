@@ -10,7 +10,7 @@
 options_set <- FALSE
 
 .onLoad <- function(libname, pkgname) {
-    if (is.null(getOption("cu_options"))) {
+    if (is.null(getOption("sdmevaltool_options"))) {
         options_set <<- TRUE
         options(
             "sdmevaltool_options" = list(
