@@ -413,7 +413,7 @@ db_create_tables <- function(
 #' db_write_table(con, "models", models, mode = "insert")
 #' db_disconnect(con)
 #'
-#' @return The ouput from the operation, invisibly.
+#' @return Invisible `TRUE`.
 #' @export
 db_write_table <- function(
     con,
@@ -429,12 +429,13 @@ db_write_table <- function(
     if (check) {
         check_table(data, table, dryrun = dryrun)
     }
+    ks <- get_table_keys(table)
     w <- paste0(tools::toTitleCase(mode), "ing")
     if (verbose >= 1) {
         cat(w, "data to table ", sQuote(table), "... ")
     }
     if (dryrun) {
-        tmp <- make_target_path("_sdm_evaluation_db.csv")
+        tmp <- make_target_path("_sdm_evaluation_db.log")
         h <- sprintf(
             "--- %s data to table %s at %s ---",
             w,
@@ -448,24 +449,183 @@ db_write_table <- function(
             txt,
             jsonlite::toJSON(data, auto_unbox = TRUE)
         )
-        out <- writeLines(txt, tmp)
+        res <- writeLines(txt, tmp)
     } else {
         if (mode == "insert") {
-            out <- DBI::dbAppendTable(
+            # this can be a bulk operation (>1 rows)
+            # need to make sure all columns are part of data
+            if (!all(names(data) %in% ks$field)) {
+                stop("All columns in data must be present according to spec.")
+            }
+            res <- DBI::dbAppendTable(
                 con,
                 name = table,
                 value = data
             )
         }
         if (mode == "update") {
-            stop("DB table update is not yet supported ...")
+            # key columns are not updated
+            # columns can be missing --> these won't be updated
+            # data needs to have exactly 1 row
+            q <- make_update_table_statement(data, table, drop_keys = TRUE)
+            res <- DBI::dbSendQuery(con, q)
+            DBI::dbClearResult(res)
         }
         if (mode == "upsert") {
-            stop("DB table upsert is not yet supported ...")
+            # best to provide all columns to satisfy key constraints
+            # key columns are not dropped
+            # data needs to have exactly 1 row
+            q <- make_upsert_table_statement(data, table)
+            res <- DBI::dbSendQuery(con, q)
+            DBI::dbClearResult(res)
         }
     }
     if (verbose >= 1) {
         cat("OK\n")
     }
-    invisible(out)
+    invisible(TRUE)
+}
+
+#' Get Keys for a Table
+#'
+#' @param table Table name.
+#'
+#' @return A data frame with PK/FK information.
+#'
+#' @noRd
+get_table_keys <- function(table) {
+    tb <- sdmEvalToolCore::tables
+    fd <- sdmEvalToolCore::fields
+    tb1 <- tb[tb$table == table, , drop = FALSE]
+    fd1 <- fd[fd$table == table, , drop = FALSE]
+    # FK
+    fk <- fd1$field[grep("REFERENCES", fd1$constraint)]
+    if (length(fk) > 0L) {
+        ref <- fd1$constraint[grep("REFERENCES", fd1$constraint)]
+        ref <- gsub("REFERENCES", "", ref)
+        ref <- strsplit(ref, "(", fixed = TRUE)
+        ref <- lapply(ref, function(z) gsub("[^[:alnum:]_]", "", z))
+        fk_table <- sapply(ref, "[[", 1L)
+        fk_field <- sapply(ref, "[[", 2L)
+    }
+    # PK
+    if (is.na(tb1$table_constraint)) {
+        pk <- fd1$field[grep("PRIMARY KEY", fd1$constraint)]
+    } else {
+        pk <- tb1$table_constraint
+        pk <- gsub("PRIMARY KEY", "", pk)
+        pk <- strsplit(pk, ",")[[1L]]
+        pk <- gsub("[^[:alnum:]_]", "", pk)
+    }
+    out <- fd1[, c("table", "field", "type", "constraint")]
+    out$pk <- out$field %in% pk
+    if (length(fk) > 0L) {
+        out$fk_table <- fk_table[match(out$field, fk_field)]
+        out$fk_field <- fk_field[match(out$field, fk_field)]
+    } else {
+        out$fk_table <- NA_character_
+        out$fk_field <- NA_character_
+    }
+    out
+}
+
+#' SQL to Update Table
+#'
+#' @param data Data frame with 1 row and with expected columns:
+#'   Provide all primary key columns for the update condition,
+#'   and any other column for which values are updated.
+#' @param table Table name.
+#' @param drop_keys Logical, should PK/FK columns be dropped.
+#'
+#' @return An SQL query statement.
+#'
+#' @noRd
+make_update_table_statement <- function(data, table, drop_keys = TRUE) {
+    if (nrow(data) != 1L) {
+        stop("data must have exactly 1 row.")
+    }
+    ks <- get_table_keys(table)
+    pk <- ks$field[ks$pk]
+    d1 <- data[[pk[1L]]]
+    if (is.character(d1)) {
+        d1 <- paste0("'", d1, "'", collapse = "")
+    }
+    # where clause
+    wd <- c(pk[1L], "=", d1)
+    for (i in seq_along(pk)[-1L]) {
+        d1 <- data[[pk[i]]]
+        if (is.character(d1)) {
+            d1 <- paste0("'", d1, "'", collapse = "")
+        }
+        wd <- c(wd, " AND ", pk[i], "=", d1)
+    }
+    # updated fields
+    if (drop_keys) {
+        allk <- unique(c(ks$field[ks$pk], ks$field[!is.na(ks$fk_field)]))
+        data <- data[, !(names(data) %in% allk), drop = FALSE]
+    }
+    nd <- NULL
+    for (i in seq_len(ncol(data))) {
+        d1 <- data[[i]]
+        if (is.character(d1)) {
+            d1 <- paste0("'", d1, "'", collapse = "")
+        }
+        nd <- c(nd, paste0(names(data)[i], "=", d1, collapse = ""))
+    }
+    q <- paste0(
+        "UPDATE ",
+        table,
+        " SET ",
+        paste0(nd, collapse = ", "),
+        " WHERE ",
+        paste0(wd, collapse = ""),
+        ";"
+    )
+    q
+}
+
+#' SQL to Upsert Table
+#'
+#' @param data Data frame with 1 row and with all columns.
+#' @param table Table name.
+#'
+#' @return An SQL query statement.
+#'
+#' @noRd
+make_upsert_table_statement <- function(data, table) {
+    if (nrow(data) != 1L) {
+        stop("data must have exactly 1 row.")
+    }
+    ks <- get_table_keys(table)
+    if (!all(names(data) %in% ks$field)) {
+        stop("All columns in data must be present according to spec.")
+    }
+
+    pk <- ks$field[ks$pk]
+    nd <- NULL
+    cs <- NULL
+    vs <- NULL
+    for (i in seq_len(ncol(data))) {
+        d1 <- data[[i]]
+        if (is.character(d1)) {
+            d1 <- paste0("'", d1, "'", collapse = "")
+        }
+        nd <- c(nd, paste0(names(data)[i], "=", d1, collapse = ""))
+        cs <- c(cs, names(data)[i])
+        vs <- c(vs, d1)
+    }
+    q <- paste0(
+        "INSERT INTO ",
+        table,
+        " (",
+        paste0(cs, collapse = ", "),
+        ") VALUES (",
+        paste0(vs, collapse = ", "),
+        ") ON CONFLICT (",
+        paste0(pk, collapse = ", "),
+        ") DO UPDATE SET ",
+        paste0(nd, collapse = ", "),
+        ";"
+    )
+    q
 }

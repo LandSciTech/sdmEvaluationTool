@@ -31,7 +31,7 @@ upsert (update existing or insert if not).}
 and to the database when \code{FALSE}.}
 }
 \value{
-The ouput from the operation, invisibly.
+Invisible \code{TRUE}.
 }
 \description{
 Data will be inserted/updated/upserted in an existing DB table.
