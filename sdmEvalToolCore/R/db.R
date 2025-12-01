@@ -430,7 +430,12 @@ db_write_table <- function(
         check_table(data, table, dryrun = dryrun)
     }
     ks <- get_table_keys(table)
-    w <- paste0(tools::toTitleCase(mode), "ing")
+    w <- switch(
+        mode,
+        "insert" = "Inserting",
+        "update" = "Updating",
+        "upsert" = "Upserting"
+    )
     if (verbose >= 1) {
         cat(w, "data to table ", sQuote(table), "... ")
     }
@@ -464,7 +469,7 @@ db_write_table <- function(
             )
         }
         if (mode == "update") {
-            # key columns are not updated
+            # if key columns are not updated
             # columns can be missing --> these won't be updated
             # data needs to have exactly 1 row
             q <- make_update_table_statement(data, table, drop_keys = TRUE)
@@ -628,4 +633,17 @@ make_upsert_table_statement <- function(data, table) {
         ";"
     )
     q
+}
+
+#' Handling Boolean
+#'
+#' @param x An R vector.
+#'
+#' @export
+fromBoolean <- function(x) {
+    if (is.logical(x)) {
+        x
+    } else {
+        as.logical(x)
+    }
 }
