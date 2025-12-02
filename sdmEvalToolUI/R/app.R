@@ -33,6 +33,7 @@ sdm_tool <- function() {
 
   ui <- bslib::page_navbar(
     title = "SDM Tool",
+    theme = sdm_theme(),
     sidebar = mod_sidebar_ui("sidebar"),
     !!!pages_ui
   )
@@ -172,4 +173,23 @@ mod_sidebar_server <- function(id) {
       lang = reactive(input$lang)
     )
   })
+}
+
+sdm_theme <- function() {
+  bs_theme() |>
+    bs_add_rules(
+      "
+      .sub-question {
+        padding-left: 15px;
+        padding-top: 5px;
+        border-radius: 5px;
+        background-color: #e2eae0;
+      }
+      .btn-mini {
+        background-color: transparent;
+        border: 0;
+        padding: 5px;
+        margin: 0;
+    }"
+    )
 }
