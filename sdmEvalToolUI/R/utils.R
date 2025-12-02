@@ -148,7 +148,8 @@ have_data <- function() {
 
 #' Prepare Evaluation Questions
 #'
-#' Reads, combines and prepares questions for use in UIs.
+#' Reads, combines and prepares questions for use in UIs. `model_id` and
+#' `species_id` required to create `material_id`.
 #'
 #' @param component_id Character. Component ID
 #' @param deployment_id Character. Deployment ID
@@ -169,7 +170,6 @@ prep_questions <- function(
   model_id,
   species_id
 ) {
-
   if (missing(species_id) || species_id == "ALL") {
     validate_ids(
       deployment_id = deployment_id,
@@ -182,16 +182,6 @@ prep_questions <- function(
       model_id = model_id,
       species_id = species_id
     )
-    # TODO: add back in when deployment questions corrected
-  q <- sdmEvalToolCore::default_questions
-  # q <- dplyr::rows_upsert(
-  #   sdmEvalToolCore::default_questions,
-  #   prep_deployments(deployment_id, "questions"),
-  #   by = c("component", "order")
-  # )
-
-  if (component_id != "test") {
-    q <- dplyr::filter(q, .data$component == .env$component_id)
   }
 
   q <- fetch_questions(deployment_id, component_id)
@@ -201,6 +191,13 @@ prep_questions <- function(
     #TODO: Remove this if numbering changes
     dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
     dplyr::mutate(
+      values = stringr::str_split(.data$values, ", ?"),
+      material_id = paste(
+        .env$model_id,
+        .env$species_id,
+        .data$component,
+        sep = "_"
+      ),
       id = paste(
         .env$deployment_id,
         .data$material_id,
@@ -208,18 +205,14 @@ prep_questions <- function(
         .data$part,
         sep = "_"
       )
-    ) |>
-    dplyr::mutate(
-      parent_id = dplyr::if_else(part > 0, id[part == 0], NA),
-      .by = c("component", "order")
     )
 }
 
 fetch_questions <- function(deployment_id, component_id) {
-  q <- dplyr::rows_upsert(
-    sdmEvalToolCore::default_questions,
+  # Do we have a valid set of deployment questions? If not use defaults
+  q <- tryCatch(
     prep_deployments(deployment_id, "deployment_questions"),
-    by = c("component", "order")
+    error = \(x) sdmEvalToolCore::default_questions
   )
 
   if (component_id != "test") {

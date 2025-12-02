@@ -105,10 +105,10 @@ ui_questions <- function(questions, spatial_ids = NULL, session) {
     "type",
     "id",
     "label",
-    "parent_id",
+    "part",
     "values"
   ) |>
-    purrr::pmap(\(type, id, label, parent_id, values) {
+    purrr::pmap(\(type, id, label, part, values) {
       i <- get(glue::glue("{type}_input"))(
         id = session$ns(id),
         label = label,
@@ -117,13 +117,10 @@ ui_questions <- function(questions, spatial_ids = NULL, session) {
       )
 
       # Follow up questions
-      if (!is.na(parent_id)) {
-        i <- conditionalPanel(
-          glue::glue("input.{parent_id} == 'TRUE'"),
-          div(class = "sub-question", i),
-          ns = session$ns
-        )
+      if (part > 0) {
+        i <- div(class = "sub-question", i)
       }
+
       i
     })
 
