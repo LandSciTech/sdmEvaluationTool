@@ -21,6 +21,7 @@ test_page_test <- function(
 
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",
+    theme = sdm_theme(),
     mod_page_test_ui()
   )
 
@@ -108,7 +109,7 @@ mod_page_test_server <- function(id = "test", ...) {
       bindCache(deployment_id(), model_id(), species_id())
 
     output$ui_questions <- renderUI({
-      ui_questions(questions_init(), session)
+      ui_questions(questions_init(), session = session)
     })
 
     # TODO: Save values temporarily, so not lost if don't "Save Responses"?

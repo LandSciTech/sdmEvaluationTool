@@ -1,8 +1,19 @@
 # Single inputs -----------------------------------------------------------
 
-text_input <- function(...) {
+simple_text_input <- function(...) {
   expand_dots(...)
   textInput(id, label)
+}
+
+yes_no_input <- function(...) {
+  expand_dots(...)
+  radioButtons(
+    inputId = id,
+    label = label,
+    choices = c("Yes" = TRUE, "No" = FALSE),
+    selected = character(),
+    inline = TRUE
+  )
 }
 
 slider_input <- function(...) {
@@ -12,7 +23,60 @@ slider_input <- function(...) {
 
 gold_standard_input <- function(...) {
   expand_dots(...)
-  sliderInput(inputId = id, label = label, value = 0, min = 0, max = 5)
+  selectInput(
+    inputId = id,
+    label = label,
+    choices = c(
+      "Choose one" = "",
+      "Gold" = 5,
+      "Silver" = 4,
+      "Bronze" = 3,
+      "Deficient" = 2,
+      "Unknown" = 1
+    )
+  )
+}
+
+
+ordinal_input <- function(...) {
+  expand_dots(...)
+  selectInput(
+    inputId = id,
+    label = label,
+    choices = c(
+      "Choose one" = "",
+      "Extremely" = 2,
+      "Very" = 1,
+      "Moderately" = 0,
+      "Slightly" = -1,
+      "Not at all" = -2,
+      "Uncertain" = NA #TODO: What should uncertain (or above, Unknown) score as?
+    )
+  )
+}
+
+spatial_input <- function(...) {
+  expand_dots(...)
+
+  id_inputs <- purrr::map(values, \(v) {
+    selectizeInput(
+      inputId = paste0(id, "-", v),
+      label = HTML(paste0("Identify any ", strong(v), " points")),
+      choices = c("Add selected IDs" = "", spatial_ids),
+      multiple = TRUE,
+      options = list(delimiter = ",", create = TRUE, persist = FALSE)
+    )
+  })
+
+  tagList(
+    strong(label),
+    div(class = "sub-question", !!!id_inputs),
+    actionButton(
+      inputId = paste0(id, "-show"),
+      label = "Show identified points"
+    )
+    #textOutput(inputId = paste0(id, "-problem"))
+  )
 }
 
 # Specialized UIs --------------------------------------------------------
@@ -31,14 +95,36 @@ gold_standard_input <- function(...) {
 #' @export
 #' @examplesIf have_data()
 #' q <- prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
-#' ui_questions(q, dummy_session)
+#' ui_questions(q, session = dummy_session)
 #' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
-#' ui_questions(q, dummy_session)
+#' ui_questions(q, session = dummy_session)
 
-ui_questions <- function(questions, session) {
-  ui <- dplyr::select(questions, "ui", "id", "label") |>
-    purrr::pmap(\(ui, id, label) {
-      get(ui)(id = session$ns(id), label = label)
+ui_questions <- function(questions, spatial_ids = NULL, session) {
+  ui <- dplyr::select(
+    questions,
+    "type",
+    "id",
+    "label",
+    "parent_id",
+    "values"
+  ) |>
+    purrr::pmap(\(type, id, label, parent_id, values) {
+      i <- get(glue::glue("{type}_input"))(
+        id = session$ns(id),
+        label = label,
+        values = unlist(values),
+        spatial_ids = spatial_ids
+      )
+
+      # Follow up questions
+      if (!is.na(parent_id)) {
+        i <- conditionalPanel(
+          glue::glue("input.{parent_id} == 'TRUE'"),
+          div(class = "sub-question", i),
+          ns = session$ns
+        )
+      }
+      i
     })
 
   tagList(

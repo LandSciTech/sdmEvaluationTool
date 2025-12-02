@@ -169,6 +169,7 @@ prep_questions <- function(
   model_id,
   species_id
 ) {
+
   if (missing(species_id) || species_id == "ALL") {
     validate_ids(
       deployment_id = deployment_id,
@@ -181,32 +182,36 @@ prep_questions <- function(
       model_id = model_id,
       species_id = species_id
     )
+    # TODO: add back in when deployment questions corrected
+  q <- sdmEvalToolCore::default_questions
+  # q <- dplyr::rows_upsert(
+  #   sdmEvalToolCore::default_questions,
+  #   prep_deployments(deployment_id, "questions"),
+  #   by = c("component", "order")
+  # )
+
+  if (component_id != "test") {
+    q <- dplyr::filter(q, .data$component == .env$component_id)
   }
 
   q <- fetch_questions(deployment_id, component_id)
 
   q |>
     dplyr::rename("label" = sdmevaltool_options()$lang) |>
+    #TODO: Remove this if numbering changes
+    dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
     dplyr::mutate(
-      ui = dplyr::case_match(
-        .data$type,
-        "text" ~ "text_input",
-        "heading" ~ "h2",
-        "gold_standard" ~ "gold_standard_input",
-        "ordinal" ~ "slider_input"
-      ),
-      material_id = paste(
-        .env$model_id,
-        .env$species_id,
-        .data$component,
-        sep = "_"
-      ),
       id = paste(
         .env$deployment_id,
         .data$material_id,
         .data$order,
+        .data$part,
         sep = "_"
       )
+    ) |>
+    dplyr::mutate(
+      parent_id = dplyr::if_else(part > 0, id[part == 0], NA),
+      .by = c("component", "order")
     )
 }
 

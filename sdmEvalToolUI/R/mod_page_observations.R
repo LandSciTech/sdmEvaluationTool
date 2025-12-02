@@ -21,6 +21,7 @@ test_page_observations <- function(
 
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",
+    theme = sdm_theme(),
     mod_page_observations_ui()
   )
 
@@ -94,6 +95,9 @@ mod_page_observations_server <- function(id = "observations", ...) {
       )
     })
 
+    # Reactive values --------------------------
+    show_clicked <- reactiveVal()
+
     # Evaluations ----------------------------------------------------
     questions_init <- reactive({
       #TODO: Read values from disk?
@@ -107,7 +111,11 @@ mod_page_observations_server <- function(id = "observations", ...) {
       bindCache(deployment_id(), model_id(), species_id())
 
     output$ui_questions <- renderUI({
-      ui_questions(questions_init(), session)
+      ui_questions(
+        questions_init(),
+        spatial_ids = spatial_ids(),
+        session = session
+      )
     })
 
     # TODO: Save values temporarily, so not lost if don't "Save Responses"?
@@ -123,6 +131,10 @@ mod_page_observations_server <- function(id = "observations", ...) {
         questions_init(),
         evaluations = purrr::map(.data$id, \(q) rlang::set_names(input[[q]], q))
       )
+    })
+
+    questions_output <- reactive({
+      questions()
     }) |>
       bindEvent(input$save)
 
@@ -130,10 +142,53 @@ mod_page_observations_server <- function(id = "observations", ...) {
       questions()$evaluations[1][[1]]
     })
 
-    mod_comp_observations_server(
+    show_spatial_ids <- reactive({
+      req(show_clicked())
+      ids <- questions_init() |>
+        dplyr::filter(id == stringr::str_remove(show_clicked(), "-show")) |>
+        dplyr::mutate(
+          id_spatial = purrr::map2(id, values, \(i, v) {
+            paste0(i, "-", unlist(v))
+          })
+        ) |>
+        dplyr::pull(id_spatial) |>
+        unlist() |>
+        sapply(\(x) input[[x]])
+
+      rlang::set_names(ids, stringr::str_extract(names(ids), "[^-]*$"))
+    })
+
+    show_btn_ids <- reactive({
+      dplyr::filter(questions_init(), type == "spatial") |>
+        dplyr::pull(id) |>
+        paste0("-show")
+    })
+
+    show_clicked_observe <- reactiveVal() # Store observers to create/destroy
+
+    # If show button clicked, mark the last to happen in `show_clicked()`
+    # These observes are created/destroyed when Evaluation questions change
+    observe({
+      # Destroy old
+      purrr::walk(show_clicked_observe(), \(o) o$destroy())
+
+      # Create new
+      new_obs <- purrr::map(show_btn_ids(), \(i) {
+        observe(show_clicked(rlang::set_names(i, input[[i]]))) |>
+          bindEvent(input[[i]])
+      })
+
+      show_clicked_observe(new_obs)
+    }) |>
+      bindEvent(questions_init()) # Only react if we have a new set of questions
+
+    spatial_ids <- mod_comp_observations_server(
       "comp_obs",
       model_id = model_id,
-      species_id = species_id
+      species_id = species_id,
+      questions = questions,
+      show_spatial_ids = show_spatial_ids,
+      show_clicked = show_clicked
     )
   })
 }
