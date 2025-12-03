@@ -63,16 +63,15 @@ mod_page_overview_server <- function(id = "overview", ...) {
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
-    validate(
-      need(user_id(), "Please select a user"),
-      need(user_role(), "Please select a user role")
-    )
-
     tbl <- reactive({
-      eval_details(user_id(), user_role())
+      evals_details(user_id(), user_role())
     })
 
     output$tbl_overview <- reactable::renderReactable({
+      validate(
+        need(user_id(), "Please select a user"),
+        need(user_role(), "Please select a user role")
+      )
       evals_table(tbl(), user_role())
     })
 
@@ -285,7 +284,6 @@ evals_table <- function(tbl, user_role) {
 
 evals_details <- function(user_id, user_role) {
   con <- withr::local_db_connection(db_connect())
-
   validate(need(
     user_role %in% c("modeler", "evaluator"),
     "Overview table only relevant for modelers and evaluators"
@@ -352,18 +350,7 @@ evals_details <- function(user_id, user_role) {
       n_q = purrr::map_int(.data$n_q, nrow)
     )
 
-  eval_complete <- db_read_evaluations(con, user_id = eval_user) |>
-    dplyr::select(
-      "deployment_id",
-      "material_id",
-      "evaluation_create_user",
-      "evaluation_body"
-    ) |>
-    dplyr::mutate(
-      evals = purrr::map(.data$evaluation_body, evals_extract),
-      evals = purrr::map(.data$evals, evals_answered)
-    ) |>
-    tidyr::unnest("evals")
+  eval_complete <- prep_evaluations(con, eval_user)
 
   if (nrow(eval_complete) == 0) {
     eval_complete <- eval_expect |>
@@ -461,7 +448,8 @@ evals_details <- function(user_id, user_role) {
 #' evals_extract(body)
 
 evals_extract <- function(json) {
-  jsonlite::fromJSON(json)
+  jsonlite::fromJSON(json) |>
+    dplyr::mutate(response = purrr::map(.data$response, list))
 }
 
 #' Calculate number of answered questions
@@ -482,10 +470,9 @@ evals_answered <- function(eval) {
     eval,
     n_q = dplyr::n(),
     n_q_complete = sum(purrr::map_lgl(.data$response, \(x) {
-      # Only NULL, NA, "" should be considered missing
-      !is.null(x) && !is.na(x) && x != ""
+      # Only NULL, NA, "" should be considered missing; Also catch dataframes
+      !is.null(x) && (is.data.frame(x) || (!is.na(x) && x != ""))
     }))
-    #n_q_display = glue::glue("{n_q_complete}/{n_q}")
   )
 }
 

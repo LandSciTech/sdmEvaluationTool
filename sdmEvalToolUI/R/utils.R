@@ -163,6 +163,7 @@ have_data <- function() {
 #' prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
 #' prep_questions("model_fit", "deployment1", "bam_v5_can71")
+#' prep_questions("model_summary", "deployment1", "bam_v5_can71")
 
 prep_questions <- function(
   component_id,
@@ -220,6 +221,35 @@ fetch_questions <- function(deployment_id, component_id) {
   }
 
   q
+}
+
+#' Fetch and format submitted evaluations
+#'
+#' @param user_id Character. ID of the user who created the evaluation to fetch.
+#'
+#' @returns Data frame of evaluation details
+#'
+#' @export
+#' @examplesIf have_data()
+#' con <- db_connect()
+#' prep_evaluations(con, c("draper", "okoye"))
+#' prep_evaluations(con, "holden")
+#' prep_evaluations(con, "okoye")
+#' DBI::dbDisconnect(con)
+
+prep_evaluations <- function(con, user_id) {
+  db_read_evaluations(con, user_id = user_id) |>
+    dplyr::select(
+      "deployment_id",
+      "material_id",
+      "evaluation_create_user",
+      "evaluation_body"
+    ) |>
+    dplyr::mutate(
+      answers = purrr::map(.data$evaluation_body, evals_extract),
+      evals = purrr::map(.data$answers, evals_answered)
+    ) |>
+    tidyr::unnest("evals")
 }
 
 dummy_session <- list(ns = \(x) paste0("session-", x))
