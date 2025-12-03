@@ -10,11 +10,18 @@ test_comp_observations <- function() {
   ui <- mod_comp_observations_ui()
 
   server <- function(input, output, session) {
+    show_spatial_ids <- reactive(NULL)
     show_clicked <- reactiveVal(NULL)
+    spatial_ids <- reactiveVal(NULL)
+
     mod_comp_observations_server(
       model_id = reactive("bam_v5_can71"),
       species_id = reactive("BBWO"),
-      spatial_selection = list(show_clicked, show_spatial_ids = reactive(NULL))
+      spatial_ids = spatial_ids,
+      spatial_selection = list(
+        show_clicked = show_clicked,
+        show_spatial_ids = show_spatial_ids
+      )
     )
   }
 
@@ -34,6 +41,7 @@ test_comp_observations <- function() {
 mod_comp_observations_ui <- function(id = "comp_observations") {
   tagList(
     # From: https://github.com/trafficonese/leaflet.extras/issues/96
+    # Removes selection when called
     tags$script(HTML(
       "
       Shiny.addCustomMessageHandler(
@@ -93,6 +101,7 @@ mod_comp_observations_server <- function(
     obs_selected <- reactiveVal()
     prev_selected <- reactiveVal()
 
+    # Filter observations on the map
     output$ui_selectors <- renderUI({
       tagList(
         selectInput(
