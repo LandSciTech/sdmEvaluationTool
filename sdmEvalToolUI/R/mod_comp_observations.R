@@ -10,9 +10,11 @@ test_comp_observations <- function() {
   ui <- mod_comp_observations_ui()
 
   server <- function(input, output, session) {
+    show_clicked <- reactiveVal(NULL)
     mod_comp_observations_server(
       model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO")
+      species_id = reactive("BBWO"),
+      spatial_selection = list(show_clicked, show_spatial_ids = reactive(NULL))
     )
   }
 
@@ -68,12 +70,13 @@ mod_comp_observations_server <- function(
   id = "comp_observations",
   model_id,
   species_id,
-  questions,
-  show_clicked,
-  show_spatial_ids
+  spatial_selection,
+  spatial_ids
 ) {
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+
+  expand_list(spatial_selection) # Leads to --->
   stopifnot(is.reactive(show_clicked)) # reactiveVal
   stopifnot(is.reactive(show_spatial_ids))
 
@@ -234,8 +237,8 @@ mod_comp_observations_server <- function(
     }) |>
       bindEvent(show_clicked(), ignoreInit = TRUE)
 
-    # Return spatial ids
-    spatial_ids <- reactive(obs()$id)
+    # Return ---------------------
+    observe(spatial_ids(obs()$id)) |> bindEvent(obs)
 
     spatial_ids
   })
