@@ -7,16 +7,16 @@
 #' test_comp_spatial_prediction()
 
 test_comp_spatial_prediction <- function() {
-    ui <- mod_comp_spatial_prediction_ui()
+  ui <- mod_comp_spatial_prediction_ui()
 
-    server <- function(input, output, session) {
-        mod_comp_spatial_prediction_server(
-            model_id = reactive("bam_v5_can71"),
-            species_id = reactive("BBWO")
-        )
-    }
+  server <- function(input, output, session) {
+    mod_comp_spatial_prediction_server(
+      model_id = reactive("bam_v5_can71"),
+      species_id = reactive("BBWO")
+    )
+  }
 
-    shiny::shinyApp(ui, server, options = list(port = 8080))
+  shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
 #' Spatial Prediction Component UI
@@ -30,38 +30,44 @@ test_comp_spatial_prediction <- function() {
 #' mod_comp_spatial_prediction_ui()
 
 mod_comp_spatial_prediction_ui <- function(id = "comp_spatial_prediction") {
-    tagList(
-        div(
-            style = "position: relative;",
-            leaflet::leafletOutput(NS(id, "spatial_prediction")),
-            absolutePanel(
-                uiOutput(NS(id, "ui_selectors")),
-                top = 10,
-                right = 10
-            )
-        )
+  tagList(
+    div(
+      style = "position: relative;",
+      leaflet::leafletOutput(NS(id, "spatial_prediction")),
+      absolutePanel(
+        uiOutput(NS(id, "ui_selectors")),
+        top = 10,
+        right = 10
+      )
     )
+  )
 }
 
 
 mod_comp_spatial_prediction_server <- function(
-    id = "comp_spatial_prediction",
-    model_id,
-    species_id,
+  id = "comp_spatial_prediction",
+  deployment_id,
+  model_id,
+  species_id
 ) {
-    moduleServer(id, function(input, output, session) {
-        spatial_prediction <- reactive(spatial_prediction_prep(
-            model_id(),
-            species_id()
-        ))
-        # FIXME: where does deployment_id come from? Is it at the session level?
-        # deployment_subunits <- reactive(deployment_subunits_prep(deployment_id = "deployment1"))
-        deployment_subunits <- NULL
-        output$spatial_prediction <- leaflet::renderLeaflet({
-            spatial_prediction() |>
-                spatial_prediction_map(deployment_subunits = deployment_subunits)
-        })
+  stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(species_id))
+  # stopifnot(is.reactive(questions))
+  # stopifnot(is.reactive(show_clicked)) # reactiveVal
+  # stopifnot(is.reactive(show_spatial_ids))
+
+  moduleServer(id, function(input, output, session) {
+    spatial_prediction <- reactive({
+      spatial_prediction_prep(model_id(), species_id())
     })
+
+    output$spatial_prediction <- leaflet::renderLeaflet({
+      spatial_prediction_map(
+        spatial_prediction(),
+        deployment_id = deployment_id()
+      )
+    })
+  })
 }
 
 
@@ -111,9 +117,9 @@ spatial_prediction_map <- function(
 #' spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
 spatial_prediction_prep <- function(model_id, species_id) {
-    prep_materials(
-        "spatial_prediction",
-        model_id = model_id,
-        species_id = species_id
-    )
+  prep_materials(
+    "spatial_prediction",
+    model_id = model_id,
+    species_id = species_id
+  )
 }

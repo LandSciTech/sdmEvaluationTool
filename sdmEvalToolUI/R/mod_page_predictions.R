@@ -7,9 +7,6 @@
 #' test_page_predictions()
 
 test_page_predictions <- function() {
-  # TODO: define location, pages, etc. elsewhere
-  prep_data() |> expand_list()
-
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",
     mod_page_predictions_ui()
@@ -17,11 +14,9 @@ test_page_predictions <- function() {
 
   server <- function(input, output, session) {
     mod_page_predictions_server(
+      deployment_id = reactive("deployment1"),
       model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO"),
-      tbl_deployments = tbl_deployments,
-      tbl_models = tbl_models,
-      tbl_species = tbl_species
+      species_id = reactive("BBWO")
     )
   }
 
@@ -71,6 +66,7 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
 
     mod_comp_spatial_prediction_server(
       "spatial_prediction",
+      deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id
     )
