@@ -119,7 +119,7 @@ mod_comp_observations_server <- function(
       if (length(unselect) > 0) {
         leaflet::leafletProxy("map") |>
           leaflet::removeMarker(layerId = unselect) |>
-          obs_markers(data = dplyr::filter(obs(), id %in% unselect))
+          add_markers(data = dplyr::filter(obs(), id %in% unselect))
       }
       if (nrow(select) > 0) {
         levels <- unique(select$type)
@@ -128,7 +128,7 @@ mod_comp_observations_server <- function(
 
         leaflet::leafletProxy("map") |>
           leaflet::removeMarker(layerId = unique(select$id)) |>
-          selected_markers(data = d)
+          add_selected_markers(data = d)
       }
 
       # Track the current selection
@@ -213,27 +213,12 @@ mod_comp_observations_server <- function(
         paste0(collapse = ",")
     })
 
-    # "Show" selected ids on map --------------------------------------
+    # Update selected ids to be shown on map----------------------------------
     observe({
       ids <- show_spatial_ids() |>
         purrr::map(\(i) if (length(i) > 0) data.frame(id = i)) |>
         purrr::list_rbind(names_to = "type")
       obs_selected(ids)
-      # ids <- show_spatial_ids() |>
-      #   purrr::map(\(i) if (length(i) > 0) data.frame(id = i)) |>
-      #   purrr::list_rbind(names_to = "type")
-
-      # d <- dplyr::right_join(obs(), ids, by = "id")
-
-      # leaflet::leafletProxy("map") |>
-      #   leaflet::removeMarker(layerId = prev_selected()) |>
-      #   obs_markers(data = dplyr::filter(obs(), !id %in% ids$id))
-      # if (length(ids) > 0) {
-      #   leaflet::leafletProxy("map") |>
-      #     selected_markers(data = d, levels = names(show_spatial_ids()))
-      # }
-
-      # prev_selected(unlist(ids))
     }) |>
       bindEvent(show_clicked(), ignoreInit = TRUE)
 
@@ -254,21 +239,13 @@ mod_comp_observations_server <- function(
 #' @export
 #' @examplesIf have_data()
 #' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
-#'   obs_map()
+#'   obs_map(deployment_id = "deployment1")
 
-obs_map <- function(obs) {
-  obs |>
-    leaflet::leaflet() |>
-    leaflet::addTiles() |>
-    obs_markers() |>
-    leaflet.extras::addDrawToolbar(
-      polylineOptions = FALSE,
-      circleOptions = FALSE,
-      rectangleOptions = leaflet.extras::drawRectangleOptions(),
-      polygonOptions = leaflet.extras::drawPolygonOptions(),
-      markerOptions = FALSE,
-      circleMarkerOptions = FALSE
-    )
+obs_map <- function(obs, deployment_id = NULL) {
+  base_map() |>
+    add_markers(data = obs) |>
+    add_subunits(deployment_id, color = "grey") |>
+    add_control()
 }
 
 #' Prepare Observation Data
@@ -302,55 +279,4 @@ obs_prep <- function(model_id, species_id) {
     # For reasons, the id must be a character, otherwise can't be removed
     dplyr::mutate(id = paste0("id", dplyr::row_number())) |>
     sf::st_transform(crs = 4326)
-}
-
-obs_markers <- function(map, data = leaflet::getMapData(map)) {
-  pal <- leaflet::colorFactor("#637261ff", data$detections)
-
-  map |>
-    leaflet::addCircleMarkers(
-      color = ~"#000000",
-      label = ~popup,
-      layerId = ~id,
-      data = data,
-      radius = 5,
-      fillOpacity = 0.7,
-      opacity = 1,
-      weight = 1,
-      fillColor = ~ pal(detections)
-    )
-}
-
-selected_markers <- function(
-  map,
-  data = leaflet::getMapData(map)
-) {
-  levels <- levels(data$type)
-  pal <- leaflet::colorFactor(
-    viridisLite::viridis(n = length(levels)),
-    levels = factor(levels, levels = levels),
-    ordered = TRUE
-  )
-  #"#fde725", data$detections)
-
-  leaflet::addCircleMarkers(
-    map,
-    color = ~"#000000",
-    label = ~popup,
-    layerId = ~id,
-    data = data,
-    radius = 5,
-    fillOpacity = 0.7,
-    opacity = 1,
-    weight = 1,
-    fillColor = ~ pal(type)
-  ) |>
-    leaflet::addLegend(
-      "bottomleft",
-      pal = pal,
-      values = levels,
-      title = "Categories",
-      opacity = 1,
-      layerId = "legend" # Required to overwrite
-    )
 }

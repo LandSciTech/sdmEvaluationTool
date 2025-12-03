@@ -19,3 +19,18 @@ feature_ids <- function(features) {
     purrr::pluck("features") |>
     purrr::map_dbl(\(x) purrr::pluck(x, "properties", "_leaflet_id"))
 }
+
+map_has_group <- function(map, group) {
+  map$x$calls |>
+    purrr::map_lgl(\(c) {
+      purrr::map_lgl(c$args, \(i) {
+        if (is.character(i)) {
+          any(stringr::str_detect(i, group))
+        } else {
+          FALSE
+        }
+      }) |>
+        any()
+    }) |>
+    any()
+}

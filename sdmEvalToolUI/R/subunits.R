@@ -11,8 +11,9 @@
 #' deployment_subunits_prep(deployment_id = "deployment1")
 
 deployment_subunits_prep <- function(deployment_id) {
-    prep_deployments(
-        deployment_id = deployment_id,
-        deployment_type = "deployment_subunits"
-    )
+  prep_deployments(
+    deployment_id = deployment_id,
+    deployment_type = "deployment_subunits"
+  ) |>
+    dplyr::mutate(id = paste0("id", dplyr::row_number()))
 }

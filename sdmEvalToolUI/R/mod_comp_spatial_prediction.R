@@ -74,17 +74,29 @@ mod_comp_spatial_prediction_server <- function(
 #'
 #' @export
 #' @examplesIf have_data()
-#' spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
-#'   spatial_prediction_map()
+#' p <- spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+#' spatial_prediction_map(p)
+#' spatial_prediction_map(p, "deployment1")
 
 spatial_prediction_map <- function(
-    spatial_prediction,
-    deployment_subunits = NULL
+  spatial_prediction,
+  deployment_id = NULL
 ) {
-    raster_map(
-        spatial_prediction,
-        deployment_subunits
-    )
+  base_map() |>
+    add_raster(
+      spatial_prediction,
+      layer = "mean",
+      name = "Distribution",
+      palette = "Spectral"
+    ) |>
+    add_raster(
+      spatial_prediction,
+      layer = "cv",
+      name = "Uncertainty",
+      palette = "viridis"
+    ) |>
+    add_subunits(deployment_id) |>
+    add_control(groups = c("Distribution", "Uncertainty"))
 }
 
 #' Prepare Spatial Prediction Data
