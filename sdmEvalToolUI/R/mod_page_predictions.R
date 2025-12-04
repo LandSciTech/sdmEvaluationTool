@@ -9,6 +9,7 @@
 test_page_predictions <- function() {
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",
+    theme = sdm_theme(),
     mod_page_predictions_ui()
   )
 
@@ -34,7 +35,11 @@ test_page_predictions <- function() {
 #' @examples
 #' mod_page_predictions_ui()
 
-mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
+mod_page_predictions_ui <- function(
+  id = "predictions",
+  title = "Predictions",
+  review_width = NULL
+) {
   nav_panel(
     title,
     layout_sidebar(

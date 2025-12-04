@@ -1,8 +1,9 @@
-mod_utils_evaluations_ui <- function(id = "evals", review_width) {
+mod_utils_evaluations_ui <- function(id = "evals", review_width = NULL) {
+  review_width <- review_width %||% "35%"
   sidebar(
     width = review_width,
     position = "right",
-    "Evaluations",
+    h3("Evaluations"),
     uiOutput(NS(id, "ui_questions"))
   )
 }

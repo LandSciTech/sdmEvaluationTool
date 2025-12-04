@@ -47,7 +47,7 @@ test_page_observations <- function(
 mod_page_observations_ui <- function(
   id = "observations",
   title = "Observations",
-  review_width = "50%"
+  review_width = NULL
 ) {
   nav_panel(
     title,

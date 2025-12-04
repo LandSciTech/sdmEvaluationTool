@@ -190,6 +190,12 @@ sdm_theme <- function() {
         border: 0;
         padding: 5px;
         margin: 0;
-    }"
+      }
+      /* Allow Multiple legends (only legends in the bottom left corner) to go side by side */
+      .leaflet-bottom.leaflet-left > .info.legend.leaflet-control {
+        float: inherit !important;
+        display: inline-block;
+      }
+    "
     )
 }
