@@ -3,7 +3,9 @@
 #' Base Map with Provider Tiles
 #'
 #' @export
-base_map <- function() {
+base_map <- function(ns = identity) {
+  button_id <- ns("clear_selection") # Track NS by hand for JS
+
   leaflet::leaflet() |>
     leaflet::addTiles(
       urlTemplate = "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga",
@@ -32,6 +34,21 @@ base_map <- function() {
       polygonOptions = leaflet.extras::drawPolygonOptions(),
       markerOptions = FALSE,
       circleMarkerOptions = FALSE
+    ) |>
+    leaflet::addEasyButton(
+      leaflet::easyButton(
+        icon = htmltools::span(class = "star", htmltools::HTML("&starf;")),
+        onClick = leaflet::JS(
+          # Based on: https://stackoverflow.com/a/62184472
+          # Just need to make a change that Shiny can detect and respond to
+          # Need to track NS by hand
+          glue::glue(
+            "function(btn, map){{
+            Shiny.onInputChange('{button_id}', Math.random());
+          }}"
+          )
+        )
+      )
     )
 }
 

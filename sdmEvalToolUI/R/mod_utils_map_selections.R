@@ -222,5 +222,11 @@ mod_utils_map_selections_server <- function(
       curr_selected(ids)
     }) |>
       bindEvent(show_clicked(), ignoreInit = TRUE)
+
+    # Clear selections -------------------------------------------------------
+    observe({
+      curr_selected(data.frame())
+    }) |>
+      bindEvent(interactions$clear_selection, ignoreInit = TRUE)
   })
 }

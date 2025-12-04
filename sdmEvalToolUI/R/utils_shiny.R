@@ -22,11 +22,13 @@ map_reactive_vals <- function(
     "draw_new_feature",
     "draw_stop",
     "marker_click",
-    "shape_click"
+    "shape_click",
+    "clear_selection" # From EasyButton created in `base_map()`
   )
 ) {
   rv <- reactiveValues()
   x1 <- paste0(map, "_", x)
+  x1[x == "clear_selection"] <- "clear_selection"
   purrr::walk2(x, x1, \(x, x1) observe(rv[[x]] <- input[[x1]]))
   rv
 }
