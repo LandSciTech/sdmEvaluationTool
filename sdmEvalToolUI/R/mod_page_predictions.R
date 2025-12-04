@@ -37,8 +37,11 @@ test_page_predictions <- function() {
 mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
   nav_panel(
     title,
-    h2(textOutput(NS(id, "title"))),
-    mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
+    layout_sidebar(
+      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+      h2(textOutput(NS(id, "title"))),
+      mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
+    )
   )
 }
 
@@ -53,6 +56,7 @@ mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
 
 mod_page_predictions_server <- function(id = "predictions", ...) {
   expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
 
@@ -64,11 +68,26 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
       species_id()
     ))
 
+    # Placeholder reactiveVal until map created
+    spatial_ids <- reactiveVal(NULL)
+
+    # Prepare the evaluation questions
+    spatial_selection <- mod_utils_evaluations_server(
+      "eval",
+      deployment_id,
+      model_id,
+      species_id,
+      spatial_ids,
+      spatial_type = "areas"
+    )
+
     mod_comp_spatial_prediction_server(
       "spatial_prediction",
       deployment_id = deployment_id,
       model_id = model_id,
-      species_id = species_id
+      species_id = species_id,
+      spatial_selection = spatial_selection,
+      spatial_ids = spatial_ids #reactiveVal to update in module
     )
   })
 }

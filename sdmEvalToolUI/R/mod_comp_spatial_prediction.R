@@ -10,9 +10,19 @@ test_comp_spatial_prediction <- function() {
   ui <- mod_comp_spatial_prediction_ui()
 
   server <- function(input, output, session) {
+    show_spatial_ids <- reactive(NULL)
+    show_clicked <- reactiveVal(NULL)
+    spatial_ids <- reactiveVal(NULL)
+
     mod_comp_spatial_prediction_server(
+      deployment_id = reactive("deployment1"),
       model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO")
+      species_id = reactive("BBWO"),
+      spatial_ids = spatial_ids,
+      spatial_selection = list(
+        show_clicked = show_clicked,
+        show_spatial_ids = show_spatial_ids
+      )
     )
   }
 
@@ -33,13 +43,10 @@ mod_comp_spatial_prediction_ui <- function(id = "comp_spatial_prediction") {
   tagList(
     div(
       style = "position: relative;",
-      leaflet::leafletOutput(NS(id, "spatial_prediction")),
-      absolutePanel(
-        uiOutput(NS(id, "ui_selectors")),
-        top = 10,
-        right = 10
-      )
-    )
+      leaflet::leafletOutput(NS(id, "map")),
+      absolutePanel(uiOutput(NS(id, "ui_selectors")), top = 10, right = 10)
+    ),
+    mod_utils_map_selections_ui(NS(id, "select"), spatial_type = "areas")
   )
 }
 
@@ -48,25 +55,50 @@ mod_comp_spatial_prediction_server <- function(
   id = "comp_spatial_prediction",
   deployment_id,
   model_id,
-  species_id
+  species_id,
+  spatial_selection,
+  spatial_ids
 ) {
+  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
-  # stopifnot(is.reactive(questions))
-  # stopifnot(is.reactive(show_clicked)) # reactiveVal
-  # stopifnot(is.reactive(show_spatial_ids))
 
   moduleServer(id, function(input, output, session) {
+    # Map --------------------------------------------------------------------
     spatial_prediction <- reactive({
       spatial_prediction_prep(model_id(), species_id())
     })
 
-    output$spatial_prediction <- leaflet::renderLeaflet({
+    subunits <- reactive({
+      deployment_subunits_prep(deployment_id())
+    })
+
+    output$map <- leaflet::renderLeaflet({
       spatial_prediction_map(
         spatial_prediction(),
-        deployment_id = deployment_id()
+        subunits(),
+        ns = session$ns
       )
     })
+
+    # Process and show map selections ---------------------------------------
+    interactions <- map_reactive_vals(input, "map")
+
+    mod_utils_map_selections_server(
+      "select",
+      data = subunits,
+      spatial_selection,
+      interactions,
+      spatial_type = "areas",
+      parent_session = session
+    )
+
+    # Return ---------------------
+    observe({
+      spatial_ids(subunits()$id)
+    })
+
+    spatial_ids
   })
 }
 
@@ -74,21 +106,23 @@ mod_comp_spatial_prediction_server <- function(
 #' Create a Leaflet Map of Spatial Prediction Data
 #'
 #' @param spatial_prediction terra Raster. Spatial predictions
-#' @param deployment_subunits Deployment subunits.
+#' @param subunits Spatial Data frame. Deployment subunits.
 #'
 #' @returns A leaflet map object
 #'
 #' @export
 #' @examplesIf have_data()
 #' p <- spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+#' s <- deployment_subunits_prep("deployment1")
 #' spatial_prediction_map(p)
-#' spatial_prediction_map(p, "deployment1")
+#' spatial_prediction_map(p, s)
 
 spatial_prediction_map <- function(
   spatial_prediction,
-  deployment_id = NULL
+  subunits = NULL,
+  ns = identity
 ) {
-  base_map() |>
+  base_map(ns = ns) |>
     add_raster(
       spatial_prediction,
       layer = "mean",
@@ -101,7 +135,7 @@ spatial_prediction_map <- function(
       name = "Uncertainty",
       palette = "viridis"
     ) |>
-    add_subunits(deployment_id) |>
+    add_subunits(subunits) |>
     add_control(groups = c("Distribution", "Uncertainty"))
 }
 

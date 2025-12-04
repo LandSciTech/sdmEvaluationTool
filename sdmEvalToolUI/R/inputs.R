@@ -55,13 +55,12 @@ ordinal_input <- function(...) {
   )
 }
 
-spatial_input <- function(...) {
+spatial_input <- function(..., spatial_type = c("points", "subunits")) {
   expand_dots(...)
-
   id_inputs <- purrr::map(values, \(v) {
     selectizeInput(
-      inputId = paste0(id, "-", v),
-      label = HTML(paste0("Identify any ", strong(v), " points")),
+      inputId = glue::glue("{id}-{v}"),
+      label = HTML(glue::glue("Identify any {strong(v)} {spatial_type}")),
       choices = c("Add selected IDs" = "", spatial_ids),
       multiple = TRUE,
       options = list(delimiter = ",", create = TRUE, persist = FALSE)
@@ -73,7 +72,7 @@ spatial_input <- function(...) {
     div(class = "sub-question", !!!id_inputs),
     actionButton(
       inputId = paste0(id, "-show"),
-      label = "Show identified points"
+      label = glue::glue("Show identified {spatial_type}")
     )
     #textOutput(inputId = paste0(id, "-problem"))
   )
@@ -95,11 +94,16 @@ spatial_input <- function(...) {
 #' @export
 #' @examplesIf have_data()
 #' q <- prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
-#' ui_questions(q, session = dummy_session)
+#' ui_questions(q, spatial_type = "points", session = dummy_session)
 #' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
-#' ui_questions(q, session = dummy_session)
+#' ui_questions(q, spatial_type = "areas", session = dummy_session)
 
-ui_questions <- function(questions, spatial_ids = NULL, session) {
+ui_questions <- function(
+  questions,
+  spatial_ids = NULL,
+  spatial_type = "points",
+  session
+) {
   ui <- dplyr::select(
     questions,
     "type",
@@ -113,7 +117,8 @@ ui_questions <- function(questions, spatial_ids = NULL, session) {
         id = session$ns(id),
         label = label,
         values = unlist(values),
-        spatial_ids = spatial_ids
+        spatial_ids = spatial_ids,
+        spatial_type = spatial_type
       )
 
       # Follow up questions

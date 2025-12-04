@@ -17,7 +17,13 @@ validate_ids <- function(...) {
 map_reactive_vals <- function(
   input,
   map,
-  x = c("draw_all_features", "draw_new_feature", "draw_stop", "marker_click")
+  x = c(
+    "draw_all_features",
+    "draw_new_feature",
+    "draw_stop",
+    "marker_click",
+    "shape_click"
+  )
 ) {
   rv <- reactiveValues()
   x1 <- paste0(map, "_", x)

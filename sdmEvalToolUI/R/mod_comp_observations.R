@@ -31,7 +31,7 @@ test_comp_observations <- function() {
 
 #' Observations Component UI
 #'
-#' @param id Shiny module ID
+#' @param id Character. Shiny module ID
 #'
 #' @returns Shiny UI
 #'
@@ -46,11 +46,24 @@ mod_comp_observations_ui <- function(id = "comp_observations") {
       leaflet::leafletOutput(NS(id, "map")),
       absolutePanel(uiOutput(NS(id, "ui_selectors")), top = 10, right = 10)
     ),
-    mod_utils_map_selections_ui(NS(id, "select"))
+    mod_utils_map_selections_ui(NS(id, "select"), spatial_type = "points")
   )
 }
 
 
+#' Observations component Server
+#'
+#' @param id
+#' @param deployment_id
+#' @param model_id
+#' @param species_id
+#' @param spatial_selection
+#' @param spatial_ids
+#'
+#' @returns
+#'
+#' @export
+#' @examples
 mod_comp_observations_server <- function(
   id = "comp_observations",
   deployment_id,
@@ -59,6 +72,7 @@ mod_comp_observations_server <- function(
   spatial_selection,
   spatial_ids # ReactiveVal to be update
 ) {
+  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
 
@@ -73,6 +87,10 @@ mod_comp_observations_server <- function(
 
     # Map -------------------------------------------------------------------
     obs <- reactive(obs_prep(model_id(), species_id()))
+
+    subunits <- reactive({
+      deployment_subunits_prep(deployment_id())
+    })
 
     # Filter observations on the map
     output$ui_selectors <- renderUI({
@@ -90,22 +108,26 @@ mod_comp_observations_server <- function(
       )
     })
 
-    output$map <- leaflet::renderLeaflet(obs_map(obs(), deployment_id()))
+    output$map <- leaflet::renderLeaflet(obs_map(
+      obs(),
+      subunits(),
+      ns = session$ns
+    ))
 
     # Process and show map selections ---------------------------------------
     interactions <- map_reactive_vals(input, "map")
 
     mod_utils_map_selections_server(
       "select",
-      obs,
-      spatial_selection,
-      interactions,
-      type = "markers",
+      data = obs,
+      spatial_selection = spatial_selection,
+      interactions = interactions,
+      spatial_type = "points",
       parent_session = session
     )
 
     # Return ---------------------
-    observe(spatial_ids(obs()$id)) |> bindEvent(obs)
+    observe(spatial_ids(obs()$id))
 
     spatial_ids
   })
@@ -120,13 +142,14 @@ mod_comp_observations_server <- function(
 #'
 #' @export
 #' @examplesIf have_data()
-#' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
-#'   obs_map(deployment_id = "deployment1")
+#' o <- obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+#' s <- deployment_subunits_prep("deployment1")
+#' obs_map(o, s)
 
-obs_map <- function(obs, deployment_id = NULL) {
-  base_map() |>
+obs_map <- function(obs, subunits = NULL, ns = identity) {
+  base_map(ns = ns) |>
     # Subunits first because selecting by points
-    add_subunits(deployment_id, color = "grey") |>
+    add_subunits(subunits) |>
     add_markers(data = obs) |>
     add_control()
 }

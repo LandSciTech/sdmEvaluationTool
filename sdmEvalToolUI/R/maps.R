@@ -38,20 +38,24 @@ base_map <- function() {
 #' Add subunits to Leaflet map
 #'
 #' @param map Leaflet map object.
-#' @param deployment_id Character. Deployment ID.
-#' @param color Color.
-#' @param opacity Opacity.
+#' @param subunits Spatial Data Frame. Subunits
+#' @param colour_by Vector. Column to fill by
+#' @param opacity Numeric. Opacity.
 #'
 #' @export
 
-add_subunits <- function(map, deployment_id, color = "blue", opacity = 0.8) {
-  # Skip if no Deployment
-  if (is.null(deployment_id)) {
+add_subunits <- function(
+  map,
+  subunits = NULL,
+  colour_by = "subunit_id",
+  opacity = 0.8
+) {
+  # Skip if no Subunits
+  if (is.null(subunits)) {
     return(map)
   }
 
-  subunits <- deployment_subunits_prep(deployment_id = "deployment1")
-  subunits <- sf::st_transform(subunits, crs = 4326) # TODO: Remove if fixed
+  pal <- leaflet::colorFactor("#637261ff", subunits[[colour_by]])
 
   map |>
     leaflet::addPolygons(
@@ -60,10 +64,61 @@ add_subunits <- function(map, deployment_id, color = "blue", opacity = 0.8) {
       popup = as.character(subunits$subunit_id),
       weight = 2,
       opacity = opacity,
-      color = color,
+      color = pal(subunits[[colour_by]]),
       fillOpacity = 0,
-      fillColor = NA,
+      fillColor = pal(subunits[[colour_by]]),
       layerId = ~id,
+    )
+}
+
+#' Add subunits to Leaflet map
+#'
+#' @param map Leaflet map object.
+#' @param subunits Spatial Data Frame. Subunits
+#' @param colour_by Vector. Column to fill by
+#' @param opacity Numeric. Opacity.
+#'
+#' @export
+
+add_selected_subunits <- function(
+  map,
+  subunits = NULL,
+  colour_by = "type",
+  opacity = 0.8,
+  fill_opacity = 0.2
+) {
+  # Skip if no Subunits
+  if (is.null(subunits)) {
+    return(map)
+  }
+
+  levels <- levels(subunits[[colour_by]])
+  pal <- leaflet::colorFactor(
+    viridisLite::viridis(n = length(levels)),
+    levels = factor(levels, levels = levels),
+    ordered = TRUE
+  )
+
+  map |>
+    leaflet::addPolygons(
+      data = subunits,
+      group = "Subunits",
+      popup = as.character(subunits$subunit_id),
+      weight = 2,
+      opacity = opacity,
+      color = "black",
+      fillOpacity = fill_opacity,
+      fillColor = pal(subunits[[colour_by]]),
+      layerId = ~id,
+    ) |>
+    leaflet::addLegend(
+      "bottomleft",
+      pal = pal,
+      values = levels,
+      title = "Categories",
+      opacity = 1,
+      position = "bottomright",
+      layerId = "legend" # Required to overwrite
     )
 }
 
@@ -97,7 +152,9 @@ add_raster <- function(map, raster, layer, name, palette, opacity = 0.8) {
       pal = pal,
       values = c(0, mx),
       position = "bottomleft",
-      title = name
+      title = name,
+      layerId = name,
+      group = name
     )
 
   map
@@ -112,7 +169,7 @@ add_control <- function(map, groups = character(0)) {
     leaflet::addLayersControl(
       baseGroups = c("CartoDB", "ESRI", "Open Street Map", "Google"),
       overlayGroups = groups,
-      position = "bottomright",
+      position = "topright",
       options = leaflet::layersControlOptions(collapsed = FALSE)
     )
 
@@ -176,6 +233,7 @@ add_selected_markers <- function(
       values = levels,
       title = "Categories",
       opacity = 1,
+      position = "bottomright",
       layerId = "legend" # Required to overwrite
     )
 
