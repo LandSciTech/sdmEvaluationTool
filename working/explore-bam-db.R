@@ -180,7 +180,7 @@ materials <- NULL
 rule <- get_comp_rule("predictor_metadata", "upload")
 fi <- file.path(path, "predictors", "predictor_metadata.csv")
 x <- read_file(fi)
-x <- x[, rule$columns]
+x <- x[, rule$output$columns]
 fo <- make_target_path(rule$output$path, data = list(model_id = model_id))
 write_file(x, fo)
 
@@ -188,16 +188,16 @@ drule <- get_comp_rule("predictor_metadata", "display")
 ms <- jsonlite::toJSON(drule$materials_settings)
 materials <- materials_fun(materials, model_id, NA, "predictor_metadata", ms)
 
-# ------- predictor_raster EXCLUDED ------
+# ------- predictor_raster RESAMPLED ------
 
-# rule <- get_comp_rule("predictor_raster", "upload")
-# fi <- file.path(path, "predictors", "can71_2000.tif")
-# x <- read_file(fi)
-# # reproject???
-# fo <- make_target_path(rule$output$path, data = list(model_id = model_id))
-# write_file(x, fo)
-
-# materials <- materials_fun(materials, model_id, NA, "predictor_raster")
+rule <- get_comp_rule("predictor_raster", "upload")
+fi <- file.path(path, "predictors", "can71_2000.tif")
+x <- read_file(fi)
+x <- terra::resample(x, 5)
+x <- terra::project(x, "epsg:3857")
+fo <- make_target_path(rule$output$path, data = list(model_id = model_id))
+write_file(x, fo)
+materials <- materials_fun(materials, model_id, NA, "predictor_raster")
 
 # we might have to organize predictor summaries and rasters a bit better? Check names etc...
 
@@ -251,7 +251,7 @@ ms <- jsonlite::toJSON(drule$materials_settings)
 for (species_id in SPP) {
     fi <- file.path(path, "predictions", paste0(species_id, "_can71_2020.tif"))
     x <- read_file(fi)
-    # reproject???
+    x <- terra::project(x, "epsg:3857")
     fo <- make_target_path(
         rule$output$path,
         data = list(model_id = model_id, species_id = species_id)
@@ -409,8 +409,9 @@ write_file(fromJSON(deployments$deployment_settings[2]), fo)
 su <- sf::st_read(file.path(path, "subunits", "ecoprovinces.shp"))
 su <- sf::st_simplify(su, TRUE, 10)
 r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+r <- terra::project(r, "epsg:3857")
 bbox <- sf::st_as_sfc(sf::st_bbox(r))
-su <- sf::st_transform(su, sf::st_crs(r))
+su <- sf::st_transform(su, 3857)
 su <- sf::st_intersection(su, bbox)
 su$subunit_id <- su$ECOPROVINC
 su <- su[, "subunit_id"]
@@ -503,23 +504,22 @@ dbListTables(con)
 db_create_tables(con)
 dbListTables(con)
 
-db_insert_table(con, "species", species)
-db_insert_table(con, "models", models)
-db_insert_table(con, "users", users)
-db_insert_table(con, "components", components)
+db_write_table(con, "species", species)
+db_write_table(con, "models", models)
+db_write_table(con, "users", users)
+db_write_table(con, "components", components)
 
-db_insert_table(con, "materials", materials)
-db_insert_table(con, "deployments", deployments)
-db_insert_table(
+db_write_table(con, "materials", materials)
+db_write_table(con, "deployments", deployments)
+db_write_table(
     con,
     "deployment_materials",
     deployment_materials
 )
-db_insert_table(con, "access", access)
+db_write_table(con, "access", access)
 
-db_insert_table(con, "comments", comments)
-db_insert_table(con, "evaluations", evaluations)
-
+db_write_table(con, "comments", comments)
+db_write_table(con, "evaluations", evaluations)
 
 sort(unique(sdmEvalToolCore::fields$table))
 dbListTables(con)
