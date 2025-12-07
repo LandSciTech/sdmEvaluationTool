@@ -47,7 +47,7 @@ mod_comp_spatial_prediction_ui <- function(id = "comp_spatial_prediction") {
 mod_comp_spatial_prediction_server <- function(
     id = "comp_spatial_prediction",
     model_id,
-    species_id,
+    species_id
 ) {
     moduleServer(id, function(input, output, session) {
         spatial_prediction <- reactive(spatial_prediction_prep(
@@ -59,7 +59,9 @@ mod_comp_spatial_prediction_server <- function(
         deployment_subunits <- NULL
         output$spatial_prediction <- leaflet::renderLeaflet({
             spatial_prediction() |>
-                spatial_prediction_map(deployment_subunits = deployment_subunits)
+                spatial_prediction_map(
+                    deployment_subunits = deployment_subunits
+                )
         })
     })
 }
