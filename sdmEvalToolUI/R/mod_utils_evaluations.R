@@ -1,4 +1,4 @@
-mod_utils_evaluations_ui <- function(id = "evals", review_width = NULL) {
+mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
   review_width <- review_width %||% "35%"
   sidebar(
     width = review_width,
@@ -23,6 +23,9 @@ mod_utils_evaluations_server <- function(
   stopifnot(is.reactive(spatial_ids))
 
   moduleServer(id, function(input, output, session) {
+    # Setup ----------------------------------------------------------
+    show_clicked <- reactiveVal()
+
     # Evaluations ----------------------------------------------------
     questions_init <- reactive({
       #TODO: Read values from disk?
