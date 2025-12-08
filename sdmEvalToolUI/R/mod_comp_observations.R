@@ -185,4 +185,10 @@ obs_prep <- function(model_id, species_id) {
     # from selections
     dplyr::mutate(id = paste0("id", dplyr::row_number())) |>
     sf::st_transform(crs = 4326)
+
+  # HTMLify the labels
+
+  obs$popup <- purrr::map(obs$popup, htmltools::HTML)
+
+  obs
 }
