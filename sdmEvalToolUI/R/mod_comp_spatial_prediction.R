@@ -41,11 +41,7 @@ test_comp_spatial_prediction <- function() {
 
 mod_comp_spatial_prediction_ui <- function(id = "comp_spatial_prediction") {
   tagList(
-    div(
-      style = "position: relative;",
-      leaflet::leafletOutput(NS(id, "map")),
-      absolutePanel(uiOutput(NS(id, "ui_selectors")), top = 10, right = 10)
-    ),
+    sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
     mod_utils_map_selections_ui(NS(id, "select"), spatial_type = "areas")
   )
 }

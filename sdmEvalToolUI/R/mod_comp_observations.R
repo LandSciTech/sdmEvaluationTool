@@ -41,11 +41,8 @@ test_comp_observations <- function() {
 
 mod_comp_observations_ui <- function(id = "comp_observations") {
   tagList(
-    div(
-      style = "position: relative;",
-      leaflet::leafletOutput(NS(id, "map")),
-      absolutePanel(uiOutput(NS(id, "ui_selectors")), top = 10, right = 10)
-    ),
+    uiOutput(NS(id, "ui_selectors")),
+    sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
     mod_utils_map_selections_ui(NS(id, "select"), spatial_type = "points")
   )
 }
@@ -95,15 +92,18 @@ mod_comp_observations_server <- function(
     # Filter observations on the map
     output$ui_selectors <- renderUI({
       tagList(
-        selectInput(
-          "year",
-          label = "Year",
-          choices = sort(unique(obs()$year))
-        ),
-        selectInput(
-          "method",
-          label = "Method",
-          choices = sort(unique(obs()$method))
+        div(
+          style = "display:grid; grid-template-columns: 200px 200px; gap: 10px; padding-bottom:10px;",
+          selectInput(
+            "year",
+            label = "Year",
+            choices = sort(unique(obs()$year))
+          ),
+          selectInput(
+            "method",
+            label = "Method",
+            choices = sort(unique(obs()$method))
+          )
         )
       )
     })

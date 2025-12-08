@@ -30,7 +30,7 @@ test_comp_predictor_raster <- function() {
 mod_comp_predictor_raster_ui <- function(id = "comp_predictor_raster") {
   tagList(
     tagList(
-      leaflet::leafletOutput(NS(id, "predictor_raster"))
+      sdm_spinner(leaflet::leafletOutput(NS(id, "predictor_raster")))
     )
   )
 }

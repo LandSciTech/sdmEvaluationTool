@@ -32,3 +32,11 @@ map_reactive_vals <- function(
   purrr::walk2(x, x1, \(x, x1) observe(rv[[x]] <- input[[x1]]))
   rv
 }
+
+sdm_spinner <- function(ui_element) {
+  shinycssloaders::withSpinner(
+    type = 8,
+    color.background = bs_get_variables(sdm_theme(), "primary"),
+    ui_element
+  )
+}
