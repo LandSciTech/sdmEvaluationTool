@@ -37,13 +37,15 @@ test_page_observations <- function(
 #'
 #' @param id Shiny module ID
 #' @param title Page title
-#' @param review_width Character. Width of the review sidebar in percentage of the screen
+#' @param review_width Character. Width of the review sidebar in percentage of
+#'   the screen
 #'
 #' @returns Shiny UI
 #'
 #' @export
 #' @examples
 #' mod_page_observations_ui()
+
 mod_page_observations_ui <- function(
   id = "observations",
   title = "Observations",
@@ -54,6 +56,7 @@ mod_page_observations_ui <- function(
     layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
       h2(textOutput(NS(id, "title"))),
+      mod_comp_obs_chart_ui(NS(id, "comp_obs_chart")),
       mod_comp_observations_ui(NS(id, "comp_obs"))
     )
   )
@@ -95,6 +98,14 @@ mod_page_observations_server <- function(id = "observations", ...) {
       model_id,
       species_id,
       spatial_ids
+    )
+
+    # Create charts
+    mod_comp_obs_chart_server(
+      "comp_obs_chart",
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id
     )
 
     # Create the map and return all spatial ids available
