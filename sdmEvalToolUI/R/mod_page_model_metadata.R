@@ -40,7 +40,7 @@ test_page_model_metadata <- function() {
 #' mod_page_model_metadata_ui()
 mod_page_model_metadata_ui <- function(
   id = "model_metadata",
-  title = "Model_Metadata"
+  title = "Model Metadata"
 ) {
   nav_panel(
     title,
