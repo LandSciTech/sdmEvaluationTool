@@ -55,13 +55,17 @@ ordinal_input <- function(...) {
   )
 }
 
-spatial_input <- function(..., spatial_type = c("points", "subunits")) {
+spatial_input <- function(
+  ...,
+  spatial_type = c("points", "subunits")
+) {
   expand_dots(...)
+
   id_inputs <- purrr::map(values, \(v) {
     selectizeInput(
-      inputId = glue::glue("{id}-{v}"),
+      inputId = glue::glue("{id}-{value_to_input(v)}"),
       label = HTML(glue::glue("Identify any {strong(v)} {spatial_type}")),
-      choices = c("Add selected IDs" = "", spatial_ids),
+      choices = c("Add selected IDs" = ""),
       multiple = TRUE,
       options = list(delimiter = ",", create = TRUE, persist = FALSE)
     )
@@ -74,7 +78,6 @@ spatial_input <- function(..., spatial_type = c("points", "subunits")) {
       inputId = paste0(id, "-show"),
       label = glue::glue("Show identified {spatial_type}")
     )
-    #textOutput(inputId = paste0(id, "-problem"))
   )
 }
 
@@ -102,6 +105,7 @@ ui_questions <- function(
   questions,
   spatial_ids = NULL,
   spatial_type = "points",
+  which = "ui",
   session
 ) {
   ui <- dplyr::select(
@@ -118,7 +122,8 @@ ui_questions <- function(
         label = label,
         values = unlist(values),
         spatial_ids = spatial_ids,
-        spatial_type = spatial_type
+        spatial_type = spatial_type,
+        which = which
       )
 
       # Follow up questions
@@ -133,4 +138,39 @@ ui_questions <- function(
     ui,
     actionButton(inputId = session$ns("save"), label = "Save Responses")
   )
+}
+
+
+ui_questions_update <- function(questions, spatial_ids = NULL) {
+  id <- dplyr::select(
+    questions,
+    "type",
+    "id",
+    "label",
+    "part",
+    "values"
+  ) |>
+    dplyr::filter(.data$type == "spatial") |>
+    dplyr::select("id", "values") |>
+    tidyr::unnest(cols = "values") |>
+    dplyr::mutate(
+      id = glue::glue("{id}-{value_to_input(values)}")
+    ) |>
+    dplyr::pull(.data$id)
+
+  purrr::map(id, \(i) {
+    updateSelectizeInput(
+      inputId = i,
+      choices = spatial_ids,
+      server = TRUE
+    )
+  })
+}
+
+value_to_input <- function(v) {
+  stringr::str_replace_all(v, " ", "_")
+}
+
+input_to_value <- function(i) {
+  stringr::str_replace_all(i, "_", " ")
 }

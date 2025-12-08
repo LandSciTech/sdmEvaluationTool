@@ -22,13 +22,23 @@ map_reactive_vals <- function(
     "draw_new_feature",
     "draw_stop",
     "marker_click",
-    "shape_click",
-    "clear_selection" # From EasyButton created in `base_map()`
-  )
+    "shape_click"
+  ),
+  js_x = c(
+    "clear_selection", # From EasyButton created in `base_map()`
+    "layers_visible"
+  ) # From Layers update function in `base_map()`
 ) {
   rv <- reactiveValues()
+
+  # Update those Namespaced with the map
   x1 <- paste0(map, "_", x)
-  x1[x == "clear_selection"] <- "clear_selection"
+
+  # Join all together
+  x <- c(x, js_x)
+  x1 <- c(x1, js_x)
+
+  # Create individual observers to update the Reactive Values
   purrr::walk2(x, x1, \(x, x1) observe(rv[[x]] <- input[[x1]]))
   rv
 }

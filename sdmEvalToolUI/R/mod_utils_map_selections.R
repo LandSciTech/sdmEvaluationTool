@@ -124,11 +124,16 @@ mod_utils_map_selections_server <- function(
     # Process Drawn Selections
     observe({
       req(interactions$draw_new_feature$geometry)
+
       # Store the selections
       poly <- coords_to_poly(interactions$draw_new_feature$geometry)
+
       s <- data() |>
-        sf::st_transform(4326) |>
+        # Filter to visible layers
+        dplyr::filter(.data$layers %in% interactions$layers_visible) |>
+        # Filter to selection
         sf::st_filter(poly)
+
       curr_selected(data.frame(id = s$id, type = "Selected"))
 
       # Remove the drawn section

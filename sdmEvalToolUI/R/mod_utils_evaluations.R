@@ -36,12 +36,19 @@ mod_utils_evaluations_server <- function(
       bindCache(deployment_id(), model_id(), species_id())
 
     output$ui_questions <- renderUI({
-      req(spatial_ids())
       ui_questions(
         questions_init(),
-        spatial_ids = spatial_ids(),
         spatial_type = spatial_type,
         session = session
+      )
+    })
+
+    # Add server side processing for inputs that pre-list the spatial ids
+
+    observe({
+      ui_questions_update(
+        questions_init(),
+        spatial_ids = spatial_ids()
       )
     })
 

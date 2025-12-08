@@ -151,7 +151,7 @@ obs_map <- function(obs, subunits = NULL, ns = identity) {
     # Subunits first because selecting by points
     add_subunits(subunits) |>
     add_markers(data = obs) |>
-    add_control()
+    add_control(groups = c("Absence", "Presence"))
 }
 
 #' Prepare Observation Data
@@ -166,14 +166,14 @@ obs_map <- function(obs, subunits = NULL, ns = identity) {
 #' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
 obs_prep <- function(model_id, species_id) {
-  prep_materials(
+  obs <- prep_materials(
     "observations",
     model_id = model_id,
     species_id = species_id
   ) |>
     dplyr::mutate(
       year = as.numeric(stringr::str_extract(.data$time, "^\\d{4}")),
-      detections = dplyr::na_if(.data$status > 0, 0),
+      layers = dplyr::if_else(.data$status == 0, "Absence", "Presence"),
       # fmt: skip
       popup = paste0(
           "<strong>Method:</strong> ", .data$method, "<br>",
@@ -181,8 +181,8 @@ obs_prep <- function(model_id, species_id) {
           "<strong>Status:</strong> ", .data$status
         )
     ) |>
-    dplyr::filter(!is.na(.data$detections)) |>
-    # For reasons, the id must be a character, otherwise can't be removed
+    # For reasons, the id must be a character, otherwise point can't be removed
+    # from selections
     dplyr::mutate(id = paste0("id", dplyr::row_number())) |>
     sf::st_transform(crs = 4326)
 }

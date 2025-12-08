@@ -4,7 +4,9 @@
 #'
 #' @export
 base_map <- function(ns = identity) {
-  button_id <- ns("clear_selection") # Track NS by hand for JS
+  # Track NS by hand for JS
+  button_id <- ns("clear_selection")
+  layers_id <- ns("layers_visible")
 
   leaflet::leaflet() |>
     leaflet::addTiles(
@@ -48,6 +50,47 @@ base_map <- function(ns = identity) {
           }}"
           )
         )
+      )
+    ) |>
+    htmlwidgets::onRender(
+      glue::glue(
+        .open = "{{",
+        .close = "}}",
+        "
+    function(el, x) {
+      var map = this;
+      
+      // Track visible layers
+      var visibleLayers = [];
+      
+      // When layer is added
+      map.on('overlayadd', function(e) {
+        visibleLayers.push(e.name);
+        Shiny.setInputValue('{{layers_id}}', visibleLayers);
+      });
+      
+      // When layer is removed
+      map.on('overlayremove', function(e) {
+        var index = visibleLayers.indexOf(e.name);
+        if (index > -1) {
+          visibleLayers.splice(index, 1);
+        }
+        Shiny.setInputValue('{{layers_id}}', visibleLayers);
+      });
+      
+      // Initialize with currently visible layers
+      setTimeout(function() {
+        map.eachLayer(function(layer) {
+          if (layer.options && layer.options.group && map.hasLayer(layer)) {
+            if (!visibleLayers.includes(layer.options.group)) {
+              visibleLayers.push(layer.options.group);
+            }
+          }
+        });
+        Shiny.setInputValue('{{layers_id}}', visibleLayers);
+      }, 500);
+    }
+  "
       )
     )
 }
@@ -199,22 +242,37 @@ add_control <- function(map, groups = character(0)) {
 add_markers <- function(
   map,
   data = leaflet::getMapData(map),
-  colour_by = "detections"
+  colour_by = "layers",
+  layer_by = "layers"
 ) {
-  pal <- leaflet::colorFactor("#637261ff", data[[colour_by]])
-
-  map <- leaflet::addCircleMarkers(
-    map,
-    color = ~"#000000",
-    label = ~popup,
-    layerId = ~id,
-    data = data,
-    radius = 5,
-    fillOpacity = 0.7,
-    opacity = 1,
-    weight = 1,
-    fillColor = pal(data[[colour_by]])
+  #pal <- leaflet::colorFactor("#637261ff", data[[colour_by]])
+  levels <- levels(as.factor(data[[colour_by]]))
+  pal <- leaflet::colorFactor(
+    "Greys",
+    levels = factor(levels, levels = levels),
+    ordered = TRUE
   )
+  pal <- leaflet::colorFactor(
+    grey.colors(dplyr::n_distinct(data[[colour_by]]), start = 0, end = 1),
+    unique(data[[colour_by]])
+  )
+
+  dd <- split(data, data[[layer_by]])
+  for (d in dd) {
+    map <- leaflet::addCircleMarkers(
+      map,
+      color = ~"#000000",
+      label = ~popup,
+      layerId = ~id,
+      group = unique(d[[layer_by]]),
+      data = d,
+      radius = 5,
+      fillOpacity = 0.7,
+      opacity = 1,
+      weight = 1,
+      fillColor = pal(factor(d[[colour_by]]))
+    )
+  }
 
   map
 }
