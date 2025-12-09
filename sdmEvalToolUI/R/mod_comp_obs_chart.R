@@ -30,7 +30,6 @@ mod_comp_obs_chart_ui <- function(id = "comp_obs_chart") {
 #' Observations Chart Component Server
 #'
 #' @param id
-#' @param deployment_id
 #' @param model_id
 #' @param species_id
 #'
@@ -40,11 +39,9 @@ mod_comp_obs_chart_ui <- function(id = "comp_obs_chart") {
 #' @examples
 mod_comp_obs_chart_server <- function(
   id = "comp_obs_chart",
-  deployment_id,
   model_id,
   species_id
 ) {
-  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
 
