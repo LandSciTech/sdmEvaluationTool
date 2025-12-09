@@ -73,19 +73,7 @@ mod_utils_evaluations_server <- function(
       )
     })
 
-    questions_output <- reactive({
-      questions()
-    }) |>
-      bindEvent(input$save)
-
-    output$saved <- renderText({
-      questions()$evaluations[1][[1]]
-    })
-
-    # Reactive values --------------------------
-    show_clicked <- reactiveVal()
-
-    # Server logic -----------------------------
+    # Show Spatial IDs -----------------------------
     show_spatial_ids <- reactive({
       req(show_clicked())
       ids <- questions_init() |>
@@ -125,6 +113,22 @@ mod_utils_evaluations_server <- function(
       show_clicked_observe(new_obs)
     }) |>
       bindEvent(questions_init()) # Only react if we have a new set of questions
+
+    # Save evaluations ----------------------------------------------
+
+    observe({
+      browser()
+
+      save_evaluations(
+        questions = questions_init(),
+        reactiveValuesToList(input)
+      )
+    }) |>
+      bindEvent(input$save)
+
+    output$saved <- renderText({
+      questions()$evaluations[1][[1]]
+    })
 
     # Return --------------------------------------------------------
     list(

@@ -234,3 +234,43 @@ prep_evaluations <- function(con, user_id) {
     ) |>
     tidyr::unnest("evals")
 }
+
+
+#' Save evaluations
+#'
+#' @returns
+#'
+#' @export
+#' @examples
+#' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+#' a <- list(c("id1", "id2"), c(NULL), "testing", "", "", "", "") |>
+#'   rlang::set_names(q$id)
+#' answers <- purrr::map(list(input, \(x) x[[questions_init()$id]])
+save_evaluations <- function(questions, input_list) {
+  r <- response_to_json(questions, input_list)
+}
+
+response_to_json <- function(questions, input_list) {
+  a <- input_list |>
+    names() |>
+    stringr::str_subset("-show", negate = TRUE)
+
+  r <- questions$id |>
+    purrr::map(\(x) {
+      keep <- stringr::str_subset(a, x)
+      value <- stringr::str_remove(keep, glue::glue("{x}-"))
+      if (length(keep) > 1) {
+        r <- purrr::map2(keep, value, \(k, v) {
+          list(value = v, subunits = unname(a[[k]]))
+        })
+      } else {
+        browser()
+        r <- input_list[[keep]]
+      }
+      r
+    })
+
+  questions <- dplyr::mutate(questions, response = r)
+
+  jsonlite::toJSON(questions, auto_unbox = TRUE)
+}
