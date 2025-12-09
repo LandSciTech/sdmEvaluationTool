@@ -120,56 +120,52 @@ sdm_tool <- function() {
 
 
 mod_sidebar_ui <- function(id) {
-  # TODO: Programmatically get species
-  # TODO: Use display name
-
-  con <- withr::local_db_connection(db_connect())
-
-  sidebar(
-    tagList(
-      #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
-      # selectInput(
-      #   NS(id, "user_id"),
-      #   label = "User",
-      #   choices = c(
-      #     "Select a user" = "",
-      #     named_ids(dplyr::tbl(con, "users"))
-      #   )
-      # ),
-      # uiOutput(NS(id, "user_role")),
-      selectInput(
-        NS(id, "deployment_id"),
-        label = "Deployment",
-        choices = c(
-          "Select a deployment" = "",
-          named_ids(dplyr::tbl(con, "deployments"))
-        )
-      ),
-      selectInput(
-        NS(id, "model_id"),
-        label = "Model",
-        choices = c(
-          "Select a model" = "",
-          named_ids(dplyr::tbl(con, "models"))
-        )
-      ),
-      selectInput(
-        NS(id, "species_id"),
-        label = "Species",
-        choices = c(
-          "Select a species" = "",
-          named_ids(fmt_species(dplyr::tbl(con, "species")), name = "display")
-        )
-      ),
-
-      strong("Developer outputs"),
-      uiOutput(NS(id, "dev_outputs"))
-    )
-  )
+  sidebar(uiOutput(NS(id, "ui_selectors")))
 }
 
 mod_sidebar_server <- function(id, user_id, user_role, lang) {
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
+    output$ui_selectors <- renderUI({
+      req(lang())
+      con <- withr::local_db_connection(db_connect())
+
+      tagList(
+        #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
+        selectInput(
+          ns("deployment_id"),
+          label = "Deployment",
+          choices = c(
+            "Select a deployment" = "",
+            named_ids(dplyr::tbl(con, "deployments"))
+          )
+        ),
+        selectInput(
+          ns("model_id"),
+          label = "Model",
+          choices = c(
+            "Select a model" = "",
+            named_ids(dplyr::tbl(con, "models"))
+          )
+        ),
+        selectInput(
+          ns("species_id"),
+          label = "Species",
+          choices = c(
+            "Select a species" = "",
+            named_ids(
+              fmt_species(dplyr::tbl(con, "species"), lang = lang()),
+              name = "display"
+            )
+          )
+        ),
+
+        strong("Developer outputs"),
+        uiOutput(ns("dev_outputs"))
+      )
+    })
+
     output$dev_outputs <- renderUI({
       # React and update to changes in these values, but only show the options
       user_id()
@@ -191,35 +187,10 @@ mod_sidebar_server <- function(id, user_id, user_role, lang) {
         htmltools::HTML()
     })
 
-    # output$user_role <- renderUI({
-    #   if (!isTruthy(input$user_id)) {
-    #     choices <- c("First select a User" = "")
-    #   } else {
-    #     con <- withr::local_db_connection(db_connect())
-    #     u <- user_id() # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
-    #     roles <- dplyr::tbl(con, "access") |>
-    #       dplyr::filter(.data$user_id == .env$u) |>
-    #       dplyr::pull(.data$user_roles) |>
-    #       stringr::str_split(", ?") |>
-    #       unlist() |>
-    #       unique()
-    #     choices <- rlang::set_names(roles, pretty(roles))
-    #   }
-    #
-    #   selectInput(
-    #     NS(id, "user_role"),
-    #     label = "Role",
-    #     choices = choices
-    #   )
-    # })
-
     list(
-      #user_id = reactive(input$user_id),
-      #user_role = reactive(input$user_role),
       deployment_id = reactive(input$deployment_id),
       model_id = reactive(input$model_id),
-      species_id = reactive(input$species_id) #,
-      #lang = reactive(input$lang)
+      species_id = reactive(input$species_id)
     )
   })
 }
