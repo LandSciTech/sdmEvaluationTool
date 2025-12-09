@@ -245,6 +245,10 @@ sdm_theme <- function() {
         float: inherit !important;
         display: inline-block;
       }
+      /* Fix selectize dropdown appearing below leaflet controls */
+        .selectize-dropdown {
+          z-index: 1001 !important;
+        }
     "
     )
 }

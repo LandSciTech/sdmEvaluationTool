@@ -70,6 +70,11 @@ mod_comp_spatial_prediction_server <- function(
     })
 
     output$map <- leaflet::renderLeaflet({
+      validate_ids(
+        deployment_id = deployment_id(),
+        model_id = model_id(),
+        species_id = species_id()
+      )
       spatial_prediction_map(
         spatial_prediction(),
         subunits(),
