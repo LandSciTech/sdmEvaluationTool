@@ -57,6 +57,9 @@ mod_page_overview_server <- function(id = "overview", ...) {
         need(opts$user_id(), "Please select a user"),
         need(opts$user_role(), "Please select a user role")
       )
+      validate(
+        need(nrow(tbl()) > 0, "No deployments for this user in this role")
+      )
       evals_table(tbl(), opts$user_role())
     })
 
