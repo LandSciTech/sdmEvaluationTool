@@ -46,7 +46,7 @@ mod_page_predictors_ui <- function(
     title,
     layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-    h2(textOutput(NS(id, "title"))),
+      h2(textOutput(NS(id, "title"))),
       mod_comp_predictor_metadata_ui(NS(id, "predictor_metadata")),
       mod_comp_predictor_raster_ui(NS(id, "predictor_raster"))
     )
@@ -66,12 +66,23 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
   expand_dots(...)
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
     output$title <- renderText(paste0(
       "Model predictors for model ",
       model_id()
     ))
+
+    # Prepare the evaluation questions
+    mod_utils_evaluations_server(
+      "eval",
+      component_id = c("predictor_metadata", "predictor_raster"),
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = reactive("ALL"),
+      lang = opts$lang
+    )
 
     mod_comp_predictor_metadata_server(
       "predictor_metadata",

@@ -20,21 +20,28 @@ test_page_model <- function(...) {
 #' @export
 #' @examples
 #' mod_page_model_ui()
-mod_page_model_ui <- function(id = "model", title = "Model") {
+mod_page_model_ui <- function(
+  id = "model",
+  title = "Model",
+  review_width = NULL
+) {
   nav_panel(
     title,
-    h2(textOutput(NS(id, "title"))),
+    layout_sidebar(
+      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+      h2(textOutput(NS(id, "title"))),
 
-    layout_column_wrap(
-      width = NULL,
-      style = css(grid_template_columns = "1fr 3fr"),
-      card(
-    h4("Model fit"),
-    mod_comp_model_fit_ui(NS(id, "model_fit"))
-      ),
-      card(
-        h4("Model summary"),
-        mod_comp_model_summary_ui(NS(id, "model_summary"))
+      layout_column_wrap(
+        width = NULL,
+        style = css(grid_template_columns = "1fr 3fr"),
+        card(
+          h4("Model fit"),
+          mod_comp_model_fit_ui(NS(id, "model_fit"))
+        ),
+        card(
+          h4("Model summary"),
+          mod_comp_model_summary_ui(NS(id, "model_summary"))
+        )
       )
     )
   )
@@ -54,6 +61,7 @@ mod_page_model_server <- function(id = "model", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
     output$title <- renderText(paste0(
@@ -62,6 +70,16 @@ mod_page_model_server <- function(id = "model", ...) {
       " and species ",
       species_id()
     ))
+
+    # Prepare the evaluation questions
+    mod_utils_evaluations_server(
+      "eval",
+      component_id = c("model_fit", "model_summary"),
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id,
+      lang = opts$lang
+    )
 
     mod_comp_model_summary_server("model_summary", model_id, species_id)
     mod_comp_model_fit_server("model_fit", model_id, species_id)

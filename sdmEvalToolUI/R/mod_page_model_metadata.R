@@ -22,12 +22,16 @@ test_page_model_metadata <- function(...) {
 #' mod_page_model_metadata_ui()
 mod_page_model_metadata_ui <- function(
   id = "model_metadata",
-  title = "Model Metadata"
+  title = "Model Metadata",
+  review_width = NULL
 ) {
   nav_panel(
     title,
-    h2(textOutput(NS(id, "title"))),
-    mod_comp_model_metadata_ui(NS(id, "model_metadata"))
+    layout_sidebar(
+      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+      h2(textOutput(NS(id, "title"))),
+      mod_comp_model_metadata_ui(NS(id, "model_metadata"))
+    )
   )
 }
 
@@ -42,10 +46,22 @@ mod_page_model_metadata_ui <- function(
 
 mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
   expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
     output$title <- renderText(paste0("Model Metadata: ", model_id()))
+
+    # Prepare the evaluation questions
+    mod_utils_evaluations_server(
+      "eval",
+      component_id = "model_metadata",
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = reactive("ALL"),
+      lang = opts$lang
+    )
 
     mod_comp_model_metadata_server("model_metadata", model_id)
   })
