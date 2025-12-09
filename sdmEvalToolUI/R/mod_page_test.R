@@ -9,7 +9,6 @@
 #'
 #' @examplesIf have_data()
 #' test_page_test()
-#' test_page_test(NULL, NULL, NULL)
 
 test_page_test <- function(...) {
   test_page("mod_page_test", ...)
@@ -40,7 +39,7 @@ mod_page_test_ui <- function(
         uiOutput(NS(id, "ui_questions"))
       ),
       h2(textOutput(NS(id, "title"))),
-      textOutput(NS(id, "details")),
+      uiOutput(NS(id, "details")),
       tableOutput(NS(id, "saved"))
     )
   )
@@ -64,12 +63,14 @@ mod_page_test_server <- function(id = "test", ...) {
 
   moduleServer(id, function(input, output, session) {
     output$title <- renderText("Test")
-    output$details <- renderText({
-      paste0(
+    output$details <- renderUI({
+      tagList(
         "Test for Model: ",
         model_id(),
         " and species ",
-        species_id()
+        species_id(),
+        p(),
+        "Showing all evaluations possible (regardless of component)"
       )
     })
 
