@@ -35,6 +35,7 @@ mod_comp_predictor_raster_server <- function(
 ) {
   moduleServer(id, function(input, output, session) {
     # Setup -------------------------------------------------------------
+    ns <- session$ns
 
     # Use reactiveVal to catch first time the input predictor is ready to ensure
     # the map doesn't render until it has that initial input.
@@ -52,7 +53,7 @@ mod_comp_predictor_raster_server <- function(
         div(
           style = "display:grid; grid-template-columns: 200px 200px; gap: 10px; padding-bottom:10px;",
           selectInput(
-            session$ns("predictor"),
+            ns("predictor"),
             label = "Predictor Displayed",
             choices = names(predictor_raster())
           )
@@ -90,19 +91,23 @@ mod_comp_predictor_raster_server <- function(
 #'   predictor_raster_map(layers = "year")
 
 predictor_raster_map <- function(predictor_raster, layers = NULL) {
-  map <- base_map()
-  if (!is.null(layers)) {
-    map <- predictor_raster_layer(map, predictor_raster, layers)
-  }
-  map
+  base_map() |>
+    predictor_raster_layer(raster = predictor_raster, layers = layers)
 }
 
 
-predictor_raster_layer <- function(map, predictor_raster, layers) {
+predictor_raster_layer <- function(map, raster = NULL, layers = NULL) {
+  if (is.null(layers)) {
+    return(map)
+  }
+
+  # Use map data if no raster
+  raster <- raster %||% leaflet::getMapData(map)
+
   for (l in layers) {
     map <- add_raster(
       map,
-      predictor_raster,
+      raster,
       layer = l,
       name = l,
       palette = "viridis",
