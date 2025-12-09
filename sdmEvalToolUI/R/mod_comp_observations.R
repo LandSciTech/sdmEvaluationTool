@@ -155,6 +155,7 @@ obs_prep <- function(model_id, species_id) {
     dplyr::mutate(
       year = as.numeric(stringr::str_extract(.data$time, "^\\d{4}")),
       layers = dplyr::if_else(.data$status == 0, "Absence", "Presence"),
+      layers = factor(layers),
       # fmt: skip
       popup = paste0(
           "<strong>Method:</strong> ", .data$method, "<br>",

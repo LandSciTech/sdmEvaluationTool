@@ -231,6 +231,8 @@ mod_utils_map_selections_server <- function(
     # Clear selections -------------------------------------------------------
     observe({
       curr_selected(data.frame())
+      leaflet::leafletProxy("map", session = parent_session) |>
+        leaflet::removeControl("legend")
     }) |>
       bindEvent(interactions$clear_selection, ignoreInit = TRUE)
   })

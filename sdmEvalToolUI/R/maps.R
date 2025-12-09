@@ -233,9 +233,10 @@ add_control <- function(map, groups = character(0)) {
       options = leaflet::layersControlOptions(collapsed = FALSE)
     )
 
-  if ("Uncertainty" %in% groups) {
-    map <- leaflet::hideGroup(map, "Uncertainty")
-  }
+  #if ("Uncertainty" %in% groups) {
+  map <- leaflet::hideGroup(map, "Uncertainty")
+  map <- leaflet::hideGroup(map, "Absence")
+  #}
   map
 }
 
@@ -245,33 +246,33 @@ add_markers <- function(
   colour_by = "layers",
   layer_by = "layers"
 ) {
-  #pal <- leaflet::colorFactor("#637261ff", data[[colour_by]])
-  levels <- levels(as.factor(data[[colour_by]]))
+  levels <- levels(data[[colour_by]])
   pal <- leaflet::colorFactor(
-    "Greys",
-    levels = factor(levels, levels = levels),
-    ordered = TRUE
-  )
-  pal <- leaflet::colorFactor(
-    grey.colors(dplyr::n_distinct(data[[colour_by]]), start = 0, end = 1),
-    unique(data[[colour_by]])
+    grey.colors(
+      dplyr::n_distinct(levels),
+      start = 0,
+      end = 1
+    ),
+    factor(levels, levels = levels)
   )
 
   dd <- split(data, data[[layer_by]])
   for (d in dd) {
-    map <- leaflet::addCircleMarkers(
-      map,
-      color = ~"#000000",
-      label = ~popup,
-      layerId = ~id,
-      group = unique(d[[layer_by]]),
-      data = d,
-      radius = 5,
-      fillOpacity = 0.7,
-      opacity = 1,
-      weight = 1,
-      fillColor = pal(factor(d[[colour_by]]))
-    )
+    if (nrow(d) > 0) {
+      map <- leaflet::addCircleMarkers(
+        map,
+        color = ~"#000000",
+        label = ~popup,
+        layerId = ~id,
+        group = as.character(unique(d[[layer_by]])),
+        data = d,
+        radius = 5,
+        fillOpacity = 0.7,
+        opacity = 1,
+        weight = 1,
+        fillColor = pal(factor(d[[colour_by]]))
+      )
+    }
   }
 
   map

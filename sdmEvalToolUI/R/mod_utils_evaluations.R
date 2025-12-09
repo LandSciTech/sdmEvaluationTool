@@ -52,6 +52,7 @@ mod_utils_evaluations_server <- function(
     # Add server side processing for inputs that pre-list the spatial ids
 
     observe({
+      req(spatial_ids())
       ui_questions_update(
         questions_init(),
         spatial_ids = spatial_ids()
@@ -80,14 +81,18 @@ mod_utils_evaluations_server <- function(
         dplyr::filter(id == stringr::str_remove(show_clicked(), "-show")) |>
         dplyr::mutate(
           id_spatial = purrr::map2(id, values, \(i, v) {
-            paste0(i, "-", unlist(v))
+            paste0(i, "-", value_to_input(unlist(v)))
           })
         ) |>
         dplyr::pull(id_spatial) |>
         unlist() |>
         sapply(\(x) input[[x]])
 
-      rlang::set_names(ids, stringr::str_extract(names(ids), "[^-]*$"))
+      nms <- names(ids) |>
+        stringr::str_extract("[^-]*$") |>
+        pretty()
+
+      rlang::set_names(ids, nms)
     })
 
     show_btn_ids <- reactive({
