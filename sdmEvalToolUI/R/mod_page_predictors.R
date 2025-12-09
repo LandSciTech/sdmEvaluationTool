@@ -12,16 +12,14 @@ test_page_predictors <- function() {
 
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",
+    theme = sdm_theme(),
     mod_page_predictors_ui()
   )
 
   server <- function(input, output, session) {
     mod_page_predictors_server(
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO"),
-      tbl_deployments = tbl_deployments,
-      tbl_models = tbl_models,
-      tbl_species = tbl_species
+      deployment_id = reactive("deployment1"),
+      model_id = reactive("bam_v5_can71")
     )
   }
 
@@ -39,11 +37,19 @@ test_page_predictors <- function() {
 #' @examples
 #' mod_page_predictors_ui()
 
-mod_page_predictors_ui <- function(id = "predictors", title = "Predictors") {
+mod_page_predictors_ui <- function(
+  id = "predictors",
+  title = "Predictors",
+  review_width = NULL
+) {
   nav_panel(
     title,
+    layout_sidebar(
+      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
     h2(textOutput(NS(id, "title"))),
-    mod_comp_predictor_metadata_ui(NS(id, "predictor_metadata"))
+      mod_comp_predictor_metadata_ui(NS(id, "predictor_metadata")),
+      mod_comp_predictor_raster_ui(NS(id, "predictor_raster"))
+    )
   )
 }
 
@@ -58,6 +64,7 @@ mod_page_predictors_ui <- function(id = "predictors", title = "Predictors") {
 
 mod_page_predictors_server <- function(id = "predictors", ...) {
   expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
 
   moduleServer(id, function(input, output, session) {
@@ -66,6 +73,13 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
       model_id()
     ))
 
-    mod_comp_predictor_metadata_server("predictor_metadata", model_id)
+    mod_comp_predictor_metadata_server(
+      "predictor_metadata",
+      model_id = model_id
+    )
+    mod_comp_predictor_raster_server(
+      "predictor_raster",
+      model_id = model_id
+    )
   })
 }
