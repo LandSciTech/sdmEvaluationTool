@@ -64,6 +64,7 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
     output$title <- renderText(paste0(
@@ -79,11 +80,12 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
     # Prepare the evaluation questions
     spatial_selection <- mod_utils_evaluations_server(
       "eval",
-      deployment_id,
-      model_id,
-      species_id,
-      spatial_ids,
-      spatial_type = "areas"
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id,
+      spatial_ids = spatial_ids,
+      spatial_type = "areas",
+      lang = opts$lang
     )
 
     mod_comp_spatial_prediction_server(

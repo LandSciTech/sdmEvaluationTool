@@ -76,11 +76,3 @@ set_options <- function(...) {
   o <- options("sdmevaltool_options" = utils::modifyList(opts, list(...)))
   o
 }
-
-user_id <- function() {
-  sdmevaltool_options()$user_id
-}
-
-user_role <- function() {
-  sdmevaltool_options()$user_role
-}

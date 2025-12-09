@@ -24,6 +24,7 @@ sdm_tool <- function() {
     get(paste0("mod_page_", p, "_server"))
   })
 
+  con <- withr::local_db_connection(db_connect())
   # Users
   # TODO: How do we know which user it is?
   # For now, see option set in zzz.R
@@ -35,31 +36,81 @@ sdm_tool <- function() {
     title = "SDM Tool",
     theme = sdm_theme(),
     sidebar = mod_sidebar_ui("sidebar"),
-    !!!pages_ui
+    !!!pages_ui,
+    nav_spacer(),
+    nav_item(
+      tags$style("#div_id .selectize-input:after{content: none;}"),
+      div(
+        id = "div_id",
+        selectInput(
+          "user_id",
+          width = 150,
+          label = NULL,
+          choices = c(
+            "Select a user" = "",
+            named_ids(dplyr::tbl(con, "users"))
+          )
+        )
+      )
+    ),
+    nav_item(div(id = "div_id", uiOutput("user_role"))),
+    nav_item(div(
+      id = "div_id",
+      selectInput(
+        "lang",
+        width = 50,
+        label = NULL,
+        choices = c("EN" = "english", "FR" = "french")
+      )
+    ))
   )
 
   server <- function(input, output, session) {
     # Set session-specific options
     # TODO: is this the correct method?
-    observe({
-      set_options(
-        "user_id" = vals$user_id(),
-        "user_role" = vals$user_role(),
-        "lang" = vals$lang()
+
+    opts <- reactiveValues()
+
+    output$user_role <- renderUI({
+      if (!isTruthy(input$user_id)) {
+        choices <- c("User Role" = "")
+      } else {
+        con <- withr::local_db_connection(db_connect())
+        u <- input$user_id # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
+        roles <- dplyr::tbl(con, "access") |>
+          dplyr::filter(.data$user_id == .env$u) |>
+          dplyr::pull(.data$user_roles) |>
+          stringr::str_split(", ?") |>
+          unlist() |>
+          unique()
+        choices <- rlang::set_names(roles, pretty(roles))
+      }
+
+      selectInput(
+        "user_role",
+        width = 100,
+        label = NULL,
+        choices = choices
       )
     })
 
-    vals <- mod_sidebar_server(id = "sidebar")
+    vals <- mod_sidebar_server(
+      id = "sidebar",
+      user_id = reactive(input$user_id),
+      user_role = reactive(input$user_role),
+      lang = reactive(input$lang)
+    )
 
     for (t in pages_server) {
       t(
         deployment_id = vals$deployment_id,
         model_id = vals$model_id,
         species_id = vals$species_id,
-        user_id = vals$user_id,
-        user_role = vals$user_role,
-        tbl_models = tbl_models,
-        tbl_species = tbl_species
+        opts = list(
+          "user_id" = reactive(input$user_id),
+          "user_role" = reactive(input$user_role),
+          "lang" = reactive(input$lang)
+        )
       )
     }
   }
@@ -77,15 +128,15 @@ mod_sidebar_ui <- function(id) {
   sidebar(
     tagList(
       #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
-      selectInput(
-        NS(id, "user_id"),
-        label = "User",
-        choices = c(
-          "Select a user" = "",
-          named_ids(dplyr::tbl(con, "users"))
-        )
-      ),
-      uiOutput(NS(id, "user_role")),
+      # selectInput(
+      #   NS(id, "user_id"),
+      #   label = "User",
+      #   choices = c(
+      #     "Select a user" = "",
+      #     named_ids(dplyr::tbl(con, "users"))
+      #   )
+      # ),
+      # uiOutput(NS(id, "user_role")),
       selectInput(
         NS(id, "deployment_id"),
         label = "Deployment",
@@ -110,11 +161,6 @@ mod_sidebar_ui <- function(id) {
           named_ids(fmt_species(dplyr::tbl(con, "species")), name = "display")
         )
       ),
-      selectInput(
-        NS(id, "lang"),
-        "Language",
-        choices = c("English" = "english", "Français" = "french")
-      ),
 
       strong("Developer outputs"),
       uiOutput(NS(id, "dev_outputs"))
@@ -122,55 +168,58 @@ mod_sidebar_ui <- function(id) {
   )
 }
 
-mod_sidebar_server <- function(id) {
+mod_sidebar_server <- function(id, user_id, user_role, lang) {
   moduleServer(id, function(input, output, session) {
     output$dev_outputs <- renderUI({
       # React and update to changes in these values, but only show the options
-      input$user_id
-      input$user_role
-      input$lang
+      user_id()
+      user_role()
+      lang()
+      input$deployment_id
+      input$model_id
+      input$species_id
 
       # Show current values
       glue::glue(
         "Deployment ID: {input$deployment_id}",
         "Model: {input$model_id}",
         "Species: {input$species_id}",
-        "User (opt): {sdmevaltool_options()$user_id} ({sdmevaltool_options()$user_role})",
-        "Language (opt): {sdmevaltool_options()$lang}",
+        "User: {user_id()} ({user_role()})",
+        "Language: {lang()}",
         .sep = "<br>"
       ) |>
         htmltools::HTML()
     })
 
-    output$user_role <- renderUI({
-      if (!isTruthy(input$user_id)) {
-        choices <- c("First select a User" = "")
-      } else {
-        con <- withr::local_db_connection(db_connect())
-        u <- user_id() # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
-        roles <- dplyr::tbl(con, "access") |>
-          dplyr::filter(.data$user_id == .env$u) |>
-          dplyr::pull(.data$user_roles) |>
-          stringr::str_split(", ?") |>
-          unlist() |>
-          unique()
-        choices <- rlang::set_names(roles, pretty(roles))
-      }
-
-      selectInput(
-        NS(id, "user_role"),
-        label = "Role",
-        choices = choices
-      )
-    })
+    # output$user_role <- renderUI({
+    #   if (!isTruthy(input$user_id)) {
+    #     choices <- c("First select a User" = "")
+    #   } else {
+    #     con <- withr::local_db_connection(db_connect())
+    #     u <- user_id() # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
+    #     roles <- dplyr::tbl(con, "access") |>
+    #       dplyr::filter(.data$user_id == .env$u) |>
+    #       dplyr::pull(.data$user_roles) |>
+    #       stringr::str_split(", ?") |>
+    #       unlist() |>
+    #       unique()
+    #     choices <- rlang::set_names(roles, pretty(roles))
+    #   }
+    #
+    #   selectInput(
+    #     NS(id, "user_role"),
+    #     label = "Role",
+    #     choices = choices
+    #   )
+    # })
 
     list(
-      user_id = reactive(input$user_id),
-      user_role = reactive(input$user_role),
+      #user_id = reactive(input$user_id),
+      #user_role = reactive(input$user_role),
       deployment_id = reactive(input$deployment_id),
       model_id = reactive(input$model_id),
-      species_id = reactive(input$species_id),
-      lang = reactive(input$lang)
+      species_id = reactive(input$species_id) #,
+      #lang = reactive(input$lang)
     )
   })
 }

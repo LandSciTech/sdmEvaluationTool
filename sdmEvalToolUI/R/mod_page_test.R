@@ -84,6 +84,7 @@ mod_page_test_server <- function(id = "test", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
     output$title <- renderText("Test")
@@ -103,7 +104,8 @@ mod_page_test_server <- function(id = "test", ...) {
         component_id = "test",
         deployment_id = deployment_id(),
         model_id = model_id(),
-        species_id = species_id()
+        species_id = species_id(),
+        lang = opts$lang()
       )
     }) |>
       bindCache(deployment_id(), model_id(), species_id())

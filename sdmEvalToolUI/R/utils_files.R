@@ -139,7 +139,8 @@ prep_questions <- function(
   component_id,
   deployment_id,
   model_id,
-  species_id
+  species_id,
+  lang = "english"
 ) {
   if (missing(species_id) || species_id == "ALL") {
     validate_ids(
@@ -158,7 +159,7 @@ prep_questions <- function(
   q <- fetch_questions(deployment_id, component_id)
 
   q |>
-    dplyr::rename("label" = sdmevaltool_options()$lang) |>
+    dplyr::rename("label" = .env$lang) |>
     #TODO: Remove this if numbering changes
     dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
     dplyr::mutate(

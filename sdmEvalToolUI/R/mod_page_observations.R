@@ -76,6 +76,7 @@ mod_page_observations_server <- function(id = "observations", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
     output$title <- renderText({
@@ -94,10 +95,11 @@ mod_page_observations_server <- function(id = "observations", ...) {
     spatial_selection <- mod_utils_evaluations_server(
       "eval",
       spatial_type = "points",
-      deployment_id,
-      model_id,
-      species_id,
-      spatial_ids
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id,
+      spatial_ids = spatial_ids,
+      lang = opts$lang
     )
 
     # Create charts

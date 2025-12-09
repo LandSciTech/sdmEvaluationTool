@@ -20,9 +20,11 @@ test_page_overview <- function() {
       deployment_id = reactive("deployment1"),
       model_id = reactive("bam_v5_can71"),
       species_id = reactive("BBWO"),
-      tbl_deployments = tbl_deployments,
-      tbl_models = tbl_models,
-      tbl_species = tbl_species
+      opts = reactiveValues(
+        "user_id" = "holden",
+        "user_role" = "modeler",
+        "lang" = "english"
+      )
     )
   }
 
@@ -61,18 +63,19 @@ mod_page_overview_server <- function(id = "overview", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
     tbl <- reactive({
-      evals_details(user_id(), user_role())
+      evals_details(opts$user_id(), opts$user_role(), opts$lang())
     })
 
     output$tbl_overview <- reactable::renderReactable({
       validate(
-        need(user_id(), "Please select a user"),
-        need(user_role(), "Please select a user role")
+        need(opts$user_id(), "Please select a user"),
+        need(opts$user_role(), "Please select a user role")
       )
-      evals_table(tbl(), user_role())
+      evals_table(tbl(), opts$user_role())
     })
 
     # TODO: Option to click on species/model combination on table to select
@@ -175,7 +178,7 @@ evals_table <- function(tbl, user_role) {
         name = "Evaluator",
         minWidth = 200,
         maxWidth = 250,
-        show = user_role() == "modeler"
+        show = user_role == "modeler"
       ),
       species_display = reactable::colDef(
         name = "Species",
@@ -282,7 +285,7 @@ evals_table <- function(tbl, user_role) {
 #' evals_details("draper", "modeler")
 #' evals_details("draper", "evaluator")
 
-evals_details <- function(user_id, user_role) {
+evals_details <- function(user_id, user_role, lang) {
   con <- withr::local_db_connection(db_connect())
   validate(need(
     user_role %in% c("modeler", "evaluator"),
@@ -402,7 +405,7 @@ evals_details <- function(user_id, user_role) {
       .by = c("deployment_id", "model_id", "species_id", "component_id")
     ) |>
     dplyr::left_join(user, by = "evaluation_create_user") |>
-    fmt_species() |>
+    fmt_species(lang = lang) |>
     dplyr::mutate(
       deployment_model_name = paste0(
         .data$deployment_name,
