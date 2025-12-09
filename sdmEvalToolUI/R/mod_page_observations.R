@@ -88,7 +88,6 @@ mod_page_observations_server <- function(id = "observations", ...) {
     # Create charts
     mod_comp_obs_chart_server(
       "comp_obs_chart",
-      deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id
     )
