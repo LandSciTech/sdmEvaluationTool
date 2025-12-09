@@ -56,8 +56,8 @@ mod_comp_predictor_metadata_server <- function(
 #'
 #' @export
 #' @examplesIf have_data()
-#' skip_eg()
-#' # predictor_metadata_prep("bam_v5_can71") |> predictor_metadata_table()
+#' predictor_metadata_prep("bam_v5_can71") |>
+#'   predictor_metadata_table()
 
 predictor_metadata_table <- function(predictor_metadata) {
   validate(need(
@@ -75,7 +75,6 @@ predictor_metadata_table <- function(predictor_metadata) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' skip_eg()
 #' predictor_metadata_prep("bam_v5_can71")
 
 predictor_metadata_prep <- function(model_id) {
