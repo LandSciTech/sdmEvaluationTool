@@ -17,11 +17,9 @@ test_page_model <- function() {
 
   server <- function(input, output, session) {
     mod_page_model_server(
+      deployment_id = reactive("deployment1"),
       model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO"),
-      tbl_deployments = tbl_deployments,
-      tbl_models = tbl_models,
-      tbl_species = tbl_species
+      species_id = reactive("BBWO")
     )
   }
 
@@ -43,11 +41,18 @@ mod_page_model_ui <- function(id = "model", title = "Model") {
     title,
     h2(textOutput(NS(id, "title"))),
 
-    h4("Model summary"),
-    mod_comp_model_summary_ui(NS(id, "model_summary")),
-
+    layout_column_wrap(
+      width = NULL,
+      style = css(grid_template_columns = "1fr 3fr"),
+      card(
     h4("Model fit"),
     mod_comp_model_fit_ui(NS(id, "model_fit"))
+      ),
+      card(
+        h4("Model summary"),
+        mod_comp_model_summary_ui(NS(id, "model_summary"))
+      )
+    )
   )
 }
 
@@ -62,6 +67,7 @@ mod_page_model_ui <- function(id = "model", title = "Model") {
 
 mod_page_model_server <- function(id = "model", ...) {
   expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
 

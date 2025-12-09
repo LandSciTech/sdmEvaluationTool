@@ -60,7 +60,23 @@ mod_comp_model_summary_server <- function(
 #'   model_summary_table()
 
 model_summary_table <- function(model_summary) {
-  reactable::reactable(model_summary)
+  if (nrow(model_summary) > 50) {
+    size <- 50
+  } else {
+    size <- nrow(model_summary)
+  }
+  reactable::reactable(
+    model_summary,
+    searchable = TRUE,
+    defaultPageSize = size,
+    minRows = size,
+    columns = list(
+      mean_rel_inf = reactable::colDef(
+        format = reactable::colFormat(digits = 3)
+      ),
+      sd_rel_inf = reactable::colDef(format = reactable::colFormat(digits = 3))
+    )
+  )
 }
 
 #' Prepare Model Summary Data
