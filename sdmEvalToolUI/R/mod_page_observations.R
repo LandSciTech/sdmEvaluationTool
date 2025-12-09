@@ -9,28 +9,10 @@
 #'
 #' @examplesIf have_data()
 #' test_page_observations()
-#' test_page_observations(NULL, NULL, NULL)
+#' test_page_observations(deployment_id = NULL)
 
-test_page_observations <- function(
-  deployment_id = "deployment1",
-  model_id = "bam_v5_can71",
-  species_id = "BBWO"
-) {
-  ui <- bslib::page_navbar(
-    title = "SDM Tool Testing",
-    theme = sdm_theme(),
-    mod_page_observations_ui()
-  )
-
-  server <- function(input, output, session) {
-    mod_page_observations_server(
-      deployment_id = reactive(deployment_id),
-      model_id = reactive(model_id),
-      species_id = reactive(species_id)
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_page_observations <- function(...) {
+  test_page("mod_page_observations", ...)
 }
 
 #' Observations Page UI

@@ -11,32 +11,8 @@
 #' test_page_test()
 #' test_page_test(NULL, NULL, NULL)
 
-test_page_test <- function(
-  deployment_id = "deployment1",
-  model_id = "bam_v5_can71",
-  species_id = "BBWO"
-) {
-  # TODO: define location, pages, etc. elsewhere
-  prep_data() |> expand_list()
-
-  ui <- bslib::page_navbar(
-    title = "SDM Tool Testing",
-    theme = sdm_theme(),
-    mod_page_test_ui()
-  )
-
-  server <- function(input, output, session) {
-    mod_page_test_server(
-      deployment_id = reactive(deployment_id),
-      model_id = reactive(model_id),
-      species_id = reactive(species_id),
-      tbl_deployments = tbl_deployments,
-      tbl_models = tbl_models,
-      tbl_species = tbl_species
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_page_test <- function(...) {
+  test_page("mod_page_test", ...)
 }
 
 #' Test Page UI

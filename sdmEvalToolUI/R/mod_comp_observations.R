@@ -6,27 +6,8 @@
 #' @examplesIf have_data()
 #' test_comp_observations()
 
-test_comp_observations <- function() {
-  ui <- mod_comp_observations_ui()
-
-  server <- function(input, output, session) {
-    show_spatial_ids <- reactive(NULL)
-    show_clicked <- reactiveVal(NULL)
-    spatial_ids <- reactiveVal(NULL)
-
-    mod_comp_observations_server(
-      deployment_id = reactive("deployment1"),
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO"),
-      spatial_ids = spatial_ids,
-      spatial_selection = list(
-        show_clicked = show_clicked,
-        show_spatial_ids = show_spatial_ids
-      )
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_comp_observations <- function(...) {
+  test_comp("mod_comp_observations", ...)
 }
 
 #' Observations Component UI

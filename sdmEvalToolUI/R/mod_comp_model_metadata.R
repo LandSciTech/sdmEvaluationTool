@@ -6,16 +6,8 @@
 #' @examplesIf have_data()
 #' test_comp_model_metadata()
 
-test_comp_model_metadata <- function() {
-  ui <- mod_comp_model_metadata_ui()
-
-  server <- function(input, output, session) {
-    mod_comp_model_metadata_server(
-      model_id = reactive("bam_v5_can71")
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_comp_model_metadata <- function(...) {
+  test_comp("mod_comp_model_metadata", use = "model_id", ...)
 }
 
 #' Model Metadata Component UI

@@ -6,24 +6,8 @@
 #' @examplesIf have_data()
 #' test_page_model()
 
-test_page_model <- function() {
-  # TODO: define location, pages, etc. elsewhere
-  prep_data() |> expand_list()
-
-  ui <- bslib::page_navbar(
-    title = "SDM Tool Testing",
-    mod_page_model_ui()
-  )
-
-  server <- function(input, output, session) {
-    mod_page_model_server(
-      deployment_id = reactive("deployment1"),
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO")
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_page_model <- function(...) {
+  test_page("mod_page_model", ...)
 }
 
 #' Model Page UI

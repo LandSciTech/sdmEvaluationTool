@@ -7,15 +7,7 @@
 #' test_comp_predictor_raster()
 
 test_comp_predictor_raster <- function() {
-  ui <- mod_comp_predictor_raster_ui()
-
-  server <- function(input, output, session) {
-    mod_comp_predictor_raster_server(
-      model_id = reactive("bam_v5_can71")
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+  test_comp("mod_comp_predictor_raster", use = "model_id", ...)
 }
 
 #' Predictor Raster Component UI

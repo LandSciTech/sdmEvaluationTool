@@ -5,17 +5,8 @@
 #' @export
 #' @examplesIf have_data()
 #' test_comp_model_fit()
-test_comp_model_fit <- function() {
-  ui <- mod_comp_model_fit_ui()
-
-  server <- function(input, output, session) {
-    mod_comp_model_fit_server(
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO")
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_comp_model_fit <- function(...) {
+  test_comp("mod_comp_model_fit", use = c("model_id", "species_id"), ...)
 }
 
 #' Model Fit Component UI

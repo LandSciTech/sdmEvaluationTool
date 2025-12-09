@@ -6,18 +6,8 @@
 #' @examplesIf have_data()
 #' test_comp_obs_chart()
 
-test_comp_obs_chart <- function() {
-  ui <- mod_comp_obs_chart_ui()
-
-  server <- function(input, output, session) {
-    mod_comp_obs_chart_server(
-      deployment_id = reactive("deployment1"),
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO")
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_comp_obs_chart <- function(...) {
+  test_comp("mod_comp_obs_chart", use = c("model_id", "species_id"), ...)
 }
 
 #' Observations Chart Component UI

@@ -6,29 +6,11 @@
 #' @examplesIf have_data()
 #' test_page_overview()
 
-test_page_overview <- function() {
-  prep_data() |> expand_list()
-
-  ui <- bslib::page_navbar(
-    title = "SDM Tool Testing",
-    mod_page_overview_ui()
-  )
-
-  server <- function(input, output, session) {
-    set_options("user_id" = "holden", "user_role" = "modeler")
-    mod_page_overview_server(
-      deployment_id = reactive("deployment1"),
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO"),
-      opts = reactiveValues(
-        "user_id" = "holden",
-        "user_role" = "modeler",
-        "lang" = "english"
-      )
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_page_overview <- function(
+  opts = list(user_id = "holden", user_role = "modeler", lang = "english"),
+  ...
+) {
+  test_page("mod_page_overview", opts = opts, ...)
 }
 
 #' Overview Page UI
