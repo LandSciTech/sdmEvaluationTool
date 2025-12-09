@@ -158,6 +158,7 @@ ui_questions_update <- function(questions, spatial_ids = NULL) {
     ) |>
     dplyr::pull(.data$id)
 
+  #TODO: FIX namespacing - this works for pages but not for the SDM app
   purrr::map(id, \(i) {
     updateSelectizeInput(
       inputId = i,
