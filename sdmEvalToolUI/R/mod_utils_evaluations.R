@@ -12,6 +12,7 @@ mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
 mod_utils_evaluations_server <- function(
   id = "evaluations",
   spatial_type = "points",
+  component_id,
   deployment_id,
   model_id,
   species_id,
@@ -32,7 +33,7 @@ mod_utils_evaluations_server <- function(
     questions_init <- reactive({
       #TODO: Read values from disk?
       prep_questions(
-        component_id = "observations",
+        component_id = component_id,
         deployment_id = deployment_id(),
         model_id = model_id(),
         species_id = species_id(),

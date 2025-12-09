@@ -99,9 +99,7 @@ mod_page_test_server <- function(id = "test", ...) {
 
     # Evaluations ----------------------------------------------------
     questions_init <- reactive({
-      #TODO: Read values from disk?
       prep_questions(
-        component_id = "test",
         deployment_id = deployment_id(),
         model_id = model_id(),
         species_id = species_id(),

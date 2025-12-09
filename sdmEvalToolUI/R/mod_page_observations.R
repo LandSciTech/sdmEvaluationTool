@@ -94,6 +94,7 @@ mod_page_observations_server <- function(id = "observations", ...) {
     # Prepare the evaluation questions
     spatial_selection <- mod_utils_evaluations_server(
       "eval",
+      component_id = "observations",
       spatial_type = "points",
       deployment_id = deployment_id,
       model_id = model_id,

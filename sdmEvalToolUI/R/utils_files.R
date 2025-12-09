@@ -130,19 +130,31 @@ prep_files <- function(path, name, ...) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
+#' # Return all questions
+#' prep_questions(NULL, "deployment1", "bam_v5_can71", "BBWO")
+#'
+#' # Return component specific questions
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
 #' prep_questions("model_fit", "deployment1", "bam_v5_can71")
 #' prep_questions("model_summary", "deployment1", "bam_v5_can71")
+#'
+#' prep_questions(c("model_summary", "model_fit"), "deployment1", "bam_v5_can71")
+#'
+#' prep_questions("predictor_raster", "deployment1", "bam_v5_can71")
 
 prep_questions <- function(
-  component_id,
+  component_id = NULL,
   deployment_id,
   model_id,
   species_id,
   lang = "english"
 ) {
-  if (missing(species_id) || species_id == "ALL") {
+  if (
+    missing(species_id) ||
+      is.null(species_id) ||
+      species_id == "" ||
+      species_id == "ALL"
+  ) {
     validate_ids(
       deployment_id = deployment_id,
       model_id = model_id
@@ -187,8 +199,8 @@ fetch_questions <- function(deployment_id, component_id) {
     error = \(x) sdmEvalToolCore::default_questions
   )
 
-  if (component_id != "test") {
-    q <- dplyr::filter(q, .data$component == .env$component_id)
+  if (!is.null(component_id)) {
+    q <- dplyr::filter(q, .data$component %in% .env$component_id)
   }
 
   q
