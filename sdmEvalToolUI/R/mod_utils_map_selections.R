@@ -72,6 +72,7 @@ mod_utils_map_selections_server <- function(
   stopifnot(is.reactive(show_clicked)) # reactiveVal
   stopifnot(is.reactive(show_spatial_ids))
 
+  # Points vs. Areas ---------------------------------------------------------
   if (spatial_type == "points") {
     remove_geo <- leaflet::removeMarker
     add_geo <- add_markers
@@ -120,20 +121,26 @@ mod_utils_map_selections_server <- function(
     }) |>
       bindEvent(curr_selected(), ignoreInit = TRUE)
 
-    # Map selections -------------------------------------------
-    # Process Drawn Selections
+    # Selections - Drawn ---------------------------------
     observe({
       req(interactions$draw_new_feature$geometry)
 
-      # Store the selections
+      # Get selection polygon
       poly <- coords_to_poly(interactions$draw_new_feature$geometry)
 
-      s <- data() |>
-        # Filter to visible layers
-        dplyr::filter(.data$layers %in% interactions$layers_visible) |>
-        # Filter to selection
-        sf::st_filter(poly)
+      # Store the selections
+      s <- data()
 
+      # Filter to visible layers only if using points
+
+      if (spatial_type == "points") {
+        s <- dplyr::filter(s, .data$layers %in% interactions$layers_visible)
+      }
+
+      # Filter to selection
+      s <- sf::st_filter(s, poly)
+
+      # Track selected elements
       curr_selected(data.frame(id = s$id, type = "Selected"))
 
       # Remove the drawn section
@@ -147,7 +154,7 @@ mod_utils_map_selections_server <- function(
     }) |>
       bindEvent(interactions$draw_stop, ignoreInit = TRUE)
 
-    # Process click selections
+    # Selections - Click  ------------------------------------------------
     observe({
       id <- interactions[[map_click]]$id
 
