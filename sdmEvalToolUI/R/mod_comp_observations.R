@@ -20,11 +20,21 @@ test_comp_observations <- function(...) {
 #' @examples
 #' mod_comp_observations_ui()
 
-mod_comp_observations_ui <- function(id = "comp_observations") {
+mod_comp_observations_ui <- function(
+  id = "comp_observations",
+  header = NULL
+) {
   tagList(
-    uiOutput(NS(id, "ui_selectors")),
-    sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
-    mod_utils_map_selections_ui(NS(id, "select"), spatial_type = "points")
+    sdm_card(
+      min_height = "60%",
+      header,
+      uiOutput(NS(id, "ui_selectors")),
+      sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+    ),
+    sdm_card(
+      min_height = "40%",
+      mod_utils_map_selections_ui(NS(id, "select"), spatial_type = "points")
+    )
   )
 }
 
@@ -74,7 +84,7 @@ mod_comp_observations_server <- function(
     output$ui_selectors <- renderUI({
       tagList(
         div(
-          style = "display:grid; grid-template-columns: 200px 200px; gap: 10px; padding-bottom:10px;",
+          style = "display:grid; grid-template-columns: 200px 200px; gap: 10px; padding-bottom:0;",
           selectInput(
             "year",
             label = "Year",

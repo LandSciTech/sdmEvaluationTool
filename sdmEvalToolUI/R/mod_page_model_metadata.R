@@ -27,9 +27,8 @@ mod_page_model_metadata_ui <- function(
 ) {
   nav_panel(
     title,
-    layout_sidebar(
+    sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-      h2(textOutput(NS(id, "title"))),
       mod_comp_model_metadata_ui(NS(id, "model_metadata"))
     )
   )
@@ -51,8 +50,6 @@ mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
-    output$title <- renderText(paste0("Model Metadata: ", model_id()))
-
     # Prepare the evaluation questions
     mod_utils_evaluations_server(
       "eval",

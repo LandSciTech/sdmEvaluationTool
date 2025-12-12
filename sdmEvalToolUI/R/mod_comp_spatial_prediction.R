@@ -20,8 +20,12 @@ test_comp_spatial_prediction <- function(...) {
 #' @examples
 #' mod_comp_spatial_prediction_ui()
 
-mod_comp_spatial_prediction_ui <- function(id = "comp_spatial_prediction") {
-  tagList(
+mod_comp_spatial_prediction_ui <- function(
+  id = "comp_spatial_prediction",
+  header = NULL
+) {
+  sdm_card(
+    header,
     sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
     mod_utils_map_selections_ui(NS(id, "select"), spatial_type = "areas")
   )

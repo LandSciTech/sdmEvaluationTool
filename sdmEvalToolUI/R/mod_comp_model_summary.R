@@ -20,8 +20,12 @@ test_comp_model_summary <- function(...) {
 #' @examples
 #' mod_comp_model_summary_ui()
 
-mod_comp_model_summary_ui <- function(id = "comp_model_summary") {
-  tagList(
+mod_comp_model_summary_ui <- function(
+  id = "comp_model_summary",
+  header = NULL
+) {
+  sdm_card(
+    header,
     reactable::reactableOutput(NS(id, "model_summary"))
   )
 }

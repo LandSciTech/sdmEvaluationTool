@@ -36,6 +36,8 @@ sdm_tool <- function() {
     title = "SDM Tool",
     theme = sdm_theme(),
     sidebar = mod_sidebar_ui("sidebar"),
+    gap = 0,
+    padding = 0,
     !!!pages_ui,
     nav_spacer(),
     nav_item(
@@ -196,15 +198,17 @@ mod_sidebar_server <- function(id, user_id, user_role, lang) {
 }
 
 sdm_theme <- function() {
-  bs_theme() |>
+  bs_theme("card-border-radius" = "0") |>
     bs_add_rules(
       "
+      /* Format sub questions */
       .sub-question {
         padding-left: 15px;
         padding-top: 5px;
         border-radius: 5px;
         background-color: #e2eae0;
       }
+      /* Create a mini button (Copy button) */
       .btn-mini {
         background-color: transparent;
         border: 0;
@@ -219,6 +223,10 @@ sdm_theme <- function() {
       /* Fix selectize dropdown appearing below leaflet controls */
         .selectize-dropdown {
           z-index: 1001 !important;
+        }
+      /* Remove gaps between cards and page */
+        .main.bslib-gap-spacing {
+          padding: 0 !important;
         }
     "
     )

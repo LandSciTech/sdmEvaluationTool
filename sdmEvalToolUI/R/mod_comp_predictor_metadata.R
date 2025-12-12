@@ -19,9 +19,18 @@ test_comp_predictor_metadata <- function(...) {
 #' @export
 #' @examples
 #' mod_comp_predictor_metadata_ui()
-mod_comp_predictor_metadata_ui <- function(id = "comp_predictor_metadata") {
-  tagList(
+
+mod_comp_predictor_metadata_ui <- function(
+  id = "comp_predictor_metadata",
+  height,
+  header = NULL
+) {
+  sdm_card(
+    min_height = height,
+    header,
+    card_body(
     reactable::reactableOutput(NS(id, "predictor_metadata"))
+  )
   )
 }
 

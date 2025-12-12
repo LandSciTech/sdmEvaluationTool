@@ -27,20 +27,20 @@ mod_page_model_ui <- function(
 ) {
   nav_panel(
     title,
-    layout_sidebar(
+    sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-      h2(textOutput(NS(id, "title"))),
 
       layout_column_wrap(
         width = NULL,
+        gap = 0,
         style = css(grid_template_columns = "1fr 3fr"),
-        card(
-          h4("Model fit"),
-          mod_comp_model_fit_ui(NS(id, "model_fit"))
+        mod_comp_model_fit_ui(
+          NS(id, "model_fit"),
+          header = card_header("Model Fit")
         ),
-        card(
-          h4("Model summary"),
-          mod_comp_model_summary_ui(NS(id, "model_summary"))
+        mod_comp_model_summary_ui(
+          NS(id, "model_summary"),
+          header = card_header("Model Summary")
         )
       )
     )
@@ -64,13 +64,6 @@ mod_page_model_server <- function(id = "model", ...) {
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
-    output$title <- renderText(paste0(
-      "Model statistics for model ",
-      model_id(),
-      " and species ",
-      species_id()
-    ))
-
     # Prepare the evaluation questions
     mod_utils_evaluations_server(
       "eval",

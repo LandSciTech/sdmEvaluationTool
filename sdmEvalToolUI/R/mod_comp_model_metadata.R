@@ -19,8 +19,12 @@ test_comp_model_metadata <- function(...) {
 #' @export
 #' @examples
 #' mod_comp_model_metadata_ui()
-mod_comp_model_metadata_ui <- function(id = "comp_model_metadata") {
-  tagList(
+mod_comp_model_metadata_ui <- function(
+  id = "comp_model_metadata",
+  header = NULL
+) {
+  sdm_card(
+    header,
     "Placeholder for UI elements"
   )
 }

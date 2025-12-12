@@ -19,9 +19,23 @@ test_comp_predictor_raster <- function() {
 #' @export
 #' @examples
 #' mod_comp_predictor_raster_ui()
-mod_comp_predictor_raster_ui <- function(id = "comp_predictor_raster") {
-  tagList(
-    tagList(
+mod_comp_predictor_raster_ui <- function(
+  id = "comp_predictor_raster",
+  height = NULL,
+  header = NULL
+) {
+  sdm_card(
+    min_height = height,
+    header,
+    #card_body(fill = FALSE, fillable = FALSE, )),
+    card_body(
+      class = "p-0",
+      min_height = 400,
+      as_fill_carrier(
+        div(
+          style = "position: relative",
+          sdm_spinner(leaflet::leafletOutput(NS(id, "map"), height = "100%")),
+          absolutePanel(
       uiOutput(NS(id, "ui_selectors")),
       sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
     )

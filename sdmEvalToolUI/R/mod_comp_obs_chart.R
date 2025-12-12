@@ -20,38 +20,37 @@ test_comp_obs_chart <- function(...) {
 #' @examples
 #' mod_comp_obs_chart_ui()
 
-mod_comp_obs_chart_ui <- function(id = "comp_obs_chart") {
-  tagList(
-    tagList(
-      div(
-        style = "display:grid; grid-template-columns: 200px 200px 200px; gap: 10px; padding-bottom:10px;",
-        # style = "display:inline-block",
-        selectInput(
-          NS(id, "summary"),
-          label = "Summarize",
-          choices = c(
-            "Observations" = "nobs",
-            "Detections" = "ndet"
-          )
-        ),
-        selectInput(
-          NS(id, "groups"),
-          label = "Group by",
-          choices = c(
-            "Year" = "year",
-            "Month" = "month",
-            "Method" = "method"
-          )
-        ),
-        selectInput(
-          NS(id, "fill"),
-          label = "Color by",
-          choices = c(
-            "None" = "none",
-            # "Year" = "year",
-            "Month" = "month",
-            "Method" = "method"
-          )
+mod_comp_obs_chart_ui <- function(id = "comp_obs_chart", header = NULL) {
+  sdm_card(
+    header,
+    div(
+      style = "display:grid; grid-template-columns: 200px 200px 200px; gap: 10px; padding-bottom:10px;",
+      # style = "display:inline-block",
+      selectInput(
+        NS(id, "summary"),
+        label = "Summarize",
+        choices = c(
+          "Observations" = "nobs",
+          "Detections" = "ndet"
+        )
+      ),
+      selectInput(
+        NS(id, "groups"),
+        label = "Group by",
+        choices = c(
+          "Year" = "year",
+          "Month" = "month",
+          "Method" = "method"
+        )
+      ),
+      selectInput(
+        NS(id, "fill"),
+        label = "Color by",
+        choices = c(
+          "None" = "none",
+          # "Year" = "year",
+          "Month" = "month",
+          "Method" = "method"
         )
       )
     ),

@@ -44,11 +44,18 @@ mod_page_predictors_ui <- function(
 ) {
   nav_panel(
     title,
-    layout_sidebar(
+    sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-      h2(textOutput(NS(id, "title"))),
-      mod_comp_predictor_metadata_ui(NS(id, "predictor_metadata")),
-      mod_comp_predictor_raster_ui(NS(id, "predictor_raster"))
+      mod_comp_predictor_raster_ui(
+        NS(id, "predictor_raster"),
+        height = "60%",
+        header = card_header("Predictor Raster")
+      ),
+      mod_comp_predictor_metadata_ui(
+        NS(id, "predictor_metadata"),
+        height = "40%",
+        header = card_header("Predictor Metadata")
+      )
     )
   )
 }
@@ -69,11 +76,6 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
-    output$title <- renderText(paste0(
-      "Model predictors for model ",
-      model_id()
-    ))
-
     # Prepare the evaluation questions
     mod_utils_evaluations_server(
       "eval",

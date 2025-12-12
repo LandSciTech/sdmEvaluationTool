@@ -19,8 +19,9 @@ test_comp_model_fit <- function(...) {
 #' @examples
 #' mod_comp_model_fit_ui()
 
-mod_comp_model_fit_ui <- function(id = "comp_model_fit") {
-  tagList(
+mod_comp_model_fit_ui <- function(id = "comp_model_fit", header = NULL) {
+  sdm_card(
+    header,
     reactable::reactableOutput(NS(id, "model_fit"))
   )
 }

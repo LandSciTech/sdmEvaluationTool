@@ -28,9 +28,8 @@ mod_page_predictions_ui <- function(
 ) {
   nav_panel(
     title,
-    layout_sidebar(
+    sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-      h2(textOutput(NS(id, "title"))),
       mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
     )
   )
@@ -53,13 +52,6 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
-    output$title <- renderText(paste0(
-      "Spatial predictions for model ",
-      model_id(),
-      " and species ",
-      species_id()
-    ))
-
     # Placeholder reactiveVal until map created
     spatial_ids <- reactiveVal(NULL)
 

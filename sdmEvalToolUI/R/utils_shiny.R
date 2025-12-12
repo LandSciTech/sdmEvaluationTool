@@ -43,10 +43,34 @@ map_reactive_vals <- function(
   rv
 }
 
-sdm_spinner <- function(ui_element) {
-  shinycssloaders::withSpinner(
-    type = 8,
-    color.background = bs_get_variables(sdm_theme(), "primary"),
-    ui_element
+sdm_spinner <- function(ui_element, fill = TRUE) {
+  as_fill_carrier(
+    shinycssloaders::withSpinner(
+      type = 8,
+      color.background = bs_get_variables(sdm_theme(), "primary"),
+      ui_element
+    )
+  )
+}
+
+sdm_card <- function(
+  ...,
+  class = "p-0",
+  full_screen = TRUE,
+  min_height = 400
+) {
+  card(
+    class = class,
+    full_screen = full_screen,
+    min_height = min_height,
+    ...
+  )
+}
+
+sdm_layout_sidebar <- function(..., gap = 0, border = FALSE) {
+  layout_sidebar(
+    gap = gap,
+    border = border,
+    ...
   )
 }

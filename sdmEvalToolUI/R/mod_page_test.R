@@ -31,14 +31,13 @@ mod_page_test_ui <- function(
 ) {
   nav_panel(
     "Test",
-    layout_sidebar(
+    sdm_layout_sidebar(
       sidebar = sidebar(
         width = review_width,
         position = "right",
         "Evaluations",
         uiOutput(NS(id, "ui_questions"))
       ),
-      h2(textOutput(NS(id, "title"))),
       uiOutput(NS(id, "details")),
       tableOutput(NS(id, "saved"))
     )
@@ -62,7 +61,6 @@ mod_page_test_server <- function(id = "test", ...) {
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
-    output$title <- renderText("Test")
     output$details <- renderUI({
       tagList(
         "Test for Model: ",

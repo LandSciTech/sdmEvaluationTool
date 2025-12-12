@@ -25,8 +25,10 @@ test_page_overview <- function(
 mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   nav_panel(
     title,
-    "Current status of review",
-    reactable::reactableOutput(NS(id, "tbl_overview"))
+    sdm_card(
+      card_header("Current status of review"),
+      reactable::reactableOutput(NS(id, "tbl_overview"))
+    )
   )
 }
 
