@@ -36,8 +36,14 @@ mod_comp_predictor_raster_ui <- function(
           style = "position: relative",
           sdm_spinner(leaflet::leafletOutput(NS(id, "map"), height = "100%")),
           absolutePanel(
-      uiOutput(NS(id, "ui_selectors")),
-      sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+            uiOutput(NS(id, "ui_selectors")),
+            top = 10,
+            left = 10,
+            width = 300,
+            style = "padding-left:50px"
+          ),
+        )
+      )
     )
   )
 }
@@ -63,19 +69,15 @@ mod_comp_predictor_raster_server <- function(
 
     # Switch among map layers
     output$ui_selectors <- renderUI({
-      tagList(
-        div(
-          style = "display:grid; grid-template-columns: 200px 200px; gap: 10px; padding-bottom:10px;",
-          selectInput(
-            ns("predictor"),
-            label = "Predictor Displayed",
-            choices = names(predictor_raster())
-          )
-        )
+      selectInput(
+        ns("predictor"),
+        label = "Predictor",
+        choices = names(predictor_raster())
       )
     })
 
     map <- reactive({
+      validate_ids(model_id = model_id)
       req(input_ready())
       predictor_raster_map(predictor_raster(), isolate(input$predictor))
     })
@@ -152,6 +154,5 @@ predictor_raster_layer <- function(map, raster = NULL, layers = NULL) {
 #' predictor_raster_prep("bam_v5_can71")
 
 predictor_raster_prep <- function(model_id) {
-  validate_ids(model_id = model_id)
   prep_materials("predictor_raster", model_id = model_id)
 }
