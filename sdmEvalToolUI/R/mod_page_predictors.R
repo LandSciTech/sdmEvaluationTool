@@ -6,24 +6,8 @@
 #' @examplesIf have_data()
 #' test_page_predictors()
 
-test_page_predictors <- function() {
-  # TODO: define location, pages, etc. elsewhere
-  prep_data() |> expand_list()
-
-  ui <- bslib::page_navbar(
-    title = "SDM Tool Testing",
-    theme = sdm_theme(),
-    mod_page_predictors_ui()
-  )
-
-  server <- function(input, output, session) {
-    mod_page_predictors_server(
-      deployment_id = reactive("deployment1"),
-      model_id = reactive("bam_v5_can71")
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_page_predictors <- function(...) {
+  test_page("mod_page_predictors", ...)
 }
 
 #' Predictors Page UI
