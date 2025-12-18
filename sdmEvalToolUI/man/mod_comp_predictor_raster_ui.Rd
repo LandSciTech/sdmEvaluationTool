@@ -4,10 +4,18 @@
 \alias{mod_comp_predictor_raster_ui}
 \title{Predictor Raster Component UI}
 \usage{
-mod_comp_predictor_raster_ui(id = "comp_predictor_raster")
+mod_comp_predictor_raster_ui(
+  id = "comp_predictor_raster",
+  height = NULL,
+  header = NULL
+)
 }
 \arguments{
 \item{id}{Shiny module ID}
+
+\item{height}{Height}
+
+\item{header}{Header}
 }
 \value{
 Shiny UI

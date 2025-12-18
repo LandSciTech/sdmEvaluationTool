@@ -1,26 +1,20 @@
 #' Test the Model Fit Component
 #'
+#' @param ... Arguments passed to other functions.
+#'
 #' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
 #' test_comp_model_fit()
-test_comp_model_fit <- function() {
-  ui <- mod_comp_model_fit_ui()
-
-  server <- function(input, output, session) {
-    mod_comp_model_fit_server(
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO")
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_comp_model_fit <- function(...) {
+    test_comp("mod_comp_model_fit", use = c("model_id", "species_id"), ...)
 }
 
 #' Model Fit Component UI
 #'
 #' @param id Shiny module ID
+#' @param header Header
 #'
 #' @returns Shiny UI
 #'
@@ -28,22 +22,23 @@ test_comp_model_fit <- function() {
 #' @examples
 #' mod_comp_model_fit_ui()
 
-mod_comp_model_fit_ui <- function(id = "comp_model_fit") {
-  tagList(
-    reactable::reactableOutput(NS(id, "model_fit"))
-  )
+mod_comp_model_fit_ui <- function(id = "comp_model_fit", header = NULL) {
+    sdm_card(
+        header,
+        reactable::reactableOutput(NS(id, "model_fit"))
+    )
 }
 
 
 mod_comp_model_fit_server <- function(
-  id = "comp_model_fit",
-  model_id,
-  species_id
+    id = "comp_model_fit",
+    model_id,
+    species_id
 ) {
-  moduleServer(id, function(input, output, session) {
-    model_fit <- reactive(model_fit_prep(model_id(), species_id()))
-    output$model_fit <- reactable::renderReactable(model_fit_table(model_fit()))
-  })
+    moduleServer(id, function(input, output, session) {
+        model_fit <- reactive(model_fit_prep(model_id(), species_id()))
+        output$model_fit <- reactable::renderReactable(model_fit_table(model_fit()))
+    })
 }
 
 
@@ -59,7 +54,14 @@ mod_comp_model_fit_server <- function(
 #'   model_fit_table()
 
 model_fit_table <- function(model_fit) {
-  reactable::reactable(model_fit)
+    reactable::reactable(
+        model_fit,
+        defaultPageSize = nrow(model_fit),
+        minRows = nrow(model_fit),
+        columns = list(
+            value = reactable::colDef(format = reactable::colFormat(digits = 3))
+        )
+    )
 }
 
 #' Prepare Model Fit Data
@@ -74,5 +76,5 @@ model_fit_table <- function(model_fit) {
 #' model_fit_prep(model_ = "bam_v5_can71", species_id = "BBWO")
 
 model_fit_prep <- function(model_id, species_id) {
-  prep_materials("model_fit", model_id = model_id, species_id = species_id)
+    prep_materials("model_fit", model_id = model_id, species_id = species_id)
 }

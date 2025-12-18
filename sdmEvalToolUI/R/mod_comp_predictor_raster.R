@@ -7,63 +7,151 @@
 #' test_comp_predictor_raster()
 
 test_comp_predictor_raster <- function() {
-  ui <- mod_comp_predictor_raster_ui()
-
-  server <- function(input, output, session) {
-    mod_comp_predictor_raster_server(
-      model_id = reactive("bam_v5_can71")
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+    test_comp("mod_comp_predictor_raster", use = "model_id", ...)
 }
 
 #' Predictor Raster Component UI
 #'
 #' @param id Shiny module ID
+#' @param height Height
+#' @param header Header
 #'
 #' @returns Shiny UI
 #'
 #' @export
 #' @examples
 #' mod_comp_predictor_raster_ui()
-mod_comp_predictor_raster_ui <- function(id = "comp_predictor_raster") {
-  tagList(
-    tagList(
-      leaflet::leafletOutput(NS(id, "predictor_raster"))
+mod_comp_predictor_raster_ui <- function(
+    id = "comp_predictor_raster",
+    height = NULL,
+    header = NULL
+) {
+    sdm_card(
+        min_height = height,
+        header,
+        #card_body(fill = FALSE, fillable = FALSE, )),
+        card_body(
+            class = "p-0",
+            min_height = 400,
+            as_fill_carrier(
+                div(
+                    style = "position: relative",
+                    sdm_spinner(leaflet::leafletOutput(
+                        NS(id, "map"),
+                        height = "100%"
+                    )),
+                    absolutePanel(
+                        uiOutput(NS(id, "ui_selectors")),
+                        top = 10,
+                        left = 10,
+                        width = 300,
+                        style = "padding-left:50px"
+                    ),
+                )
+            )
+        )
     )
-  )
 }
 
 
 mod_comp_predictor_raster_server <- function(
-  id = "comp_predictor_raster",
-  model_id
+    id = "comp_predictor_raster",
+    model_id
 ) {
-  moduleServer(id, function(input, output, session) {
-    predictor_raster <- reactive(predictor_raster_prep(model_id()))
-    output$predictor_raster <- leaflet::renderLeaflet({
-      predictor_raster() |>
-        predictor_raster_map()
+    moduleServer(id, function(input, output, session) {
+        # Setup -------------------------------------------------------------
+        ns <- session$ns
+
+        # Use reactiveVal to catch first time the input predictor is ready to ensure
+        # the map doesn't render until it has that initial input.
+        input_ready <- reactiveVal(FALSE)
+        observe(
+            if (!is.null(input$predictor) && !input_ready()) input_ready(TRUE)
+        )
+
+        # Map ----------------------------------------------------------
+        predictor_raster <- reactive({
+            predictor_raster_prep(model_id())
+        })
+
+        # Switch among map layers
+        output$ui_selectors <- renderUI({
+            selectInput(
+                ns("predictor"),
+                label = "Predictor",
+                choices = names(predictor_raster())
+            )
+        })
+
+        map <- reactive({
+            validate_ids(model_id = model_id)
+            req(input_ready())
+            predictor_raster_map(predictor_raster(), isolate(input$predictor))
+        })
+
+        output$map <- leaflet::renderLeaflet({
+            map()
+        })
+
+        observe({
+            leaflet::leafletProxy("map", session = session) |>
+                leaflet::clearControls() |>
+                predictor_raster_layer(
+                    predictor_raster(),
+                    layer = input$predictor
+                )
+        })
     })
-  })
 }
 
 
 #' Create a Leaflet Map of Predictor Raster Data
 #'
 #' @param predictor_raster terra Raster. Predictor information
+#' @param layers Layers
 #'
 #' @returns A leaflet map object
 #'
 #' @export
 #' @examplesIf have_data()
-#' skip_eg()
-#' # predictor_raster_prep("bam_v5_can71") |> predictor_raster_map()
+#' predictor_raster_prep("bam_v5_can71") |>
+#'   predictor_raster_map(layers = "year")
 
-predictor_raster_map <- function(predictor_raster) {
-  leaflet::leaflet() |>
-    leaflet::addRasterImage(predictor_raster[[1]])
+predictor_raster_map <- function(predictor_raster, layers = NULL) {
+    base_map() |>
+        predictor_raster_layer(raster = predictor_raster, layers = layers)
+}
+
+
+predictor_raster_layer <- function(map, raster = NULL, layers = NULL) {
+    if (is.null(layers)) {
+        return(map)
+    }
+
+    # Use map data if no raster
+    raster <- raster %||% leaflet::getMapData(map)
+
+    for (l in layers) {
+        map <- add_raster(
+            map,
+            raster,
+            layer = l,
+            name = l,
+            palette = "viridis",
+            opacity = 1
+        )
+    }
+
+    # Show selections for multiple layers
+    if (length(layers) > 1) {
+        g <- layers
+    } else {
+        g <- character(0)
+    }
+
+    map <- add_control(map, groups = g)
+
+    map
 }
 
 #' Prepare Predictor Raster Data
@@ -74,9 +162,8 @@ predictor_raster_map <- function(predictor_raster) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' skip_eg()
-#' # predictor_raster_prep("bam_v5_can71")
+#' predictor_raster_prep("bam_v5_can71")
 
 predictor_raster_prep <- function(model_id) {
-  prep_materials("predictor_raster", model_id = model_id)
+    prep_materials("predictor_raster", model_id = model_id)
 }

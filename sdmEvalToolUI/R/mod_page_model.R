@@ -6,49 +6,46 @@
 #' @examplesIf have_data()
 #' test_page_model()
 
-test_page_model <- function() {
-  # TODO: define location, pages, etc. elsewhere
-  prep_data() |> expand_list()
-
-  ui <- bslib::page_navbar(
-    title = "SDM Tool Testing",
-    mod_page_model_ui()
-  )
-
-  server <- function(input, output, session) {
-    mod_page_model_server(
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO"),
-      tbl_deployments = tbl_deployments,
-      tbl_models = tbl_models,
-      tbl_species = tbl_species
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_page_model <- function(...) {
+    test_page("mod_page_model", ...)
 }
 
 #' Model Page UI
 #'
 #' @param id Shiny module ID
 #' @param title Page title
+#' @param review_width Review width
 #'
 #' @returns Shiny UI
 #'
 #' @export
 #' @examples
 #' mod_page_model_ui()
-mod_page_model_ui <- function(id = "model", title = "Model") {
-  nav_panel(
-    title,
-    h2(textOutput(NS(id, "title"))),
+mod_page_model_ui <- function(
+    id = "model",
+    title = "Model",
+    review_width = NULL
+) {
+    nav_panel(
+        title,
+        sdm_layout_sidebar(
+            sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
 
-    h4("Model summary"),
-    mod_comp_model_summary_ui(NS(id, "model_summary")),
-
-    h4("Model fit"),
-    mod_comp_model_fit_ui(NS(id, "model_fit"))
-  )
+            layout_column_wrap(
+                width = NULL,
+                gap = 0,
+                style = css(grid_template_columns = "1fr 3fr"),
+                mod_comp_model_fit_ui(
+                    NS(id, "model_fit"),
+                    header = card_header("Model Fit")
+                ),
+                mod_comp_model_summary_ui(
+                    NS(id, "model_summary"),
+                    header = card_header("Model Summary")
+                )
+            )
+        )
+    )
 }
 
 #' Model Page Server
@@ -61,19 +58,24 @@ mod_page_model_ui <- function(id = "model", title = "Model") {
 #' @export
 
 mod_page_model_server <- function(id = "model", ...) {
-  expand_dots(...)
-  stopifnot(is.reactive(model_id))
-  stopifnot(is.reactive(species_id))
+    expand_dots(...)
+    stopifnot(is.reactive(deployment_id))
+    stopifnot(is.reactive(model_id))
+    stopifnot(is.reactive(species_id))
+    purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
-  moduleServer(id, function(input, output, session) {
-    output$title <- renderText(paste0(
-      "Model statistics for model ",
-      model_id(),
-      " and species ",
-      species_id()
-    ))
+    moduleServer(id, function(input, output, session) {
+        # Prepare the evaluation questions
+        mod_utils_evaluations_server(
+            "eval",
+            component_id = c("model_fit", "model_summary"),
+            deployment_id = deployment_id,
+            model_id = model_id,
+            species_id = species_id,
+            lang = opts$lang
+        )
 
-    mod_comp_model_summary_server("model_summary", model_id, species_id)
-    mod_comp_model_fit_server("model_fit", model_id, species_id)
-  })
+        mod_comp_model_summary_server("model_summary", model_id, species_id)
+        mod_comp_model_fit_server("model_fit", model_id, species_id)
+    })
 }

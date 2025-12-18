@@ -17,7 +17,6 @@ Prepare Predictor Raster Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-skip_eg()
-# predictor_raster_prep("bam_v5_can71")
+predictor_raster_prep("bam_v5_can71")
 \dontshow{\}) # examplesIf}
 }

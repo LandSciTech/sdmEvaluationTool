@@ -1,27 +1,21 @@
 #' Test the Spatial Prediction Component
 #'
+#' @param ... Arguments passed to other functions.
+#'
 #' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
 #' test_comp_spatial_prediction()
 
-test_comp_spatial_prediction <- function() {
-    ui <- mod_comp_spatial_prediction_ui()
-
-    server <- function(input, output, session) {
-        mod_comp_spatial_prediction_server(
-            model_id = reactive("bam_v5_can71"),
-            species_id = reactive("BBWO")
-        )
-    }
-
-    shiny::shinyApp(ui, server, options = list(port = 8080))
+test_comp_spatial_prediction <- function(...) {
+    test_comp("mod_comp_spatial_prediction", ...)
 }
 
 #' Spatial Prediction Component UI
 #'
 #' @param id Shiny module ID
+#' @param header Header
 #'
 #' @returns Shiny UI
 #'
@@ -29,40 +23,71 @@ test_comp_spatial_prediction <- function() {
 #' @examples
 #' mod_comp_spatial_prediction_ui()
 
-mod_comp_spatial_prediction_ui <- function(id = "comp_spatial_prediction") {
-    tagList(
-        div(
-            style = "position: relative;",
-            leaflet::leafletOutput(NS(id, "spatial_prediction")),
-            absolutePanel(
-                uiOutput(NS(id, "ui_selectors")),
-                top = 10,
-                right = 10
-            )
-        )
+mod_comp_spatial_prediction_ui <- function(
+    id = "comp_spatial_prediction",
+    header = NULL
+) {
+    sdm_card(
+        header,
+        sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
+        mod_utils_map_selections_ui(NS(id, "select"), spatial_type = "areas")
     )
 }
 
 
 mod_comp_spatial_prediction_server <- function(
     id = "comp_spatial_prediction",
+    deployment_id,
     model_id,
-    species_id
+    species_id,
+    spatial_selection,
+    spatial_ids
 ) {
+    stopifnot(is.reactive(deployment_id))
+    stopifnot(is.reactive(model_id))
+    stopifnot(is.reactive(species_id))
+
     moduleServer(id, function(input, output, session) {
-        spatial_prediction <- reactive(spatial_prediction_prep(
-            model_id(),
-            species_id()
-        ))
-        # FIXME: where does deployment_id come from? Is it at the session level?
-        # deployment_subunits <- reactive(deployment_subunits_prep(deployment_id = "deployment1"))
-        deployment_subunits <- NULL
-        output$spatial_prediction <- leaflet::renderLeaflet({
-            spatial_prediction() |>
-                spatial_prediction_map(
-                    deployment_subunits = deployment_subunits
-                )
+        # Map --------------------------------------------------------------------
+        spatial_prediction <- reactive({
+            spatial_prediction_prep(model_id(), species_id())
         })
+
+        subunits <- reactive({
+            deployment_subunits_prep(deployment_id())
+        })
+
+        output$map <- leaflet::renderLeaflet({
+            validate_ids(
+                deployment_id = deployment_id(),
+                model_id = model_id(),
+                species_id = species_id()
+            )
+            spatial_prediction_map(
+                spatial_prediction(),
+                subunits(),
+                ns = session$ns
+            )
+        })
+
+        # Process and show map selections ---------------------------------------
+        interactions <- map_reactive_vals(input, "map")
+
+        mod_utils_map_selections_server(
+            "select",
+            data = subunits,
+            spatial_selection,
+            interactions,
+            spatial_type = "areas",
+            parent_session = session
+        )
+
+        # Return ---------------------
+        observe({
+            spatial_ids(subunits()$id)
+        })
+
+        spatial_ids
     })
 }
 
@@ -70,23 +95,38 @@ mod_comp_spatial_prediction_server <- function(
 #' Create a Leaflet Map of Spatial Prediction Data
 #'
 #' @param spatial_prediction terra Raster. Spatial predictions
-#' @param deployment_subunits Deployment subunits.
+#' @param subunits Spatial Data frame. Deployment subunits.
+#' @param ns Namespace.
 #'
 #' @returns A leaflet map object
 #'
 #' @export
 #' @examplesIf have_data()
-#' spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
-#'   spatial_prediction_map()
+#' p <- spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+#' s <- deployment_subunits_prep("deployment1")
+#' spatial_prediction_map(p)
+#' spatial_prediction_map(p, s)
 
 spatial_prediction_map <- function(
     spatial_prediction,
-    deployment_subunits = NULL
+    subunits = NULL,
+    ns = identity
 ) {
-    raster_map(
-        spatial_prediction,
-        deployment_subunits
-    )
+    base_map(ns = ns) |>
+        add_raster(
+            spatial_prediction,
+            layer = "mean",
+            name = "Distribution",
+            palette = "Spectral"
+        ) |>
+        add_raster(
+            spatial_prediction,
+            layer = "cv",
+            name = "Uncertainty",
+            palette = "viridis"
+        ) |>
+        add_subunits(subunits) |>
+        add_control(groups = c("Distribution", "Uncertainty"))
 }
 
 #' Prepare Spatial Prediction Data

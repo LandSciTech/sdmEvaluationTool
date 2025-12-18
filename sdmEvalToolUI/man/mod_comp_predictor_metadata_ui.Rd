@@ -4,10 +4,18 @@
 \alias{mod_comp_predictor_metadata_ui}
 \title{Predictor Metadata Component UI}
 \usage{
-mod_comp_predictor_metadata_ui(id = "comp_predictor_metadata")
+mod_comp_predictor_metadata_ui(
+  id = "comp_predictor_metadata",
+  height,
+  header = NULL
+)
 }
 \arguments{
 \item{id}{Shiny module ID}
+
+\item{height}{Height}
+
+\item{header}{Header}
 }
 \value{
 Shiny UI

@@ -6,32 +6,15 @@
 #' @examplesIf have_data()
 #' test_page_model_metadata()
 
-test_page_model_metadata <- function() {
-  # TODO: define location, pages, etc. elsewhere
-  prep_data() |> expand_list()
-
-  ui <- bslib::page_navbar(
-    title = "SDM Tool Testing",
-    mod_page_model_metadata_ui()
-  )
-
-  server <- function(input, output, session) {
-    mod_page_model_metadata_server(
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO"),
-      tbl_deployments = tbl_deployments,
-      tbl_models = tbl_models,
-      tbl_species = tbl_species
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_page_model_metadata <- function(...) {
+    test_page("mod_page_model_metadata", ...)
 }
 
 #' Model Metadata Page UI
 #'
 #' @param id Shiny module ID
 #' @param title Page title
+#' @param review_width Review width
 #'
 #' @returns Shiny UI
 #'
@@ -39,14 +22,17 @@ test_page_model_metadata <- function() {
 #' @examples
 #' mod_page_model_metadata_ui()
 mod_page_model_metadata_ui <- function(
-  id = "model_metadata",
-  title = "Model_Metadata"
+    id = "model_metadata",
+    title = "Model Metadata",
+    review_width = NULL
 ) {
-  nav_panel(
-    title,
-    h2(textOutput(NS(id, "title"))),
-    mod_comp_model_metadata_ui(NS(id, "model_metadata"))
-  )
+    nav_panel(
+        title,
+        sdm_layout_sidebar(
+            sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+            mod_comp_model_metadata_ui(NS(id, "model_metadata"))
+        )
+    )
 }
 
 #' Model Metadata Page Server
@@ -59,12 +45,22 @@ mod_page_model_metadata_ui <- function(
 #' @export
 
 mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
-  expand_dots(...)
-  stopifnot(is.reactive(model_id))
+    expand_dots(...)
+    stopifnot(is.reactive(deployment_id))
+    stopifnot(is.reactive(model_id))
+    purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
-  moduleServer(id, function(input, output, session) {
-    output$title <- renderText(paste0("Model Metadata: ", model_id()))
+    moduleServer(id, function(input, output, session) {
+        # Prepare the evaluation questions
+        mod_utils_evaluations_server(
+            "eval",
+            component_id = "model_metadata",
+            deployment_id = deployment_id,
+            model_id = model_id,
+            species_id = reactive("ALL"),
+            lang = opts$lang
+        )
 
-    mod_comp_model_metadata_server("model_metadata", model_id)
-  })
+        mod_comp_model_metadata_server("model_metadata", model_id)
+    })
 }

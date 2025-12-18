@@ -9,33 +9,9 @@
 #'
 #' @examplesIf have_data()
 #' test_page_test()
-#' test_page_test(NULL, NULL, NULL)
 
-test_page_test <- function(
-  deployment_id = "deployment1",
-  model_id = "bam_v5_can71",
-  species_id = "BBWO"
-) {
-  # TODO: define location, pages, etc. elsewhere
-  prep_data() |> expand_list()
-
-  ui <- bslib::page_navbar(
-    title = "SDM Tool Testing",
-    mod_page_test_ui()
-  )
-
-  server <- function(input, output, session) {
-    mod_page_test_server(
-      deployment_id = reactive(deployment_id),
-      model_id = reactive(model_id),
-      species_id = reactive(species_id),
-      tbl_deployments = tbl_deployments,
-      tbl_models = tbl_models,
-      tbl_species = tbl_species
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_page_test <- function(...) {
+  test_page("mod_page_test", ...)
 }
 
 #' Test Page UI
@@ -55,15 +31,14 @@ mod_page_test_ui <- function(
 ) {
   nav_panel(
     "Test",
-    layout_sidebar(
+    sdm_layout_sidebar(
       sidebar = sidebar(
         width = review_width,
         position = "right",
         "Evaluations",
         uiOutput(NS(id, "ui_questions"))
       ),
-      h2(textOutput(NS(id, "title"))),
-      textOutput(NS(id, "details")),
+      uiOutput(NS(id, "details")),
       tableOutput(NS(id, "saved"))
     )
   )
@@ -83,32 +58,33 @@ mod_page_test_server <- function(id = "test", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
-    output$title <- renderText("Test")
-    output$details <- renderText({
-      paste0(
+    output$details <- renderUI({
+      tagList(
         "Test for Model: ",
         model_id(),
         " and species ",
-        species_id()
+        species_id(),
+        p(),
+        "Showing all evaluations possible (regardless of component)"
       )
     })
 
     # Evaluations ----------------------------------------------------
     questions_init <- reactive({
-      #TODO: Read values from disk?
       prep_questions(
-        component_id = "test",
         deployment_id = deployment_id(),
         model_id = model_id(),
-        species_id = species_id()
+        species_id = species_id(),
+        lang = opts$lang()
       )
     }) |>
       bindCache(deployment_id(), model_id(), species_id())
 
     output$ui_questions <- renderUI({
-      ui_questions(questions_init(), session)
+      ui_questions(questions_init(), session = session)
     })
 
     # TODO: Save values temporarily, so not lost if don't "Save Responses"?

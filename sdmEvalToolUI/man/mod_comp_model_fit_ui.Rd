@@ -4,10 +4,12 @@
 \alias{mod_comp_model_fit_ui}
 \title{Model Fit Component UI}
 \usage{
-mod_comp_model_fit_ui(id = "comp_model_fit")
+mod_comp_model_fit_ui(id = "comp_model_fit", header = NULL)
 }
 \arguments{
 \item{id}{Shiny module ID}
+
+\item{header}{Header}
 }
 \value{
 Shiny UI

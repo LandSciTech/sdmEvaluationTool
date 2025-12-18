@@ -6,32 +6,15 @@
 #' @examplesIf have_data()
 #' test_page_predictions()
 
-test_page_predictions <- function() {
-  # TODO: define location, pages, etc. elsewhere
-  prep_data() |> expand_list()
-
-  ui <- bslib::page_navbar(
-    title = "SDM Tool Testing",
-    mod_page_predictions_ui()
-  )
-
-  server <- function(input, output, session) {
-    mod_page_predictions_server(
-      model_id = reactive("bam_v5_can71"),
-      species_id = reactive("BBWO"),
-      tbl_deployments = tbl_deployments,
-      tbl_models = tbl_models,
-      tbl_species = tbl_species
-    )
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+test_page_predictions <- function(...) {
+    test_page("mod_page_predictions", ...)
 }
 
 #' Predictions Page UI
 #'
 #' @param id Shiny module ID
 #' @param title Page title
+#' @param review_width Review width
 #'
 #' @returns Shiny UI
 #'
@@ -39,12 +22,18 @@ test_page_predictions <- function() {
 #' @examples
 #' mod_page_predictions_ui()
 
-mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
-  nav_panel(
-    title,
-    h2(textOutput(NS(id, "title"))),
-    mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
-  )
+mod_page_predictions_ui <- function(
+    id = "predictions",
+    title = "Predictions",
+    review_width = NULL
+) {
+    nav_panel(
+        title,
+        sdm_layout_sidebar(
+            sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+            mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
+        )
+    )
 }
 
 #' Predictions Page Server
@@ -57,22 +46,35 @@ mod_page_predictions_ui <- function(id = "predictions", title = "Predictions") {
 #' @export
 
 mod_page_predictions_server <- function(id = "predictions", ...) {
-  expand_dots(...)
-  stopifnot(is.reactive(model_id))
-  stopifnot(is.reactive(species_id))
+    expand_dots(...)
+    stopifnot(is.reactive(deployment_id))
+    stopifnot(is.reactive(model_id))
+    stopifnot(is.reactive(species_id))
+    purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
-  moduleServer(id, function(input, output, session) {
-    output$title <- renderText(paste0(
-      "Spatial predictions for model ",
-      model_id(),
-      " and species ",
-      species_id()
-    ))
+    moduleServer(id, function(input, output, session) {
+        # Placeholder reactiveVal until map created
+        spatial_ids <- reactiveVal(NULL)
 
-    mod_comp_spatial_prediction_server(
-      "spatial_prediction",
-      model_id = model_id,
-      species_id = species_id
-    )
-  })
+        # Prepare the evaluation questions
+        spatial_selection <- mod_utils_evaluations_server(
+            "eval",
+            component_id = "spatial_prediction",
+            deployment_id = deployment_id,
+            model_id = model_id,
+            species_id = species_id,
+            spatial_ids = spatial_ids,
+            spatial_type = "areas",
+            lang = opts$lang
+        )
+
+        mod_comp_spatial_prediction_server(
+            "spatial_prediction",
+            deployment_id = deployment_id,
+            model_id = model_id,
+            species_id = species_id,
+            spatial_selection = spatial_selection,
+            spatial_ids = spatial_ids #reactiveVal to update in module
+        )
+    })
 }

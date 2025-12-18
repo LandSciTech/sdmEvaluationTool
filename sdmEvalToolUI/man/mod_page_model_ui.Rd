@@ -4,12 +4,14 @@
 \alias{mod_page_model_ui}
 \title{Model Page UI}
 \usage{
-mod_page_model_ui(id = "model", title = "Model")
+mod_page_model_ui(id = "model", title = "Model", review_width = NULL)
 }
 \arguments{
 \item{id}{Shiny module ID}
 
 \item{title}{Page title}
+
+\item{review_width}{Review width}
 }
 \value{
 Shiny UI

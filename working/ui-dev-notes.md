@@ -21,6 +21,7 @@
 - Module naming
     - Top level pages `mod_page_<name_.R` - `mod_page_<name>_ui()` and `mod_page_<name>_server()`
     - Components `mod_comp_<component_id>_ui` and `mod_comp_<component_id>_server` (spec/README.md)
+- There are some problems when input names have spaces, so always convert to "_" and back as needed (cf values for questions)
 
 ## Things to consider
 - Use `brand.yml` for theming to allow easy changes? - https://posit-dev.github.io/brand-yml/

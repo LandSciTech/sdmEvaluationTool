@@ -17,7 +17,7 @@ Create a Table for Predictor Metadata
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-skip_eg()
-# predictor_metadata_prep("bam_v5_can71") |> predictor_metadata_table()
+predictor_metadata_prep("bam_v5_can71") |>
+  predictor_metadata_table()
 \dontshow{\}) # examplesIf}
 }

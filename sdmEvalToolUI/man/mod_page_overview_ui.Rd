@@ -17,6 +17,3 @@ Shiny UI
 \description{
 Overview Page UI
 }
-\examples{
-mod_page_overview_ui()
-}

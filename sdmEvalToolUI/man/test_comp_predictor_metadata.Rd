@@ -4,7 +4,10 @@
 \alias{test_comp_predictor_metadata}
 \title{Test the Predictor Metadata Component}
 \usage{
-test_comp_predictor_metadata()
+test_comp_predictor_metadata(...)
+}
+\arguments{
+\item{...}{Arguments passed to other functions.}
 }
 \value{
 A Shiny app object

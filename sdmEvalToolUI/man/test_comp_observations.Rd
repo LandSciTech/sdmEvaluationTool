@@ -4,7 +4,10 @@
 \alias{test_comp_observations}
 \title{Test the Observations Component}
 \usage{
-test_comp_observations()
+test_comp_observations(...)
+}
+\arguments{
+\item{...}{Arguments passed to other functions.}
 }
 \value{
 A Shiny app object

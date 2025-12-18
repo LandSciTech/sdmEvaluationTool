@@ -4,7 +4,10 @@
 \alias{test_comp_model_summary}
 \title{Test the Model Summary Component}
 \usage{
-test_comp_model_summary()
+test_comp_model_summary(...)
+}
+\arguments{
+\item{...}{Arguments passed to other functions.}
 }
 \value{
 A Shiny app object

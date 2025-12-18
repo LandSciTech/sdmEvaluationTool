@@ -7,7 +7,7 @@
 mod_page_observations_ui(
   id = "observations",
   title = "Observations",
-  review_width = "50\%"
+  review_width = NULL
 )
 }
 \arguments{
@@ -15,7 +15,8 @@ mod_page_observations_ui(
 
 \item{title}{Page title}
 
-\item{review_width}{Character. Width of the review sidebar in percentage of the screen}
+\item{review_width}{Character. Width of the review sidebar in percentage of
+the screen}
 }
 \value{
 Shiny UI

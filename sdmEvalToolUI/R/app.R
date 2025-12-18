@@ -24,6 +24,7 @@ sdm_tool <- function() {
     get(paste0("mod_page_", p, "_server"))
   })
 
+  con <- withr::local_db_connection(db_connect())
   # Users
   # TODO: How do we know which user it is?
   # For now, see option set in zzz.R
@@ -33,120 +34,51 @@ sdm_tool <- function() {
 
   ui <- bslib::page_navbar(
     title = "SDM Tool",
+    theme = sdm_theme(),
     sidebar = mod_sidebar_ui("sidebar"),
-    !!!pages_ui
+    gap = 0,
+    padding = 0,
+    !!!pages_ui,
+    nav_spacer(),
+    nav_item(
+      tags$style("#div_id .selectize-input:after{content: none;}"),
+      div(
+        id = "div_id",
+        selectInput(
+          "user_id",
+          width = 150,
+          label = NULL,
+          choices = c(
+            "Select a user" = "",
+            named_ids(dplyr::tbl(con, "users"))
+          )
+        )
+      )
+    ),
+    nav_item(div(id = "div_id", uiOutput("user_role"))),
+    nav_item(div(
+      id = "div_id",
+      selectInput(
+        "lang",
+        width = 50,
+        label = NULL,
+        choices = c("EN" = "english", "FR" = "french")
+      )
+    ))
   )
 
   server <- function(input, output, session) {
     # Set session-specific options
     # TODO: is this the correct method?
-    observe({
-      set_options(
-        "user_id" = vals$user_id(),
-        "user_role" = vals$user_role(),
-        "lang" = vals$lang()
-      )
-    })
 
-    vals <- mod_sidebar_server(id = "sidebar")
-
-    for (t in pages_server) {
-      t(
-        deployment_id = vals$deployment_id,
-        model_id = vals$model_id,
-        species_id = vals$species_id,
-        user_id = vals$user_id,
-        user_role = vals$user_role,
-        tbl_models = tbl_models,
-        tbl_species = tbl_species
-      )
-    }
-  }
-
-  shiny::shinyApp(ui, server, options = list(port = 8080))
-}
-
-
-mod_sidebar_ui <- function(id) {
-  # TODO: Programmatically get species
-  # TODO: Use display name
-
-  con <- withr::local_db_connection(db_connect())
-
-  sidebar(
-    tagList(
-      #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
-      selectInput(
-        NS(id, "user_id"),
-        label = "User",
-        choices = c(
-          "Select a user" = "",
-          named_ids(dplyr::tbl(con, "users"))
-        )
-      ),
-      uiOutput(NS(id, "user_role")),
-      selectInput(
-        NS(id, "deployment_id"),
-        label = "Deployment",
-        choices = c(
-          "Select a deployment" = "",
-          named_ids(dplyr::tbl(con, "deployments"))
-        )
-      ),
-      selectInput(
-        NS(id, "model_id"),
-        label = "Model",
-        choices = c(
-          "Select a model" = "",
-          named_ids(dplyr::tbl(con, "models"))
-        )
-      ),
-      selectInput(
-        NS(id, "species_id"),
-        label = "Species",
-        choices = c(
-          "Select a species" = "",
-          named_ids(fmt_species(dplyr::tbl(con, "species")), name = "display")
-        )
-      ),
-      selectInput(
-        NS(id, "lang"),
-        "Language",
-        choices = c("English" = "english", "Français" = "french")
-      ),
-
-      strong("Developer outputs"),
-      uiOutput(NS(id, "dev_outputs"))
-    )
-  )
-}
-
-mod_sidebar_server <- function(id) {
-  moduleServer(id, function(input, output, session) {
-    output$dev_outputs <- renderUI({
-      # React and update to changes in these values, but only show the options
-      input$user_id
-      input$user_role
-      input$lang
-
-      # Show current values
-      glue::glue(
-        "Deployment ID: {input$deployment_id}",
-        "Model: {input$model_id}",
-        "Species: {input$species_id}",
-        "User (opt): {sdmevaltool_options()$user_id} ({sdmevaltool_options()$user_role})",
-        "Language (opt): {sdmevaltool_options()$lang}",
-        .sep = "<br>"
-      ) |>
-        htmltools::HTML()
-    })
+    opts <- reactiveValues()
 
     output$user_role <- renderUI({
       if (!isTruthy(input$user_id)) {
-        choices <- c("First select a User" = "")
+        choices <- c("User Role" = "")
       } else {
         con <- withr::local_db_connection(db_connect())
-        u <- user_id() # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
+        u <- input$user_id # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
         roles <- dplyr::tbl(con, "access") |>
           dplyr::filter(.data$user_id == .env$u) |>
           dplyr::pull(.data$user_roles) |>
@@ -157,19 +89,145 @@ mod_sidebar_server <- function(id) {
       }
 
       selectInput(
-        NS(id, "user_role"),
-        label = "Role",
+        "user_role",
+        width = 100,
+        label = NULL,
         choices = choices
       )
     })
 
-    list(
+    vals <- mod_sidebar_server(
+      id = "sidebar",
       user_id = reactive(input$user_id),
       user_role = reactive(input$user_role),
-      deployment_id = reactive(input$deployment_id),
-      model_id = reactive(input$model_id),
-      species_id = reactive(input$species_id),
       lang = reactive(input$lang)
     )
+
+    for (t in pages_server) {
+      t(
+        deployment_id = vals$deployment_id,
+        model_id = vals$model_id,
+        species_id = vals$species_id,
+        opts = list(
+          "user_id" = reactive(input$user_id),
+          "user_role" = reactive(input$user_role),
+          "lang" = reactive(input$lang)
+        )
+      )
+    }
+  }
+
+  shiny::shinyApp(ui, server, options = list(port = 8080))
+}
+
+
+mod_sidebar_ui <- function(id) {
+  sidebar(uiOutput(NS(id, "ui_selectors")))
+}
+
+mod_sidebar_server <- function(id, user_id, user_role, lang) {
+  moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+
+    output$ui_selectors <- renderUI({
+      req(lang())
+      con <- withr::local_db_connection(db_connect())
+
+      tagList(
+        #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
+        selectInput(
+          ns("deployment_id"),
+          label = "Deployment",
+          choices = c(
+            "Select a deployment" = "",
+            named_ids(dplyr::tbl(con, "deployments"))
+          )
+        ),
+        selectInput(
+          ns("model_id"),
+          label = "Model",
+          choices = c(
+            "Select a model" = "",
+            named_ids(dplyr::tbl(con, "models"))
+          )
+        ),
+        selectInput(
+          ns("species_id"),
+          label = "Species",
+          choices = c(
+            "Select a species" = "",
+            named_ids(
+              fmt_species(dplyr::tbl(con, "species"), lang = lang()),
+              name = "display"
+            )
+          )
+        ),
+
+        strong("Developer outputs"),
+        uiOutput(ns("dev_outputs"))
+      )
+    })
+
+    output$dev_outputs <- renderUI({
+      # React and update to changes in these values, but only show the options
+      user_id()
+      user_role()
+      lang()
+      input$deployment_id
+      input$model_id
+      input$species_id
+
+      # Show current values
+      glue::glue(
+        "Deployment ID: {input$deployment_id}",
+        "Model: {input$model_id}",
+        "Species: {input$species_id}",
+        "User: {user_id()} ({user_role()})",
+        "Language: {lang()}",
+        .sep = "<br>"
+      ) |>
+        htmltools::HTML()
+    })
+
+    list(
+      deployment_id = reactive(input$deployment_id),
+      model_id = reactive(input$model_id),
+      species_id = reactive(input$species_id)
+    )
   })
+}
+
+sdm_theme <- function() {
+  bs_theme("card-border-radius" = "0") |>
+    bs_add_rules(
+      "
+      /* Format sub questions */
+      .sub-question {
+        padding-left: 15px;
+        padding-top: 5px;
+        border-radius: 5px;
+        background-color: #e2eae0;
+      }
+      /* Create a mini button (Copy button) */
+      .btn-mini {
+        background-color: transparent;
+        border: 0;
+        padding: 5px;
+        margin: 0;
+      }
+      /* Allow Multiple legends (only legends in the bottom left corner) to go side by side */
+      .leaflet-bottom.leaflet-left > .info.legend.leaflet-control {
+        float: inherit !important;
+        display: inline-block;
+      }
+      /* Fix selectize dropdown appearing below leaflet controls */
+        .selectize-dropdown {
+          z-index: 1001 !important;
+        }
+      /* Remove gaps between cards and page */
+        .main.bslib-gap-spacing {
+          padding: 0 !important;
+        }
+    "
+    )
 }

@@ -2,8 +2,14 @@
 
 #' Base Map with Provider Tiles
 #'
+#' @param ns Namespace.
+#'
 #' @export
-base_map <- function() {
+base_map <- function(ns = identity) {
+    # Track NS by hand for JS
+    button_id <- ns("clear_selection")
+    layers_id <- ns("layers_visible")
+
     leaflet::leaflet() |>
         leaflet::addTiles(
             urlTemplate = "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga",
@@ -24,18 +30,98 @@ base_map <- function() {
             provider = 'Esri.WorldImagery',
             group = "ESRI",
             options = leaflet::providerTileOptions(zIndex = 200)
+        ) |>
+        leaflet.extras::addDrawToolbar(
+            polylineOptions = FALSE,
+            circleOptions = FALSE,
+            rectangleOptions = leaflet.extras::drawRectangleOptions(),
+            polygonOptions = leaflet.extras::drawPolygonOptions(),
+            markerOptions = FALSE,
+            circleMarkerOptions = FALSE
+        ) |>
+        leaflet::addEasyButton(
+            leaflet::easyButton(
+                icon = htmltools::span(
+                    class = "star",
+                    htmltools::HTML("&starf;")
+                ),
+                onClick = leaflet::JS(
+                    # Based on: https://stackoverflow.com/a/62184472
+                    # Just need to make a change that Shiny can detect and respond to
+                    # Need to track NS by hand
+                    glue::glue(
+                        "function(btn, map){{
+            Shiny.onInputChange('{button_id}', Math.random());
+          }}"
+                    )
+                )
+            )
+        ) |>
+        htmlwidgets::onRender(
+            glue::glue(
+                .open = "{{",
+                .close = "}}",
+                "
+    function(el, x) {
+      var map = this;
+      
+      // Track visible layers
+      var visibleLayers = [];
+      
+      // When layer is added
+      map.on('overlayadd', function(e) {
+        visibleLayers.push(e.name);
+        Shiny.setInputValue('{{layers_id}}', visibleLayers);
+      });
+      
+      // When layer is removed
+      map.on('overlayremove', function(e) {
+        var index = visibleLayers.indexOf(e.name);
+        if (index > -1) {
+          visibleLayers.splice(index, 1);
+        }
+        Shiny.setInputValue('{{layers_id}}', visibleLayers);
+      });
+      
+      // Initialize with currently visible layers
+      setTimeout(function() {
+        map.eachLayer(function(layer) {
+          if (layer.options && layer.options.group && map.hasLayer(layer)) {
+            if (!visibleLayers.includes(layer.options.group)) {
+              visibleLayers.push(layer.options.group);
+            }
+          }
+        });
+        Shiny.setInputValue('{{layers_id}}', visibleLayers);
+      }, 500);
+    }
+  "
+            )
         )
 }
 
 #' Add subunits to Leaflet map
 #'
 #' @param map Leaflet map object.
-#' @param subunits Subunits sf polygon (needs to be crs epsg 4326).
-#' @param color Color.
-#' @param opacity Opacity.
+#' @param subunits Spatial Data Frame. Subunits
+#' @param colour_by Vector. Column to fill by
+#' @param opacity Numeric. Opacity.
 #'
 #' @export
-add_subunits <- function(map, subunits, color = "blue", opacity = 0.8) {
+
+add_subunits <- function(
+    map,
+    subunits = NULL,
+    colour_by = "subunit_id",
+    opacity = 0.8
+) {
+    # Skip if no Subunits
+    if (is.null(subunits)) {
+        return(map)
+    }
+
+    pal <- leaflet::colorFactor("#637261ff", subunits[[colour_by]])
+
     map |>
         leaflet::addPolygons(
             data = subunits,
@@ -43,89 +129,194 @@ add_subunits <- function(map, subunits, color = "blue", opacity = 0.8) {
             popup = as.character(subunits$subunit_id),
             weight = 2,
             opacity = opacity,
-            color = color,
+            color = pal(subunits[[colour_by]]),
             fillOpacity = 0,
-            fillColor = NA
+            fillColor = pal(subunits[[colour_by]]),
+            layerId = ~id,
         )
 }
 
-#' Spatial predictions raster map
+#' Add subunits to Leaflet map
 #'
-#' @param spatial_prediction Spatial prediction (and uncertainty) raster.
-#' @param subunits Subunits sf polygon (needs to be crs epsg 4326).
-#' @param opacity Opacity.
+#' @param map Leaflet map object.
+#' @param subunits Spatial Data Frame. Subunits
+#' @param colour_by Vector. Column to fill by
+#' @param opacity,fill_opacity Numeric. Opacity.
 #'
 #' @export
-raster_map <- function(
-    spatial_prediction,
-    deployment_subunits = NULL,
-    opacity = 0.8
+
+add_selected_subunits <- function(
+    map,
+    subunits = NULL,
+    colour_by = "type",
+    opacity = 0.8,
+    fill_opacity = 0.2
 ) {
-    mx1 <- max(
-        terra::values(spatial_prediction[[1]]),
+    # Skip if no Subunits
+    if (is.null(subunits)) {
+        return(map)
+    }
+
+    levels <- levels(subunits[[colour_by]])
+    pal <- leaflet::colorFactor(
+        viridisLite::viridis(n = length(levels)),
+        levels = factor(levels, levels = levels),
+        ordered = TRUE
+    )
+
+    map |>
+        leaflet::addPolygons(
+            data = subunits,
+            group = "Subunits",
+            popup = as.character(subunits$subunit_id),
+            weight = 2,
+            opacity = opacity,
+            color = "black",
+            fillOpacity = fill_opacity,
+            fillColor = pal(subunits[[colour_by]]),
+            layerId = ~id,
+        ) |>
+        leaflet::addLegend(
+            "bottomleft",
+            pal = pal,
+            values = levels,
+            title = "Categories",
+            opacity = 1,
+            position = "bottomright",
+            layerId = "legend" # Required to overwrite
+        )
+}
+
+
+add_raster <- function(map, raster, layer, name, palette, opacity = 0.8) {
+    # Skip if no layer
+    if (!layer %in% names(raster)) {
+        return(map)
+    }
+
+    mx <- max(
+        terra::values(raster[[layer]]),
         na.rm = TRUE
     )
-    pal1 <- leaflet::colorNumeric(
-        "Spectral",
-        domain = c(0, mx1),
+
+    pal <- leaflet::colorNumeric(
+        palette,
+        domain = c(0, mx),
         reverse = TRUE,
         na.color = "transparent"
     )
-    m <- base_map() |>
+
+    map <- map |>
         leaflet::addRasterImage(
-            spatial_prediction[[1]],
-            colors = pal1,
-            group = "Distribution",
+            raster[[layer]],
+            colors = pal,
+            group = name,
             opacity = opacity
         ) |>
         leaflet::addLegend(
-            pal = pal1,
-            values = c(0, mx1),
+            pal = pal,
+            values = c(0, mx),
             position = "bottomleft",
-            title = "Distribution"
+            title = name,
+            layerId = name,
+            group = name
         )
-    gr <- "Distribution"
-    if (dim(spatial_prediction)[3] > 1) {
-        mx2 <- max(
-            terra::values(spatial_prediction[[2]]),
-            na.rm = TRUE
-        )
-        pal2 <- leaflet::colorNumeric(
-            "viridis",
-            domain = c(0, mx2),
-            reverse = TRUE,
-            na.color = "transparent"
-        )
-        m <- m |>
-            leaflet::addRasterImage(
-                spatial_prediction[[2]],
-                colors = pal2,
-                group = "Uncertainty",
-                opacity = opacity
-            ) |>
-            leaflet::addLegend(
-                pal = pal2,
-                values = c(0, mx2),
-                position = "bottomright",
-                title = "Uncertainty"
-            )
 
-        gr <- c(gr, "Uncertainty")
-    }
-    if (!is.null(deployment_subunits)) {
-        m <- m |>
-            add_subunits(deployment_subunits, opacity = opacity)
-        gr <- c(gr, "Subunits")
-    }
-    m <- m |>
+    map
+}
+
+add_control <- function(map, groups = character(0)) {
+    # Keep only groups present
+    groups <- unique(c(groups, "Subunits"))
+    groups <- groups[purrr::map_lgl(groups, \(g) map_has_group(map, g))]
+
+    map <- map |>
         leaflet::addLayersControl(
             baseGroups = c("CartoDB", "ESRI", "Open Street Map", "Google"),
-            overlayGroups = gr,
+            overlayGroups = groups,
             position = "topright",
             options = leaflet::layersControlOptions(collapsed = FALSE)
         )
-    if ("Uncertainty" %in% gr) {
-        m <- m |> leaflet::hideGroup("Uncertainty")
+
+    #if ("Uncertainty" %in% groups) {
+    map <- leaflet::hideGroup(map, "Uncertainty")
+    map <- leaflet::hideGroup(map, "Absence")
+    #}
+    map
+}
+
+add_markers <- function(
+    map,
+    data = leaflet::getMapData(map),
+    colour_by = "layers",
+    layer_by = "layers"
+) {
+    levels <- levels(data[[colour_by]])
+    pal <- leaflet::colorFactor(
+        grey.colors(
+            dplyr::n_distinct(levels),
+            start = 0,
+            end = 1
+        ),
+        factor(levels, levels = levels)
+    )
+
+    dd <- split(data, data[[layer_by]])
+    for (d in dd) {
+        if (nrow(d) > 0) {
+            map <- leaflet::addCircleMarkers(
+                map,
+                color = ~"#000000",
+                label = ~popup,
+                layerId = ~id,
+                group = as.character(unique(d[[layer_by]])),
+                data = d,
+                radius = 5,
+                fillOpacity = 0.7,
+                opacity = 1,
+                weight = 1,
+                fillColor = pal(factor(d[[colour_by]]))
+            )
+        }
     }
-    m
+
+    map
+}
+
+add_selected_markers <- function(
+    map,
+    data = leaflet::getMapData(map),
+    colour_by = "type"
+) {
+    levels <- levels(data[[colour_by]])
+    pal <- leaflet::colorFactor(
+        viridisLite::viridis(n = length(levels)),
+        levels = factor(levels, levels = levels),
+        ordered = TRUE
+    )
+    #"#fde725", data$detections)
+
+    map <- map |>
+        leaflet::addCircleMarkers(
+            color = ~"#000000",
+            label = ~popup,
+            layerId = ~id,
+            data = data,
+            radius = 5,
+            fillOpacity = 0.7,
+            opacity = 1,
+            weight = 1,
+            fillColor = pal(data[[colour_by]])
+        ) |>
+        leaflet::addLegend(
+            "bottomleft",
+            pal = pal,
+            values = levels,
+            title = "Categories",
+            opacity = 1,
+            position = "bottomright",
+            layerId = "legend" # Required to overwrite
+        )
+
+    map
 }

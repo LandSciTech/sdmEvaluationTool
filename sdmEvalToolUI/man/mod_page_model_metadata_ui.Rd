@@ -4,12 +4,18 @@
 \alias{mod_page_model_metadata_ui}
 \title{Model Metadata Page UI}
 \usage{
-mod_page_model_metadata_ui(id = "model_metadata", title = "Model_Metadata")
+mod_page_model_metadata_ui(
+  id = "model_metadata",
+  title = "Model Metadata",
+  review_width = NULL
+)
 }
 \arguments{
 \item{id}{Shiny module ID}
 
 \item{title}{Page title}
+
+\item{review_width}{Review width}
 }
 \value{
 Shiny UI

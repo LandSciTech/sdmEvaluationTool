@@ -4,12 +4,18 @@
 \alias{mod_page_predictors_ui}
 \title{Predictors Page UI}
 \usage{
-mod_page_predictors_ui(id = "predictors", title = "Predictors")
+mod_page_predictors_ui(
+  id = "predictors",
+  title = "Predictors",
+  review_width = NULL
+)
 }
 \arguments{
 \item{id}{Shiny module ID}
 
 \item{title}{Page title}
+
+\item{review_width}{Review width}
 }
 \value{
 Shiny UI
