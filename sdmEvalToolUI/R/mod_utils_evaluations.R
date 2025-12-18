@@ -122,12 +122,11 @@ mod_utils_evaluations_server <- function(
     # Save evaluations ----------------------------------------------
 
     observe({
-      browser()
-
-      save_evaluations(
-        questions = questions_init(),
-        reactiveValuesToList(input)
-      )
+      # TODO: Add saving functionality
+      # save_evaluations(
+      #   questions = questions_init(),
+      #   reactiveValuesToList(input)
+      # )
     }) |>
       bindEvent(input$save)
 
