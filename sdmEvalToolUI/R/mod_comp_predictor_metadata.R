@@ -26,7 +26,7 @@ test_comp_predictor_metadata <- function(...) {
 
 mod_comp_predictor_metadata_ui <- function(
     id = "comp_predictor_metadata",
-    height,
+    height = "40%",
     header = NULL
 ) {
     sdm_card(

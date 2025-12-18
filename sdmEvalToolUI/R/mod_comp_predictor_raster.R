@@ -1,12 +1,14 @@
 #' Test the Predictor Raster Component
 #'
+#' @param ... Other arguments.
+#'
 #' @returns A Shiny app object
 #'
 #' @export
 #' @examplesIf have_data()
 #' test_comp_predictor_raster()
 
-test_comp_predictor_raster <- function() {
+test_comp_predictor_raster <- function(...) {
     test_comp("mod_comp_predictor_raster", use = "model_id", ...)
 }
 
@@ -98,7 +100,7 @@ mod_comp_predictor_raster_server <- function(
                 leaflet::clearControls() |>
                 predictor_raster_layer(
                     predictor_raster(),
-                    layer = input$predictor
+                    layers = input$predictor
                 )
         })
     })

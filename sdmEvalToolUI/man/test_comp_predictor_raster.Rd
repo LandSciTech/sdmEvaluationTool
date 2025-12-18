@@ -4,7 +4,10 @@
 \alias{test_comp_predictor_raster}
 \title{Test the Predictor Raster Component}
 \usage{
-test_comp_predictor_raster()
+test_comp_predictor_raster(...)
+}
+\arguments{
+\item{...}{Other arguments.}
 }
 \value{
 A Shiny app object

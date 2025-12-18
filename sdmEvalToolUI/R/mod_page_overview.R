@@ -115,7 +115,7 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #' @returns A reactable table object
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' tbl <- evals_details("holden", "modeler")
 #' evals_table(tbl, "modeler")
 #' tbl <- evals_details("draper", "evaluator")
@@ -133,7 +133,7 @@ evals_table <- function(tbl, user_role) {
     # Grouped tables https://glin.github.io/reactable/articles/examples.html?q=collaps#grouping-and-aggregation
     # Nested tables https://glin.github.io/reactable/articles/examples.html?q=collaps#nested-tables
 
-    pal <- c("white", colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
+    pal <- c("white", grDevices::colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
     pal_text <- c(rep("black", 50), rep("white", 51))
 
     reactable::reactable(
@@ -271,7 +271,7 @@ evals_table <- function(tbl, user_role) {
 #'   - `n_q_complete`
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' evals_details("holden", "modeler")
 #' evals_details("holden", "evaluator")
 #' evals_details("draper", "modeler")
@@ -445,6 +445,7 @@ evals_details <- function(user_id, user_role, lang) {
 #' @examples
 #' body <- '[{"question": "Q1", "response": "Yes"}]'
 #' evals_extract(body)
+#' @export
 
 evals_extract <- function(json) {
     jsonlite::fromJSON(json) |>
@@ -463,6 +464,7 @@ evals_extract <- function(json) {
 #' body <- '[{"question": "Q1", "response": "Yes"}, {"question": "Q2", "response": ""}]'
 #' eval_data <- evals_extract(body)
 #' evals_answered(eval_data)
+#' @export
 
 evals_answered <- function(eval) {
     dplyr::summarize(
@@ -492,6 +494,7 @@ evals_answered <- function(eval) {
 #' check_q_mismatch(c(1, 1, 2, 10, 6), c(1, 1, 2, 10, 6))
 #' check_q_mismatch(c(10, 7, 1), c(10, NA, NA))
 #' # check_q_mismatch(c(10, 11, 1), c(10, 10, NA)) # Error
+#' @export
 
 check_q_mismatch <- function(q1, q2) {
     if (

@@ -253,7 +253,7 @@ add_markers <- function(
 ) {
     levels <- levels(data[[colour_by]])
     pal <- leaflet::colorFactor(
-        grey.colors(
+        grDevices::grey.colors(
             dplyr::n_distinct(levels),
             start = 0,
             end = 1

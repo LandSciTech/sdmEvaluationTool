@@ -6,7 +6,7 @@
 \usage{
 mod_comp_predictor_metadata_ui(
   id = "comp_predictor_metadata",
-  height,
+  height = "40\%",
   header = NULL
 )
 }

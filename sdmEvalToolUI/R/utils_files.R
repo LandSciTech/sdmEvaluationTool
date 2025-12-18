@@ -248,7 +248,7 @@ prep_evaluations <- function(con, user_id) {
 #' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
 #' a <- list(c("id1", "id2"), c(NULL), "testing", "", "", "", "") |>
 #'   rlang::set_names(q$id)
-#' answers <- purrr::map(list(input, \(x) x[[questions_init()$id]])
+#' # answers <- purrr::map(list(input), \(x) x[[questions_init()$id]])
 save_evaluations <- function(questions, input_list) {
     r <- response_to_json(questions, input_list)
 }
