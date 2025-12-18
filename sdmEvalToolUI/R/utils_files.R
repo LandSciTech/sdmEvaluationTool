@@ -1,6 +1,8 @@
 prep_data <- function() {
     # TODO: Assign this elsewhere?
-    sdmevaltool_options(base = "../misc/base")
+    if (is.null(sdmevaltool_options()$base)) {
+        sdmevaltool_options(base = "../misc/base")
+    }
 
     db <- db_connect()
     tbl_models <- db_read_models(db)
