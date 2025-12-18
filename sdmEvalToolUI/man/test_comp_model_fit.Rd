@@ -4,7 +4,10 @@
 \alias{test_comp_model_fit}
 \title{Test the Model Fit Component}
 \usage{
-test_comp_model_fit()
+test_comp_model_fit(...)
+}
+\arguments{
+\item{...}{Arguments passed to other functions.}
 }
 \value{
 A Shiny app object

@@ -4,7 +4,10 @@
 \alias{test_comp_model_metadata}
 \title{Test the Model Metadata Component}
 \usage{
-test_comp_model_metadata()
+test_comp_model_metadata(...)
+}
+\arguments{
+\item{...}{Arguments passed to other functions.}
 }
 \value{
 A Shiny app object

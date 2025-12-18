@@ -4,10 +4,14 @@
 \alias{spatial_prediction_map}
 \title{Create a Leaflet Map of Spatial Prediction Data}
 \usage{
-spatial_prediction_map(spatial_prediction)
+spatial_prediction_map(spatial_prediction, subunits = NULL, ns = identity)
 }
 \arguments{
 \item{spatial_prediction}{terra Raster. Spatial predictions}
+
+\item{subunits}{Spatial Data frame. Deployment subunits.}
+
+\item{ns}{Namespace.}
 }
 \value{
 A leaflet map object
@@ -17,7 +21,9 @@ Create a Leaflet Map of Spatial Prediction Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
-  spatial_prediction_map()
+p <- spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+s <- deployment_subunits_prep("deployment1")
+spatial_prediction_map(p)
+spatial_prediction_map(p, s)
 \dontshow{\}) # examplesIf}
 }

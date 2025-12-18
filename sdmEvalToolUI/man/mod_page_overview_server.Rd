@@ -9,7 +9,8 @@ mod_page_overview_server(id = "overview", ...)
 \arguments{
 \item{id}{Shiny module ID}
 
-\item{...}{Additional arguments passed via expand_dots including deployment_id, model_id, species_id, tbl_models, tbl_species}
+\item{...}{Additional arguments passed via expand_dots including
+deployment_id, model_id, species_id}
 }
 \value{
 Server function for Shiny module

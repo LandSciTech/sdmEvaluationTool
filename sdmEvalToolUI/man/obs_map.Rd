@@ -4,10 +4,14 @@
 \alias{obs_map}
 \title{Create a Leaflet Map of Observation Data}
 \usage{
-obs_map(obs)
+obs_map(obs, subunits = NULL, ns = identity)
 }
 \arguments{
 \item{obs}{sf data frame. Observations}
+
+\item{subunits}{Subunits}
+
+\item{ns}{Namespace}
 }
 \value{
 A leaflet map object
@@ -17,7 +21,8 @@ Create a Leaflet Map of Observation Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-obs_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
-  obs_map()
+o <- obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+s <- deployment_subunits_prep("deployment1")
+obs_map(o, s)
 \dontshow{\}) # examplesIf}
 }

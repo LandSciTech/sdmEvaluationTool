@@ -4,10 +4,12 @@
 \alias{predictor_raster_map}
 \title{Create a Leaflet Map of Predictor Raster Data}
 \usage{
-predictor_raster_map(predictor_raster)
+predictor_raster_map(predictor_raster, layers = NULL)
 }
 \arguments{
 \item{predictor_raster}{terra Raster. Predictor information}
+
+\item{layers}{Layers}
 }
 \value{
 A leaflet map object
@@ -17,7 +19,7 @@ Create a Leaflet Map of Predictor Raster Data
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-skip_eg()
-# predictor_raster_prep("bam_v5_can71") |> predictor_raster_map()
+predictor_raster_prep("bam_v5_can71") |>
+  predictor_raster_map(layers = "year")
 \dontshow{\}) # examplesIf}
 }

@@ -4,7 +4,10 @@
 \alias{test_comp_spatial_prediction}
 \title{Test the Spatial Prediction Component}
 \usage{
-test_comp_spatial_prediction()
+test_comp_spatial_prediction(...)
+}
+\arguments{
+\item{...}{Arguments passed to other functions.}
 }
 \value{
 A Shiny app object
