@@ -347,7 +347,14 @@ spatial subunits that apply to the question will be interactively selected
 and their IDs saved as the answer. It is assumed that IDs listed as part of
 parts belonging to the same question number are mutually exclusive.
 
-The **default** questions are part of the configuration, accessible for the
+The **follow-up level** can be defined for each question where it makes
+sense according to the modeler when they are assembling the questions
+for a deployment. Follow-up level 0 means no follow up questions.
+Higher numbers (1--6) will add the same number of predetermined follow-up
+questions to the given higher level question.
+
+The **default** questions and the follow-up questions 
+are part of the configuration, accessible for the
 modelers as a CSV file that can be customized and uploaded for a given
 deployment.
 

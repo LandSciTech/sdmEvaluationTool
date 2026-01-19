@@ -96,9 +96,34 @@ for (i in 1:nrow(e)) {
 # e$french <- gsub("[\r\n\t]", "", e$french)
 default_questions <- e
 
+
+# follow-up questions
+e <- do.call(
+    rbind,
+    lapply(conf$followup_questions, \(z) {
+        z$values <- NULL
+        as.data.frame(z)
+    })
+)
+colnames(e)[colnames(e) == "body.en"] <- "english"
+colnames(e)[colnames(e) == "body.fr"] <- "french"
+e$values <- NA_character_
+v <- lapply(conf$question_types, \(x) x$values)
+for (i in 1:nrow(e)) {
+    if (is.null(conf$followup_questions[[i]]$values)) {
+        e$values[[i]] <- list(v[[e$type[i]]])
+        # }
+    } else {
+        e$values[[i]] <- list(conf$followup_questions[[i]]$values)
+    }
+}
+followup_questions <- e
+
+# save data sets
 usethis::use_data(
     components,
     default_questions,
+    followup_questions,
     fields,
     tables,
     user_roles,

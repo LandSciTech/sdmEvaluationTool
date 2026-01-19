@@ -218,7 +218,7 @@ synthesizing the evaluations).
 | `deployment_id` | text | `REFERENCES deployments (deployment_id)` | Deployment ID (foreign key). |
 | `material_id` | text | `REFERENCES materials (material_id)` | Material ID (foreign key). |
 | `component_id` | text | `REFERENCES components (component_id)` | Component ID (foreign key). |
-| `use_cases` | text | `NOT NULL` | One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment. |
+| `use_case` | text | `NOT NULL` | One use case applicable to the evaluation defined by the **modeler** for the deployment. |
 | `evaluation_create_user` | text | `REFERENCES users (user_id)` | User who created the initial evaluation (foreign key). |
 | `evaluation_create_time` | timestamp | `NOT NULL` | Time of initial the initial evaluation. |
 | `evaluation_modify_user` | text | `REFERENCES users (user_id)` | User who last modified (foreign key). |
@@ -623,9 +623,15 @@ selected and their IDs saved as the answer. It is assumed that IDs
 listed as part of parts belonging to the same question number are
 mutually exclusive.
 
-The **default** questions are part of the configuration, accessible for
-the modelers as a CSV file that can be customized and uploaded for a
-given deployment.
+The **follow-up level** can be defined for each question where it makes
+sense according to the modeler when they are assembling the questions
+for a deployment. Follow-up level 0 means no follow up questions. Higher
+numbers (1–6) will add the same number of predetermined follow-up
+questions to the given higher level question.
+
+The **default** questions and the follow-up questions are part of the
+configuration, accessible for the modelers as a CSV file that can be
+customized and uploaded for a given deployment.
 
 ## Future changes to consider
 

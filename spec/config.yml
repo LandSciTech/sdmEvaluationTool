@@ -357,10 +357,10 @@ tables:
         description: Component ID (foreign key).
         type: text
         constraint: REFERENCES components (component_id)
-      use_cases:
-        name: Use Cases
-        description: One or more use cases applicable to the evaluation, can be selected from a list provided by the modeler as part of the deployment definition, stored as a comma separated list. This is defined by the **modeler** for the deployment.
-        type: text # should this be json?
+      use_case:
+        name: Use Case
+        description: One use case applicable to the evaluation defined by the **modeler** for the deployment.
+        type: text
         constraint: NOT NULL
       evaluation_create_user:
         name: Create User
@@ -814,6 +814,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Identify the areas on the map where predictions are inaccurate.
     fr: ""
   values: ["Severe over", "Moderate over", "Accurate", "Moderate under", "Severe under", "Unknown"]
+  followup_level: 0
 - component: spatial_prediction
   type: spatial
   order: 2
@@ -822,6 +823,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Identify areas on the map where uncertainty does not align with your understanding of data limitations, known habitat complexities, or other sources of uncertainty.
     fr: ""
   values: ["Too high", "Accurate", "Unknown"]
+  followup_level: 0
 ## ------------ model fit ------------
 - component: model_fit
   type: ordinal
@@ -830,6 +832,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the adequacy or appropriateness of the validation metrics?
     fr: ""
+  followup_level: 0
 - component: model_fit
   type: simple_text
   order: 2
@@ -837,6 +840,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: What are the metrics that should be used and why?
     fr: ""
+  followup_level: 0
 - component: model_fit
   type: simple_text
   order: 3
@@ -844,6 +848,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: What other concerns do you have about model performance?
     fr: ""
+  followup_level: 0
 # ---------- observations ------------
 - component: observations
   type: spatial
@@ -853,6 +858,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Are there areas where you are concerned about potential bias in the data? Identify areas with potential bias in the data.
     fr: ""
   values: ["Very biased", "Moderately biased", "Accurate", "Unknown"]
+  followup_level: 0
 - component: observations
   type: spatial
   order: 2
@@ -861,6 +867,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Are there areas where this species is not sufficiently sampled? Identify areas that are not sufficiently sampled.
     fr: ""
   values: ["Very undersampled", "Moderately undersampled", "Accurate", "Unknown"]
+  followup_level: 0
 - component: observations
   type: ordinal
   order: 3
@@ -868,6 +875,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the distribution of counts?
     fr: ""
+  followup_level: 0
 - component: observations
   type: simple_text
   order: 3
@@ -875,6 +883,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: If so, explain. What is an appropriate truncation value (i.e. highest count)?
     fr: ""
+  followup_level: 0
 - component: observations
   type: ordinal
   order: 4
@@ -882,6 +891,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the temporal distribution of detections?
     fr: ""
+  followup_level: 0
 - component: observations
   type: simple_text
   order: 4
@@ -889,6 +899,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: If so, explain. What is an appropriate truncation value (i.e. minimum year)?
     fr: ""
+  followup_level: 0
 - component: observations
   type: ordinal
   order: 5
@@ -896,6 +907,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?
     fr: ""
+  followup_level: 0
 # ------------ model metadata -----------
 - component: model_metadata
   type: ordinal
@@ -904,6 +916,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Are you concerned about the description and treatment of predictor data, as described in the model metadata.
     fr: ""
+  followup_level: 0
 # ------------ predictor metadata -----------
 - component: predictor_metadata
   type: ordinal
@@ -912,6 +925,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about missing predictors?
     fr: ""
+  followup_level: 0
 - component: predictor_metadata
   type: simple_text
   order: 2
@@ -919,6 +933,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: What predictors are missing and why?
     fr: ""
+  followup_level: 0
 - component: predictor_metadata
   type: ordinal
   order: 3
@@ -926,6 +941,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about superfluous or inappropriate predictors?
     fr: ""
+  followup_level: 0
 - component: predictor_metadata
   type: simple_text
   order: 4
@@ -933,6 +949,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Which predictors should be removed and why?
     fr: ""
+  followup_level: 0
 # ------------ predictor raster -----------
 - component: predictor_raster
   type: ordinal
@@ -941,6 +958,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about inaccuracy in the model predictors?
     fr: ""
+  followup_level: 0
 - component: predictor_raster
   type: simple_text
   order: 1
@@ -948,6 +966,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: If so, describe the predictor(s) and the areas of concern.
     fr: ""
+  followup_level: 0
 - component: predictor_raster
   type: ordinal
   order: 2
@@ -955,6 +974,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the spatial resolution of the predictor variables?
     fr: ""
+  followup_level: 0
 ## ------------ model summary ------------
 - component: model_summary
   type: ordinal
@@ -963,6 +983,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about missing predictor interactions or nonlinear relationships?
     fr: ""
+  followup_level: 0
 - component: model_summary
   type: simple_text
   order: 2
@@ -970,6 +991,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: What interactions or nonlinear relationships are missing?
     fr: ""
+  followup_level: 0
 - component: model_summary
   type: ordinal
   order: 3
@@ -977,6 +999,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are your about the reported relative importance of predictors?
     fr: ""
+  followup_level: 0
 - component: model_summary
   type: simple_text
   order: 4
@@ -984,6 +1007,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Which predictors would you expect to be more or less important and why?
     fr: ""
+  followup_level: 0
 - component: model_summary
   type: ordinal
   order: 5
@@ -991,6 +1015,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the appropriateness of the modeling algorithm for the model objectives and application?
     fr: ""
+  followup_level: 0
 - component: model_summary
   type: ordinal
   order: 6
@@ -998,6 +1023,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about how well the modelling framework addresses important statistical assumptions?
     fr: ""
+  followup_level: 0
 - component: model_summary
   type: ordinal
   order: 7
@@ -1005,6 +1031,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about how well important biological assumptions are explained and justified?
     fr: ""
+  followup_level: 0
 - component: model_summary
   type: simple_text
   order: 8
@@ -1012,6 +1039,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: What other concerns or comments do you have about model complexity?
     fr: ""
+  followup_level: 0
 # ---------- deployment settings --------
 - component: deployment_settings
   type: simple_text
@@ -1020,6 +1048,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Are there any non-target applications that you think this model is unsuitable for? Please explain.
     fr: ""
+  followup_level: 0
 - component: deployment_settings
   type: ordinal
   order: 2
@@ -1027,6 +1056,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about how well suited the model is for the intended application of the model?
     fr: ""
+  followup_level: 0
 - component: deployment_settings
   type: simple_text
   order: 3
@@ -1034,6 +1064,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: What other concerns or comments do you have about using the model for the intended model applications?
     fr: ""
+  followup_level: 0
 
 question_types:
   simple_text:
@@ -1058,6 +1089,41 @@ question_types:
     values: []
 # severe overprediction, moderate overprediction, accurate, moderate underprediction, severe underprediction, unknown
 
+followup_questions: # used for drill-down
+- followup_level: 1
+  type: simple_text
+  body:
+    en: Why is it a problem?
+    fr: ""
+- followup_level: 2
+  type: ordinal
+  body:
+    en: How important is it to fix the problem?
+    fr: ""
+  values: ["Very important", "Moderately important", "Not important"]
+- followup_level: 3
+  type: ordinal
+  body:
+    en: How difficult is it to fix the problem?
+    fr: ""
+  values: ["Very difficult", "Moderately difficult", "Easy"]
+- followup_level: 4
+  type: simple_text
+  body:
+    en: Please suggest options for addressing the problem. To what degree would the suggested fixes address the problem?
+    fr: ""
+- followup_level: 5
+  type: ordinal
+  body:
+    en: If the problem is not fixed, can this model be used for the intended application?
+    fr: ""
+  values: ["Yes", "No"]
+- followup_level: 6
+  type: simple_text
+  body:
+    en: If the problem is not fixed, what caveats or guidance should be provided to users?
+    fr: ""
+
 
 templates:
 
@@ -1065,10 +1131,8 @@ templates:
     instructions_to_evaluators:
       en: "Provide instructions for the evaluation."
       fr: ""
-    use_cases:
-      - en: "Use case 1"
-        fr: "Cas d'utilisation 1"
-      - en: "Use case 2"
-        fr: "Cas d'utilisation 2"
+    use_case:
+      en: "Use case"
+      fr: "Cas d'utilisation"
     comments_allowed: No
     preferred_language: "en"
