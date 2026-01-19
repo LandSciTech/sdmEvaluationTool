@@ -8,6 +8,11 @@
 #' @format A data frame with default questions.
 "default_questions"
 
+#' Follow-up Questions
+#'
+#' @format A data frame with follow-up questions.
+"followup_questions"
+
 #' User Roles
 #'
 #' @format A data frame.
