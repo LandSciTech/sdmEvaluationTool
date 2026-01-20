@@ -67,8 +67,7 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
       component_id = c("predictor_metadata", "predictor_raster"),
       deployment_id = deployment_id,
       model_id = model_id,
-      species_id = reactive("ALL"),
-      lang = opts$lang
+      species_id = reactive("ALL")
     )
 
     mod_comp_predictor_metadata_server(

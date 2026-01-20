@@ -16,14 +16,12 @@ mod_utils_evaluations_server <- function(
   deployment_id,
   model_id,
   species_id,
-  spatial_ids = reactive(NULL),
-  lang
+  spatial_ids = reactive(NULL)
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
   stopifnot(is.reactive(spatial_ids))
-  stopifnot(is.reactive(lang))
 
   moduleServer(id, function(input, output, session) {
     # Setup ----------------------------------------------------------
@@ -36,8 +34,7 @@ mod_utils_evaluations_server <- function(
         component_id = component_id,
         deployment_id = deployment_id(),
         model_id = model_id(),
-        species_id = species_id(),
-        lang = lang()
+        species_id = species_id()
       )
     })
 

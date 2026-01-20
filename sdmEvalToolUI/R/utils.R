@@ -76,3 +76,15 @@ set_options <- function(...) {
   o <- options("sdmevaltool_options" = utils::modifyList(opts, list(...)))
   o
 }
+
+#' Return the app language
+#'
+#' @returns Character. Either "english" or "french"
+#'
+#' @export
+#' @examples
+#' lang()
+
+lang <- function() {
+  sdmevaltool_options()$lang
+}

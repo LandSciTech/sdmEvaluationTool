@@ -77,8 +77,7 @@ mod_page_test_server <- function(id = "test", ...) {
       prep_questions(
         deployment_id = deployment_id(),
         model_id = model_id(),
-        species_id = species_id(),
-        lang = opts$lang()
+        species_id = species_id()
       )
     }) |>
       bindCache(deployment_id(), model_id(), species_id())

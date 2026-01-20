@@ -4,13 +4,7 @@
 \alias{prep_questions}
 \title{Prepare Evaluation Questions}
 \usage{
-prep_questions(
-  component_id = NULL,
-  deployment_id,
-  model_id,
-  species_id,
-  lang = "english"
-)
+prep_questions(component_id = NULL, deployment_id, model_id, species_id)
 }
 \arguments{
 \item{component_id}{Character. Component ID}
@@ -20,8 +14,6 @@ prep_questions(
 \item{model_id}{Character. Model ID}
 
 \item{species_id}{Character. Species ID}
-
-\item{lang}{Language}
 }
 \value{
 Data frame of questions

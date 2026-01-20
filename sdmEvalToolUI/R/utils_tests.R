@@ -3,7 +3,7 @@ test_page <- function(
   deployment_id = "deployment1",
   model_id = "bam_v5_can71",
   species_id = "BBWO",
-  opts = list(user_id = "holden", user_role = "evaluator", lang = "english")
+  opts = list(user_id = "holden", user_role = "evaluator")
 ) {
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",

@@ -7,7 +7,7 @@
 #' test_page_overview()
 
 test_page_overview <- function(
-  opts = list(user_id = "holden", user_role = "modeler", lang = "english"),
+  opts = list(user_id = "holden", user_role = "modeler"),
   ...
 ) {
   test_page("mod_page_overview", opts = opts, ...)
@@ -51,7 +51,7 @@ mod_page_overview_server <- function(id = "overview", ...) {
 
   moduleServer(id, function(input, output, session) {
     tbl <- reactive({
-      evals_details(opts$user_id(), opts$user_role(), opts$lang())
+      evals_details(opts$user_id(), opts$user_role())
     })
 
     output$tbl_overview <- reactable::renderReactable({
@@ -254,7 +254,6 @@ evals_table <- function(tbl, user_role) {
 #'
 #' @param user_id Character string. User identifier
 #' @param user_role Character string. User role ("modeler" or "evaluator")
-#' @param lang Language
 #'
 #' @returns Data frame with columns:
 #'   - `deployment_model_name`
@@ -276,7 +275,7 @@ evals_table <- function(tbl, user_role) {
 #' evals_details("draper", "modeler")
 #' evals_details("draper", "evaluator")
 
-evals_details <- function(user_id, user_role, lang) {
+evals_details <- function(user_id, user_role) {
   con <- withr::local_db_connection(db_connect())
   validate(need(
     user_role %in% c("modeler", "evaluator"),
@@ -401,7 +400,7 @@ evals_details <- function(user_id, user_role, lang) {
       .by = c("deployment_id", "model_id", "species_id", "component_id")
     ) |>
     dplyr::left_join(user, by = "evaluation_create_user") |>
-    fmt_species(lang = lang) |>
+    fmt_species() |>
     dplyr::mutate(
       deployment_model_name = paste0(
         .data$deployment_name,

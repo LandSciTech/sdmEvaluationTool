@@ -127,7 +127,6 @@ prep_files <- function(path, name, ...) {
 #' @param deployment_id Character. Deployment ID
 #' @param model_id Character. Model ID
 #' @param species_id Character. Species ID
-#' @param lang Language
 #'
 #' @returns Data frame of questions
 #'
@@ -149,8 +148,7 @@ prep_questions <- function(
   component_id = NULL,
   deployment_id,
   model_id,
-  species_id,
-  lang = "english"
+  species_id
 ) {
   if (
     missing(species_id) ||
@@ -174,7 +172,7 @@ prep_questions <- function(
   q <- fetch_questions(deployment_id, component_id)
 
   q |>
-    dplyr::rename("label" = .env$lang) |>
+    dplyr::rename("label" = lang()) |>
     #TODO: Remove this if numbering changes
     dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
     dplyr::mutate(

@@ -57,8 +57,7 @@ mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
       component_id = "model_metadata",
       deployment_id = deployment_id,
       model_id = model_id,
-      species_id = reactive("ALL"),
-      lang = opts$lang
+      species_id = reactive("ALL")
     )
 
     mod_comp_model_metadata_server("model_metadata", model_id)

@@ -6,7 +6,7 @@
 #' @examplesIf have_data()
 #' sdm_tool()
 
-sdm_tool <- function() {
+sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   # TODO: define pages, etc. elsewhere
   page_options <- c(
     "overview",
@@ -14,9 +14,11 @@ sdm_tool <- function() {
     "observations",
     "model",
     "predictors",
-    "model_metadata",
-    "test"
+    "model_metadata"
   )
+
+  # Set language
+  set_options(lang = lang)
 
   # Pages
   pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
@@ -24,7 +26,6 @@ sdm_tool <- function() {
     get(paste0("mod_page_", p, "_server"))
   })
 
-  con <- withr::local_db_connection(db_connect())
   # Users
   # TODO: How do we know which user it is?
   # For now, see option set in zzz.R
@@ -35,47 +36,30 @@ sdm_tool <- function() {
   ui <- bslib::page_navbar(
     title = "SDM Tool",
     theme = sdm_theme(),
-    sidebar = mod_sidebar_ui("sidebar"),
+    #sidebar = mod_sidebar_ui("sidebar"),
     gap = 0,
     padding = 0,
+    shinyjs::useShinyjs(),
     !!!pages_ui,
     nav_spacer(),
-    nav_item(
-      tags$style("#div_id .selectize-input:after{content: none;}"),
-      div(
-        id = "div_id",
-        selectInput(
-          "user_id",
-          width = 150,
-          label = NULL,
-          choices = c(
-            "Select a user" = "",
-            named_ids(dplyr::tbl(con, "users"))
-          )
-        )
-      )
-    ),
-    nav_item(div(id = "div_id", uiOutput("user_role"))),
-    nav_item(div(
-      id = "div_id",
-      selectInput(
-        "lang",
-        width = 50,
-        label = NULL,
-        choices = c("EN" = "english", "FR" = "french")
-      )
+    !!!sdm_inputs(),
+    nav_item(actionButton(
+      "abandon",
+      label = NULL,
+      icon = icon("x"),
+      class = "btn-sm btn-danger"
     ))
   )
 
   server <- function(input, output, session) {
-    # Set session-specific options
-    # TODO: is this the correct method?
-
-    opts <- reactiveValues()
-
     output$user_role <- renderUI({
       if (!isTruthy(input$user_id)) {
-        choices <- c("User Role" = "")
+        i <- shinyjs::disabled(selectInput(
+          "user_role",
+          width = 100,
+          label = NULL,
+          choices = c("Role" = "")
+        ))
       } else {
         con <- withr::local_db_connection(db_connect())
         u <- input$user_id # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
@@ -86,38 +70,31 @@ sdm_tool <- function() {
           unlist() |>
           unique()
         choices <- rlang::set_names(roles, pretty(roles))
+
+        i <- selectInput(
+          "user_role",
+          width = 100,
+          label = NULL,
+          choices = choices
+        )
       }
-
-      selectInput(
-        "user_role",
-        width = 100,
-        label = NULL,
-        choices = choices
-      )
+      i
     })
-
-    vals <- mod_sidebar_server(
-      id = "sidebar",
-      user_id = reactive(input$user_id),
-      user_role = reactive(input$user_role),
-      lang = reactive(input$lang)
-    )
 
     for (t in pages_server) {
       t(
-        deployment_id = vals$deployment_id,
-        model_id = vals$model_id,
-        species_id = vals$species_id,
+        deployment_id = reactive(input$deployment_id),
+        model_id = reactive(input$model_id),
+        species_id = reactive(input$species_id),
         opts = list(
           "user_id" = reactive(input$user_id),
-          "user_role" = reactive(input$user_role),
-          "lang" = reactive(input$lang)
+          "user_role" = reactive(input$user_role)
         )
       )
     }
   }
 
-  shiny::shinyApp(ui, server)
+  shiny::shinyApp(ui, server, options = options)
 }
 
 
@@ -125,12 +102,11 @@ mod_sidebar_ui <- function(id) {
   sidebar(uiOutput(NS(id, "ui_selectors")))
 }
 
-mod_sidebar_server <- function(id, user_id, user_role, lang) {
+mod_sidebar_server <- function(id, user_id, user_role) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
     output$ui_selectors <- renderUI({
-      req(lang())
       con <- withr::local_db_connection(db_connect())
 
       tagList(
@@ -158,8 +134,7 @@ mod_sidebar_server <- function(id, user_id, user_role, lang) {
             "Select a species" = "",
             named_ids(
               fmt_species(
-                dplyr::tbl(con, "species"),
-                lang = lang()
+                dplyr::tbl(con, "species")
               ),
               name = "display"
             )
@@ -175,7 +150,6 @@ mod_sidebar_server <- function(id, user_id, user_role, lang) {
       # React and update to changes in these values, but only show the options
       user_id()
       user_role()
-      lang()
       input$deployment_id
       input$model_id
       input$species_id
@@ -218,6 +192,11 @@ sdm_theme <- function() {
         padding: 5px;
         margin: 0;
       }
+      /* Create a small button (Nav buttons) */
+      li:has(button.btn-sm) {
+        margin-top: 3px !important;
+      }
+
       /* Allow Multiple legends (only legends in the bottom left corner) to go side by side */
       .leaflet-bottom.leaflet-left > .info.legend.leaflet-control {
         float: inherit !important;
@@ -233,4 +212,80 @@ sdm_theme <- function() {
         }
     "
     )
+}
+
+#' Title
+#'
+#' @returns
+#'
+#' @noRd
+#' @examples
+#' sdm_inputs()
+
+sdm_inputs <- function() {
+  con <- withr::local_db_connection(db_connect())
+
+  list(
+    nav_item(
+      tags$style("#div_id .selectize-input:after{content: none;}"),
+      div(
+        id = "div_id",
+        selectInput(
+          "user_id",
+          width = 150,
+          label = NULL,
+          choices = c(
+            "Select a user" = "",
+            named_ids(dplyr::tbl(con, "users"))
+          )
+        )
+      )
+    ),
+    nav_item(div(id = "div_id", uiOutput("user_role"))),
+    nav_item(
+      div(
+        id = "div_id",
+        #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
+        selectInput(
+          "deployment_id",
+          label = NULL,
+          width = 200,
+          choices = c(
+            "Select a deployment" = "",
+            named_ids(dplyr::tbl(con, "deployments"))
+          )
+        )
+      )
+    ),
+    nav_item(
+      div(
+        id = "div_id",
+        selectInput(
+          "model_id",
+          label = NULL,
+          width = 200,
+          choices = c(
+            "Select a model" = "",
+            named_ids(dplyr::tbl(con, "models"))
+          )
+        )
+      )
+    ),
+    nav_item(
+      div(
+        id = "div_id",
+        selectInput(
+          "species_id",
+          label = NULL,
+          choices = c(
+            "Select a species" = "",
+            named_ids(
+              fmt_species(dplyr::tbl(con, "species")),
+              name = "display"
+            )
+          )
+        )
+      )
+    )
+  )
 }

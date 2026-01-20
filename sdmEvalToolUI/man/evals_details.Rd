@@ -4,14 +4,12 @@
 \alias{evals_details}
 \title{Get Evaluation Details for User}
 \usage{
-evals_details(user_id, user_role, lang)
+evals_details(user_id, user_role)
 }
 \arguments{
 \item{user_id}{Character string. User identifier}
 
 \item{user_role}{Character string. User role ("modeler" or "evaluator")}
-
-\item{lang}{Language}
 }
 \value{
 Data frame with columns:

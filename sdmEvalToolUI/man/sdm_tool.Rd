@@ -4,7 +4,7 @@
 \alias{sdm_tool}
 \title{Launch the SDM Evaluation Tool Shiny Application}
 \usage{
-sdm_tool()
+sdm_tool(lang = "english", options = list(port = 8080))
 }
 \value{
 A Shiny app object

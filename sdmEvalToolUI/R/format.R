@@ -2,20 +2,16 @@
 #'
 #' @param df Data frame to format. Must contain at least species name in French
 #' or English as well as scientific name.
-#' @param lang Character. "english" or "french". If NULL pulled from options.
 #'
 #' @returns Formatted species display names.
 #'
 #' @export
-fmt_species <- function(df, lang = NULL) {
-  if (is.null(lang)) {
-    lang <- sdmevaltool_options()$lang
-  }
+fmt_species <- function(df) {
   df |>
     dplyr::mutate(
       # fmt: skip
       species_display = paste0(
-        .data[[paste0(lang, "_name")]], # cannot use .env inside .data
+        .data[[paste0(lang(), "_name")]],
         " (", .data$scientific_name, ")"
       ),
       species_display = dplyr::if_else(
