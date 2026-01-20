@@ -1,19 +1,19 @@
 prep_data <- function() {
-    # TODO: Assign this elsewhere?
-    if (is.null(sdmevaltool_options()$base)) {
-        sdmevaltool_options(base = "../misc/base")
-    }
+  # TODO: Assign this elsewhere?
+  if (is.null(sdmevaltool_options()$base)) {
+    sdmevaltool_options(base = "../misc/base")
+  }
 
-    db <- db_connect()
-    tbl_models <- db_read_models(db)
-    tbl_species <- db_read_species(db)
-    tbl_deployments <- dplyr::tbl(db, "deployments") |> dplyr::collect()
+  db <- db_connect()
+  tbl_models <- db_read_models(db)
+  tbl_species <- db_read_species(db)
+  tbl_deployments <- dplyr::tbl(db, "deployments") |> dplyr::collect()
 
-    list(
-        "tbl_deployments" = tbl_deployments,
-        "tbl_models" = tbl_models,
-        "tbl_species" = tbl_species
-    )
+  list(
+    "tbl_deployments" = tbl_deployments,
+    "tbl_models" = tbl_models,
+    "tbl_species" = tbl_species
+  )
 }
 
 #' Load material files
@@ -39,25 +39,25 @@ prep_data <- function() {
 #' # prep_materials("observations", model_id = "bam_v5_can71", species_id = "")
 
 prep_materials <- function(component_id, model_id, species_id = NULL) {
-    path <- dplyr::filter(
-        sdmEvalToolCore::components,
-        .data$type == "material",
-        .data$component == .env$component_id
-    ) |>
-        dplyr::pull(.data$path)
+  path <- dplyr::filter(
+    sdmEvalToolCore::components,
+    .data$type == "material",
+    .data$component == .env$component_id
+  ) |>
+    dplyr::pull(.data$path)
 
-    if (stringr::str_detect(path, "species_id")) {
-        validate_ids(model_id = model_id, species_id = species_id)
-    } else {
-        validate_ids(model_id = model_id)
-    }
+  if (stringr::str_detect(path, "species_id")) {
+    validate_ids(model_id = model_id, species_id = species_id)
+  } else {
+    validate_ids(model_id = model_id)
+  }
 
-    prep_files(
-        path,
-        name = component_id,
-        model_id = model_id,
-        species_id = species_id
-    )
+  prep_files(
+    path,
+    name = component_id,
+    model_id = model_id,
+    species_id = species_id
+  )
 }
 
 #' Prepare Deployments
@@ -74,47 +74,47 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
 #' prep_deployments("deployment2", "deployment_questions")
 
 prep_deployments <- function(deployment_id, deployment_type) {
-    path <- dplyr::filter(
-        sdmEvalToolCore::components,
-        .data$type == "deployment",
-        .data$component == .env$deployment_type
+  path <- dplyr::filter(
+    sdmEvalToolCore::components,
+    .data$type == "deployment",
+    .data$component == .env$deployment_type
+  ) |>
+    dplyr::pull(.data$path)
+
+  validate_ids(deployment_id = deployment_id)
+
+  dep <- prep_files(
+    path,
+    name = deployment_type,
+    deployment_id = deployment_id
+  )
+
+  if (deployment_type != "deployment_subunits") {
+    dep <- dplyr::mutate(
+      dep,
+      french = as.character(.data$french),
+      french = tidyr::replace_na(.data$french, "")
     ) |>
-        dplyr::pull(.data$path)
+      # TODO: This shouldn't be in the data
+      dplyr::select(-dplyr::any_of("X"))
+  }
 
-    validate_ids(deployment_id = deployment_id)
-
-    dep <- prep_files(
-        path,
-        name = deployment_type,
-        deployment_id = deployment_id
-    )
-
-    if (deployment_type != "deployment_subunits") {
-        dep <- dplyr::mutate(
-            dep,
-            french = as.character(.data$french),
-            french = tidyr::replace_na(.data$french, "")
-        ) |>
-            # TODO: This shouldn't be in the data
-            dplyr::select(-dplyr::any_of("X"))
-    }
-
-    dep
+  dep
 }
 
 prep_files <- function(path, name, ...) {
-    path <- make_target_path(path, data = list(...))
+  path <- make_target_path(path, data = list(...))
 
-    validate(need(
-        file.exists(path),
-        paste0(
-            pretty(name),
-            " doesn't exist. Have you supplied the correct base path?\n",
-            path
-        )
-    ))
+  validate(need(
+    file.exists(path),
+    paste0(
+      pretty(name),
+      " doesn't exist. Have you supplied the correct base path?\n",
+      path
+    )
+  ))
 
-    read_file(path)
+  read_file(path)
 }
 
 
@@ -146,67 +146,67 @@ prep_files <- function(path, name, ...) {
 #' prep_questions("predictor_raster", "deployment1", "bam_v5_can71")
 
 prep_questions <- function(
-    component_id = NULL,
-    deployment_id,
-    model_id,
-    species_id,
-    lang = "english"
+  component_id = NULL,
+  deployment_id,
+  model_id,
+  species_id,
+  lang = "english"
 ) {
-    if (
-        missing(species_id) ||
-            is.null(species_id) ||
-            species_id == "" ||
-            species_id == "ALL"
-    ) {
-        validate_ids(
-            deployment_id = deployment_id,
-            model_id = model_id
-        )
-        species_id <- "ALL"
-    } else {
-        validate_ids(
-            deployment_id = deployment_id,
-            model_id = model_id,
-            species_id = species_id
-        )
-    }
+  if (
+    missing(species_id) ||
+      is.null(species_id) ||
+      species_id == "" ||
+      species_id == "ALL"
+  ) {
+    validate_ids(
+      deployment_id = deployment_id,
+      model_id = model_id
+    )
+    species_id <- "ALL"
+  } else {
+    validate_ids(
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id
+    )
+  }
 
-    q <- fetch_questions(deployment_id, component_id)
+  q <- fetch_questions(deployment_id, component_id)
 
-    q |>
-        dplyr::rename("label" = .env$lang) |>
-        #TODO: Remove this if numbering changes
-        dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
-        dplyr::mutate(
-            values = stringr::str_split(.data$values, ", ?"),
-            material_id = paste(
-                .env$model_id,
-                .env$species_id,
-                .data$component,
-                sep = "_"
-            ),
-            id = paste(
-                .env$deployment_id,
-                .data$material_id,
-                .data$order,
-                .data$part,
-                sep = "_"
-            )
-        )
+  q |>
+    dplyr::rename("label" = .env$lang) |>
+    #TODO: Remove this if numbering changes
+    dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
+    dplyr::mutate(
+      values = stringr::str_split(.data$values, ", ?"),
+      material_id = paste(
+        .env$model_id,
+        .env$species_id,
+        .data$component,
+        sep = "_"
+      ),
+      id = paste(
+        .env$deployment_id,
+        .data$material_id,
+        .data$order,
+        .data$part,
+        sep = "_"
+      )
+    )
 }
 
 fetch_questions <- function(deployment_id, component_id) {
-    # Do we have a valid set of deployment questions? If not use defaults
-    q <- tryCatch(
-        prep_deployments(deployment_id, "deployment_questions"),
-        error = \(x) sdmEvalToolCore::default_questions
-    )
+  # Do we have a valid set of deployment questions? If not use defaults
+  q <- tryCatch(
+    prep_deployments(deployment_id, "deployment_questions"),
+    error = \(x) sdmEvalToolCore::default_questions
+  )
 
-    if (!is.null(component_id)) {
-        q <- dplyr::filter(q, .data$component %in% .env$component_id)
-    }
+  if (!is.null(component_id)) {
+    q <- dplyr::filter(q, .data$component %in% .env$component_id)
+  }
 
-    q
+  q
 }
 
 #' Fetch and format submitted evaluations
@@ -225,18 +225,18 @@ fetch_questions <- function(deployment_id, component_id) {
 #' DBI::dbDisconnect(con)
 
 prep_evaluations <- function(con, user_id) {
-    db_read_evaluations(con, user_id = user_id) |>
-        dplyr::select(
-            "deployment_id",
-            "material_id",
-            "evaluation_create_user",
-            "evaluation_body"
-        ) |>
-        dplyr::mutate(
-            answers = purrr::map(.data$evaluation_body, evals_extract),
-            evals = purrr::map(.data$answers, evals_answered)
-        ) |>
-        tidyr::unnest("evals")
+  db_read_evaluations(con, user_id = user_id) |>
+    dplyr::select(
+      "deployment_id",
+      "material_id",
+      "evaluation_create_user",
+      "evaluation_body"
+    ) |>
+    dplyr::mutate(
+      answers = purrr::map(.data$evaluation_body, evals_extract),
+      evals = purrr::map(.data$answers, evals_answered)
+    ) |>
+    tidyr::unnest("evals")
 }
 
 
@@ -252,30 +252,30 @@ prep_evaluations <- function(con, user_id) {
 #'   rlang::set_names(q$id)
 #' # answers <- purrr::map(list(input), \(x) x[[questions_init()$id]])
 save_evaluations <- function(questions, input_list) {
-    r <- response_to_json(questions, input_list)
+  r <- response_to_json(questions, input_list)
 }
 
 response_to_json <- function(questions, input_list) {
-    a <- input_list |>
-        names() |>
-        stringr::str_subset("-show", negate = TRUE)
+  a <- input_list |>
+    names() |>
+    stringr::str_subset("-show", negate = TRUE)
 
-    r <- questions$id |>
-        purrr::map(\(x) {
-            keep <- stringr::str_subset(a, x)
-            value <- stringr::str_remove(keep, glue::glue("{x}-"))
-            if (length(keep) > 1) {
-                r <- purrr::map2(keep, value, \(k, v) {
-                    list(value = v, subunits = unname(a[[k]]))
-                })
-            } else {
-                browser()
-                r <- input_list[[keep]]
-            }
-            r
+  r <- questions$id |>
+    purrr::map(\(x) {
+      keep <- stringr::str_subset(a, x)
+      value <- stringr::str_remove(keep, glue::glue("{x}-"))
+      if (length(keep) > 1) {
+        r <- purrr::map2(keep, value, \(k, v) {
+          list(value = v, subunits = unname(a[[k]]))
         })
+      } else {
+        browser()
+        r <- input_list[[keep]]
+      }
+      r
+    })
 
-    questions <- dplyr::mutate(questions, response = r)
+  questions <- dplyr::mutate(questions, response = r)
 
-    jsonlite::toJSON(questions, auto_unbox = TRUE)
+  jsonlite::toJSON(questions, auto_unbox = TRUE)
 }

@@ -7,7 +7,7 @@
 #' test_page_model()
 
 test_page_model <- function(...) {
-    test_page("mod_page_model", ...)
+  test_page("mod_page_model", ...)
 }
 
 #' Model Page UI
@@ -22,30 +22,30 @@ test_page_model <- function(...) {
 #' @examples
 #' mod_page_model_ui()
 mod_page_model_ui <- function(
-    id = "model",
-    title = "Model",
-    review_width = NULL
+  id = "model",
+  title = "Model",
+  review_width = NULL
 ) {
-    nav_panel(
-        title,
-        sdm_layout_sidebar(
-            sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+  nav_panel(
+    title,
+    sdm_layout_sidebar(
+      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
 
-            layout_column_wrap(
-                width = NULL,
-                gap = 0,
-                style = css(grid_template_columns = "1fr 3fr"),
-                mod_comp_model_fit_ui(
-                    NS(id, "model_fit"),
-                    header = card_header("Model Fit")
-                ),
-                mod_comp_model_summary_ui(
-                    NS(id, "model_summary"),
-                    header = card_header("Model Summary")
-                )
-            )
+      layout_column_wrap(
+        width = NULL,
+        gap = 0,
+        style = css(grid_template_columns = "1fr 3fr"),
+        mod_comp_model_fit_ui(
+          NS(id, "model_fit"),
+          header = card_header("Model Fit")
+        ),
+        mod_comp_model_summary_ui(
+          NS(id, "model_summary"),
+          header = card_header("Model Summary")
         )
+      )
     )
+  )
 }
 
 #' Model Page Server
@@ -58,24 +58,24 @@ mod_page_model_ui <- function(
 #' @export
 
 mod_page_model_server <- function(id = "model", ...) {
-    expand_dots(...)
-    stopifnot(is.reactive(deployment_id))
-    stopifnot(is.reactive(model_id))
-    stopifnot(is.reactive(species_id))
-    purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
+  expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
+  stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(species_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
-    moduleServer(id, function(input, output, session) {
-        # Prepare the evaluation questions
-        mod_utils_evaluations_server(
-            "eval",
-            component_id = c("model_fit", "model_summary"),
-            deployment_id = deployment_id,
-            model_id = model_id,
-            species_id = species_id,
-            lang = opts$lang
-        )
+  moduleServer(id, function(input, output, session) {
+    # Prepare the evaluation questions
+    mod_utils_evaluations_server(
+      "eval",
+      component_id = c("model_fit", "model_summary"),
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id,
+      lang = opts$lang
+    )
 
-        mod_comp_model_summary_server("model_summary", model_id, species_id)
-        mod_comp_model_fit_server("model_fit", model_id, species_id)
-    })
+    mod_comp_model_summary_server("model_summary", model_id, species_id)
+    mod_comp_model_fit_server("model_fit", model_id, species_id)
+  })
 }

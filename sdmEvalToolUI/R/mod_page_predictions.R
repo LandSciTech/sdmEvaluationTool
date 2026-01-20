@@ -7,7 +7,7 @@
 #' test_page_predictions()
 
 test_page_predictions <- function(...) {
-    test_page("mod_page_predictions", ...)
+  test_page("mod_page_predictions", ...)
 }
 
 #' Predictions Page UI
@@ -23,17 +23,17 @@ test_page_predictions <- function(...) {
 #' mod_page_predictions_ui()
 
 mod_page_predictions_ui <- function(
-    id = "predictions",
-    title = "Predictions",
-    review_width = NULL
+  id = "predictions",
+  title = "Predictions",
+  review_width = NULL
 ) {
-    nav_panel(
-        title,
-        sdm_layout_sidebar(
-            sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-            mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
-        )
+  nav_panel(
+    title,
+    sdm_layout_sidebar(
+      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+      mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
     )
+  )
 }
 
 #' Predictions Page Server
@@ -46,35 +46,35 @@ mod_page_predictions_ui <- function(
 #' @export
 
 mod_page_predictions_server <- function(id = "predictions", ...) {
-    expand_dots(...)
-    stopifnot(is.reactive(deployment_id))
-    stopifnot(is.reactive(model_id))
-    stopifnot(is.reactive(species_id))
-    purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
+  expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
+  stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(species_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
-    moduleServer(id, function(input, output, session) {
-        # Placeholder reactiveVal until map created
-        spatial_ids <- reactiveVal(NULL)
+  moduleServer(id, function(input, output, session) {
+    # Placeholder reactiveVal until map created
+    spatial_ids <- reactiveVal(NULL)
 
-        # Prepare the evaluation questions
-        spatial_selection <- mod_utils_evaluations_server(
-            "eval",
-            component_id = "spatial_prediction",
-            deployment_id = deployment_id,
-            model_id = model_id,
-            species_id = species_id,
-            spatial_ids = spatial_ids,
-            spatial_type = "areas",
-            lang = opts$lang
-        )
+    # Prepare the evaluation questions
+    spatial_selection <- mod_utils_evaluations_server(
+      "eval",
+      component_id = "spatial_prediction",
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id,
+      spatial_ids = spatial_ids,
+      spatial_type = "areas",
+      lang = opts$lang
+    )
 
-        mod_comp_spatial_prediction_server(
-            "spatial_prediction",
-            deployment_id = deployment_id,
-            model_id = model_id,
-            species_id = species_id,
-            spatial_selection = spatial_selection,
-            spatial_ids = spatial_ids #reactiveVal to update in module
-        )
-    })
+    mod_comp_spatial_prediction_server(
+      "spatial_prediction",
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = species_id,
+      spatial_selection = spatial_selection,
+      spatial_ids = spatial_ids #reactiveVal to update in module
+    )
+  })
 }

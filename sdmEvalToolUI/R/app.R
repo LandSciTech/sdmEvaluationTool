@@ -7,203 +7,203 @@
 #' sdm_tool()
 
 sdm_tool <- function() {
-    # TODO: define pages, etc. elsewhere
-    page_options <- c(
-        "overview",
-        "predictions",
-        "observations",
-        "model",
-        "predictors",
-        "model_metadata",
-        "test"
-    )
+  # TODO: define pages, etc. elsewhere
+  page_options <- c(
+    "overview",
+    "predictions",
+    "observations",
+    "model",
+    "predictors",
+    "model_metadata",
+    "test"
+  )
 
-    # Pages
-    pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
-    pages_server <- lapply(page_options, \(p) {
-        get(paste0("mod_page_", p, "_server"))
+  # Pages
+  pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
+  pages_server <- lapply(page_options, \(p) {
+    get(paste0("mod_page_", p, "_server"))
+  })
+
+  con <- withr::local_db_connection(db_connect())
+  # Users
+  # TODO: How do we know which user it is?
+  # For now, see option set in zzz.R
+
+  # Data
+  prep_data() |> expand_list()
+
+  ui <- bslib::page_navbar(
+    title = "SDM Tool",
+    theme = sdm_theme(),
+    sidebar = mod_sidebar_ui("sidebar"),
+    gap = 0,
+    padding = 0,
+    !!!pages_ui,
+    nav_spacer(),
+    nav_item(
+      tags$style("#div_id .selectize-input:after{content: none;}"),
+      div(
+        id = "div_id",
+        selectInput(
+          "user_id",
+          width = 150,
+          label = NULL,
+          choices = c(
+            "Select a user" = "",
+            named_ids(dplyr::tbl(con, "users"))
+          )
+        )
+      )
+    ),
+    nav_item(div(id = "div_id", uiOutput("user_role"))),
+    nav_item(div(
+      id = "div_id",
+      selectInput(
+        "lang",
+        width = 50,
+        label = NULL,
+        choices = c("EN" = "english", "FR" = "french")
+      )
+    ))
+  )
+
+  server <- function(input, output, session) {
+    # Set session-specific options
+    # TODO: is this the correct method?
+
+    opts <- reactiveValues()
+
+    output$user_role <- renderUI({
+      if (!isTruthy(input$user_id)) {
+        choices <- c("User Role" = "")
+      } else {
+        con <- withr::local_db_connection(db_connect())
+        u <- input$user_id # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
+        roles <- dplyr::tbl(con, "access") |>
+          dplyr::filter(.data$user_id == .env$u) |>
+          dplyr::pull(.data$user_roles) |>
+          stringr::str_split(", ?") |>
+          unlist() |>
+          unique()
+        choices <- rlang::set_names(roles, pretty(roles))
+      }
+
+      selectInput(
+        "user_role",
+        width = 100,
+        label = NULL,
+        choices = choices
+      )
     })
 
-    con <- withr::local_db_connection(db_connect())
-    # Users
-    # TODO: How do we know which user it is?
-    # For now, see option set in zzz.R
-
-    # Data
-    prep_data() |> expand_list()
-
-    ui <- bslib::page_navbar(
-        title = "SDM Tool",
-        theme = sdm_theme(),
-        sidebar = mod_sidebar_ui("sidebar"),
-        gap = 0,
-        padding = 0,
-        !!!pages_ui,
-        nav_spacer(),
-        nav_item(
-            tags$style("#div_id .selectize-input:after{content: none;}"),
-            div(
-                id = "div_id",
-                selectInput(
-                    "user_id",
-                    width = 150,
-                    label = NULL,
-                    choices = c(
-                        "Select a user" = "",
-                        named_ids(dplyr::tbl(con, "users"))
-                    )
-                )
-            )
-        ),
-        nav_item(div(id = "div_id", uiOutput("user_role"))),
-        nav_item(div(
-            id = "div_id",
-            selectInput(
-                "lang",
-                width = 50,
-                label = NULL,
-                choices = c("EN" = "english", "FR" = "french")
-            )
-        ))
+    vals <- mod_sidebar_server(
+      id = "sidebar",
+      user_id = reactive(input$user_id),
+      user_role = reactive(input$user_role),
+      lang = reactive(input$lang)
     )
 
-    server <- function(input, output, session) {
-        # Set session-specific options
-        # TODO: is this the correct method?
-
-        opts <- reactiveValues()
-
-        output$user_role <- renderUI({
-            if (!isTruthy(input$user_id)) {
-                choices <- c("User Role" = "")
-            } else {
-                con <- withr::local_db_connection(db_connect())
-                u <- input$user_id # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
-                roles <- dplyr::tbl(con, "access") |>
-                    dplyr::filter(.data$user_id == .env$u) |>
-                    dplyr::pull(.data$user_roles) |>
-                    stringr::str_split(", ?") |>
-                    unlist() |>
-                    unique()
-                choices <- rlang::set_names(roles, pretty(roles))
-            }
-
-            selectInput(
-                "user_role",
-                width = 100,
-                label = NULL,
-                choices = choices
-            )
-        })
-
-        vals <- mod_sidebar_server(
-            id = "sidebar",
-            user_id = reactive(input$user_id),
-            user_role = reactive(input$user_role),
-            lang = reactive(input$lang)
+    for (t in pages_server) {
+      t(
+        deployment_id = vals$deployment_id,
+        model_id = vals$model_id,
+        species_id = vals$species_id,
+        opts = list(
+          "user_id" = reactive(input$user_id),
+          "user_role" = reactive(input$user_role),
+          "lang" = reactive(input$lang)
         )
-
-        for (t in pages_server) {
-            t(
-                deployment_id = vals$deployment_id,
-                model_id = vals$model_id,
-                species_id = vals$species_id,
-                opts = list(
-                    "user_id" = reactive(input$user_id),
-                    "user_role" = reactive(input$user_role),
-                    "lang" = reactive(input$lang)
-                )
-            )
-        }
+      )
     }
+  }
 
-    shiny::shinyApp(ui, server)
+  shiny::shinyApp(ui, server)
 }
 
 
 mod_sidebar_ui <- function(id) {
-    sidebar(uiOutput(NS(id, "ui_selectors")))
+  sidebar(uiOutput(NS(id, "ui_selectors")))
 }
 
 mod_sidebar_server <- function(id, user_id, user_role, lang) {
-    moduleServer(id, function(input, output, session) {
-        ns <- session$ns
+  moduleServer(id, function(input, output, session) {
+    ns <- session$ns
 
-        output$ui_selectors <- renderUI({
-            req(lang())
-            con <- withr::local_db_connection(db_connect())
+    output$ui_selectors <- renderUI({
+      req(lang())
+      con <- withr::local_db_connection(db_connect())
 
-            tagList(
-                #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
-                selectInput(
-                    ns("deployment_id"),
-                    label = "Deployment",
-                    choices = c(
-                        "Select a deployment" = "",
-                        named_ids(dplyr::tbl(con, "deployments"))
-                    )
-                ),
-                selectInput(
-                    ns("model_id"),
-                    label = "Model",
-                    choices = c(
-                        "Select a model" = "",
-                        named_ids(dplyr::tbl(con, "models"))
-                    )
-                ),
-                selectInput(
-                    ns("species_id"),
-                    label = "Species",
-                    choices = c(
-                        "Select a species" = "",
-                        named_ids(
-                            fmt_species(
-                                dplyr::tbl(con, "species"),
-                                lang = lang()
-                            ),
-                            name = "display"
-                        )
-                    )
-                ),
-
-                strong("Developer outputs"),
-                uiOutput(ns("dev_outputs"))
+      tagList(
+        #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
+        selectInput(
+          ns("deployment_id"),
+          label = "Deployment",
+          choices = c(
+            "Select a deployment" = "",
+            named_ids(dplyr::tbl(con, "deployments"))
+          )
+        ),
+        selectInput(
+          ns("model_id"),
+          label = "Model",
+          choices = c(
+            "Select a model" = "",
+            named_ids(dplyr::tbl(con, "models"))
+          )
+        ),
+        selectInput(
+          ns("species_id"),
+          label = "Species",
+          choices = c(
+            "Select a species" = "",
+            named_ids(
+              fmt_species(
+                dplyr::tbl(con, "species"),
+                lang = lang()
+              ),
+              name = "display"
             )
-        })
+          )
+        ),
 
-        output$dev_outputs <- renderUI({
-            # React and update to changes in these values, but only show the options
-            user_id()
-            user_role()
-            lang()
-            input$deployment_id
-            input$model_id
-            input$species_id
-
-            # Show current values
-            glue::glue(
-                "Deployment ID: {input$deployment_id}",
-                "Model: {input$model_id}",
-                "Species: {input$species_id}",
-                "User: {user_id()} ({user_role()})",
-                "Language: {lang()}",
-                .sep = "<br>"
-            ) |>
-                htmltools::HTML()
-        })
-
-        list(
-            deployment_id = reactive(input$deployment_id),
-            model_id = reactive(input$model_id),
-            species_id = reactive(input$species_id)
-        )
+        strong("Developer outputs"),
+        uiOutput(ns("dev_outputs"))
+      )
     })
+
+    output$dev_outputs <- renderUI({
+      # React and update to changes in these values, but only show the options
+      user_id()
+      user_role()
+      lang()
+      input$deployment_id
+      input$model_id
+      input$species_id
+
+      # Show current values
+      glue::glue(
+        "Deployment ID: {input$deployment_id}",
+        "Model: {input$model_id}",
+        "Species: {input$species_id}",
+        "User: {user_id()} ({user_role()})",
+        "Language: {lang()}",
+        .sep = "<br>"
+      ) |>
+        htmltools::HTML()
+    })
+
+    list(
+      deployment_id = reactive(input$deployment_id),
+      model_id = reactive(input$model_id),
+      species_id = reactive(input$species_id)
+    )
+  })
 }
 
 sdm_theme <- function() {
-    bs_theme("card-border-radius" = "0") |>
-        bs_add_rules(
-            "
+  bs_theme("card-border-radius" = "0") |>
+    bs_add_rules(
+      "
       /* Format sub questions */
       .sub-question {
         padding-left: 15px;
@@ -232,5 +232,5 @@ sdm_theme <- function() {
           padding: 0 !important;
         }
     "
-        )
+    )
 }

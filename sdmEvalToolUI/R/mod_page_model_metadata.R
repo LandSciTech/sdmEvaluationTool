@@ -7,7 +7,7 @@
 #' test_page_model_metadata()
 
 test_page_model_metadata <- function(...) {
-    test_page("mod_page_model_metadata", ...)
+  test_page("mod_page_model_metadata", ...)
 }
 
 #' Model Metadata Page UI
@@ -22,17 +22,17 @@ test_page_model_metadata <- function(...) {
 #' @examples
 #' mod_page_model_metadata_ui()
 mod_page_model_metadata_ui <- function(
-    id = "model_metadata",
-    title = "Model Metadata",
-    review_width = NULL
+  id = "model_metadata",
+  title = "Model Metadata",
+  review_width = NULL
 ) {
-    nav_panel(
-        title,
-        sdm_layout_sidebar(
-            sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-            mod_comp_model_metadata_ui(NS(id, "model_metadata"))
-        )
+  nav_panel(
+    title,
+    sdm_layout_sidebar(
+      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+      mod_comp_model_metadata_ui(NS(id, "model_metadata"))
     )
+  )
 }
 
 #' Model Metadata Page Server
@@ -45,22 +45,22 @@ mod_page_model_metadata_ui <- function(
 #' @export
 
 mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
-    expand_dots(...)
-    stopifnot(is.reactive(deployment_id))
-    stopifnot(is.reactive(model_id))
-    purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
+  expand_dots(...)
+  stopifnot(is.reactive(deployment_id))
+  stopifnot(is.reactive(model_id))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
-    moduleServer(id, function(input, output, session) {
-        # Prepare the evaluation questions
-        mod_utils_evaluations_server(
-            "eval",
-            component_id = "model_metadata",
-            deployment_id = deployment_id,
-            model_id = model_id,
-            species_id = reactive("ALL"),
-            lang = opts$lang
-        )
+  moduleServer(id, function(input, output, session) {
+    # Prepare the evaluation questions
+    mod_utils_evaluations_server(
+      "eval",
+      component_id = "model_metadata",
+      deployment_id = deployment_id,
+      model_id = model_id,
+      species_id = reactive("ALL"),
+      lang = opts$lang
+    )
 
-        mod_comp_model_metadata_server("model_metadata", model_id)
-    })
+    mod_comp_model_metadata_server("model_metadata", model_id)
+  })
 }
