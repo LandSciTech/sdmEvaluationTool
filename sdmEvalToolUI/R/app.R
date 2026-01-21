@@ -26,13 +26,15 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     get(paste0("mod_page_", p, "_server"))
   })
 
-  # Users
-  # TODO: How do we know which user it is?
-  # For now, see option set in zzz.R
+  # Selections
+  con <- withr::local_db_connection(db_connect())
+  users <- app_users(con)
+  materials <- app_materials(con)
 
   # Data
-  prep_data() |> expand_list()
+  #prep_data() |> expand_list()
 
+  # UI -----
   ui <- bslib::page_navbar(
     title = "SDM Tool",
     theme = sdm_theme(),
@@ -42,7 +44,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     shinyjs::useShinyjs(),
     !!!pages_ui,
     nav_spacer(),
-    !!!sdm_inputs(),
+    !!!sdm_inputs(users),
     nav_item(actionButton(
       "abandon",
       label = NULL,
@@ -52,33 +54,107 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   )
 
   server <- function(input, output, session) {
-    output$user_role <- renderUI({
-      if (!isTruthy(input$user_id)) {
-        i <- shinyjs::disabled(selectInput(
-          "user_role",
-          width = 100,
-          label = NULL,
-          choices = c("Role" = "")
-        ))
-      } else {
-        con <- withr::local_db_connection(db_connect())
-        u <- input$user_id # Cannot put function user_id() in filter() before collection, lazy evaluation goes funny
-        roles <- dplyr::tbl(con, "access") |>
-          dplyr::filter(.data$user_id == .env$u) |>
-          dplyr::pull(.data$user_roles) |>
-          stringr::str_split(", ?") |>
-          unlist() |>
-          unique()
-        choices <- rlang::set_names(roles, pretty(roles))
+    # UI Setup
 
-        i <- selectInput(
-          "user_role",
-          width = 100,
-          label = NULL,
-          choices = choices
-        )
+    sdm_update_selector <- function(
+      type,
+      required,
+      choices,
+      id = paste0(type, "_id")
+    ) {
+      shinyjs::toggleState(
+        id,
+        condition = all(purrr::map_lgl(required, \(r) isTruthy(input[[r]])))
+      )
+
+      sapply(required, \(r) req(input[[r]]))
+
+      if (length(choices) > 1) {
+        choices <- c("", choices)
+        names(choices)[1] <- glue::glue("Select a {type}")
       }
-      i
+
+      isolate({
+        if (isTruthy(input[[id]]) && input[[id]] %in% choices) {
+          selected <- input[[id]]
+        } else {
+          selected <- NULL
+        }
+      })
+
+      updateSelectInput(session, id, choices = choices, selected = selected)
+    }
+
+    observe({
+      # Disable Abandon review if no review selected
+      shinyjs::toggleState(
+        "abandon",
+        condition = isTruthy(input$deployment_id) &
+          isTruthy(input$model_id) &
+          isTruthy(input$species_id)
+      )
+    })
+
+    # Setup Navbar inputs
+    observe({
+      sdm_update_selector(
+        type = "role",
+        id = "user_role",
+        required = "user_id",
+        choices = {
+          c <- users |>
+            dplyr::filter(.data$user_id == input$user_id) |>
+            dplyr::pull(.data$user_roles) |>
+            unique()
+          rlang::set_names(c, pretty(c))
+        }
+      )
+    })
+
+    observe({
+      sdm_update_selector(
+        type = "deployment",
+        required = c("user_id", "user_role"),
+        choices = {
+          users |>
+            dplyr::filter(
+              .data$user_id == input$user_id,
+              .data$user_roles == input$user_role
+            ) |>
+            dplyr::left_join(materials, by = "deployment_id") |>
+            named_ids(match = "deployment")
+        }
+      )
+    })
+
+    observe({
+      sdm_update_selector(
+        type = "model",
+        required = "deployment_id",
+        choices = {
+          dplyr::filter(
+            materials,
+            .data$deployment_id == input$deployment_id
+          ) |>
+            named_ids(match = "model")
+        }
+      )
+    })
+
+    observe({
+      sdm_update_selector(
+        type = "species",
+        required = c("deployment_id", "model_id"),
+        choices = {
+          dplyr::filter(
+            materials,
+            .data$deployment_id == input$deployment_id,
+            .data$model_id == input$model_id
+          ) |>
+            fmt_species() |>
+            named_ids(name = "display", match = "species")
+        }
+      )
     })
 
     for (t in pages_server) {
@@ -98,81 +174,81 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
 }
 
 
-mod_sidebar_ui <- function(id) {
-  sidebar(uiOutput(NS(id, "ui_selectors")))
-}
+# mod_sidebar_ui <- function(id) {
+#   sidebar(uiOutput(NS(id, "ui_selectors")))
+# }
 
-mod_sidebar_server <- function(id, user_id, user_role) {
-  moduleServer(id, function(input, output, session) {
-    ns <- session$ns
+# mod_sidebar_server <- function(id, user_id, user_role) {
+#   moduleServer(id, function(input, output, session) {
+#     ns <- session$ns
 
-    output$ui_selectors <- renderUI({
-      con <- withr::local_db_connection(db_connect())
+#     output$ui_selectors <- renderUI({
+#       con <- withr::local_db_connection(db_connect())
 
-      tagList(
-        #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
-        selectInput(
-          ns("deployment_id"),
-          label = "Deployment",
-          choices = c(
-            "Select a deployment" = "",
-            named_ids(dplyr::tbl(con, "deployments"))
-          )
-        ),
-        selectInput(
-          ns("model_id"),
-          label = "Model",
-          choices = c(
-            "Select a model" = "",
-            named_ids(dplyr::tbl(con, "models"))
-          )
-        ),
-        selectInput(
-          ns("species_id"),
-          label = "Species",
-          choices = c(
-            "Select a species" = "",
-            named_ids(
-              fmt_species(
-                dplyr::tbl(con, "species")
-              ),
-              name = "display"
-            )
-          )
-        ),
+#       tagList(
+#         #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
+#         selectInput(
+#           ns("deployment_id"),
+#           label = "Deployment",
+#           choices = c(
+#             "Select a deployment" = "",
+#             named_ids(dplyr::tbl(con, "deployments"))
+#           )
+#         ),
+#         selectInput(
+#           ns("model_id"),
+#           label = "Model",
+#           choices = c(
+#             "Select a model" = "",
+#             named_ids(dplyr::tbl(con, "models"))
+#           )
+#         ),
+#         selectInput(
+#           ns("species_id"),
+#           label = "Species",
+#           choices = c(
+#             "Select a species" = "",
+#             named_ids(
+#               fmt_species(
+#                 dplyr::tbl(con, "species")
+#               ),
+#               name = "display"
+#             )
+#           )
+#         ),
 
-        strong("Developer outputs"),
-        uiOutput(ns("dev_outputs"))
-      )
-    })
+#         strong("Developer outputs"),
+#         uiOutput(ns("dev_outputs"))
+#       )
+#     })
 
-    output$dev_outputs <- renderUI({
-      # React and update to changes in these values, but only show the options
-      user_id()
-      user_role()
-      input$deployment_id
-      input$model_id
-      input$species_id
+#     output$dev_outputs <- renderUI({
+#       # React and update to changes in these values, but only show the options
+#       user_id()
+#       user_role()
+#       input$deployment_id
+#       input$model_id
+#       input$species_id
 
-      # Show current values
-      glue::glue(
-        "Deployment ID: {input$deployment_id}",
-        "Model: {input$model_id}",
-        "Species: {input$species_id}",
-        "User: {user_id()} ({user_role()})",
-        "Language: {lang()}",
-        .sep = "<br>"
-      ) |>
-        htmltools::HTML()
-    })
+#       # Show current values
+#       glue::glue(
+#         "Deployment ID: {input$deployment_id}",
+#         "Model: {input$model_id}",
+#         "Species: {input$species_id}",
+#         "User: {user_id()} ({user_role()})",
+#         "Language: {lang()}",
+#         .sep = "<br>"
+#       ) |>
+#         htmltools::HTML()
+#     })
 
-    list(
-      deployment_id = reactive(input$deployment_id),
-      model_id = reactive(input$model_id),
-      species_id = reactive(input$species_id)
-    )
-  })
-}
+#     list(
+#       deployment_id = reactive(input$deployment_id),
+#       model_id = reactive(input$model_id),
+#       species_id = reactive(input$species_id)
+#     )
+#   })
+# }
 
 sdm_theme <- function() {
   bs_theme("card-border-radius" = "0") |>
@@ -222,9 +298,7 @@ sdm_theme <- function() {
 #' @examples
 #' sdm_inputs()
 
-sdm_inputs <- function() {
-  con <- withr::local_db_connection(db_connect())
-
+sdm_inputs <- function(users) {
   list(
     nav_item(
       tags$style("#div_id .selectize-input:after{content: none;}"),
@@ -234,58 +308,75 @@ sdm_inputs <- function() {
           "user_id",
           width = 150,
           label = NULL,
-          choices = c(
-            "Select a user" = "",
-            named_ids(dplyr::tbl(con, "users"))
-          )
+          choices = c("Select a user" = "", named_ids(users, match = "user"))
         )
       )
     ),
-    nav_item(div(id = "div_id", uiOutput("user_role"))),
+    nav_item(div(
+      id = "div_id",
+      shinyjs::disabled(selectInput(
+        "user_role",
+        width = 100,
+        label = NULL,
+        choices = c("Role" = "")
+      ))
+    )),
     nav_item(
       div(
         id = "div_id",
-        #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
-        selectInput(
+        shinyjs::disabled(selectInput(
           "deployment_id",
+          width = 175,
           label = NULL,
-          width = 200,
-          choices = c(
-            "Select a deployment" = "",
-            named_ids(dplyr::tbl(con, "deployments"))
-          )
-        )
+          choices = c("Deployment" = "")
+        ))
       )
     ),
     nav_item(
       div(
         id = "div_id",
-        selectInput(
+        shinyjs::disabled(selectInput(
           "model_id",
+          width = 175,
           label = NULL,
-          width = 200,
-          choices = c(
-            "Select a model" = "",
-            named_ids(dplyr::tbl(con, "models"))
-          )
-        )
+          choices = c("Model" = "")
+        ))
       )
     ),
     nav_item(
       div(
         id = "div_id",
-        selectInput(
+        shinyjs::disabled(selectInput(
           "species_id",
+          width = 350,
           label = NULL,
-          choices = c(
-            "Select a species" = "",
-            named_ids(
-              fmt_species(dplyr::tbl(con, "species")),
-              name = "display"
-            )
-          )
-        )
+          choices = c("Species" = "")
+        ))
       )
     )
   )
+}
+
+app_users <- function(con) {
+  dplyr::tbl(con, "users") |>
+    dplyr::select("user_id", "user_name") |>
+    dplyr::left_join(dplyr::tbl(con, "access"), by = "user_id") |>
+    dplyr::collect() |>
+    dplyr::mutate(user_roles = stringr::str_split(user_roles, ", ?")) |>
+    tidyr::unnest(user_roles) |>
+    dplyr::filter(user_roles != "commenter")
+}
+
+app_materials <- function(con) {
+  db_read_deployment_materials(con) |>
+    dplyr::select(
+      "deployment_id",
+      "deployment_name",
+      "model_id",
+      "model_name",
+      "species_id",
+      "scientific_name",
+      "english_name",
+      "french_name"
+    )
 }

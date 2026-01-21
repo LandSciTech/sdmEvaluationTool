@@ -46,15 +46,22 @@ skip_eg <- function() {
 }
 
 
-named_ids <- function(df_db, id = "id", name = "name") {
-  pattern <- glue::glue("\\_{id}|\\_{name}")
+named_ids <- function(df_db, id = "id", name = "name", match = NULL) {
+  if (is.null(match)) {
+    pattern <- glue::glue("\\_{id}|\\_{name}")
+  } else {
+    pattern <- glue::glue("{match}\\_{id}|{match}\\_{name}")
+  }
   type <- stringr::str_subset(colnames(df_db), pattern)
+
   if (
     length(type) != 2 ||
       length(unique(stringr::str_remove(type, pattern))) != 1
   ) {
     stop("Non-matching id/name column pairs", call. = FALSE)
   }
+  df_db <- dplyr::select(df_db, dplyr::all_of(type)) |>
+    dplyr::distinct()
 
   rlang::set_names(
     dplyr::pull(df_db, .data[[type[1]]]),
