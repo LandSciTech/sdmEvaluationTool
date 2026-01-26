@@ -837,7 +837,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Are you sure that you want to quit the evaluation?
     fr: ""
   followup_level: 0
-- component: observations
+- component: app
   type: simple_text
   order: 1
   part: 2
