@@ -474,6 +474,29 @@ tables:
 components:
 # note: properties used in the ui will have to take `en` and `fr` values.
 
+  app:
+    description: A special component to store high level reason for not completing an evaluation.
+    mandatory: Yes
+    type: "material"
+    upload:
+      type:
+      input:
+        description:
+        file_ext:
+        columns:
+      output:
+        description:
+        columns:
+        path: ""
+    display:
+      type:
+      title:
+      description:
+      placement: "page.tab.section" # TBD
+      material_settings:
+    evaluation:
+      evaluation_allowed: Yes
+
   observations:
     description: Detections or counts by location and timestamp for a single or multiple species.
     mandatory: Yes
@@ -805,6 +828,23 @@ components:
       evaluation_allowed: No
 
 default_questions: # where values is missing, we use the values from question_types
+# --------- app --------
+- component: app
+  type: yes_no
+  order: 1
+  part: 1
+  body:
+    en: Are you sure that you want to quit the evaluation?
+    fr: ""
+  followup_level: 0
+- component: observations
+  type: simple_text
+  order: 1
+  part: 2
+  body:
+    en: Describe the reason why you do not wish to continue the evaluation.
+    fr: ""
+  followup_level: 0
 # --------- spatial prediction --------
 - component: spatial_prediction
   type: spatial
@@ -1071,10 +1111,10 @@ question_types:
     name: Simple Text Input
     description: Free form text input.
     values: []
-  # yes_no:
-  #   name: Yes/No Question
-  #   description: A Yes or No question. Follow up questions are conditional on Yes.
-  #   values: ["Yes", "No"]
+  yes_no:
+    name: Yes/No Question
+    description: A Yes or No question. Follow up questions are conditional on Yes.
+    values: ["Yes", "No"]
   # gold_standard:
   #   name: Gold Standard
   #   description: A 1-5 scale (Unk - Gold) ordinal response presented as a dropdown.
