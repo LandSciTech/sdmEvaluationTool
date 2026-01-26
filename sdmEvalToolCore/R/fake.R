@@ -75,7 +75,7 @@ fake_evaluation <- function(
         deployment_id = deployment_id,
         material_id = material_id,
         component_id = component_id,
-        use_cases = "Forestry",
+        use_case = "Forestry",
         evaluation_create_user = user_id,
         evaluation_create_time = timestamp_to(time),
         evaluation_modify_user = NA_character_,

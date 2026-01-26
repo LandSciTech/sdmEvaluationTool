@@ -330,7 +330,7 @@ deployments <- data.frame(
 d1 <- d2 <- conf$templates$deployment_settings
 d1$comments_allowed <- TRUE
 d2$preferred_language <- "fr"
-d2$use_cases <- list(list(en = "Forestry", fr = "Foresterie"))
+d2$use_case <- list(list(en = "Forestry", fr = "Foresterie"))
 deployments$deployment_settings[1] <- jsonlite::toJSON(d1)
 deployments$deployment_settings[2] <- jsonlite::toJSON(d2)
 
