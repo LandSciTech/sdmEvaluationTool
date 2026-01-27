@@ -15,7 +15,7 @@ fmt_species <- function(df) {
         " (", .data$scientific_name, ")"
       ),
       species_display = dplyr::if_else(
-        is.na(.data$species_id),
+        is.na(.data$species_id) | .data$species_id == "ALL",
         "Model",
         .data$species_display
       )

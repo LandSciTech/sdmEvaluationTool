@@ -36,22 +36,33 @@ mod_page_overview_ui <- function(id = "overview", title = "Overview") {
 #'
 #' @param id Shiny module ID
 #' @param ... Additional arguments passed via expand_dots including
-#' deployment_id, model_id, species_id
+#' deployment_id, model_id, species_id, and overview_inputs (reactiveVal)
 #'
 #' @returns Server function for Shiny module
 #'
 #' @export
 
 mod_page_overview_server <- function(id = "overview", ...) {
+  # Expected arguments
   expand_dots(...)
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  stopifnot(is.reactive(overview_inputs)) # reactiveVal
+
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
+    # Table for display
     tbl <- reactive({
       evals_details(opts$user_id(), opts$user_role())
+    })
+
+    # Table for input keys
+    tbl_top <- reactive({
+      tbl() |>
+        dplyr::select("deployment_id", "model_id", "species_id") |>
+        dplyr::distinct()
     })
 
     output$tbl_overview <- reactable::renderReactable({
@@ -68,37 +79,15 @@ mod_page_overview_server <- function(id = "overview", ...) {
       evals_table(tbl(), opts$user_role())
     })
 
-    # TODO: Option to click on species/model combination on table to select
-    output$table <- reactable::renderReactable({
-      reactable::reactable(
-        table(),
-        highlight = TRUE,
-        rowStyle = function(index) {
-          if (
-            isTruthy(species_id()) &&
-              index == which(table()[["species_id"]] == species_id())
-          ) {
-            list(background = "rgba(0, 0, 0, 0.5)")
-          }
-        },
-        columns = list(
-          model_name = reactable::colDef(
-            style = reactable::JS(
-              "function(rowInfo, column, state) {
-              const firstSorted = state.sorted[0]
-              // Merge cells if unsorted or sorting by model_name
-              if (!firstSorted || firstSorted.id === 'model_name') {
-                const prevRow = state.pageRows[rowInfo.viewIndex - 1]
-                if (prevRow && rowInfo.values['model_name'] === prevRow['model_name']) {
-                  return { visibility: 'hidden' }
-                }
-              }
-            }"
-            )
-          )
-        )
-      )
-    })
+    observe({
+      # Update reactiveVal created by sdm_tool()
+      i <- tbl_top() |>
+        dplyr::slice(input$button_clicked) |>
+        as.list()
+
+      overview_inputs(i)
+    }) |>
+      bindEvent(input$button_clicked, ignoreInit = TRUE)
   })
 }
 
@@ -127,7 +116,6 @@ evals_table <- function(tbl, user_role) {
   if (user_role == "modeler") {
     group_by <- c(group_by, "evaluation_create_user_name")
   }
-  group_by <- c(group_by, "species_display")
 
   # Grouped tables https://glin.github.io/reactable/articles/examples.html?q=collaps#grouping-and-aggregation
   # Nested tables https://glin.github.io/reactable/articles/examples.html?q=collaps#nested-tables
@@ -135,19 +123,82 @@ evals_table <- function(tbl, user_role) {
   pal <- c("white", grDevices::colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
   pal_text <- c(rep("black", 50), rep("white", 51))
 
+  tbl_components <- tbl
+
+  tbl_top <- tbl |>
+    dplyr::summarize(
+      progress = sum(n_q_complete) / sum(n_q),
+      .by = c(
+        "deployment_model_name",
+        "evaluation_create_user_name",
+        "species_display",
+        "species_id" # Key which determines button presence
+      )
+    ) |>
+    dplyr::mutate(button = NA) |>
+    dplyr::relocate("button", .after = "species_display")
+
+  deployment_width <- 250
+
   reactable::reactable(
-    dplyr::select(
-      tbl,
-      -"started",
-      -"deployment_name",
-      -"model_name"
-    ),
+    tbl_top,
     groupBy = group_by,
     defaultColDef = reactable::colDef(
       vAlign = "center",
-      headerVAlign = "bottom",
+      headerVAlign = "bottom"
     ),
+    # Sub Table with component-level progress
+    details = function(index) {
+      comp <- dplyr::filter(
+        tbl_components,
+        .data$deployment_model_name == tbl_top$deployment_model_name[index],
+        .data$species_display == tbl_top$species_display[index]
+      ) |>
+        dplyr::mutate(
+          progress_perc = round(.data$n_q_complete / .data$n_q * 100)
+        ) |>
+        dplyr::select(
+          "Component" = "component_name",
+          "Progress" = "n_q_display",
+          "progress_perc"
+        )
+      div(
+        # fmt: skip
+        style = paste0(
+          "margin-left:", deployment_width * 1.2, "px;",
+          "margin-bottom: 20px"),
+        reactable::reactable(
+          comp,
+          outlined = TRUE,
+          width = 500,
+          columns = list(
+            progress_perc = reactable::colDef(show = FALSE),
+            Progress = reactable::colDef(
+              align = "center",
+              maxWidth = 150,
+              # Colour by percent complete
+              style = \(v, i) {
+                bg <- pal[comp$progress_perc[i]]
+                txt <- pal_text[comp$progress_perc[i]]
+                list(background = bg, color = txt)
+              }
+            )
+          )
+        )
+      )
+    },
     columns = list(
+      species_id = reactable::colDef(show = FALSE),
+      # Button column
+      button = reactable::colDef(
+        name = "",
+        sortable = FALSE,
+        cell = \(v, i) {
+          if (!is.na(tbl_top$species_id[i]) & tbl_top$species_id[i] != "ALL") {
+            htmltools::tags$button("Evaluate", class = "btn btn-sm btn-info")
+          }
+        }
+      ),
       deployment_model_name = reactable::colDef(
         name = "Deployment - Model",
         html = TRUE,
@@ -173,74 +224,36 @@ evals_table <- function(tbl, user_role) {
       species_display = reactable::colDef(
         name = "Species",
         html = TRUE,
-        minWidth = 500,
-        grouped = reactable::JS(
-          "function(cellInfo) {
-       let out = cellInfo.value
-       out = out.replaceAll('(', '(<em>')
-       out = out.replaceAll(')', '</emf>)')
-       return out
-      }"
-        )
-      ),
-      component_name = reactable::colDef(
-        name = "Component",
         minWidth = 200,
-        maxWidth = 350,
+        maxWidth = 400
       ),
-      n_q_display = reactable::colDef(show = FALSE),
-      n_q = reactable::colDef(show = FALSE),
-      n_q_complete = reactable::colDef(show = FALSE),
-      completed = reactable::colDef(
+      progress = reactable::colDef(
         name = "Progress",
+        align = "center",
         minWidth = 100,
         maxWidth = 150,
-        aggregate = reactable::JS(
-          "function(values, rows) {
-      let out = 0
-
-      if(values.length === 1) {
-        out = rows['n_q_display']
-      } else {             
-        rows.forEach(function(row) {
-          out += row['completed']
-        })
-        out = Math.round(out / values.length * 10 ** 2) / 10 ** 2
-      }
-
-      return out
-}"
-        ),
-        cell = reactable::JS(
-          "function(cellInfo, state) {
-        let out = 'Yes'
-        if(!cellInfo.aggregated) out = cellInfo.row.n_q_display
-        return out
-      }"
-        ),
         format = reactable::colFormat(percent = TRUE, digits = 0),
 
         # Colour by percent complete
-        style = reactable::JS(
-          "function(rowInfo, column, state) {
-        const pal = state.meta.pal
-        const pal_text = state.meta.pal_text
-        let value = 0
-        let completed = 0
-
-        if(rowInfo.aggregated) {
-          completed = rowInfo.row['completed']
-        } else {
-          completed = rowInfo.values['n_q_complete'] / rowInfo.values['n_q']
+        style = \(v) {
+          bg <- pal[round(v * 100)]
+          txt <- pal_text[round(v * 100)]
+          list(background = bg, color = txt)
         }
-        value = (Math.round(completed * 10 ** 2) / 10 ** 2) * 100
-        return { backgroundColor: pal[value] , color: pal_text[value]}
-    }"
-        )
       )
     ),
     meta = list(pal = pal, pal_text = pal_text),
-    highlight = TRUE
+    highlight = TRUE,
+    onClick = reactable::JS(
+      "function(rowInfo, column) {
+         // Only handle click events on this column specifically
+         if (column.id !== 'button') {
+           return
+         }
+  
+         Shiny.setInputValue('overview-button_clicked', rowInfo.index + 1, { priority: 'event' })
+      }"
+    )
   )
 }
 
@@ -299,7 +312,7 @@ evals_details <- function(user_id, user_role) {
 
   if (user_role == "modeler") {
     deploy_user <- user_id
-    # Which ussers expected to have evaluations modeler wants to check progress on?
+    # Which users expected to have evaluations modeler wants to check progress on?
     eval_user <- deployments |>
       dplyr::filter(
         .data$deployment_id %in% .env$deployment_ids,
@@ -407,7 +420,18 @@ evals_details <- function(user_id, user_role) {
         "---",
         .data$model_name
       ),
-      component_name = pretty(.data$component_id)
+      component_name = pretty(.data$component_id),
+      # To sort "Model" to the top, add space
+      species_display = stringr::str_replace(
+        .data$species_display,
+        "^Model$",
+        " Model"
+      )
+    ) |>
+    dplyr::arrange(
+      .data$deployment_model_name,
+      .data$evaluation_create_user_name,
+      .data$species_display
     ) |>
     # fmt:skip
     dplyr::select(
@@ -419,8 +443,10 @@ evals_details <- function(user_id, user_role) {
       "evaluation_create_user_name",
       "deployment_name", "model_name", "species_display", "component_name", 
       "completed", "started", 
-      "n_q_display",           
-      dplyr::starts_with("n_q")      
+      "n_q_display", dplyr::starts_with("n_q"),     
+
+      # Keep IDs for filling in app inputs later
+      "deployment_id", "model_id", "species_id"      
     ) |>
     dplyr::arrange(
       .data$deployment_model_name,

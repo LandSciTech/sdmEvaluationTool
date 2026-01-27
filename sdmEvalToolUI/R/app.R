@@ -7,7 +7,6 @@
 #' sdm_tool()
 
 sdm_tool <- function(lang = "english", options = list(port = 8080)) {
-  # TODO: define pages, etc. elsewhere
   page_options <- c(
     "overview",
     "predictions",
@@ -20,12 +19,6 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   # Set language
   set_options(lang = lang)
 
-  # Pages
-  pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
-  pages_server <- lapply(page_options, \(p) {
-    get(paste0("mod_page_", p, "_server"))
-  })
-
   # Selections
   con <- withr::local_db_connection(db_connect())
   users <- app_users(con)
@@ -34,7 +27,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   # Data
   #prep_data() |> expand_list()
 
-  # UI -----
+  # UI --------------------------------------
+  pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
   ui <- bslib::page_navbar(
     title = "SDM Tool",
     theme = sdm_theme(),
@@ -54,7 +48,10 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   )
 
   server <- function(input, output, session) {
-    # UI Setup
+    # Setup ---------------------------------------------
+    # Placeholder reactiveVal until overview created
+    # Will be updated by overview module when button clicked to select evalution
+    overview_inputs <- reactiveVal(NULL)
 
     sdm_update_selector <- function(
       type,
@@ -95,7 +92,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       )
     })
 
-    # Setup Navbar inputs
+    # Navbar inputs -------------------------------------------
     observe({
       sdm_update_selector(
         type = "role",
@@ -149,12 +146,42 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
           dplyr::filter(
             materials,
             .data$deployment_id == input$deployment_id,
-            .data$model_id == input$model_id
+            .data$model_id == input$model_id,
+            !is.na(species_id) # Avoid "Model" in species input choices
           ) |>
             fmt_species() |>
             named_ids(name = "display", match = "species")
         }
       )
+    })
+
+    # Update by button clicks from Overview table
+    observe({
+      purrr::iwalk(overview_inputs(), \(v, i) {
+        # Wait until inputs have settled before applying species_id
+        delay_ms <- dplyr::if_else(i != "species_id", 0, 200)
+        shinyjs::delay(delay_ms, {
+          updateSelectInput(session, inputId = i, selected = v)
+        })
+      })
+    }) |>
+      bindEvent(overview_inputs(), ignoreInit = TRUE)
+
+    # Modules --------------------------------
+    # - Define overview separately to specify overview_inputs
+    mod_page_overview_server(
+      deployment_id = reactive(input$deployment_id),
+      model_id = reactive(input$model_id),
+      species_id = reactive(input$species_id),
+      opts = list(
+        "user_id" = reactive(input$user_id),
+        "user_role" = reactive(input$user_role)
+      ),
+      overview_inputs = overview_inputs
+    )
+
+    pages_server <- lapply(page_options[-1], \(p) {
+      get(paste0("mod_page_", p, "_server"))
     })
 
     for (t in pages_server) {
