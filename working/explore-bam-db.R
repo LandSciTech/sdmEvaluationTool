@@ -6,6 +6,7 @@ library(mefa4)
 library(DBI)
 library(RSQLite)
 library(jsonlite)
+library(suntools)
 
 path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
 conf <- yaml::read_yaml("spec/config.yml")
@@ -194,7 +195,7 @@ rule <- get_comp_rule("predictor_raster", "upload")
 fi <- file.path(path, "predictors", "can71_2000.tif")
 x <- read_file(fi)
 x <- terra::resample(x, 5)
-x <- terra::project(x, "epsg:3857")
+x <- terra::project(x, "epsg:4326")
 fo <- make_target_path(rule$output$path, data = list(model_id = model_id))
 write_file(x, fo)
 materials <- materials_fun(materials, model_id, NA, "predictor_raster")
@@ -226,8 +227,17 @@ for (species_id in SPP2) {
     z <- sf::st_as_sf(z, coords = c("longitude", "latitude"))
     # lon/lat is 4326
     sf::st_crs(z) <- 4326
-    # leaflet wants 3857
-    z <- sf::st_transform(z, 3857)
+    # leaflet wants 4326
+    z <- sf::st_transform(z, 4326)
+
+    sr <- suntools::sunriset(
+        crds = z,
+        dateTime = z$time,
+        direction = "sunrise",
+        POSIXct.out = TRUE
+    )
+    z$hssr <- as.numeric(difftime(z$time, sr$time, units = "hours"))
+
     fo <- make_target_path(
         rule$output$path,
         data = list(model_id = model_id, species_id = species_id)
@@ -251,7 +261,7 @@ ms <- jsonlite::toJSON(drule$materials_settings)
 for (species_id in SPP) {
     fi <- file.path(path, "predictions", paste0(species_id, "_can71_2020.tif"))
     x <- read_file(fi)
-    x <- terra::project(x, "epsg:3857")
+    x <- terra::project(x, "epsg:4326")
     fo <- make_target_path(
         rule$output$path,
         data = list(model_id = model_id, species_id = species_id)
@@ -330,7 +340,7 @@ deployments <- data.frame(
 d1 <- d2 <- conf$templates$deployment_settings
 d1$comments_allowed <- TRUE
 d2$preferred_language <- "fr"
-d2$use_cases <- list(list(en = "Forestry", fr = "Foresterie"))
+d2$use_case <- list(list(en = "Forestry", fr = "Foresterie"))
 deployments$deployment_settings[1] <- jsonlite::toJSON(d1)
 deployments$deployment_settings[2] <- jsonlite::toJSON(d2)
 
@@ -384,6 +394,14 @@ fo <- make_target_path(
     data = list(deployment_id = "deployment1")
 )
 write_file(q[q$order < 6, ], fo)
+
+q <- sdmEvalToolCore::default_questions
+q$followup_level[5] <- 3
+q <- combine_questions(q)
+v <- sapply(q$values, \(z) {
+    if (length(z[[1]]) > 1) paste0(z[[1]], collapse = ", ") else ""
+})
+q$values <- ifelse(q$type == "spatial", v, "")
 fo <- make_target_path(
     "deployments/{deployment_id}/deployment_questions.csv",
     data = list(deployment_id = "deployment2")
@@ -409,9 +427,9 @@ write_file(fromJSON(deployments$deployment_settings[2]), fo)
 su <- sf::st_read(file.path(path, "subunits", "ecoprovinces.shp"))
 su <- sf::st_simplify(su, TRUE, 10)
 r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
-r <- terra::project(r, "epsg:3857")
+r <- terra::project(r, "epsg:4326")
 bbox <- sf::st_as_sfc(sf::st_bbox(r))
-su <- sf::st_transform(su, 3857)
+su <- sf::st_transform(su, 4326)
 su <- sf::st_intersection(su, bbox)
 su$subunit_id <- su$ECOPROVINC
 su <- su[, "subunit_id"]

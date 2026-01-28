@@ -110,22 +110,25 @@ check_table <- function(x, table_name, dryrun = FALSE) {
     if (length(c1) > 0L) {
         ok <- FALSE
         if (verbose >= 2) {
-            cat("\n* Additional fields found:", paste0(c1, collapse = ", "))
+            cat(
+                "\n* [FAIL] Additional fields found:",
+                paste0(c1, collapse = ", ")
+            )
         }
     } else {
         if (verbose >= 2) {
-            cat("\n* Checking additional fields ... OK")
+            cat("\n* [OK] Checking additional fields")
         }
     }
     c2 <- setdiff(tt$field, colnames(x))
-    if (length(c1) > 0L) {
+    if (length(c2) > 0L) {
         ok <- FALSE
         if (verbose >= 2) {
-            cat("\n* Missing fields:", paste0(c2, collapse = ", "))
+            cat("\n* [FAIL] Missing fields:", paste0(c2, collapse = ", "))
         }
     } else {
         if (verbose >= 2) {
-            cat("\n* Checking missing fields ... OK")
+            cat("\n* [OK] Checking missing fields")
         }
     }
     cn <- intersect(tt$field, colnames(x))
@@ -142,7 +145,7 @@ check_table <- function(x, table_name, dryrun = FALSE) {
             ok <- FALSE
             if (verbose >= 2) {
                 cat(
-                    "\n* Type for field",
+                    "\n* [FAIL] Type for field",
                     sQuote(tt$field[k]),
                     "should be",
                     tt$type[k],
@@ -153,9 +156,8 @@ check_table <- function(x, table_name, dryrun = FALSE) {
         } else {
             if (verbose >= 2) {
                 cat(
-                    "\n* Checking type for field",
-                    sQuote(tt$field[k]),
-                    "... OK"
+                    "\n* [OK] Checking type for field",
+                    sQuote(tt$field[k])
                 )
             }
         }
@@ -164,7 +166,7 @@ check_table <- function(x, table_name, dryrun = FALSE) {
         cat("\n")
     }
     if (!dryrun && !ok) {
-        stop("Check for table ", sQuote(table_name), " failed")
+        stop("Check for table ", sQuote(table_name), " FAILED")
     }
     invisible(ok)
 }
