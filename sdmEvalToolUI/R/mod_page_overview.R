@@ -356,7 +356,7 @@ evals_details <- function(user_id, user_role) {
       n_q = purrr::map_int(.data$n_q, nrow)
     )
 
-  eval_complete <- prep_evaluations(con, eval_user)
+  eval_complete <- prep_evaluations(eval_user)
 
   if (nrow(eval_complete) == 0) {
     eval_complete <- eval_expect |>

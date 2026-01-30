@@ -4,10 +4,10 @@ prep_data <- function() {
     sdmevaltool_options(base = "../misc/base")
   }
 
-  db <- db_connect()
-  tbl_models <- db_read_models(db)
-  tbl_species <- db_read_species(db)
-  tbl_deployments <- dplyr::tbl(db, "deployments") |> dplyr::collect()
+  con <- withr::local_db_connection(db_connect())
+  tbl_models <- db_read_models(con)
+  tbl_species <- db_read_species(con)
+  tbl_deployments <- dplyr::tbl(con, "deployments") |> dplyr::collect()
 
   list(
     "tbl_deployments" = tbl_deployments,
@@ -216,14 +216,14 @@ fetch_questions <- function(deployment_id, component_id) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' con <- db_connect()
-#' prep_evaluations(con, c("draper", "okoye"))
-#' prep_evaluations(con, "holden")
-#' prep_evaluations(con, "okoye")
-#' DBI::dbDisconnect(con)
+#' prep_evaluations(c("draper", "okoye"))
+#' prep_evaluations("holden")
+#' prep_evaluations("okoye")
+#' prep_evaluations("TESTUSER")
 
-prep_evaluations <- function(con, user_id) {
-  db_read_evaluations(con, user_id = user_id) |>
+prep_evaluations <- function(user_id, deployment_id = NULL) {
+  con <- withr::local_db_connection(db_connect())
+  db_read_evaluations(con, deployment_id = deployment_id, user_id = user_id) |>
     dplyr::select(
       "deployment_id",
       "material_id",

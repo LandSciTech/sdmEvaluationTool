@@ -20,9 +20,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   set_options(lang = lang)
 
   # Selections
-  con <- withr::local_db_connection(db_connect())
-  users <- app_users(con)
-  materials <- app_materials(con)
+  users <- app_users()
+  materials <- app_materials()
 
   # Data
   #prep_data() |> expand_list()
@@ -384,7 +383,8 @@ sdm_inputs <- function(users) {
   )
 }
 
-app_users <- function(con) {
+app_users <- function() {
+  con <- withr::local_db_connection(db_connect())
   dplyr::tbl(con, "users") |>
     dplyr::select("user_id", "user_name") |>
     dplyr::left_join(dplyr::tbl(con, "access"), by = "user_id") |>
@@ -394,7 +394,8 @@ app_users <- function(con) {
     dplyr::filter(user_roles != "commenter")
 }
 
-app_materials <- function(con) {
+app_materials <- function() {
+  con <- withr::local_db_connection(db_connect())
   db_read_deployment_materials(con) |>
     dplyr::select(
       "deployment_id",
