@@ -143,6 +143,9 @@ prep_files <- function(path, name, ...) {
 #' prep_questions(c("model_summary", "model_fit"), "deployment1", "bam_v5_can71")
 #'
 #' prep_questions("predictor_raster", "deployment1", "bam_v5_can71")
+#'
+#' # Return default questions
+#' prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
 
 prep_questions <- function(
   component_id = NULL,
@@ -176,7 +179,6 @@ prep_questions <- function(
     #TODO: Remove this if numbering changes
     dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
     dplyr::mutate(
-      values = stringr::str_split(.data$values, ", ?"),
       material_id = paste(
         .env$model_id,
         .env$species_id,
@@ -196,7 +198,8 @@ prep_questions <- function(
 fetch_questions <- function(deployment_id, component_id) {
   # Do we have a valid set of deployment questions? If not use defaults
   q <- tryCatch(
-    prep_deployments(deployment_id, "deployment_questions"),
+    prep_deployments(deployment_id, "deployment_questions") |>
+      dplyr::mutate(values = stringr::str_split(.data$values, ", ?")),
     error = \(x) sdmEvalToolCore::default_questions
   )
 
@@ -224,15 +227,30 @@ fetch_questions <- function(deployment_id, component_id) {
 prep_evaluations <- function(user_id, deployment_id = NULL) {
   con <- withr::local_db_connection(db_connect())
   db_read_evaluations(con, deployment_id = deployment_id, user_id = user_id) |>
+    dplyr::mutate(
+      answers = purrr::map(.data$evaluation_body, evals_extract),
+      answers = purrr::pmap(
+        list(.data$deployment_id, .data$material_id, .data$answers),
+        \(d, m, a) {
+          dplyr::mutate(a, id = paste(d, m, .data$order, .data$part, sep = "_"))
+        }
+      ),
+      evals = purrr::map(.data$answers, evals_answered),
+      last_modified = pmax(
+        .data$evaluation_create_time,
+        .data$evaluation_modify_time
+      ) |>
+        timestamp_from() |>
+        format("%a, %b %d %Y")
+    ) |>
     dplyr::select(
       "deployment_id",
       "material_id",
+      "last_modified",
       "evaluation_create_user",
-      "evaluation_body"
-    ) |>
-    dplyr::mutate(
-      answers = purrr::map(.data$evaluation_body, evals_extract),
-      evals = purrr::map(.data$answers, evals_answered)
+      "evaluation_body",
+      "answers",
+      "evals"
     ) |>
     tidyr::unnest("evals")
 }
@@ -245,35 +263,86 @@ prep_evaluations <- function(user_id, deployment_id = NULL) {
 #'
 #' @export
 #' @examples
-#' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
-#' a <- list(c("id1", "id2"), c(NULL), "testing", "", "", "", "") |>
-#'   rlang::set_names(q$id)
-#' # answers <- purrr::map(list(input), \(x) x[[questions_init()$id]])
-save_evaluations <- function(questions, input_list) {
-  r <- response_to_json(questions, input_list)
+#' q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
+#' a <- test_input_evals(q)
+#' save_evaluations(q, a, user_id = "TESTUSER")
+#' # Compare
+#' e <- prep_evaluations(user_id = "TESTUSER")
+
+save_evaluations <- function(questions, input_list, user_id) {
+  con <- withr::local_db_connection(db_connect())
+
+  browser()
+  # TODO: Update modified vs. created etc.
+
+  evals <- questions |>
+    dplyr::rename("component_id" = "component") |>
+    dplyr::mutate(
+      deployment_material_id = stringr::str_remove(.data$id, "_\\d+_\\d+$"),
+      deployment_id = stringr::str_extract(
+        .data$id,
+        paste0("^.+(?=_", .data$material_id, ")")
+      )
+    ) |>
+    dplyr::summarize(
+      evaluation_body = response_to_json(questions, input_list),
+      .by = c(
+        "component_id",
+        "material_id",
+        "deployment_material_id",
+        "deployment_id"
+      )
+    ) |>
+    dplyr::mutate(
+      use_case = "Forestry",
+      evaluation_create_user = .env$user_id,
+      evaluation_create_time = timestamp_to(Sys.time()),
+      evaluation_modify_user = "", #NA_character_,
+      evaluation_modify_time = 0L, #NA_integer_,
+      note_create_user = "", #NA_character_,
+      note_create_time = 0L, #NA_integer_,
+      note_body = "", #NA_character_
+    )
+
+  # Save to file
+  db_write_table(
+    con,
+    table = "evaluations",
+    data = evals,
+    mode = "upsert"
+  )
 }
 
+#' Create JSON evaluation body
+#'
+#' @noRd
 response_to_json <- function(questions, input_list) {
-  a <- input_list |>
-    names() |>
-    stringr::str_subset("-show", negate = TRUE)
+  # - All responses have 'values' directly from the question
+  # - Only spatial response have a list response including 'value' and 'subunit'
 
-  r <- questions$id |>
-    purrr::map(\(x) {
-      keep <- stringr::str_subset(a, x)
-      value <- stringr::str_remove(keep, glue::glue("{x}-"))
-      if (length(keep) > 1) {
-        r <- purrr::map2(keep, value, \(k, v) {
-          list(value = v, subunits = unname(a[[k]]))
-        })
-      } else {
-        browser()
-        r <- input_list[[keep]]
-      }
-      r
-    })
+  # Examples:
+  # Spatial - "values":["Sever over", ...], "response":[{"value":"Sever over", "subunits": [...]}]
+  # Ordinal - "values":["Extremely","Very",...],"response":"Not at all"
+  # Simple Text - "values":[],"response":"blahblah"
+  input_list <- input_list[!stringr::str_detect(names(input_list), "-show$")]
 
-  questions <- dplyr::mutate(questions, response = r)
+  resp <- questions |>
+    dplyr::mutate(
+      response = purrr::map2(.data$type, .data$id, \(type, id) {
+        inputs <- input_list[stringr::str_detect(names(input_list), id)]
+        if (type %in% c("simple_text", "ordinal")) {
+          r <- unlist(inputs, use.names = FALSE)
+        } else if (type == "spatial") {
+          r <- purrr::imap(inputs, \(v, i) {
+            list(
+              value = input_to_value(stringr::str_extract(i, "[A-Za-z_ ]+$")),
+              subunits = v
+            )
+          }) |>
+            unname()
+        }
+      })
+    )
 
-  jsonlite::toJSON(questions, auto_unbox = TRUE)
+  jsonlite::toJSON(resp, auto_unbox = TRUE)
 }

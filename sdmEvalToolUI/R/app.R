@@ -299,6 +299,14 @@ sdm_theme <- function() {
         margin-top: 3px !important;
       }
 
+      /* For last-modified note */
+      .corner {
+        position: absolute;
+        right: 0;
+        margin-right: 25px;
+        display: block;
+      }
+
       /* Allow Multiple legends (only legends in the bottom left corner) to go side by side */
       .leaflet-bottom.leaflet-left > .info.legend.leaflet-control {
         float: inherit !important;

@@ -71,7 +71,8 @@ mod_page_model_server <- function(id = "model", ...) {
       component_id = c("model_fit", "model_summary"),
       deployment_id = deployment_id,
       model_id = model_id,
-      species_id = species_id
+      species_id = species_id,
+      opts = opts
     )
 
     mod_comp_model_summary_server("model_summary", model_id, species_id)

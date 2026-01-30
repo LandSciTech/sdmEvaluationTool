@@ -2,56 +2,56 @@
 
 simple_text_input <- function(...) {
   expand_dots(...)
-  textInput(id, label)
+  textInput(id_ns, label, value = response)
 }
 
-yes_no_input <- function(...) {
-  expand_dots(...)
-  radioButtons(
-    inputId = id,
-    label = label,
-    choices = c("Yes" = TRUE, "No" = FALSE),
-    selected = character(),
-    inline = TRUE
-  )
-}
+# yes_no_input <- function(...) {
+#   expand_dots(...)
+#   radioButtons(
+#     inputId = id_ns,
+#     label = label,
+#     choices = c("Yes" = TRUE, "No" = FALSE),
+#     selected = response,
+#     inline = TRUE
+#   )
+# }
 
-slider_input <- function(...) {
-  expand_dots(...)
-  sliderInput(inputId = id, label = label, value = 0, min = 0, max = 10)
-}
+# slider_input <- function(...) {
+#   expand_dots(...)
+#   sliderInput(inputId = id_ns, label = label, value = 0, min = 0, max = 10)
+# }
 
-gold_standard_input <- function(...) {
-  expand_dots(...)
-  selectInput(
-    inputId = id,
-    label = label,
-    choices = c(
-      "Choose one" = "",
-      "Gold" = 5,
-      "Silver" = 4,
-      "Bronze" = 3,
-      "Deficient" = 2,
-      "Unknown" = 1
-    )
-  )
-}
-
+# gold_standard_input <- function(...) {
+#   expand_dots(...)
+#   selectInput(
+#     inputId = id_ns,
+#     label = label,
+#     choices = c(
+#       "Choose one" = "",
+#       "Gold" = 5,
+#       "Silver" = 4,
+#       "Bronze" = 3,
+#       "Deficient" = 2,
+#       "Unknown" = 1
+#     )
+#   )
+# }
 
 ordinal_input <- function(...) {
   expand_dots(...)
   selectInput(
-    inputId = id,
+    inputId = id_ns,
     label = label,
     choices = c(
       "Choose one" = "",
-      "Extremely" = 2,
-      "Very" = 1,
-      "Moderately" = 0,
-      "Slightly" = -1,
-      "Not at all" = -2,
-      "Uncertain" = NA #TODO: What should uncertain (or above, Unknown) score as?
-    )
+      "Extremely",
+      "Very",
+      "Moderately",
+      "Slightly",
+      "Not at all",
+      "Uncertain"
+    ),
+    selected = response
   )
 }
 
@@ -63,7 +63,7 @@ spatial_input <- function(
 
   id_inputs <- purrr::map(values, \(v) {
     selectizeInput(
-      inputId = glue::glue("{id}-{value_to_input(v)}"),
+      inputId = glue::glue("{id_ns}-{value_to_input(v)}"),
       label = HTML(glue::glue("Identify any {strong(v)} {spatial_type}")),
       choices = c("Add selected IDs" = ""),
       multiple = TRUE,
@@ -75,7 +75,7 @@ spatial_input <- function(
     strong(label),
     div(class = "sub-question", !!!id_inputs),
     actionButton(
-      inputId = paste0(id, "-show"),
+      inputId = paste0(id_ns, "-show"),
       label = glue::glue("Show identified {spatial_type}")
     )
   )
@@ -114,18 +114,20 @@ ui_questions <- function(
   ui <- dplyr::select(
     questions,
     "type",
-    "id",
+    "id_ns",
     "label",
     "part",
-    "values"
+    "values",
+    "response"
   ) |>
-    purrr::pmap(\(type, id, label, part, values) {
+    purrr::pmap(\(type, id_ns, label, part, values, response) {
       i <- get(glue::glue("{type}_input"))(
-        id = session$ns(id),
+        id_ns = id_ns,
         label = label,
         values = unlist(values),
         spatial_ids = spatial_ids,
         spatial_type = spatial_type,
+        response = response,
         which = which
       )
 
@@ -136,7 +138,6 @@ ui_questions <- function(
 
       i
     })
-
   tagList(
     ui,
     actionButton(inputId = session$ns("save"), label = "Save Responses")
@@ -145,27 +146,35 @@ ui_questions <- function(
 
 
 ui_questions_update <- function(questions, spatial_ids = NULL) {
-  id <- dplyr::select(
-    questions,
-    "type",
-    "id",
-    "label",
-    "part",
-    "values"
-  ) |>
+  q <- questions |>
     dplyr::filter(.data$type == "spatial") |>
-    dplyr::select("id", "values") |>
-    tidyr::unnest(cols = "values") |>
+    dplyr::select("id", "values", "response")
+
+  if (any(!is.na(q$response))) {
+    q <- q |>
+      dplyr::mutate(
+        response = purrr::map(.data$response, \(r) r[[names(r) != "values"]])
+      ) |>
+      tidyr::unnest(cols = c("values", "response"))
+  } else {
+    q <- q |>
+      tidyr::unnest(cols = "values") |>
+      dplyr::mutate(subunits = NA)
+  }
+
+  q <- q |>
     dplyr::mutate(
       id = glue::glue("{id}-{value_to_input(values)}")
-    ) |>
-    dplyr::pull(.data$id)
+    )
 
-  #TODO: FIX namespacing - this works for pages but not for the SDM app
-  purrr::map(id, \(i) {
+  id <- dplyr::pull(q, .data$id)
+  selected <- dplyr::pull(q, "subunits")
+
+  purrr::map2(id, selected, \(i, s) {
     updateSelectizeInput(
       inputId = i,
       choices = spatial_ids,
+      selected = s,
       server = TRUE
     )
   })

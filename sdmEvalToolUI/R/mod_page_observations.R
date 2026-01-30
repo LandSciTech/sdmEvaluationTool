@@ -79,7 +79,8 @@ mod_page_observations_server <- function(id = "observations", ...) {
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id,
-      spatial_ids = spatial_ids
+      spatial_ids = spatial_ids,
+      opts = opts
     )
 
     # Create charts

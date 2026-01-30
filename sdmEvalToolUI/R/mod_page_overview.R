@@ -473,8 +473,16 @@ evals_details <- function(user_id, user_role) {
 #' @export
 
 evals_extract <- function(json) {
+  json <- stringr::str_replace_all(json, "value\\b", "values")
   jsonlite::fromJSON(json) |>
-    dplyr::mutate(response = purrr::map(.data$response, list))
+    dplyr::mutate(
+      response = purrr::map(.data$response, \(r) {
+        if (!is.list(r)) {
+          r <- list(r)
+        }
+        r
+      })
+    )
 }
 
 #' Calculate number of answered questions

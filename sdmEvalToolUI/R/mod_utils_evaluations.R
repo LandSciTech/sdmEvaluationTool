@@ -4,6 +4,7 @@ mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
     width = review_width,
     position = "right",
     h3("Evaluations"),
+    uiOutput(NS(id, "modified"), class = "corner"),
     uiOutput(NS(id, "ui_questions"))
   )
 }
@@ -16,28 +17,59 @@ mod_utils_evaluations_server <- function(
   deployment_id,
   model_id,
   species_id,
-  spatial_ids = reactive(NULL)
+  spatial_ids = reactive(NULL),
+  opts
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
   stopifnot(is.reactive(spatial_ids))
+  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
     # Setup ----------------------------------------------------------
     show_clicked <- reactiveVal()
     questions_created <- reactiveVal(FALSE)
+    ns <- session$ns
 
     # Evaluations ----------------------------------------------------
     questions_init <- reactive({
-      #TODO: Read values from disk?
-      prep_questions(
+      req(opts$user_id(), deployment_id(), model_id(), species_id())
+
+      q <- prep_questions(
         component_id = component_id,
         deployment_id = deployment_id(),
         model_id = model_id(),
         species_id = species_id()
       )
+
+      e <- prep_evaluations(
+        deployment_id = deployment_id(),
+        user_id = opts$user_id()
+      ) |>
+        tidyr::unnest("answers")
+
+      if (nrow(e) > 0) {
+        q <- dplyr::left_join(
+          q,
+          dplyr::select(e, "id", "response"),
+          by = "id"
+        )
+      } else {
+        q$response <- NA
+      }
+
+      # Namespace the UI question ids
+      q <- dplyr::mutate(q, id_ns = ns(id))
+
+      q
     })
+
+    # TODO:
+    #
+    # - Add indication of when an answer has changed from that saved to disk
+    # - Keep track of what answers were (questions_init())
+    # - Saving to disk triggers refresh of what answers were
 
     output$ui_questions <- renderUI({
       req(questions_init())
@@ -67,7 +99,9 @@ mod_utils_evaluations_server <- function(
     #   Highlight Page tab in different colours if not saved
     #   Modal warns user when switching deployments/models/species if have unsaved work.
 
-    questions <- reactive({
+    # Reactive which holds currently answered questions
+    # If the same as questions_init(), no change, else answered
+    answers <- reactive({
       #TODO: capture values as...JSON?
       #TODO: Save values to disk
       #TODO: Warn user if overwriting?
@@ -75,6 +109,12 @@ mod_utils_evaluations_server <- function(
         questions_init(),
         evaluations = purrr::map(.data$id, \(q) rlang::set_names(input[[q]], q))
       )
+    })
+
+    # Modifications ---------------------------
+    output$modified <- renderUI({
+      req(!is.na(questions_init()$last_modified))
+      tagList(em("Last modified"), br(), questions_init()$last_modified)
     })
 
     # Show Spatial IDs -----------------------------
@@ -126,15 +166,16 @@ mod_utils_evaluations_server <- function(
 
     observe({
       # TODO: Add saving functionality
-      # save_evaluations(
-      #   questions = questions_init(),
-      #   reactiveValuesToList(input)
-      # )
+      save_evaluations(
+        questions = questions_init(),
+        reactiveValuesToList(input),
+        user_id = opts$user_id()
+      )
     }) |>
       bindEvent(input$save)
 
     output$saved <- renderText({
-      questions()$evaluations[1][[1]]
+      answers()$evaluations[1][[1]]
     })
 
     # Return --------------------------------------------------------
