@@ -26,6 +26,7 @@ mod_utils_evaluations_server <- function(
   moduleServer(id, function(input, output, session) {
     # Setup ----------------------------------------------------------
     show_clicked <- reactiveVal()
+    questions_created <- reactiveVal(FALSE)
 
     # Evaluations ----------------------------------------------------
     questions_init <- reactive({
@@ -39,6 +40,8 @@ mod_utils_evaluations_server <- function(
     })
 
     output$ui_questions <- renderUI({
+      req(questions_init())
+      questions_created(TRUE)
       ui_questions(
         questions_init(),
         spatial_type = spatial_type,
@@ -47,12 +50,15 @@ mod_utils_evaluations_server <- function(
     })
 
     # Add server side processing for inputs that pre-list the spatial ids
-
     observe({
-      req(spatial_ids())
-      ui_questions_update(
-        questions_init(),
-        spatial_ids = spatial_ids()
+      req(spatial_ids(), questions_init(), questions_created())
+
+      shinyjs::delay(
+        200,
+        ui_questions_update(
+          questions_init(),
+          spatial_ids = spatial_ids()
+        )
       )
     })
 
