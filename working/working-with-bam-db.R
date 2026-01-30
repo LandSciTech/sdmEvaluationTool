@@ -125,6 +125,23 @@ s1 |>
     geom_col(stat = "identity")
 
 
+z |>
+    dplyr::mutate(det = ifelse(status > 0, 1, 0)) |>
+    ggplot(aes(x = round(hssr), fill = method)) +
+    geom_bar()
+
+library(terra)
+r0 <- read_file(
+    "./misc/base/materials/bam_v5_can71/species/BBWA/spatial_prediction.tif"
+)
+r0 <- terra::resample(r0, 10)
+
+x$status[x$status > 0] <- 1
+
+r <- rasterize(x = x, y = r0, field = "status", fun = max)
+plot(r)
+# rasterizing points is pretty fast, could combine with filters
+
 base_map_sidebyside <- function(ns = identity, left_id, right_id) {
     base_map(ns = ns) |>
         leaflet::addMapPane(name = "left", zIndex = 0) |>

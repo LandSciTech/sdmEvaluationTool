@@ -559,8 +559,12 @@ make_update_table_statement <- function(data, table, drop_keys = TRUE) {
     wd <- c(pk[1L], "=", d1)
     for (i in seq_along(pk)[-1L]) {
         d1 <- data[[pk[i]]]
-        if (is.character(d1)) {
-            d1 <- paste0("'", d1, "'", collapse = "")
+        if (is.na(d1)) {
+            stop("Key ", sQuote(pk[[i]]), " must not be NA.")
+        } else {
+            if (is.character(d1)) {
+                d1 <- paste0("'", d1, "'", collapse = "")
+            }
         }
         wd <- c(wd, " AND ", pk[i], "=", d1)
     }
@@ -572,8 +576,12 @@ make_update_table_statement <- function(data, table, drop_keys = TRUE) {
     nd <- NULL
     for (i in seq_len(ncol(data))) {
         d1 <- data[[i]]
-        if (is.character(d1)) {
-            d1 <- paste0("'", d1, "'", collapse = "")
+        if (is.na(d1)) {
+            d1 <- "NULL"
+        } else {
+            if (is.character(d1)) {
+                d1 <- paste0("'", d1, "'", collapse = "")
+            }
         }
         nd <- c(nd, paste0(names(data)[i], "=", d1, collapse = ""))
     }
@@ -612,8 +620,12 @@ make_upsert_table_statement <- function(data, table) {
     vs <- NULL
     for (i in seq_len(ncol(data))) {
         d1 <- data[[i]]
-        if (is.character(d1)) {
-            d1 <- paste0("'", d1, "'", collapse = "")
+        if (is.na(d1)) {
+            d1 <- "NULL"
+        } else {
+            if (is.character(d1)) {
+                d1 <- paste0("'", d1, "'", collapse = "")
+            }
         }
         nd <- c(nd, paste0(names(data)[i], "=", d1, collapse = ""))
         cs <- c(cs, names(data)[i])
