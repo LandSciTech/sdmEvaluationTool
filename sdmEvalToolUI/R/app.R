@@ -324,9 +324,9 @@ sdm_theme <- function() {
     )
 }
 
-#' Title
+#' Create list of selector inputs
 #'
-#' @returns
+#' @returns Shiny tagList.
 #'
 #' @noRd
 #' @examples

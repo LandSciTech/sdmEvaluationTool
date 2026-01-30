@@ -4,7 +4,7 @@
 \alias{save_evaluations}
 \title{Save evaluations}
 \usage{
-save_evaluations(questions, input_list)
+save_evaluations(questions, input_list, user_id)
 }
 \arguments{
 \item{questions}{Questions}
@@ -15,8 +15,9 @@ save_evaluations(questions, input_list)
 Save evaluations
 }
 \examples{
-q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
-a <- list(c("id1", "id2"), c(NULL), "testing", "", "", "", "") |>
-  rlang::set_names(q$id)
-# answers <- purrr::map(list(input), \(x) x[[questions_init()$id]])
+q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
+a <- test_input_evals(q)
+save_evaluations(q, a, user_id = "TESTUSER")
+# Compare
+e <- prep_evaluations(user_id = "TESTUSER")
 }

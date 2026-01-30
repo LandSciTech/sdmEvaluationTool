@@ -1,11 +1,8 @@
-#' Title
+#' Create dummy input values for evaluations
 #'
-#' @param deployment_id
-#' @param model_id
-#' @param species_id
-#' @param component_id
+#' @param questions Data frame. Output of `.prep_questions()`
 #'
-#' @returns
+#' @returns List of dummy input values. Mimics and `input` object from the Shiny app.
 #'
 #' @export
 #' @examples

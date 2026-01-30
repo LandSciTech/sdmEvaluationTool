@@ -4,12 +4,12 @@
 \alias{prep_evaluations}
 \title{Fetch and format submitted evaluations}
 \usage{
-prep_evaluations(con, user_id)
+prep_evaluations(user_id, deployment_id = NULL)
 }
 \arguments{
-\item{con}{DB connection}
-
 \item{user_id}{Character. ID of the user who created the evaluation to fetch.}
+
+\item{con}{DB connection}
 }
 \value{
 Data frame of evaluation details
@@ -19,10 +19,9 @@ Fetch and format submitted evaluations
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-con <- db_connect()
-prep_evaluations(con, c("draper", "okoye"))
-prep_evaluations(con, "holden")
-prep_evaluations(con, "okoye")
-DBI::dbDisconnect(con)
+prep_evaluations(c("draper", "okoye"))
+prep_evaluations("holden")
+prep_evaluations("okoye")
+prep_evaluations("TESTUSER")
 \dontshow{\}) # examplesIf}
 }

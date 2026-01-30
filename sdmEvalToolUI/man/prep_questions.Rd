@@ -35,5 +35,8 @@ prep_questions("model_summary", "deployment1", "bam_v5_can71")
 prep_questions(c("model_summary", "model_fit"), "deployment1", "bam_v5_can71")
 
 prep_questions("predictor_raster", "deployment1", "bam_v5_can71")
+
+# Return default questions
+prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
 \dontshow{\}) # examplesIf}
 }

@@ -25,3 +25,34 @@
 
 ## Things to consider
 - Use `brand.yml` for theming to allow easy changes? - https://posit-dev.github.io/brand-yml/
+
+
+## Devtools
+
+- To add a test user to your database:
+
+```
+db_write_table(
+  db_connect(),
+  "users",
+  data.frame(
+    user_id = "testuser",
+    user_name = "Steffi LaZerte",
+    user_email = "",
+    user_affiliation = "",
+    admin = TRUE
+  ),
+  mode = "insert"
+)
+
+db_write_table(
+  db_connect(),
+  "access",
+  data.frame(
+    user_id = "testuser",
+    deployment_id = "deployment1",
+    user_roles = "evaluator"
+  ),
+  mode = "insert"
+)
+```
