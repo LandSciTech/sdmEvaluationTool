@@ -1,6 +1,7 @@
 ## code to prepare `DATASET` dataset goes here
 
-conf <- yaml::read_yaml("inst/config/config.yml")
+#conf <- yaml::read_yaml("inst/config/config.yml")
+conf <- yaml::read_yaml("../spec/config.yml")
 
 user_roles <- do.call(rbind, lapply(conf$roles, as.data.frame))
 
@@ -39,6 +40,7 @@ fields <- do.call(
     })
 )
 
+# Components -------------------------------------------------------------
 cmp <- conf$components
 components <- data.frame(
     component = character(0L),
@@ -70,6 +72,7 @@ for (i in names(cmp)) {
     components <- rbind(components, c1)
 }
 
+# Default Questions ---------------------------------------------------------
 e <- do.call(
     rbind,
     lapply(conf$default_questions, \(z) {
@@ -86,10 +89,10 @@ for (i in 1:nrow(e)) {
         # if (is.list(v[[e$type[i]]])) {
         #     e$values[[i]] <- list()
         # } else {
-        e$values[[i]] <- list(v[[e$type[i]]])
+        e$values[i] <- list(v[[e$type[i]]])
         # }
     } else {
-        e$values[[i]] <- list(conf$default_questions[[i]]$values)
+        e$values[i] <- list(conf$default_questions[[i]]$values)
     }
 }
 # e$english <- gsub("[\r\n\t]", "", e$english)
@@ -97,7 +100,7 @@ for (i in 1:nrow(e)) {
 default_questions <- e
 
 
-# follow-up questions
+# Follow-up Questions ------------------------------------------------------
 e <- do.call(
     rbind,
     lapply(conf$followup_questions, \(z) {
@@ -111,15 +114,15 @@ e$values <- NA_character_
 v <- lapply(conf$question_types, \(x) x$values)
 for (i in 1:nrow(e)) {
     if (is.null(conf$followup_questions[[i]]$values)) {
-        e$values[[i]] <- list(v[[e$type[i]]])
+        e$values[i] <- list(v[[e$type[i]]])
         # }
     } else {
-        e$values[[i]] <- list(conf$followup_questions[[i]]$values)
+        e$values[i] <- list(conf$followup_questions[[i]]$values)
     }
 }
 followup_questions <- e
 
-# save data sets
+# Save data sets -----------------------------------------------------------
 usethis::use_data(
     components,
     default_questions,
