@@ -8,6 +8,7 @@ test_page <- function(
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",
     theme = sdm_theme(),
+    shinyjs::useShinyjs(),
     get(paste0(module, "_ui"))()
   )
 

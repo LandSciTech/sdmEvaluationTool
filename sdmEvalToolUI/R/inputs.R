@@ -140,6 +140,13 @@ ui_questions <- function(
     })
   tagList(
     ui,
+    shinyjs::hidden(
+      radioButtons(
+        session$ns("ready"),
+        label = "",
+        choices = c("TRUE", "FALSE")
+      )
+    ),
     actionButton(inputId = session$ns("save"), label = "Save Responses")
   )
 }
