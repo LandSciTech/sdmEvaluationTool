@@ -24,7 +24,16 @@ mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   nav_panel(
     title,
     sdm_card(
-      card_header("Current status of review"),
+      card_header(
+        "Current status of review",
+        actionButton(
+          NS(id, "refresh"),
+          label = NULL,
+          icon = icon("arrows-rotate"),
+          class = "btn-mini btn-outline-success"
+        )
+      ),
+
       reactable::reactableOutput(NS(id, "tbl_overview"))
     )
   )
@@ -54,7 +63,8 @@ mod_page_overview_server <- function(id = "overview", ...) {
     # Table for display
     tbl <- reactive({
       evals_details(opts$user_id(), opts$user_role())
-    })
+    }) |>
+      bindEvent(opts$user_id(), opts$user_role(), input$refresh)
 
     # Table for input keys
     tbl_top <- reactive({
@@ -105,6 +115,8 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #' tbl <- evals_details("holden", "modeler")
 #' evals_table(tbl, "modeler")
 #' tbl <- evals_details("draper", "evaluator")
+#' evals_table(tbl, "evaluator")
+#' tbl <- evals_details("testuser", "evaluator")
 #' evals_table(tbl, "evaluator")
 
 evals_table <- function(tbl, user_role) {
