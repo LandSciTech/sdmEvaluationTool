@@ -64,6 +64,7 @@ mod_utils_evaluations_server <- function(
       q
     })
 
+    # Questions UI ---------------------------------------------------------
     # TODO:
     #
     # - Add indication of when an answer has changed from that saved to disk
@@ -72,10 +73,10 @@ mod_utils_evaluations_server <- function(
 
     output$ui_questions <- renderUI({
       req(questions_init())
+
       ui_questions(
         questions_init(),
-        spatial_type = spatial_type,
-        session = session
+        spatial_type = spatial_type
       )
     })
 
@@ -109,7 +110,7 @@ mod_utils_evaluations_server <- function(
     # Modifications ---------------------------
     output$modified <- renderUI({
       req(!is.na(questions_init()$last_modified))
-      tagList(em("Last modified"), br(), questions_init()$last_modified)
+      tagList(em("Last modified"), br(), unique(questions_init()$last_modified))
     })
 
     # Show Spatial IDs -----------------------------
@@ -135,7 +136,7 @@ mod_utils_evaluations_server <- function(
 
     show_btn_ids <- reactive({
       dplyr::filter(questions_init(), type == "spatial") |>
-        dplyr::pull(id) |>
+        dplyr::pull(question_id) |>
         paste0("-show")
     })
 

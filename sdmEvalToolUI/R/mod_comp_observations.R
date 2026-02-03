@@ -70,14 +70,6 @@ mod_comp_observations_server <- function(
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
-    #TODO:  Display non-detections (status == 0) detections (status > 0) in
-    # different colors. Show detections by default (green), allow an option to turn
-    # on non-detections (grey). Use circle markers in Leaflet.
-    # We can use unique(method) and year of survey as dropdown filters.
-    # Method, time, status should be part of popup message on click.
-
-    # TODO: Options for when materials don't exist
-
     # Map -------------------------------------------------------------------
     obs <- reactive(obs_prep(model_id(), species_id()))
 

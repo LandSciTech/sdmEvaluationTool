@@ -34,7 +34,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     #sidebar = mod_sidebar_ui("sidebar"),
     gap = 0,
     padding = 0,
-    shinyjs::useShinyjs(),
+    header = shinyjs::useShinyjs(),
     !!!pages_ui,
     nav_spacer(),
     !!!sdm_inputs(users),
@@ -49,7 +49,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   server <- function(input, output, session) {
     # Setup ---------------------------------------------
     # Placeholder reactiveVal until overview created
-    # Will be updated by overview module when button clicked to select evalution
+    # Will be updated by overview module when button clicked to select evaluation
     overview_inputs <- reactiveVal(NULL)
 
     sdm_update_selector <- function(

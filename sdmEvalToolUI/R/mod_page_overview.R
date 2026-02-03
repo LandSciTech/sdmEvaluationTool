@@ -503,10 +503,12 @@ evals_answered <- function(eval) {
   dplyr::summarize(
     eval,
     n_q = dplyr::n(),
-    n_q_complete = sum(purrr::map_lgl(.data$response, \(x) {
-      # Only NULL, NA, "" should be considered missing; Also catch dataframes
-      !is.null(x) && (is.data.frame(x) || (!is.na(x) && x != ""))
-    }))
+    n_q_complete = sum(
+      purrr::map_lgl(.data$response, \(x) {
+        # Only NULL, NA, "" should be considered missing; Also catch dataframes
+        !is.null(x) && (is.data.frame(x) || (!is.na(x) && x != ""))
+      })
+    )
   )
 }
 

@@ -2,13 +2,13 @@
 
 simple_text_input <- function(...) {
   expand_dots(...)
-  textInput(id_ns, label, value = response)
+  textInput(input_id_ns, label, value = response)
 }
 
 # yes_no_input <- function(...) {
 #   expand_dots(...)
 #   radioButtons(
-#     inputId = id_ns,
+#     inputId = input_id_ns,
 #     label = label,
 #     choices = c("Yes" = TRUE, "No" = FALSE),
 #     selected = response,
@@ -18,13 +18,13 @@ simple_text_input <- function(...) {
 
 # slider_input <- function(...) {
 #   expand_dots(...)
-#   sliderInput(inputId = id_ns, label = label, value = 0, min = 0, max = 10)
+#   sliderInput(inputId = input_id_ns, label = label, value = 0, min = 0, max = 10)
 # }
 
 # gold_standard_input <- function(...) {
 #   expand_dots(...)
 #   selectInput(
-#     inputId = id_ns,
+#     inputId = input_id_ns,
 #     label = label,
 #     choices = c(
 #       "Choose one" = "",
@@ -40,7 +40,7 @@ simple_text_input <- function(...) {
 ordinal_input <- function(...) {
   expand_dots(...)
   selectInput(
-    inputId = id_ns,
+    inputId = input_id_ns,
     label = label,
     choices = c(
       "Choose one" = "",
@@ -63,7 +63,7 @@ spatial_input <- function(
 
   id_inputs <- purrr::map(values, \(v) {
     selectizeInput(
-      inputId = glue::glue("{id_ns}-{value_to_input(v)}"),
+      inputId = glue::glue("{input_id_ns}-{value_to_input(v)}"),
       label = HTML(glue::glue("Identify any {strong(v)} {spatial_type}")),
       choices = c("Add selected IDs" = ""),
       multiple = TRUE,
@@ -75,7 +75,7 @@ spatial_input <- function(
     strong(label),
     div(class = "sub-question", !!!id_inputs),
     actionButton(
-      inputId = paste0(id_ns, "-show"),
+      inputId = glue::glue("{input_id_ns}-show"),
       label = glue::glue("Show identified {spatial_type}")
     )
   )
@@ -108,21 +108,21 @@ ui_questions <- function(
   questions,
   spatial_ids = NULL,
   spatial_type = "points",
-  which = "ui",
-  session
+  which = "ui"
 ) {
+  ns <- getDefaultReactiveDomain()$ns
   ui <- dplyr::select(
     questions,
     "type",
-    "id_ns",
+    "question_id",
     "label",
     "part",
     "values",
     "response"
   ) |>
-    purrr::pmap(\(type, id_ns, label, part, values, response) {
+    purrr::pmap(\(type, question_id, label, part, values, response) {
       i <- get(glue::glue("{type}_input"))(
-        id_ns = id_ns,
+        input_id_ns = ns(question_id),
         label = label,
         values = unlist(values),
         spatial_ids = spatial_ids,
@@ -142,12 +142,12 @@ ui_questions <- function(
     ui,
     shinyjs::hidden(
       radioButtons(
-        session$ns("ready"),
+        ns("ready"),
         label = "",
         choices = c("TRUE", "FALSE")
       )
     ),
-    actionButton(inputId = session$ns("save"), label = "Save Responses")
+    actionButton(inputId = ns("save"), label = "Save Responses")
   )
 }
 
@@ -155,12 +155,15 @@ ui_questions <- function(
 ui_questions_update <- function(questions, spatial_ids = NULL) {
   q <- questions |>
     dplyr::filter(.data$type == "spatial") |>
-    dplyr::select("id", "values", "response")
+    dplyr::select("question_id", "values", "response")
 
-  if (any(!is.na(q$response))) {
+  # Any responses?
+  has_resp <- any(!sapply(q$response, \(r) all(is.null(r)) || all(is.na(r))))
+
+  if (has_resp) {
     q <- q |>
       dplyr::mutate(
-        response = purrr::map(.data$response, \(r) r[[names(r) != "values"]])
+        response = purrr::map(.data$response, \(r) r[names(r) != "values"])
       ) |>
       tidyr::unnest(cols = c("values", "response"))
   } else {
@@ -171,13 +174,13 @@ ui_questions_update <- function(questions, spatial_ids = NULL) {
 
   q <- q |>
     dplyr::mutate(
-      id = glue::glue("{id}-{value_to_input(values)}")
+      input_id = glue::glue("{question_id}-{value_to_input(values)}")
     )
 
-  id <- dplyr::pull(q, .data$id)
+  input_id <- dplyr::pull(q, .data$input_id)
   selected <- dplyr::pull(q, "subunits")
 
-  purrr::map2(id, selected, \(i, s) {
+  purrr::map2(input_id, selected, \(i, s) {
     updateSelectizeInput(
       inputId = i,
       choices = spatial_ids,
