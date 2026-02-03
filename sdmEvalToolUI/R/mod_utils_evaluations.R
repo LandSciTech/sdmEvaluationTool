@@ -3,8 +3,13 @@ mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
   sidebar(
     width = review_width,
     position = "right",
-    h3("Evaluations"),
-    uiOutput(NS(id, "modified"), class = "corner"),
+    layout_column_wrap(
+      width = NULL,
+      fill = FALSE,
+      style = css(grid_template_columns = "3fr 1fr"),
+      h3("Evaluations"),
+      uiOutput(NS(id, "modified"), class = "corner")
+    ),
     uiOutput(NS(id, "ui_questions"))
   )
 }

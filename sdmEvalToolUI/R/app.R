@@ -301,9 +301,10 @@ sdm_theme <- function() {
 
       /* For last-modified note */
       .corner {
-        position: absolute;
+        position: relative;
         right: 0;
-        top: 25px;
+        top: -25px;
+        margin-bottom: -25px;
         margin-right: 25px;
         display: block;
         text-align: right;        
