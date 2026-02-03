@@ -35,31 +35,14 @@ mod_utils_evaluations_server <- function(
     questions_init <- reactive({
       req(opts$user_id(), deployment_id(), model_id(), species_id())
 
+      # Get Questions and any existing Evaluations
       q <- prep_questions(
         component_id = component_id,
         deployment_id = deployment_id(),
         model_id = model_id(),
-        species_id = species_id()
-      )
-
-      e <- prep_evaluations(
-        deployment_id = deployment_id(),
+        species_id = species_id(),
         user_id = opts$user_id()
-      ) |>
-        tidyr::unnest("answers")
-
-      if (nrow(e) > 0) {
-        q <- dplyr::left_join(
-          q,
-          dplyr::select(e, "id", "response"),
-          by = "id"
-        )
-      } else {
-        q$response <- NA
-      }
-
-      # Namespace the UI question ids
-      q <- dplyr::mutate(q, id_ns = ns(id))
+      )
 
       q
     })

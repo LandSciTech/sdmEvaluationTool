@@ -155,7 +155,8 @@ prep_questions <- function(
   component_id,
   deployment_id,
   model_id,
-  species_id
+  species_id,
+  user_id = NULL
 ) {
   if (
     missing(species_id) ||
@@ -176,9 +177,7 @@ prep_questions <- function(
     )
   }
 
-  q <- fetch_questions(deployment_id, component_id)
-
-  q |>
+  q <- fetch_questions(deployment_id, component_id) |>
     dplyr::rename("label" = lang()) |>
     #TODO: Remove this if numbering changes
     dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
@@ -197,6 +196,36 @@ prep_questions <- function(
         sep = "_"
       )
     )
+
+  if (!is.null(user_id)) {
+    # Get any existing evaluations
+    e <- prep_evaluations(
+      deployment_id = deployment_id,
+      user_id = user_id
+    ) |>
+      tidyr::unnest("answers") |>
+      dplyr::select(dplyr::any_of(c(
+        "question_id",
+        "response",
+        "evaluation_create_user",
+        "evaluation_create_time",
+        "last_modified"
+      )))
+    # Add evaluations or NA placeholders to questions
+    if (nrow(e) > 0) {
+      q <- dplyr::left_join(q, e, by = "question_id")
+    } else {
+      q <- dplyr::mutate(
+        q,
+        response = NA_character_,
+        evaluation_create_user = NA_character_,
+        evaluation_create_time = as.POSIXct(NA),
+        last_modified = as.POSIXct(NA)
+      )
+    }
+  }
+
+  q
 }
 
 fetch_questions <- function(deployment_id, component_id) {
@@ -313,15 +342,30 @@ save_evaluations <- function(questions, input_list, user_id) {
       )
     ) |>
     dplyr::mutate(
+      # TODO: Get correct usecases and Notes
       use_case = "Forestry",
-      evaluation_create_user = .env$user_id,
-      evaluation_create_time = timestamp_to(Sys.time()),
-      evaluation_modify_user = "", #NA_character_,
-      evaluation_modify_time = 0L, #NA_integer_,
       note_create_user = "", #NA_character_,
       note_create_time = 0L, #NA_integer_,
       note_body = "", #NA_character_
     )
+
+  if (all(is.na(questions$evaluation_create_user))) {
+    # First response
+    evals <- dplyr::mutate(
+      evals,
+      evaluation_create_user = .env$user_id,
+      evaluation_create_time = timestamp_to(Sys.time()),
+      evaluation_modify_user = NA_character_,
+      evaluation_modify_time = NA_integer_
+    )
+  } else {
+    # Modified response
+    evals <- dplyr::mutate(
+      evals,
+      evaluation_modify_user = .env$user_id,
+      evaluation_modify_time = timestamp_to(Sys.time())
+    )
+  }
 
   # Save to file
   db_write_table(
