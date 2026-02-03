@@ -157,28 +157,21 @@ ui_questions_update <- function(questions, spatial_ids = NULL) {
     dplyr::filter(.data$type == "spatial") |>
     dplyr::select("question_id", "values", "response")
 
-  # Any responses?
-  has_resp <- any(!sapply(q$response, \(r) all(is.null(r)) || all(is.na(r))))
-
-  if (has_resp) {
-    q <- q |>
-      dplyr::mutate(
-        response = purrr::map(.data$response, \(r) r[names(r) != "values"])
-      ) |>
-      tidyr::unnest(cols = c("values", "response"))
-  } else {
-    q <- q |>
-      tidyr::unnest(cols = "values") |>
-      dplyr::mutate(subunits = NA)
-  }
-
   q <- q |>
+    dplyr::mutate(
+      response = purrr::map(.data$response, \(r) {
+        r <- if ("subunits" %in% names(r)) r$subunits else r
+        r <- if (all(is.null(r) | is.na(r))) NA else r
+        r
+      })
+    ) |>
+    tidyr::unnest(cols = c("values", "response")) |>
     dplyr::mutate(
       input_id = glue::glue("{question_id}-{value_to_input(values)}")
     )
 
   input_id <- dplyr::pull(q, .data$input_id)
-  selected <- dplyr::pull(q, "subunits")
+  selected <- dplyr::pull(q, "response")
 
   purrr::map2(input_id, selected, \(i, s) {
     updateSelectizeInput(
