@@ -286,7 +286,7 @@ prep_evaluations <- function(user_id, deployment_id = NULL) {
         na.rm = TRUE
       ) |>
         timestamp_from() |>
-        format("%a, %b %d %Y")
+        fmt_time()
     ) |>
     dplyr::select(
       "deployment_id",
@@ -318,8 +318,6 @@ prep_evaluations <- function(user_id, deployment_id = NULL) {
 save_evaluations <- function(questions, input_list, user_id) {
   con <- withr::local_db_connection(db_connect())
 
-  # TODO: Update modified vs. created etc.
-
   evals <- questions |>
     dplyr::rename("component_id" = "component") |>
     dplyr::mutate(
@@ -338,15 +336,17 @@ save_evaluations <- function(questions, input_list, user_id) {
         "component_id",
         "material_id",
         "deployment_material_id",
-        "deployment_id"
+        "deployment_id",
+        "evaluation_create_user",
+        "evaluation_create_time"
       )
     ) |>
     dplyr::mutate(
       # TODO: Get correct usecases and Notes
       use_case = "Forestry",
-      note_create_user = "", #NA_character_,
-      note_create_time = 0L, #NA_integer_,
-      note_body = "", #NA_character_
+      note_create_user = NA_character_,
+      note_create_time = NA_integer_,
+      note_body = NA_character_
     )
 
   if (all(is.na(questions$evaluation_create_user))) {
@@ -362,6 +362,7 @@ save_evaluations <- function(questions, input_list, user_id) {
     # Modified response
     evals <- dplyr::mutate(
       evals,
+      evaluation_create_time = timestamp_to(.data$evaluation_create_time),
       evaluation_modify_user = .env$user_id,
       evaluation_modify_time = timestamp_to(Sys.time())
     )

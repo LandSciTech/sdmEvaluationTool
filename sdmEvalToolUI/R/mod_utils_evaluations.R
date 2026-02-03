@@ -29,11 +29,14 @@ mod_utils_evaluations_server <- function(
   moduleServer(id, function(input, output, session) {
     # Setup ----------------------------------------------------------
     show_clicked <- reactiveVal()
+    saved <- reactiveVal(0)
     ns <- session$ns
 
     # Evaluations ----------------------------------------------------
     questions_init <- reactive({
       req(opts$user_id(), deployment_id(), model_id(), species_id())
+
+      saved() # Also trigger refresh if values are saved
 
       # Get Questions and any existing Evaluations
       q <- prep_questions(
@@ -93,7 +96,11 @@ mod_utils_evaluations_server <- function(
     # Modifications ---------------------------
     output$modified <- renderUI({
       req(!is.na(questions_init()$last_modified))
-      tagList(em("Last modified"), br(), unique(questions_init()$last_modified))
+      tagList(
+        em("Last modified"),
+        br(),
+        HTML(unique(questions_init()$last_modified))
+      )
     })
 
     # Show Spatial IDs -----------------------------
@@ -150,6 +157,7 @@ mod_utils_evaluations_server <- function(
         reactiveValuesToList(input),
         user_id = opts$user_id()
       )
+      saved(saved() + 1)
     }) |>
       bindEvent(input$save)
 

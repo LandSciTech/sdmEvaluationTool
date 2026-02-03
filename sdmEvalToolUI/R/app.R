@@ -303,8 +303,10 @@ sdm_theme <- function() {
       .corner {
         position: absolute;
         right: 0;
+        top: 25px;
         margin-right: 25px;
         display: block;
+        text-align: right;        
       }
 
       /* Allow Multiple legends (only legends in the bottom left corner) to go side by side */

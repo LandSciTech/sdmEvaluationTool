@@ -36,3 +36,10 @@ fmt_tbl <- function(tbl, tbl_models, tbl_species) {
     dplyr::select(-"model_id", "species_id") |>
     dplyr::relocate("model_name", "species_display")
 }
+
+
+fmt_time <- function(time) {
+  time |>
+    format("%a, %b %d %Y<br>%I:%M %p") |>
+    stringr::str_remove_all("\\b0")
+}
