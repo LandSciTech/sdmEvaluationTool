@@ -276,3 +276,25 @@ check_q_mismatch <- function(q1, q2) {
     stop("Mismatch between evaluated and deployed questions", call. = FALSE)
   }
 }
+
+evals_list <- function(questions) {
+  q <- questions |>
+    dplyr::mutate(
+      values = dplyr::if_else(!.data$type == "spatial", list(""), values),
+      response = purrr::map(.data$response, \(r) {
+        r <- if ("subunits" %in% names(r)) r$subunits else r
+        r <- if (all(is.null(r) | is.na(r))) NA else r
+        r
+      })
+    ) |>
+    tidyr::unnest(cols = c("values", "response")) |>
+    dplyr::mutate(
+      input_id = purrr::map2_chr(.data$values, .data$question_id, \(v, q) {
+        if (v != "") paste0(q, "-", value_to_input(v)) else q
+      }),
+      response = purrr::map(.data$response, \(r) {
+        if (length(r) == 0) NULL else r
+      })
+    )
+  rlang::set_names(as.list(q$response), q$input_id)
+}

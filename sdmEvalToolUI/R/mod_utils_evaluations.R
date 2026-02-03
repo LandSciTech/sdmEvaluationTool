@@ -7,10 +7,17 @@ mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
       width = NULL,
       fill = FALSE,
       style = css(grid_template_columns = "3fr 1fr"),
-      h3("Evaluations"),
+      div(
+        h3("Evaluations"),
+        span(
+          span("", class = "answer-changed"),
+          "Indicates an un-saved modified response"
+        )
+      ),
       uiOutput(NS(id, "modified"), class = "corner")
     ),
-    uiOutput(NS(id, "ui_questions"))
+    uiOutput(NS(id, "ui_questions")),
+    actionButton(inputId = NS(id, "save"), label = "Save Responses")
   )
 }
 
@@ -35,6 +42,7 @@ mod_utils_evaluations_server <- function(
     # Setup ----------------------------------------------------------
     show_clicked <- reactiveVal()
     saved <- reactiveVal(0)
+    spatial_ready <- reactiveVal(FALSE)
     ns <- session$ns
 
     # Evaluations ----------------------------------------------------
@@ -75,6 +83,7 @@ mod_utils_evaluations_server <- function(
     observe({
       req(input$ready, spatial_ids(), questions_init())
 
+      spatial_ready(TRUE)
       ui_questions_update(
         questions_init(),
         spatial_ids = spatial_ids()
@@ -86,19 +95,32 @@ mod_utils_evaluations_server <- function(
     #   Highlight Page tab in different colours if not saved
     #   Modal warns user when switching deployments/models/species if have unsaved work.
 
+    # Changes ------------------------
     # Reactive which holds currently answered questions
     # If the same as questions_init(), no change, else answered
-    answers <- reactive({
-      #TODO: capture values as...JSON?
-      #TODO: Save values to disk
-      #TODO: Warn user if overwriting?
-      dplyr::mutate(
-        questions_init(),
-        evaluations = purrr::map(.data$id, \(q) rlang::set_names(input[[q]], q))
-      )
+    answers_changed <- reactive({
+      req(questions_init(), input$ready, spatial_ready())
+
+      q <- evals_list(questions_init())
+      r <- sapply(names(q), \(qq) input[[qq]])
+
+      chgs <- purrr::imap(q, \(qq, i) !identical(qq, r[[i]]))
+
+      chgs
     })
 
-    # Modifications ---------------------------
+    observe({
+      req(answers_changed())
+      purrr::imap(answers_changed(), \(r, i) {
+        shinyjs::toggleClass(
+          paste0(i, "-label"),
+          class = "answer-changed",
+          condition = r
+        )
+      })
+    })
+
+    # Date last modified ---------------------------
     output$modified <- renderUI({
       req(!is.na(questions_init()$last_modified))
       tagList(
@@ -156,7 +178,7 @@ mod_utils_evaluations_server <- function(
     # Save evaluations ----------------------------------------------
 
     observe({
-      # TODO: Add saving functionality
+      #TODO: Warn user if overwriting?
       save_evaluations(
         questions = questions_init(),
         reactiveValuesToList(input),
@@ -166,8 +188,27 @@ mod_utils_evaluations_server <- function(
     }) |>
       bindEvent(input$save)
 
-    output$saved <- renderText({
-      answers()$evaluations[1][[1]]
+    # Save button -------------------------------------------
+
+    observe({
+      req(answers_changed())
+
+      chg <- any(unlist(answers_changed()))
+
+      if (!chg) {
+        updateActionButton(
+          inputId = "save",
+          label = "No Changes to Save",
+          disabled = TRUE
+        )
+      } else {
+        updateActionButton(
+          inputId = "save",
+          label = "Save Responses",
+          disabled = FALSE
+        )
+      }
+      shinyjs::toggleClass("save", class = "btn-success", condition = chg)
     })
 
     # Return --------------------------------------------------------

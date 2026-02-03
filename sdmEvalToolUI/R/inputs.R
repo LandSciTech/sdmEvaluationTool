@@ -146,8 +146,7 @@ ui_questions <- function(
         label = "",
         choices = c("TRUE", "FALSE")
       )
-    ),
-    actionButton(inputId = ns("save"), label = "Save Responses")
+    )
   )
 }
 

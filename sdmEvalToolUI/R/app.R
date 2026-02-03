@@ -309,6 +309,12 @@ sdm_theme <- function() {
         display: block;
         text-align: right;        
       }
+      
+      .answer-changed::after {
+        content: ' **';
+        color: red;
+        font-weight: bold;
+      }
 
       /* Allow Multiple legends (only legends in the bottom left corner) to go side by side */
       .leaflet-bottom.leaflet-left > .info.legend.leaflet-control {
