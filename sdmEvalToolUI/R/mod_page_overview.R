@@ -5,12 +5,10 @@
 #'
 #' @examplesIf have_data()
 #' test_page_overview()
+#' test_page_overview(user_id = "testuser")
 
-test_page_overview <- function(
-  opts = list(user_id = "holden", user_role = "modeler"),
-  ...
-) {
-  test_page("mod_page_overview", opts = opts, ...)
+test_page_overview <- function(...) {
+  test_page("mod_page_overview", ...)
 }
 
 #' Overview Page UI

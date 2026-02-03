@@ -3,22 +3,40 @@ test_page <- function(
   deployment_id = "deployment1",
   model_id = "bam_v5_can71",
   species_id = "BBWO",
-  opts = list(user_id = "holden", user_role = "evaluator")
+  user_id = "holden",
+  user_role = "evaluator"
 ) {
+  opts <- list(user_id = user_id, user_role = user_role)
+
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",
     theme = sdm_theme(),
-    shinyjs::useShinyjs(),
+    header = shinyjs::useShinyjs(),
     get(paste0(module, "_ui"))()
   )
 
-  server <- function(input, output, session) {
-    get(paste0(module, "_server"))(
-      deployment_id = reactive(deployment_id),
-      model_id = reactive(model_id),
-      species_id = reactive(species_id),
-      opts = purrr::map(opts, \(o) reactive(force(o)))
-    )
+  if (module == "mod_page_overview") {
+    server <- function(input, output, session) {
+      mod_page_overview_server(
+        deployment_id = reactive(deployment_id),
+        model_id = reactive(model_id),
+        species_id = reactive(species_id),
+        opts = list(
+          "user_id" = reactive(user_id),
+          "user_role" = reactive(user_role)
+        ),
+        overview_inputs = reactiveVal(NULL)
+      )
+    }
+  } else {
+    server <- function(input, output, session) {
+      get(paste0(module, "_server"))(
+        deployment_id = reactive(deployment_id),
+        model_id = reactive(model_id),
+        species_id = reactive(species_id),
+        opts = purrr::map(opts, \(o) reactive(force(o)))
+      )
+    }
   }
 
   shiny::shinyApp(ui, server, options = list(port = 8080))

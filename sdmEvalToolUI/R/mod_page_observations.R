@@ -10,6 +10,7 @@
 #' @examplesIf have_data()
 #' test_page_observations()
 #' test_page_observations(deployment_id = NULL)
+#' test_page_observations(user_id = "testuser")
 
 test_page_observations <- function(...) {
   test_page("mod_page_observations", ...)
