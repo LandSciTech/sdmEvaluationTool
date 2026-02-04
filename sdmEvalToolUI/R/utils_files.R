@@ -147,6 +147,9 @@ prep_files <- function(path, name, ...) {
 #' # Return default questions
 #' prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
 #'
+#' # Follow up questions
+#' prep_questions("model_fit", "deployment2", "bam_v5_can71", "BBWO")
+#'
 #' # Add evaluations
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "draper")
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "testuser")
@@ -179,8 +182,12 @@ prep_questions <- function(
 
   q <- fetch_questions(deployment_id, component_id) |>
     dplyr::rename("label" = lang()) |>
-    #CLEANUP: Remove this if numbering changes
-    dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
+    # Re-number to include folloups
+    dplyr::mutate(
+      part = dplyr::row_number() - 1,
+      .by = c("component", "order")
+    ) |>
+    dplyr::select(-"followup_level") |>
     dplyr::mutate(
       material_id = paste(
         .env$model_id,
