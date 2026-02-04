@@ -11,23 +11,23 @@
 
 test_input_evals <- function(questions) {
   q <- questions |>
-    dplyr::select("id", "values") |>
+    dplyr::select("question_id", "values") |>
     tidyr::unnest("values") |>
     dplyr::mutate(
-      id = dplyr::if_else(
+      question_id = dplyr::if_else(
         .data$values != "",
-        paste0(.data$id, "-", .data$values),
-        .data$id
+        paste0(.data$question_id, "-", .data$values),
+        .data$question_id
       )
     ) |>
-    dplyr::pull(.data$id)
+    dplyr::pull(.data$question_id)
 
   v <- vector("list", length(q))
   for (i in seq_along(q)) {
     if (stringr::str_detect(q[i], "\\d$")) {
       v[[i]] <- sample(c("", "sldfkjasdlfj", "test"), 1)
     } else {
-      v[[i]] <- paste0("id", 1:100)[sample(
+      v[[i]] <- paste0("question_id", 1:100)[sample(
         1:100,
         size = sample(0:10, size = 1)
       )]

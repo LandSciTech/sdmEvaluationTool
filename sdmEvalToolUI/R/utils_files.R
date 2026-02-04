@@ -331,7 +331,11 @@ save_evaluations <- function(questions, input_list, user_id) {
       )
     ) |>
     dplyr::summarize(
-      evaluation_body = response_to_json(questions, input_list),
+      evaluation_body = response_to_json(
+        .data$component_id,
+        .env$questions,
+        .env$input_list
+      ),
       .by = c(
         "component_id",
         "material_id",
@@ -369,18 +373,28 @@ save_evaluations <- function(questions, input_list, user_id) {
   }
 
   # Save to file
-  db_write_table(
-    con,
-    table = "evaluations",
-    data = evals,
-    mode = "upsert"
-  )
+  dplyr::group_split(evals, .data$component_id) |>
+    purrr::walk(\(e) {
+      db_write_table(
+        con,
+        table = "evaluations",
+        data = e,
+        mode = "upsert"
+      )
+    })
 }
 
 #' Create JSON evaluation body
 #'
 #' @noRd
-response_to_json <- function(questions, input_list) {
+#' @examples
+#' q1 <- prep_questions("model_fit", "deployment2", "bam_v5_can71", "BBWO")
+#' q2 <- prep_questions("model_summary", "deployment2", "bam_v5_can71", "BBWO")
+#' i1 <- test_input_evals(q1)
+#' i2 <- test_input_evals(q2)
+#' response_to_json("model_fit", rbind(q1, q2), append(i1, i2))
+
+response_to_json <- function(component_id, questions, input_list) {
   # - All responses have 'values' directly from the question
   # - Only spatial response have a list response including 'value' and 'subunit'
 
@@ -388,8 +402,13 @@ response_to_json <- function(questions, input_list) {
   # Spatial - "values":["Sever over", ...], "response":[{"value":"Sever over", "subunits": [...]}]
   # Ordinal - "values":["Extremely","Very",...],"response":"Not at all"
   # Simple Text - "values":[],"response":"blahblah"
+
+  # Ensure filtered to component_ids and non-button inputs
   input_list <- input_list[!stringr::str_detect(names(input_list), "-show$")]
-  input_list <- input_list[!names(input_list) %in% c("save", "ready")]
+  questions <- dplyr::filter(
+    questions,
+    .data$component %in% unique(.env$component_id)
+  )
 
   evaluation_body <- questions |>
     dplyr::mutate(
