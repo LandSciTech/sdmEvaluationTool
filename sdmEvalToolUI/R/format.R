@@ -23,7 +23,7 @@ fmt_species <- function(df) {
 }
 
 fmt_tbl <- function(tbl, tbl_models, tbl_species) {
-  # TODO: Remove? - Get pretty column names
+  # CLEANUP: Remove? - Get pretty column names
   tbl |>
     dplyr::left_join(
       dplyr::select(tbl_species, "species_id", "species_display"),

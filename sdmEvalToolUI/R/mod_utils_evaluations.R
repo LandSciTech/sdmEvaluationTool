@@ -64,11 +64,6 @@ mod_utils_evaluations_server <- function(
     })
 
     # Questions UI ---------------------------------------------------------
-    # TODO:
-    #
-    # - Add indication of when an answer has changed from that saved to disk
-    # - Keep track of what answers were (questions_init())
-    # - Saving to disk triggers refresh of what answers were
 
     output$ui_questions <- renderUI({
       req(questions_init())
@@ -178,7 +173,7 @@ mod_utils_evaluations_server <- function(
     # Save evaluations ----------------------------------------------
 
     observe({
-      #TODO: Warn user if overwriting?
+      # TODO: Warn user if overwriting?
       save_evaluations(
         questions = questions_init(),
         reactiveValuesToList(input),

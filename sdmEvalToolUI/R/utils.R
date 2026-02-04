@@ -78,7 +78,7 @@ named_ids <- function(df_db, id = "id", name = "name", match = NULL) {
 #'
 #' @export
 set_options <- function(...) {
-  # TODO: Perhaps integrate with sdmEvalToolCore?
+  # CLEANUP: Perhaps integrate with sdmEvalToolCore?
   opts <- getOption("sdmevaltool_options")
   o <- options("sdmevaltool_options" = utils::modifyList(opts, list(...)))
   o

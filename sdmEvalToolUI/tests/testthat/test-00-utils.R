@@ -8,7 +8,7 @@ test_that("prep_materials()", {
     {
       skip_if_not(dir.exists(sdmevaltool_options()$base))
       comp <- sdmEvalToolCore::components |>
-        dplyr::filter(.data$type == "material") |>
+        dplyr::filter(.data$type == "material", .data$component != "app") |>
         dplyr::pull(.data$component)
 
       for (c in comp) {

@@ -1,5 +1,5 @@
 prep_data <- function() {
-  # TODO: Assign this elsewhere?
+  # CLEANUP: Still required?
   if (is.null(sdmevaltool_options()$base)) {
     sdmevaltool_options(base = "../misc/base")
   }
@@ -89,13 +89,13 @@ prep_deployments <- function(deployment_id, deployment_type) {
     deployment_id = deployment_id
   )
 
-  if (deployment_type != "deployment_subunits") {
+  if (deployment_type == "deployment_questions") {
     dep <- dplyr::mutate(
       dep,
       french = as.character(.data$french),
       french = tidyr::replace_na(.data$french, "")
     ) |>
-      # TODO: This shouldn't be in the data
+      # CLEANUP: This shouldn't be in the data
       dplyr::select(-dplyr::any_of("X"))
   }
 
@@ -179,7 +179,7 @@ prep_questions <- function(
 
   q <- fetch_questions(deployment_id, component_id) |>
     dplyr::rename("label" = lang()) |>
-    #TODO: Remove this if numbering changes
+    #CLEANUP: Remove this if numbering changes
     dplyr::mutate(part = dplyr::if_else(part > 0, part - 1, part)) |>
     dplyr::mutate(
       material_id = paste(
@@ -342,7 +342,7 @@ save_evaluations <- function(questions, input_list, user_id) {
       )
     ) |>
     dplyr::mutate(
-      # TODO: Get correct usecases and Notes
+      # WAITING: Get correct usecases and Notes
       use_case = "Forestry",
       note_create_user = NA_character_,
       note_create_time = NA_integer_,

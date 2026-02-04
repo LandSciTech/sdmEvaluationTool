@@ -212,7 +212,6 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
 #       con <- withr::local_db_connection(db_connect())
 
 #       tagList(
-#         #TODO: Add tool tips with model/deployment descriptions on hover? Or other details somewhere?
 #         selectInput(
 #           ns("deployment_id"),
 #           label = "Deployment",
@@ -342,6 +341,8 @@ sdm_theme <- function() {
 #' sdm_inputs()
 
 sdm_inputs <- function(users) {
+  # TODO: Add tool tips with model/deployment descriptions on hover?
+  # Or other details somewhere?
   list(
     nav_item(
       tags$style("#div_id .selectize-input:after{content: none;}"),

@@ -14,6 +14,6 @@ utils::globalVariables(c(
 
 
 .onLoad <- function(libname, pkgname) {
-  # TODO: Change this, just for development right now
+  # CLEANUP: Change this, just for development right now
   sdmevaltool_options(base = "../misc/base")
 }

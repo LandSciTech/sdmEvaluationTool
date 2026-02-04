@@ -26,5 +26,5 @@ deployment_subunits_prep <- function(deployment_id) {
     ) |>
     dplyr::arrange(.data$sort) |>
     dplyr::select(-"sort") |>
-    sf::st_transform(crs = 4326) # TODO: Remove if fixed
+    sf::st_transform(crs = 4326) # CLEANUP: Remove if fixed
 }
