@@ -276,7 +276,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
 # }
 
 sdm_theme <- function() {
-  bs_theme("card-border-radius" = "0") |>
+  bs_theme(info = "#80D5E4", `enable-rounded` = FALSE) |>
     bs_add_rules(
       "
       /* Format sub questions */

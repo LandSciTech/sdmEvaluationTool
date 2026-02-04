@@ -5,6 +5,7 @@
 #'
 #' @examplesIf have_data()
 #' test_page_model()
+#' test_page_model(deployment_id = "deployment2")
 #' test_page_model(user_id = "testuser")
 
 test_page_model <- function(...) {

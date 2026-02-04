@@ -100,9 +100,14 @@ spatial_input <- function(
 #' @export
 #' @examplesIf have_data()
 #' q <- prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
-#' ui_questions(q, spatial_type = "points", session = dummy_session)
+#' ui_questions(q, spatial_type = "points")
 #' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
-#' ui_questions(q, spatial_type = "areas", session = dummy_session)
+#' ui_questions(q, spatial_type = "areas")
+#'
+#' # More than one component
+#' q <- prep_questions(c("model_fit", "model_summary"), "deployment2", "bam_v5_can71", "BBWO", user_id = "testuser")
+#' u <- ui_questions(q, spatial_type = "areas")
+#' htmltools::browsable(u)
 
 ui_questions <- function(
   questions,
@@ -110,9 +115,11 @@ ui_questions <- function(
   spatial_type = "points",
   which = "ui"
 ) {
-  ns <- getDefaultReactiveDomain()$ns
+  ns <- getDefaultReactiveDomain()$ns %||% \(id) paste0("testing-", id)
+
   ui <- dplyr::select(
     questions,
+    "component",
     "type",
     "question_id",
     "label",
@@ -120,24 +127,33 @@ ui_questions <- function(
     "values",
     "response"
   ) |>
-    purrr::pmap(\(type, question_id, label, part, values, response) {
-      i <- get(glue::glue("{type}_input"))(
-        input_id_ns = ns(question_id),
-        label = label,
-        values = unlist(values),
-        spatial_ids = spatial_ids,
-        spatial_type = spatial_type,
-        response = response,
-        which = which
-      )
+    dplyr::group_split(.data[["component"]], .keep = FALSE) |>
+    purrr::map(\(c) {
+      purrr::pmap(c, \(type, question_id, label, part, values, response) {
+        i <- get(glue::glue("{type}_input"))(
+          input_id_ns = ns(question_id),
+          label = label,
+          values = unlist(values),
+          spatial_ids = spatial_ids,
+          spatial_type = spatial_type,
+          response = response,
+          which = which
+        )
 
-      # Follow up questions
-      if (part > 0) {
-        i <- div(class = "sub-question", i)
-      }
+        # Follow up questions
+        if (part > 0) {
+          i <- div(class = "sub-question", i)
+        }
 
-      i
+        i
+      })
     })
+
+  if (length(ui) > 1) {
+    ui <- purrr::map2(ui, pretty(unique(questions$component)), \(u, c) {
+      list(h5(c), u)
+    })
+  }
   tagList(
     ui,
     shinyjs::hidden(
