@@ -279,6 +279,11 @@ sdm_theme <- function() {
   bs_theme(info = "#80D5E4", `enable-rounded` = FALSE) |>
     bs_add_rules(
       "
+      h5 {
+        padding: 0;
+        margin: 0;
+        line-spacing: 0;
+      }
       /* Format sub questions */
       .sub-question {
         padding-left: 15px;
@@ -313,6 +318,14 @@ sdm_theme <- function() {
         content: ' **';
         color: red;
         font-weight: bold;
+      }
+      .answer-changed + input,
+      .answer-changed + input.form-control:focus,
+      .answer-changed + div,
+      .answer-changed + div input,
+      .answer-changed + div .selectize-input,
+      .answer-changed + div textarea {
+        background: #a6a8cc4f;
       }
 
       /* Allow Multiple legends (only legends in the bottom left corner) to go side by side */

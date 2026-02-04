@@ -11,7 +11,7 @@ mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
         h3("Evaluations"),
         span(
           span("", class = "answer-changed"),
-          "Indicates an un-saved modified response"
+          "Indicates a modified response (not yet saved)"
         )
       ),
       uiOutput(NS(id, "modified"), class = "corner")

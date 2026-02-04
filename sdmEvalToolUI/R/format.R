@@ -38,8 +38,18 @@ fmt_tbl <- function(tbl, tbl_models, tbl_species) {
 }
 
 
+#' Format time nicely for humans
+#'
+#' @param time POSIXct time
+#'
+#' @returns
+#'
+#' @export
+#' @examples
+#' fmt_time(Sys.time())
+#' fmt_time(as.POSIXct("2026-02-01 16:02"))
 fmt_time <- function(time) {
   time |>
     format("%a, %b %d %Y<br>%I:%M %p") |>
-    stringr::str_remove_all("\\b0")
+    stringr::str_remove_all("(?<=(\\s|<br>))0")
 }
