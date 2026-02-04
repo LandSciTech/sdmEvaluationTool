@@ -60,6 +60,11 @@ mod_utils_evaluations_server <- function(
         user_id = opts$user_id()
       )
 
+      # If no spatial, it's ready now
+      if (!any(q$type %in% "spatial")) {
+        spatial_ready(TRUE)
+      }
+
       q
     })
 
@@ -95,11 +100,10 @@ mod_utils_evaluations_server <- function(
     # If the same as questions_init(), no change, else answered
     answers_changed <- reactive({
       req(questions_init(), input$ready, spatial_ready())
-
       q <- evals_list(questions_init())
       r <- sapply(names(q), \(qq) input[[qq]])
 
-      chgs <- purrr::imap(q, \(qq, i) !identical(qq, r[[i]]))
+      chgs <- purrr::imap(q, \(qq, i) !identical_loose(qq, r[[i]]))
 
       chgs
     })

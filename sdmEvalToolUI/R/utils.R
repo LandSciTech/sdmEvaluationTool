@@ -95,3 +95,15 @@ set_options <- function(...) {
 lang <- function() {
   sdmevaltool_options()$lang
 }
+
+
+identical_loose <- function(i1, i2) {
+  if (!isTruthy(i1)) {
+    i1 <- ""
+  }
+  if (!isTruthy(i2)) {
+    i2 <- ""
+  }
+
+  identical(i1, i2)
+}
