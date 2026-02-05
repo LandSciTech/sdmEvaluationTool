@@ -31,7 +31,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   ui <- bslib::page_navbar(
     title = "SDM Tool",
     theme = sdm_theme(),
-    #sidebar = mod_sidebar_ui("sidebar"),
+    sidebar = mod_details_ui(),
     gap = 0,
     padding = 0,
     header = shinyjs::useShinyjs(),
@@ -168,6 +168,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
 
     # Modules --------------------------------
     # - Define overview separately to specify overview_inputs
+    mod_details_server(deployment_id = reactive(input$deployment_id))
+
     mod_page_overview_server(
       deployment_id = reactive(input$deployment_id),
       model_id = reactive(input$model_id),
@@ -199,81 +201,6 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   shiny::shinyApp(ui, server, options = options)
 }
 
-
-# mod_sidebar_ui <- function(id) {
-#   sidebar(uiOutput(NS(id, "ui_selectors")))
-# }
-
-# mod_sidebar_server <- function(id, user_id, user_role) {
-#   moduleServer(id, function(input, output, session) {
-#     ns <- session$ns
-
-#     output$ui_selectors <- renderUI({
-#       con <- withr::local_db_connection(db_connect())
-
-#       tagList(
-#         selectInput(
-#           ns("deployment_id"),
-#           label = "Deployment",
-#           choices = c(
-#             "Select a deployment" = "",
-#             named_ids(dplyr::tbl(con, "deployments"))
-#           )
-#         ),
-#         selectInput(
-#           ns("model_id"),
-#           label = "Model",
-#           choices = c(
-#             "Select a model" = "",
-#             named_ids(dplyr::tbl(con, "models"))
-#           )
-#         ),
-#         selectInput(
-#           ns("species_id"),
-#           label = "Species",
-#           choices = c(
-#             "Select a species" = "",
-#             named_ids(
-#               fmt_species(
-#                 dplyr::tbl(con, "species")
-#               ),
-#               name = "display"
-#             )
-#           )
-#         ),
-
-#         strong("Developer outputs"),
-#         uiOutput(ns("dev_outputs"))
-#       )
-#     })
-
-#     output$dev_outputs <- renderUI({
-#       # React and update to changes in these values, but only show the options
-#       user_id()
-#       user_role()
-#       input$deployment_id
-#       input$model_id
-#       input$species_id
-
-#       # Show current values
-#       glue::glue(
-#         "Deployment ID: {input$deployment_id}",
-#         "Model: {input$model_id}",
-#         "Species: {input$species_id}",
-#         "User: {user_id()} ({user_role()})",
-#         "Language: {lang()}",
-#         .sep = "<br>"
-#       ) |>
-#         htmltools::HTML()
-#     })
-
-#     list(
-#       deployment_id = reactive(input$deployment_id),
-#       model_id = reactive(input$model_id),
-#       species_id = reactive(input$species_id)
-#     )
-#   })
-# }
 
 sdm_theme <- function() {
   bs_theme(info = "#80D5E4", `enable-rounded` = FALSE) |>
