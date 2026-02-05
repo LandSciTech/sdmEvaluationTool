@@ -61,7 +61,7 @@ mod_comp_model_metadata_server <- function(
 #' # model_metadata_prep("bam_v5_can71") |> model_metadata_XXXX()
 
 model_metadata_XXXX <- function(model_metadata) {
-  #TODO: Model metadata display
+  # Waiting: Model metadata display
 }
 
 #' Prepare Model Metadata Data

@@ -5,6 +5,8 @@
 #'
 #' @examplesIf have_data()
 #' test_page_model()
+#' test_page_model(deployment_id = "deployment2")
+#' test_page_model(user_id = "testuser")
 
 test_page_model <- function(...) {
   test_page("mod_page_model", ...)
@@ -72,7 +74,7 @@ mod_page_model_server <- function(id = "model", ...) {
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id,
-      lang = opts$lang
+      opts = opts
     )
 
     mod_comp_model_summary_server("model_summary", model_id, species_id)

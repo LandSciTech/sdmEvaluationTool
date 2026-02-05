@@ -4,13 +4,11 @@
 \alias{fmt_species}
 \title{Format species display names}
 \usage{
-fmt_species(df, lang = NULL)
+fmt_species(df)
 }
 \arguments{
 \item{df}{Data frame to format. Must contain at least species name in French
 or English as well as scientific name.}
-
-\item{lang}{Character. "english" or "french". If NULL pulled from options.}
 }
 \value{
 Formatted species display names.

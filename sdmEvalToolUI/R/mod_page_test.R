@@ -77,8 +77,7 @@ mod_page_test_server <- function(id = "test", ...) {
       prep_questions(
         deployment_id = deployment_id(),
         model_id = model_id(),
-        species_id = species_id(),
-        lang = opts$lang()
+        species_id = species_id()
       )
     }) |>
       bindCache(deployment_id(), model_id(), species_id())
@@ -87,15 +86,7 @@ mod_page_test_server <- function(id = "test", ...) {
       ui_questions(questions_init(), session = session)
     })
 
-    # TODO: Save values temporarily, so not lost if don't "Save Responses"?
-    #   Highlight Save Responses in different colours if not saved
-    #   Highlight Page tab in different colours if not saved
-    #   Modal warns user when switching deployments/models/species if have unsaved work.
-
     questions <- reactive({
-      #TODO: capture values as...JSON?
-      #TODO: Save values to disk
-      #TODO: Warn user if overwriting?
       dplyr::mutate(
         questions_init(),
         evaluations = purrr::map(.data$id, \(q) {

@@ -4,13 +4,7 @@
 \alias{prep_questions}
 \title{Prepare Evaluation Questions}
 \usage{
-prep_questions(
-  component_id = NULL,
-  deployment_id,
-  model_id,
-  species_id,
-  lang = "english"
-)
+prep_questions(component_id = NULL, deployment_id, model_id, species_id)
 }
 \arguments{
 \item{component_id}{Character. Component ID}
@@ -20,8 +14,6 @@ prep_questions(
 \item{model_id}{Character. Model ID}
 
 \item{species_id}{Character. Species ID}
-
-\item{lang}{Language}
 }
 \value{
 Data frame of questions
@@ -43,5 +35,8 @@ prep_questions("model_summary", "deployment1", "bam_v5_can71")
 prep_questions(c("model_summary", "model_fit"), "deployment1", "bam_v5_can71")
 
 prep_questions("predictor_raster", "deployment1", "bam_v5_can71")
+
+# Return default questions
+prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
 \dontshow{\}) # examplesIf}
 }

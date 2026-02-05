@@ -65,7 +65,7 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
       species_id = species_id,
       spatial_ids = spatial_ids,
       spatial_type = "areas",
-      lang = opts$lang
+      opts = opts
     )
 
     mod_comp_spatial_prediction_server(

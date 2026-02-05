@@ -10,7 +10,7 @@ mod_page_overview_server(id = "overview", ...)
 \item{id}{Shiny module ID}
 
 \item{...}{Additional arguments passed via expand_dots including
-deployment_id, model_id, species_id}
+deployment_id, model_id, species_id, and overview_inputs (reactiveVal)}
 }
 \value{
 Server function for Shiny module

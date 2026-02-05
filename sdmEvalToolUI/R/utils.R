@@ -46,15 +46,22 @@ skip_eg <- function() {
 }
 
 
-named_ids <- function(df_db, id = "id", name = "name") {
-  pattern <- glue::glue("\\_{id}|\\_{name}")
+named_ids <- function(df_db, id = "id", name = "name", match = NULL) {
+  if (is.null(match)) {
+    pattern <- glue::glue("\\_{id}|\\_{name}")
+  } else {
+    pattern <- glue::glue("{match}\\_{id}|{match}\\_{name}")
+  }
   type <- stringr::str_subset(colnames(df_db), pattern)
+
   if (
     length(type) != 2 ||
       length(unique(stringr::str_remove(type, pattern))) != 1
   ) {
     stop("Non-matching id/name column pairs", call. = FALSE)
   }
+  df_db <- dplyr::select(df_db, dplyr::all_of(type)) |>
+    dplyr::distinct()
 
   rlang::set_names(
     dplyr::pull(df_db, .data[[type[1]]]),
@@ -71,8 +78,32 @@ named_ids <- function(df_db, id = "id", name = "name") {
 #'
 #' @export
 set_options <- function(...) {
-  # TODO: Perhaps integrate with sdmEvalToolCore?
+  # CLEANUP: Perhaps integrate with sdmEvalToolCore?
   opts <- getOption("sdmevaltool_options")
   o <- options("sdmevaltool_options" = utils::modifyList(opts, list(...)))
   o
+}
+
+#' Return the app language
+#'
+#' @returns Character. Either "english" or "french"
+#'
+#' @export
+#' @examples
+#' lang()
+
+lang <- function() {
+  sdmevaltool_options()$lang
+}
+
+
+identical_loose <- function(i1, i2) {
+  if (!isTruthy(i1)) {
+    i1 <- ""
+  }
+  if (!isTruthy(i2)) {
+    i2 <- ""
+  }
+
+  identical(i1, i2)
 }

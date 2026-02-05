@@ -68,7 +68,7 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = reactive("ALL"),
-      lang = opts$lang
+      opts = opts
     )
 
     mod_comp_predictor_metadata_server(
