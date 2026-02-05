@@ -216,13 +216,16 @@ evals_extract <- function(json) {
   json <- stringr::str_replace_all(json, "value\\b", "values")
   jsonlite::fromJSON(json) |>
     dplyr::mutate(
-      response = purrr::map(.data$response, \(r) {
-        if (!is.list(r)) {
-          r <- list(r)
-        }
-        r
-      })
+      values = purrr::map(.data$values, listify),
+      response = purrr::map(.data$response, listify)
     )
+}
+
+listify <- function(x) {
+  if (!is.list(x)) {
+    x <- list(x)
+  }
+  x
 }
 
 #' Calculate number of answered questions
@@ -277,14 +280,25 @@ check_q_mismatch <- function(q1, q2) {
   }
 }
 
+#' Convert questions to input list structure
+#'
+#' @param questions
+#'
+#' @returns List which imitates a Shiny input object
+#'
+#' @export
+#' @examples
+#' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWA", "testuser")
+#' evals_list(q)
+
 evals_list <- function(questions) {
   q <- questions |>
     dplyr::mutate(
       values = dplyr::if_else(!.data$type == "spatial", list(""), values),
       response = purrr::map(.data$response, \(r) {
         r <- if ("subunits" %in% names(r)) r$subunits else r
-        r <- if (all(is.null(r) | is.na(r))) NA else r
-        r
+        r <- if (all(is.null(r) | is.na(r))) "" else r
+        listify(r)
       })
     ) |>
     tidyr::unnest(cols = c("values", "response")) |>
