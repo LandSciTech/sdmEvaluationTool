@@ -153,6 +153,9 @@ prep_files <- function(path, name, ...) {
 #' # Add evaluations
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "draper")
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "testuser")
+#'
+#' # For the abandon review
+#' prep_questions("app", "deployment1",  "bam_v5_can71", "BBWO")
 
 prep_questions <- function(
   component_id,
@@ -427,9 +430,9 @@ response_to_json <- function(component_id, questions, input_list) {
             names(input_list),
             question_id
           )]
-          if (type %in% c("simple_text", "ordinal")) {
+          if (type != "spatial") {
             r <- unlist(inputs, use.names = FALSE)
-          } else if (type == "spatial") {
+          } else {
             r <- purrr::imap(inputs, \(v, i) {
               list(
                 value = input_to_value(stringr::str_extract(i, "[A-Za-z_ ]+$")),

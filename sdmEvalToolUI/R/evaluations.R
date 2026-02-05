@@ -27,6 +27,7 @@
 #' evals_details("holden", "evaluator")
 #' evals_details("draper", "modeler")
 #' evals_details("draper", "evaluator")
+#' evals_details("testuser", "evaluator")
 
 evals_details <- function(user_id, user_role) {
   con <- withr::local_db_connection(db_connect())

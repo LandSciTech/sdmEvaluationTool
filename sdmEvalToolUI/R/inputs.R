@@ -2,19 +2,23 @@
 
 simple_text_input <- function(...) {
   expand_dots(...)
-  textInput(input_id_ns, label, value = response)
+  textInput(input_id_ns, label, value = response, width = width)
 }
 
-# yes_no_input <- function(...) {
-#   expand_dots(...)
-#   radioButtons(
-#     inputId = input_id_ns,
-#     label = label,
-#     choices = c("Yes" = TRUE, "No" = FALSE),
-#     selected = response,
-#     inline = TRUE
-#   )
-# }
+yes_no_input <- function(...) {
+  expand_dots(...)
+
+  r <- response %||% character(0)
+
+  radioButtons(
+    inputId = input_id_ns,
+    label = label,
+    choices = c("Yes", "No"),
+    selected = r,
+    inline = TRUE,
+    width = width
+  )
+}
 
 # slider_input <- function(...) {
 #   expand_dots(...)
@@ -93,7 +97,6 @@ spatial_input <- function(
 #' @param session Shiny session object of module namespacing
 #' @param spatial_ids Spatial IDs
 #' @param spatial_type Spatial type
-#' @param which Which
 #'
 #' @returns Shiny tagList of UI elements
 #'
@@ -113,7 +116,7 @@ ui_questions <- function(
   questions,
   spatial_ids = NULL,
   spatial_type = "points",
-  which = "ui"
+  width = NULL
 ) {
   ns <- getDefaultReactiveDomain()$ns %||% \(id) paste0("testing-", id)
 
@@ -137,7 +140,7 @@ ui_questions <- function(
           spatial_ids = spatial_ids,
           spatial_type = spatial_type,
           response = response,
-          which = which
+          width = width
         )
 
         # Follow up questions

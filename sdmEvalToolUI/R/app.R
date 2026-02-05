@@ -81,6 +81,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       updateSelectInput(session, id, choices = choices, selected = selected)
     }
 
+    # Abandon Review -----------------------------------
+    # CLEANUP: Similar to mod_utils_evaluations_server... could be merged?
     observe({
       # Disable Abandon review if no review selected
       shinyjs::toggleState(
@@ -90,6 +92,39 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
           isTruthy(input$species_id)
       )
     })
+
+    questions_init <- reactive({
+      q <- prep_questions(
+        "app",
+        input$deployment_id,
+        input$model_id,
+        input$species_id,
+        user_id = input$user_id
+      )
+    })
+
+    observe({
+      ui <- ui_questions(questions_init(), width = "100%")
+      showModal(as_fill_carrier(modalDialog(
+        size = "l",
+        title = "Abandon Review?",
+        card(ui), #page_fillable(card(card_body(as_fill_item(), ui))),
+        footer = tagList(
+          actionButton("save", "Yes abandon review"),
+          modalButton("Cancel")
+        )
+      )))
+    }) |>
+      bindEvent(input$abandon)
+
+    observe({
+      save_evaluations(
+        questions = questions_init(),
+        reactiveValuesToList(input),
+        user_id = input$user_id
+      )
+    }) |>
+      bindEvent(input$save)
 
     # Navbar inputs -------------------------------------------
     observe({
@@ -203,13 +238,21 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
 
 
 sdm_theme <- function() {
-  bs_theme(info = "#80D5E4", `enable-rounded` = FALSE) |>
+  bs_theme(
+    info = "#80D5E4",
+    `enable-rounded` = FALSE,
+    `modal-header-padding` = "1rem"
+  ) |>
     bs_add_rules(
       "
       h5 {
         padding: 0;
         margin: 0;
         line-spacing: 0;
+      }
+      /* Modal formatting */
+      .modal-body, .modal-footer {
+        padding: 1rem;
       }
       /* Format sub questions */
       .sub-question {
