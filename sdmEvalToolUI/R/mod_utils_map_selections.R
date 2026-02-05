@@ -72,7 +72,7 @@ mod_utils_map_selections_server <- function(
 ) {
   stopifnot(is.reactive(data))
 
-  expand_list(spatial_selection) # Leads to --->
+  expand_list(spatial_selection) # Leads to following two objects --->
   stopifnot(is.reactive(show_clicked)) # reactiveVal
   stopifnot(is.reactive(show_spatial_ids))
 

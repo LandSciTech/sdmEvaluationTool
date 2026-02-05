@@ -140,7 +140,7 @@ obs_map <- function(obs, subunits = NULL, ns = identity) {
   base_map(ns = ns) |>
     # Subunits first because selecting by points
     add_subunits(subunits) |>
-    add_markers(data = obs) |>
+    add_markers(data = obs) |> # Change this to add_rasters (see `spatial_prediction_map()`)
     add_control(groups = c("Absence", "Presence"))
 }
 
