@@ -269,7 +269,6 @@ fetch_questions <- function(deployment_id, component_id) {
 
 prep_evaluations <- function(user_id, deployment_id = NULL) {
   con <- withr::local_db_connection(db_connect())
-
   db_read_evaluations(
     con,
     deployment_id = deployment_id,
@@ -277,16 +276,19 @@ prep_evaluations <- function(user_id, deployment_id = NULL) {
   ) |>
     dplyr::mutate(
       answers = purrr::map(.data$evaluation_body, evals_extract),
+      abandoned = purrr::map_lgl(.data$answers, \(a) any(a$abandoned)),
       answers = purrr::pmap(
         list(.data$deployment_id, .data$material_id, .data$answers),
         \(d, m, a) {
+          # If necessary, add order and part
           if ("order" %in% names(a)) {
             a <- dplyr::mutate(
               a,
               question_id = paste(d, m, .data$order, .data$part, sep = "_")
             )
           }
-          a
+          # Either way, get rid of abandoned column
+          dplyr::select(a, -"abandoned")
         }
       ),
       evals = purrr::map(.data$answers, evals_answered),
@@ -302,6 +304,7 @@ prep_evaluations <- function(user_id, deployment_id = NULL) {
       "deployment_id",
       "material_id",
       "last_modified",
+      "abandoned",
       "evaluation_create_user",
       "evaluation_create_time",
       "evaluation_body",

@@ -142,7 +142,8 @@ evals_table <- function(tbl, user_role) {
         "deployment_model_name",
         "evaluation_create_user_name",
         "species_display",
-        "species_id" # Key which determines button presence
+        "species_id", # Key which determines button presence
+        "abandoned"
       )
     ) |>
     dplyr::mutate(button = NA) |>
@@ -203,9 +204,20 @@ evals_table <- function(tbl, user_role) {
       button = reactable::colDef(
         name = "",
         sortable = FALSE,
+        maxWidth = 100,
         cell = \(v, i) {
           if (!is.na(tbl_top$species_id[i]) & tbl_top$species_id[i] != "ALL") {
             htmltools::tags$button("Evaluate", class = "btn btn-sm btn-info")
+          }
+        }
+      ),
+      abandoned = reactable::colDef(
+        name = "",
+        align = "left",
+        sortable = FALSE,
+        cell = \(v, i) {
+          if (tbl_top$abandoned[i]) {
+            "Evaluation Abandoned"
           }
         }
       ),
@@ -235,7 +247,14 @@ evals_table <- function(tbl, user_role) {
         name = "Species",
         html = TRUE,
         minWidth = 200,
-        maxWidth = 400
+        maxWidth = 400,
+        style = \(v, i) {
+          s <- "black"
+          if (tbl_top$abandoned[i]) {
+            s <- "lightgrey"
+          }
+          list(color = s)
+        }
       ),
       progress = reactable::colDef(
         name = "Progress",

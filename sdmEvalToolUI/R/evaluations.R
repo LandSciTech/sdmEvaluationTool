@@ -70,20 +70,30 @@ evals_details <- function(user_id, user_role) {
     con,
     deployment_id = deployment_ids
   ) |>
-    #fmt: skip
     dplyr::select(
       "deployment_id",
       "material_id",
       "model_id",
-      "species_id", 
+      "species_id",
       dplyr::contains("name"),
       "component_id"
-    ) |>
-    tidyr::expand_grid(data.frame(evaluation_create_user = eval_user))
+    )
 
   if (nrow(eval_expect) == 0) {
     return(data.frame())
   }
+
+  # Add 'app' level components
+  eval_app <- eval_expect |>
+    dplyr::filter(!is.na(.data$species_id)) |>
+    dplyr::mutate(
+      component_id = "app",
+      material_id = glue::glue("{model_id}_{species_id}_{component_id}")
+    ) |>
+    dplyr::distinct()
+
+  eval_expect <- dplyr::bind_rows(eval_expect, eval_app) |>
+    dplyr::mutate(evaluation_create_user = .env$eval_user)
 
   eval_questions <- eval_expect |>
     dplyr::select("deployment_id", "component_id") |>
@@ -126,6 +136,10 @@ evals_details <- function(user_id, user_role) {
     dplyr::mutate(
       species_id = tidyr::replace_na(.data$species_id, "ALL"),
       n_q_complete = tidyr::replace_na(.data$n_q_complete, 0)
+    ) |>
+    dplyr::mutate(
+      abandoned = any(.data$abandoned, na.rm = TRUE),
+      .by = c("deployment_id", "model_id", "species_id")
     )
 
   # WAITING: Fix once database mismatch is corrected
@@ -141,6 +155,7 @@ evals_details <- function(user_id, user_role) {
 
   evals <- evals |>
     dplyr::select(-"n_q.eval") |>
+    dplyr::filter(component_id != "app") |>
     dplyr::mutate(
       started = any(.data$n_q_complete > 0, na.rm = TRUE),
       completed = .data$n_q_complete == .data$n_q,
@@ -179,7 +194,7 @@ evals_details <- function(user_id, user_role) {
       #"deployment_id", #"deployment_description", "deployment_create_user", #"use_cases", 
       # , "species_id",
       #"evaluation_create_time", "evaluation_modify_user", "evaluation_modify_time",
-
+      "abandoned",
       "deployment_model_name",
       "evaluation_create_user_name",
       "deployment_name", "model_name", "species_display", "component_name", 
@@ -217,6 +232,10 @@ evals_extract <- function(json) {
   json <- stringr::str_replace_all(json, "value\\b", "values")
   jsonlite::fromJSON(json) |>
     dplyr::mutate(
+      abandoned = purrr::map2_lgl(.data$question_id, .data$response, \(q, r) {
+        stringr::str_detect(q, "app_1_0") &&
+          unlist(r) %in% c("yes", "Yes", TRUE)
+      }),
       values = purrr::map(.data$values, listify),
       response = purrr::map(.data$response, listify)
     )
