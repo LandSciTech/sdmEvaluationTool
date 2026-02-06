@@ -72,6 +72,7 @@ db_disconnect <- function(con, ...) {
 #'
 #' @export
 db_read_user_info <- function(con, user_id, deployment_id) {
+    dbplyr::dbplyr_edition()
     # user info
     tbl_user <- dplyr::tbl(con, "users") |>
         dplyr::filter(.data$user_id == .env$user_id) |>
@@ -116,6 +117,7 @@ db_read_deployment_materials <- function(
     deployment_id = NULL,
     user_id = NULL
 ) {
+    dbplyr::dbplyr_edition()
     dm <- dplyr::tbl(con, "deployment_materials")
 
     if (!is.null(deployment_id)) {
@@ -160,6 +162,7 @@ db_read_deployment_materials <- function(
 #'
 #' @export
 db_read_comments <- function(con, deployment_id) {
+    dbplyr::dbplyr_edition()
     out <- dplyr::tbl(con, "comments") |>
         dplyr::filter(.data$deployment_id == .env$deployment_id) |>
         dplyr::collect() |>
@@ -177,6 +180,7 @@ db_read_comments <- function(con, deployment_id) {
 #'
 #' @export
 db_read_evaluations <- function(con, deployment_id = NULL, user_id = NULL) {
+    dbplyr::dbplyr_edition()
     out <- dplyr::tbl(con, "evaluations")
     if (!is.null(deployment_id)) {
         out <- dplyr::filter(out, .data$deployment_id == .env$deployment_id)
@@ -205,6 +209,7 @@ db_read_evaluations <- function(con, deployment_id = NULL, user_id = NULL) {
 #'
 #' @export
 db_read_models <- function(con, model_id = NULL) {
+    dbplyr::dbplyr_edition()
     out <- dplyr::tbl(con, "models")
     if (!is.null(model_id)) {
         out <- dplyr::filter(out, .data$model_id %in% .env$model_id)
@@ -226,6 +231,7 @@ db_read_species <- function(
     con,
     species_id = NULL
 ) {
+    dbplyr::dbplyr_edition()
     out <- dplyr::tbl(con, "species")
     if (!is.null(species_id)) {
         out <- dplyr::filter(out, .data$species_id %in% .env$species_id)
