@@ -175,7 +175,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     observe({
       sdm_update_selector(
         type = "species",
-        required = c("deployment_id", "model_id"),
+        required = "model_id",
         choices = {
           dplyr::filter(
             materials,
@@ -191,13 +191,25 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
 
     # Update by button clicks from Overview table
     observe({
-      purrr::iwalk(overview_inputs(), \(v, i) {
-        # Wait until inputs have settled before applying species_id
-        delay_ms <- dplyr::if_else(i != "species_id", 0, 200)
-        shinyjs::delay(delay_ms, {
-          updateSelectInput(session, inputId = i, selected = v)
-        })
+      # This observe() loops over overview_inputs() by triggering on it's changes,
+      # and removing the first item each time.
+
+      i <- names(overview_inputs())[1]
+
+      # Wait until inputs have settled before applying species_id
+      delay_ms <- dplyr::if_else(i != "species_id", 0, 200)
+
+      shinyjs::delay(delay_ms, {
+        if (!is.na(i)) {
+          updateSelectInput(
+            session,
+            inputId = i,
+            selected = overview_inputs()[1]
+          )
+          overview_inputs(overview_inputs()[-1])
+        }
       })
+      #})
     }) |>
       bindEvent(overview_inputs(), ignoreInit = TRUE)
 
