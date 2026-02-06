@@ -56,6 +56,7 @@ mod_page_overview_server <- function(id = "overview", ...) {
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
   stopifnot(is.reactive(overview_inputs)) # reactiveVal
+  stopifnot(is.reactive(overview_update)) # reactiveVal
 
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
@@ -67,7 +68,12 @@ mod_page_overview_server <- function(id = "overview", ...) {
     tbl <- reactive({
       evals_details(opts$user_id(), opts$user_role())
     }) |>
-      bindEvent(opts$user_id(), opts$user_role(), input$refresh)
+      bindEvent(
+        opts$user_id(),
+        opts$user_role(),
+        input$refresh,
+        overview_update()
+      )
 
     # Table for input keys
     tbl_top <- reactive({

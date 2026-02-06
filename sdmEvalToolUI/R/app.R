@@ -29,6 +29,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   # UI --------------------------------------
   pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
   ui <- bslib::page_navbar(
+    id = "sdm",
     title = "SDM Tool",
     theme = sdm_theme(),
     sidebar = mod_details_ui(),
@@ -51,6 +52,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     # Placeholder reactiveVal until overview created
     # Will be updated by overview module when button clicked to select evaluation
     overview_inputs <- reactiveVal(NULL)
+    overview_update <- reactiveVal(0)
 
     sdm_update_selector <- function(
       type,
@@ -123,6 +125,10 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
         reactiveValuesToList(input),
         user_id = input$user_id
       )
+
+      removeModal()
+      nav_select("sdm", "Overview")
+      overview_update(overview_update() + 1)
     }) |>
       bindEvent(input$save)
 
@@ -225,7 +231,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
         "user_id" = reactive(input$user_id),
         "user_role" = reactive(input$user_role)
       ),
-      overview_inputs = overview_inputs
+      overview_inputs = overview_inputs,
+      overview_update = overview_update
     )
 
     pages_server <- lapply(page_options[-1], \(p) {
