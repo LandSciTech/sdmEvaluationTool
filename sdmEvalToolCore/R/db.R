@@ -397,7 +397,7 @@ db_create_tables <- function(
 #' @param mode How to execute the write operation:
 #'   insert (append) new record,
 #'   update existing record, or
-#'  upsert (update existing or insert if not).
+#'   upsert (update existing or insert if not).
 #' @param check Logical, should `data` be validated?
 #' @param dryrun Logical, write to a text file when `TRUE`
 #'   and to the database when `FALSE`.
@@ -580,7 +580,12 @@ make_update_table_statement <- function(data, table, drop_keys = TRUE) {
             d1 <- "NULL"
         } else {
             if (is.character(d1)) {
-                d1 <- paste0("'", d1, "'", collapse = "")
+                d1 <- paste0(
+                    "'",
+                    gsub("'", "''", enc2utf8(d1)),
+                    "'",
+                    collapse = ""
+                )
             }
         }
         nd <- c(nd, paste0(names(data)[i], "=", d1, collapse = ""))
@@ -624,7 +629,12 @@ make_upsert_table_statement <- function(data, table) {
             d1 <- "NULL"
         } else {
             if (is.character(d1)) {
-                d1 <- paste0("'", d1, "'", collapse = "")
+                d1 <- paste0(
+                    "'",
+                    gsub("'", "''", enc2utf8(d1)),
+                    "'",
+                    collapse = ""
+                )
             }
         }
         nd <- c(nd, paste0(names(data)[i], "=", d1, collapse = ""))
