@@ -60,6 +60,9 @@ mod_page_overview_server <- function(id = "overview", ...) {
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
+    # Setup
+    tbl_updated <- reactiveVal(FALSE) # Tracks when tbl is updated so we can unnest the first column
+
     # Table for display
     tbl <- reactive({
       evals_details(opts$user_id(), opts$user_role())
@@ -84,9 +87,11 @@ mod_page_overview_server <- function(id = "overview", ...) {
           "No deployments for this user in this role"
         )
       )
+      tbl_updated(TRUE)
       evals_table(tbl(), opts$user_role())
     })
 
+    # Grab row inputs as Dep/model/species inputs
     observe({
       # Update reactiveVal created by sdm_tool()
       i <- tbl_top() |>
@@ -96,6 +101,22 @@ mod_page_overview_server <- function(id = "overview", ...) {
       overview_inputs(i)
     }) |>
       bindEvent(input$button_clicked, ignoreInit = TRUE)
+
+    # Expand first tier of nested groups when table updated/created
+    observe({
+      req(tbl_updated())
+
+      shinyjs::delay(200, {
+        for (i in seq_len(dplyr::n_distinct(tbl()$deployment_id))) {
+          shinyjs::runjs(sprintf(
+            "var btn = document.querySelector(\".sdm-header .rt-expander-button[aria-expanded='false']\");
+          btn.click();"
+          ))
+        }
+      })
+      tbl_updated(FALSE)
+    }) |>
+      bindEvent(tbl_updated(), ignoreInit = TRUE)
   })
 }
 
@@ -226,6 +247,7 @@ evals_table <- function(tbl, user_role) {
         html = TRUE,
         minWidth = 200,
         maxWidth = 250,
+        class = "sdm-header",
         grouped = reactable::JS(
           "function(cellInfo, state) {
         let [d, m] = cellInfo.value.split('---');
