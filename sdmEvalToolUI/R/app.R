@@ -90,8 +90,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       shinyjs::toggleState(
         "abandon",
         condition = isTruthy(input$deployment_id) &
-          isTruthy(input$model_id) &
-          isTruthy(input$species_id)
+          isTruthy(input$model_id)
       )
     })
 
@@ -255,10 +254,10 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   shiny::shinyApp(ui, server, options = options)
 }
 
-
 sdm_theme <- function() {
   bs_theme(
-    info = "#80D5E4",
+    `species-colour` = "#2E5266",
+    `model-colour` = "#DC851F",
     `enable-rounded` = FALSE,
     `modal-header-padding` = "1rem"
   ) |>
@@ -268,6 +267,13 @@ sdm_theme <- function() {
         padding: 0;
         margin: 0;
         line-spacing: 0;
+      }
+      /* Differentiate between species and model-level pages */
+      a.nav-link > .sdm-species-lvl {
+        text-shadow: $species-colour 0 0 2px;
+      }
+      a.nav-link > .sdm-model-lvl {
+        text-shadow: $model-colour 0 0 2px;
       }
       /* Modal formatting */
       .modal-body, .modal-footer {
@@ -281,6 +287,20 @@ sdm_theme <- function() {
         background-color: #e2eae0;
       }
       /* Create a mini button (Copy button) */
+      .btn-species {
+        color: white;
+        background-color: $species-colour;
+        border-color: $species-colour;
+        width: 150px;
+      } 
+      .btn-model {
+        color: white;
+        background-color: $model-colour;
+        border-color: $model-colour;
+        width: 150px;
+      }
+
+      /* Mini Button (e.g. Copy) */
       .btn-mini {
         background-color: transparent;
         border: 0;
@@ -329,6 +349,12 @@ sdm_theme <- function() {
       /* Remove gaps between cards and page */
         .main.bslib-gap-spacing {
           padding: 0 !important;
+          padding-left: 20px !important;
+        }
+
+        .main.bslib-gap-spacing [data-value='Overview']{
+          padding: 0 !important;
+          padding-left: 20px !important;
         }
     "
     )

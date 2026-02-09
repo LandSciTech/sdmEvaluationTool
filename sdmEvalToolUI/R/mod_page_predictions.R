@@ -28,7 +28,7 @@ mod_page_predictions_ui <- function(
   review_width = NULL
 ) {
   nav_panel(
-    title,
+    span(title, class = "sdm-species-lvl"),
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
       mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))

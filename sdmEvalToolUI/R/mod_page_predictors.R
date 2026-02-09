@@ -28,9 +28,13 @@ mod_page_predictors_ui <- function(
   review_width = NULL
 ) {
   nav_panel(
-    title,
+    span(title, class = "sdm-model-lvl"),
     sdm_layout_sidebar(
-      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+      sidebar = mod_utils_evaluations_ui(
+        NS(id, "eval"),
+        review_width,
+        level = "model"
+      ),
       mod_comp_predictor_raster_ui(
         NS(id, "predictor_raster"),
         height = "60%",

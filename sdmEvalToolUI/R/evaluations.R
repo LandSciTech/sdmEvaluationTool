@@ -364,10 +364,12 @@ evals_details <- function(user_id, user_role) {
       completed = .data$n_q_complete == .data$n_q,
       completed = tidyr::replace_na(completed, FALSE),
       n_q_display = paste0(.data$n_q_complete, "/", .data$n_q),
+      # Icon for check mark?
+
       n_q_display = dplyr::if_else(
         .data$completed,
-        paste0(.data$n_q_display, " \u2714\ufe0f"),
-        .data$n_q_display
+        paste0("\u00A0\u00A0", .data$n_q_display, " \u2714"),
+        paste0(.data$n_q_display, "\u00A0\u00A0")
       ),
       .by = c("deployment_id", "model_id", "species_id", "component_id")
     ) |>
@@ -384,7 +386,7 @@ evals_details <- function(user_id, user_role) {
       species_display = stringr::str_replace(
         .data$species_display,
         "^Model$",
-        " Model"
+        " Model Overall"
       )
     ) |>
     dplyr::arrange(

@@ -1,4 +1,8 @@
-mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
+mod_utils_evaluations_ui <- function(
+  id = "evaluations",
+  review_width = NULL,
+  level = "species"
+) {
   review_width <- review_width %||% "35%"
   sidebar(
     width = review_width,
@@ -9,6 +13,9 @@ mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
       style = css(grid_template_columns = "3fr 1fr"),
       div(
         h3("Evaluations"),
+        if (level == "model") {
+          strong("Note: Responses apply to Model across all Species", br())
+        },
         span(
           span("", class = "answer-changed"),
           "Indicates a modified response (not yet saved)"

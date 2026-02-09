@@ -114,10 +114,10 @@ mod_page_overview_server <- function(id = "overview", ...) {
 
       shinyjs::delay(200, {
         for (i in seq_len(dplyr::n_distinct(tbl()$deployment_id))) {
-          shinyjs::runjs(sprintf(
+          shinyjs::runjs(
             "var btn = document.querySelector(\".sdm-header .rt-expander-button[aria-expanded='false']\");
           btn.click();"
-          ))
+          )
         }
       })
       tbl_updated(FALSE)
@@ -157,8 +157,10 @@ evals_table <- function(tbl, user_role) {
   # Grouped tables https://glin.github.io/reactable/articles/examples.html?q=collaps#grouping-and-aggregation
   # Nested tables https://glin.github.io/reactable/articles/examples.html?q=collaps#nested-tables
 
-  pal <- c("white", grDevices::colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
-  pal_text <- c(rep("black", 50), rep("white", 51))
+  #pal <- c("white", grDevices::colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
+  # scales::show_col(pal, ncol = 10)
+  pal <- c("white", grDevices::colorRampPalette(c("#88A187", "#031F02"))(100))
+  pal_text <- c(rep("black", 50), rep("white", 101 - 50))
 
   tbl_components <- tbl
 
@@ -208,7 +210,7 @@ evals_table <- function(tbl, user_role) {
         reactable::reactable(
           comp,
           outlined = TRUE,
-          width = 500,
+          width = 558,
           columns = list(
             progress_perc = reactable::colDef(show = FALSE),
             Progress = reactable::colDef(
@@ -229,12 +231,23 @@ evals_table <- function(tbl, user_role) {
       species_id = reactable::colDef(show = FALSE),
       # Button column
       button = reactable::colDef(
+        align = "center",
         name = "",
         sortable = FALSE,
-        maxWidth = 100,
+        maxWidth = 175,
         cell = \(v, i) {
           if (!is.na(tbl_top$species_id[i]) & tbl_top$species_id[i] != "ALL") {
-            htmltools::tags$button("Evaluate", class = "btn btn-sm btn-info")
+            htmltools::tags$button(
+              "Select Species",
+              class = "btn btn-sm btn-species",
+              width = 175
+            )
+          } else {
+            htmltools::tags$button(
+              "Select Model only",
+              class = "btn btn-sm btn-model",
+              width = 175
+            )
           }
         }
       ),
@@ -245,7 +258,18 @@ evals_table <- function(tbl, user_role) {
         cell = \(v, i) {
           if (tbl_top$abandoned[i]) {
             "Evaluation Abandoned"
+          } else if (tbl_top$progress[i] == 1) {
+            "All Answered"
           }
+        },
+        style = \(v, i) {
+          s <- "black"
+          if (tbl_top$abandoned[i]) {
+            s <- "dimgrey"
+          } else if (tbl_top$progress[i] == 1) {
+            s <- pal[20]
+          }
+          list(color = s, `font-style` = "italic")
         }
       ),
       deployment_model_name = reactable::colDef(
@@ -276,12 +300,25 @@ evals_table <- function(tbl, user_role) {
         html = TRUE,
         minWidth = 200,
         maxWidth = 400,
-        style = \(v, i) {
-          s <- "black"
-          if (tbl_top$abandoned[i]) {
-            s <- "lightgrey"
+        cell = \(v, i) {
+          if (!stringr::str_detect(v, "Model")) {
+            s <- span(
+              stringr::str_extract(v, "^[^\\(]+\\("),
+              span(
+                stringr::str_extract(v, "(?<=\\().+(?=\\))"),
+                style = "font-style:italic;"
+              ),
+              ")"
+            )
+          } else {
+            s <- v
           }
-          list(color = s)
+          if (tbl_top$abandoned[i]) {
+            s <- span(s, style = "color:darkgrey;")
+          } else if (tbl_top$progress[i] == 1) {
+            s <- span(s, style = paste0("color:", pal[20], ";"))
+          }
+          s
         }
       ),
       progress = reactable::colDef(
