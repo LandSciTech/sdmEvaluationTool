@@ -53,6 +53,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     # Will be updated by overview module when button clicked to select evaluation
     overview_inputs <- reactiveVal(NULL)
     overview_update <- reactiveVal(0)
+    update_inputs <- reactiveVal(NULL) # Holds inputs to be updated by sdm_update_selector()
 
     sdm_update_selector <- function(
       type,
@@ -73,7 +74,9 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       }
 
       isolate({
-        if (isTruthy(input[[id]]) && input[[id]] %in% choices) {
+        if (!is.null(update_inputs()) && id %in% names(update_inputs())) {
+          selected <- update_inputs()[id]
+        } else if (isTruthy(input[[id]]) && input[[id]] %in% choices) {
           selected <- input[[id]]
         } else {
           selected <- NULL
@@ -196,25 +199,28 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
 
     # Update by button clicks from Overview table
     observe({
-      # This observe() loops over overview_inputs() by triggering on it's changes,
-      # and removing the first item each time.
+      loop <- TRUE
+      all <- overview_inputs()
+      while (loop) {
+        v <- all[1]
+        i <- names(v)
 
-      i <- names(overview_inputs())[1]
-
-      # Wait until inputs have settled before applying species_id
-      delay_ms <- dplyr::if_else(i != "species_id", 0, 200)
-
-      shinyjs::delay(delay_ms, {
-        if (!is.na(i)) {
+        # If change needs to be made, make the first one, then allow the
+        # sdm_update_selector() to make the rest.
+        # If no change, loop through to the next input to update
+        # When finished, put remaining (unchanged) inputs in the reactiveVal
+        # update_inputs() for sdm_update_selector() to call on.
+        if (is.null(input[[i]]) || input[[i]] == "" || input[[i]] != v) {
           updateSelectInput(
             session,
             inputId = i,
-            selected = overview_inputs()[1]
+            selected = v
           )
-          overview_inputs(overview_inputs()[-1])
+          loop <- FALSE
+          update_inputs(all[-1])
         }
-      })
-      #})
+        all <- all[-1]
+      }
     }) |>
       bindEvent(overview_inputs(), ignoreInit = TRUE)
 
