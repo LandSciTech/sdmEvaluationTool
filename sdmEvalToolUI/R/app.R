@@ -254,6 +254,16 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
             inputId = i,
             selected = v
           )
+
+          # If selected model alone...
+          if (i == "model_id" && !"species_id" %in% names(all)) {
+            updateSelectInput(
+              session,
+              inputId = "species_id",
+              selected = NULL
+            )
+          }
+
           loop <- FALSE
           update_inputs(all[-1])
         }
