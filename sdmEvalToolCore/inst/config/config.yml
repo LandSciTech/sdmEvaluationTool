@@ -1110,7 +1110,7 @@ question_types:
   simple_text:
     name: Simple Text Input
     description: Free form text input.
-    values: []
+    values: [""]
   yes_no:
     name: Yes/No Question
     description: A Yes or No question. Follow up questions are conditional on Yes.
