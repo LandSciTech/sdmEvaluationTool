@@ -52,6 +52,7 @@ mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
   expand_dots(...)
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -62,7 +63,8 @@ mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = reactive("ALL"),
-      opts = opts
+      opts = opts,
+      abandoned = abandoned
     )
 
     mod_comp_model_metadata_server("model_metadata", model_id)

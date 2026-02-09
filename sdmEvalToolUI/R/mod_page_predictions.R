@@ -50,6 +50,7 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -65,7 +66,8 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
       species_id = species_id,
       spatial_ids = spatial_ids,
       spatial_type = "areas",
-      opts = opts
+      opts = opts,
+      abandoned = abandoned
     )
 
     mod_comp_spatial_prediction_server(

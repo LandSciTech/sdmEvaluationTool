@@ -39,7 +39,8 @@ mod_utils_evaluations_server <- function(
   model_id,
   species_id,
   spatial_ids = reactive(NULL),
-  opts
+  opts,
+  abandoned
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
@@ -56,7 +57,13 @@ mod_utils_evaluations_server <- function(
 
     # Evaluations ----------------------------------------------------
     questions_init <- reactive({
-      req(opts$user_id(), deployment_id(), model_id(), species_id())
+      req(
+        opts$user_id(),
+        deployment_id(),
+        model_id(),
+        species_id(),
+        !abandoned()
+      )
 
       saved() # Also trigger refresh if values are saved
 
@@ -80,6 +87,11 @@ mod_utils_evaluations_server <- function(
     # Questions UI ---------------------------------------------------------
 
     output$ui_questions <- renderUI({
+      validate(need(
+        !abandoned(),
+        "This evaluation has been abandoned. To resume, click on the Red 'X' in the upper right corner and modify your response. "
+      ))
+
       req(questions_init())
 
       ui_questions(

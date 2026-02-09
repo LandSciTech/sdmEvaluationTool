@@ -167,7 +167,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       )
 
       removeModal()
-      nav_select("sdm", "Overview")
+      # nav_select("sdm", "Overview") # TODO: Go back to Overview?
       overview_update(overview_update() + 1)
     }) |>
       bindEvent(input$save)
@@ -291,7 +291,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
         opts = list(
           "user_id" = reactive(input$user_id),
           "user_role" = reactive(input$user_role)
-        )
+        ),
+        abandoned = abandoned
       )
     }
   }

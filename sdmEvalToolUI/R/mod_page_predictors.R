@@ -62,6 +62,7 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
   expand_dots(...)
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -72,7 +73,8 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = reactive("ALL"),
-      opts = opts
+      opts = opts,
+      abandoned = abandoned
     )
 
     mod_comp_predictor_metadata_server(

@@ -64,6 +64,7 @@ mod_page_model_server <- function(id = "model", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -74,7 +75,8 @@ mod_page_model_server <- function(id = "model", ...) {
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id,
-      opts = opts
+      opts = opts,
+      abandoned = abandoned
     )
 
     mod_comp_model_summary_server("model_summary", model_id, species_id)
