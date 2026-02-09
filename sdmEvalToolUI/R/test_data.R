@@ -16,7 +16,7 @@ test_input_evals <- function(questions) {
     dplyr::mutate(
       question_id = dplyr::if_else(
         .data$values != "",
-        paste0(.data$question_id, "-", .data$values),
+        paste0(.data$question_id, "-", value_to_input(.data$values)),
         .data$question_id
       )
     ) |>
@@ -27,10 +27,11 @@ test_input_evals <- function(questions) {
     if (stringr::str_detect(q[i], "\\d$")) {
       v[[i]] <- sample(c("", "sldfkjasdlfj", "test"), 1)
     } else {
-      v[[i]] <- paste0("question_id", 1:100)[sample(
+      v[[i]] <- paste0("id", 1:100)[sample(
         1:100,
         size = sample(0:10, size = 1)
       )]
+      if (length(v[[i]]) == 0) v[[i]] <- NULL
     }
   }
 

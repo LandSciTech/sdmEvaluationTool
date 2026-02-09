@@ -14,6 +14,7 @@
 
 prep_evaluations <- function(user_id, deployment_id = NULL) {
   con <- withr::local_db_connection(db_connect())
+
   db_read_evaluations(
     con,
     deployment_id = deployment_id,
@@ -67,11 +68,14 @@ prep_evaluations <- function(user_id, deployment_id = NULL) {
 #'
 #' @export
 #' @examples
-#' q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
+#' q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO", "testuser")
 #' a <- test_input_evals(q)
-#' save_evaluations(q, a, user_id = "TESTUSER")
+#' save_evaluations(q, a, user_id = "testuser")
 #' # Compare
-#' e <- prep_evaluations(user_id = "TESTUSER")
+#' q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO", "testuser")
+#' e <- prep_evaluations("testuser", "deployment_test")
+#' q <- evals_list(q)
+#' # waldo::compare(a, q)
 
 save_evaluations <- function(questions, input_list, user_id) {
   con <- withr::local_db_connection(db_connect())
@@ -178,7 +182,7 @@ response_to_json <- function(component_id, questions, input_list) {
             names(input_list),
             question_id
           )]
-          if (type != "spatial") {
+          if (!type %in% c("spatial", "ordinal")) {
             r <- unlist(inputs, use.names = FALSE)
           } else {
             r <- purrr::imap(inputs, \(v, i) {
@@ -513,7 +517,11 @@ check_q_mismatch <- function(q1, q2) {
 evals_list <- function(questions) {
   q <- questions |>
     dplyr::mutate(
-      values = dplyr::if_else(!.data$type == "spatial", list(""), values),
+      values = dplyr::if_else(
+        !.data$type %in% c("spatial", "ordinal"),
+        list(""),
+        values
+      ),
       response = purrr::map(.data$response, \(r) {
         r <- if ("subunits" %in% names(r)) r$subunits else r
         r <- if (all(is.null(r) | is.na(r))) "" else r
