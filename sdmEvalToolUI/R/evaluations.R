@@ -246,7 +246,6 @@ evals_details <- function(user_id, user_role) {
       modeler = stringr::str_detect(.data$user_roles, "modeler"),
       evaluator = stringr::str_detect(.data$user_roles, "evaluator")
     )
-
   deployment_ids <- deployments |>
     dplyr::filter(
       .data$user_id == .env$user_id,
@@ -281,6 +280,18 @@ evals_details <- function(user_id, user_role) {
       dplyr::contains("name"),
       "component_id"
     )
+
+  # Add in model level 'app' materials
+  # (not really materials but to capture app abandon questions)
+  app_material <- eval_expect |>
+    dplyr::filter(is.na(species_id)) |>
+    dplyr::mutate(
+      component_id = "app",
+      material_id = paste0(.data$model_id, "_ALL_app")
+    ) |>
+    dplyr::distinct()
+
+  eval_expect <- dplyr::bind_rows(eval_expect, app_material)
 
   if (nrow(eval_expect) == 0) {
     return(data.frame())
@@ -389,6 +400,10 @@ evals_details <- function(user_id, user_role) {
         " Model Overall"
       )
     ) |>
+    dplyr::mutate(
+      model_abandoned = unique(.data$abandoned[.data$species_id == "ALL"]),
+      .by = "deployment_model_name"
+    ) |>
     dplyr::arrange(
       .data$deployment_model_name,
       .data$evaluation_create_user_name,
@@ -399,7 +414,7 @@ evals_details <- function(user_id, user_role) {
       #"deployment_id", #"deployment_description", "deployment_create_user", #"use_cases", 
       # , "species_id",
       #"evaluation_create_time", "evaluation_modify_user", "evaluation_modify_time",
-      "abandoned",
+      "abandoned", "model_abandoned",
       "deployment_model_name",
       "evaluation_create_user_name",
       "deployment_name", "model_name", "species_display", "component_name", 

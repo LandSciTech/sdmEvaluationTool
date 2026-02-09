@@ -57,6 +57,7 @@ mod_page_overview_server <- function(id = "overview", ...) {
   stopifnot(is.reactive(species_id))
   stopifnot(is.reactive(overview_inputs)) # reactiveVal
   stopifnot(is.reactive(overview_update)) # reactiveVal
+  stopifnot(is.reactive(abandoned)) # reactiveVal
 
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
@@ -82,6 +83,30 @@ mod_page_overview_server <- function(id = "overview", ...) {
         dplyr::distinct()
     })
 
+    # Mark abandoned
+    observe({
+      req(tbl(), deployment_id(), model_id())
+      if (species_id() == "") {
+        s <- "ALL"
+      } else {
+        s <- species_id()
+      }
+      a <- dplyr::filter(
+        tbl(),
+        .data$deployment_id == deployment_id(),
+        .data$model_id == model_id(),
+        .data$species_id == s
+      ) |>
+        dplyr::select(
+          "abandoned",
+          "model_abandoned",
+          "deployment_model_name",
+          "species_id"
+        ) |>
+        dplyr::distinct()
+      abandoned(a$abandoned || a$model_abandoned)
+    })
+
     output$tbl_overview <- reactable::renderReactable({
       validate(
         need(opts$user_id(), "Please select a user"),
@@ -94,6 +119,8 @@ mod_page_overview_server <- function(id = "overview", ...) {
         )
       )
       tbl_updated(TRUE)
+
+      # Render table
       evals_table(tbl(), opts$user_role())
     })
 
@@ -172,7 +199,8 @@ evals_table <- function(tbl, user_role) {
         "evaluation_create_user_name",
         "species_display",
         "species_id", # Key which determines button presence
-        "abandoned"
+        "abandoned",
+        "model_abandoned"
       )
     ) |>
     dplyr::mutate(button = NA) |>
@@ -229,6 +257,7 @@ evals_table <- function(tbl, user_role) {
     },
     columns = list(
       species_id = reactable::colDef(show = FALSE),
+      model_abandoned = reactable::colDef(show = FALSE),
       # Button column
       button = reactable::colDef(
         align = "center",
@@ -256,8 +285,10 @@ evals_table <- function(tbl, user_role) {
         align = "left",
         sortable = FALSE,
         cell = \(v, i) {
-          if (tbl_top$abandoned[i]) {
-            "Evaluation Abandoned"
+          if (tbl_top$model_abandoned[i]) {
+            "Model Abandoned"
+          } else if (tbl_top$abandoned[i]) {
+            "Species Abandoned"
           } else if (tbl_top$progress[i] == 1) {
             "All Answered"
           }

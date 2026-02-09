@@ -155,7 +155,7 @@ prep_files <- function(path, name, ...) {
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "testuser")
 #'
 #' # For the abandon review
-#' prep_questions("app", "deployment1",  "bam_v5_can71", "BBWO")
+#' prep_questions("app", "deployment1",  "bam_v5_can71", "BBWO", "testuser")
 
 prep_questions <- function(
   component_id,
@@ -221,6 +221,7 @@ prep_questions <- function(
         "evaluation_create_time",
         "last_modified"
       )))
+
     # Add evaluations or NA placeholders to questions
     if (nrow(e) > 0) {
       q <- dplyr::left_join(q, e, by = "question_id")

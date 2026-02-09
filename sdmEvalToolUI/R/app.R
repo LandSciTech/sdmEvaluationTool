@@ -43,7 +43,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       "abandon",
       label = NULL,
       icon = icon("x"),
-      class = "btn-sm btn-danger"
+      class = "btn-sm btn-abandon"
     ))
   )
 
@@ -54,6 +54,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     overview_inputs <- reactiveVal(NULL)
     overview_update <- reactiveVal(0)
     update_inputs <- reactiveVal(NULL) # Holds inputs to be updated by sdm_update_selector()
+    abandoned <- reactiveVal(FALSE) # Marker to note if evaluation has been abandoned (species or model)
 
     sdm_update_selector <- function(
       type,
@@ -97,7 +98,18 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       )
     })
 
+    observe({
+      # Highlight button if already abandoned
+
+      shinyjs::toggleCssClass(
+        "abandon",
+        class = "btn-danger",
+        condition = abandoned()
+      )
+    })
+
     questions_init <- reactive({
+      overview_update() # Trigger on an overview_update() to ensure questions are up-to-date after saving.
       q <- prep_questions(
         "app",
         input$deployment_id,
@@ -109,12 +121,38 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
 
     observe({
       ui <- ui_questions(questions_init(), width = "100%")
+
+      # Update button label as needed
+      id <- questions_init()$question_id[1]
+      observe({
+        if (is.null(input[[id]])) {
+          updateActionButton(
+            inputId = session$ns("save"),
+            label = "Make a selection",
+            disabled = TRUE
+          )
+        } else if (input[[id]] == "Yes") {
+          updateActionButton(
+            inputId = session$ns("save"),
+            label = "Yes, abandon review",
+            disabled = FALSE
+          )
+        } else if (input[[id]] == "No") {
+          updateActionButton(
+            inputId = session$ns("save"),
+            label = "No, continue with review",
+            disabled = FALSE
+          )
+        }
+      }) |>
+        bindEvent(input[[id]])
+
       showModal(as_fill_carrier(modalDialog(
         size = "l",
         title = "Abandon Review?",
         card(ui), #page_fillable(card(card_body(as_fill_item(), ui))),
         footer = tagList(
-          actionButton("save", "Yes abandon review"),
+          actionButton("save", "Make a selection", disabled = TRUE),
           modalButton("Cancel")
         )
       )))
@@ -237,7 +275,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
         "user_role" = reactive(input$user_role)
       ),
       overview_inputs = overview_inputs,
-      overview_update = overview_update
+      overview_update = overview_update,
+      abandoned = abandoned
     )
 
     pages_server <- lapply(page_options[-1], \(p) {
@@ -304,6 +343,9 @@ sdm_theme <- function() {
         background-color: $model-colour;
         border-color: $model-colour;
         width: 150px;
+      }
+      .btn-abandon {
+      border-radius: 100px;
       }
 
       /* Mini Button (e.g. Copy) */
