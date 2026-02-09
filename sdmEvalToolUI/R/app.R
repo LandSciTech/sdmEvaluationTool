@@ -326,7 +326,8 @@ sdm_theme <- function() {
         margin-bottom: -25px;
         margin-right: 25px;
         display: block;
-        text-align: right;        
+        text-align: right;     
+        font-size: 90%;   
       }
       
       .answer-changed::after {

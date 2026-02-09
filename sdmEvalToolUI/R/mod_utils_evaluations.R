@@ -10,18 +10,20 @@ mod_utils_evaluations_ui <- function(
     layout_column_wrap(
       width = NULL,
       fill = FALSE,
-      style = css(grid_template_columns = "3fr 1fr"),
-      div(
-        h3("Evaluations"),
-        if (level == "model") {
-          strong("Note: Responses apply to Model across all Species", br())
-        },
-        span(
-          span("", class = "answer-changed"),
-          "Indicates a modified response (not yet saved)"
-        )
-      ),
+      style = css(grid_template_columns = "2fr 1fr"),
+      h3("Evaluations"),
       uiOutput(NS(id, "modified"), class = "corner")
+    ),
+    div(
+      if (level == "model") {
+        strong("Note: Responses apply to Model across all Species", br())
+      },
+      span(
+        span("", class = "answer-changed"),
+        "Modified (unsaved) response",
+        style = "font-size: 90%"
+      ),
+      style = "margin-top: -15px;"
     ),
     uiOutput(NS(id, "ui_questions")),
     actionButton(inputId = NS(id, "save"), label = "Save Responses")
