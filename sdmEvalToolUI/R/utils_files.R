@@ -127,6 +127,7 @@ prep_files <- function(path, name, ...) {
 #' @param deployment_id Character. Deployment ID
 #' @param model_id Character. Model ID
 #' @param species_id Character. Species ID
+#' @param user_id Character. User ID.
 #'
 #' @returns Data frame of questions
 #'
@@ -151,7 +152,7 @@ prep_files <- function(path, name, ...) {
 #' prep_questions("model_fit", "deployment2", "bam_v5_can71", "BBWO")
 #'
 #' # Add evaluations
-#' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "draper")
+#' #prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "draper")
 #' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "testuser")
 #'
 #' # For the abandon review

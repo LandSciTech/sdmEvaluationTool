@@ -166,10 +166,10 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' tbl <- evals_details("holden", "modeler")
-#' evals_table(tbl, "modeler")
-#' tbl <- evals_details("draper", "evaluator")
-#' evals_table(tbl, "evaluator")
+#' #tbl <- evals_details("holden", "modeler")
+#' #evals_table(tbl, "modeler")
+#' #tbl <- evals_details("draper", "evaluator")
+#' #evals_table(tbl, "evaluator")
 #' tbl <- evals_details("testuser", "evaluator")
 #' evals_table(tbl, "evaluator")
 
@@ -193,7 +193,7 @@ evals_table <- function(tbl, user_role) {
 
   tbl_top <- tbl |>
     dplyr::summarize(
-      progress = sum(n_q_complete) / sum(n_q),
+      progress = sum(.data$n_q_complete) / sum(.data$n_q),
       .by = c(
         "deployment_model_name",
         "evaluation_create_user_name",
@@ -266,13 +266,13 @@ evals_table <- function(tbl, user_role) {
         maxWidth = 175,
         cell = \(v, i) {
           if (!is.na(tbl_top$species_id[i]) & tbl_top$species_id[i] != "ALL") {
-            htmltools::tags$button(
+            tags$button(
               "Select Species",
               class = "btn btn-sm btn-species",
               width = 175
             )
           } else {
-            htmltools::tags$button(
+            tags$button(
               "Select Model only",
               class = "btn btn-sm btn-model",
               width = 175

@@ -21,9 +21,11 @@ components, and their completion status.
 }
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-tbl <- evals_details("holden", "modeler")
-evals_table(tbl, "modeler")
-tbl <- evals_details("draper", "evaluator")
+#tbl <- evals_details("holden", "modeler")
+#evals_table(tbl, "modeler")
+#tbl <- evals_details("draper", "evaluator")
+#evals_table(tbl, "evaluator")
+tbl <- evals_details("testuser", "evaluator")
 evals_table(tbl, "evaluator")
 \dontshow{\}) # examplesIf}
 }

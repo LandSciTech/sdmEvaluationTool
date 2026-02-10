@@ -155,14 +155,14 @@ mod_utils_evaluations_server <- function(
       req(show_clicked())
       spatial_ids <- questions_init() |>
         dplyr::filter(
-          question_id == stringr::str_remove(show_clicked(), "-show")
+          .data$question_id == stringr::str_remove(show_clicked(), "-show")
         ) |>
         dplyr::mutate(
-          id_spatial = purrr::map2(question_id, values, \(i, v) {
+          id_spatial = purrr::map2(.data$question_id, .data$values, \(i, v) {
             paste0(i, "-", value_to_input(unlist(v)))
           })
         ) |>
-        dplyr::pull(id_spatial) |>
+        dplyr::pull(.data$id_spatial) |>
         unlist() |>
         sapply(\(x) input[[x]])
 
@@ -175,7 +175,7 @@ mod_utils_evaluations_server <- function(
 
     show_btn_ids <- reactive({
       dplyr::filter(questions_init(), type == "spatial") |>
-        dplyr::pull(question_id) |>
+        dplyr::pull(.data$question_id) |>
         paste0("-show")
     })
 

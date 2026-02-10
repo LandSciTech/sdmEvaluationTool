@@ -17,12 +17,10 @@ mod_details_server <- function(id = "details", deployment_id) {
 
     deets <- reactive({
       validate_ids(deployment_id = deployment_id())
-
-      withr::with_db_connection(
-        list(con = db_connect()),
-        dplyr::tbl(con, "deployments") |> dplyr::collect()
-      ) |>
-        dplyr::filter(deployment_id == deployment_id())
+      con <- withr::local_db_connection(db_connect())
+      dplyr::tbl(con, "deployments") |>
+        dplyr::collect() |>
+        dplyr::filter(.data$deployment_id == deployment_id())
     })
 
     output$details <- renderUI({

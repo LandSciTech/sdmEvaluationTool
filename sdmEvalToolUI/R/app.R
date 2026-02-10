@@ -1,5 +1,8 @@
 #' Launch the SDM Evaluation Tool Shiny Application
 #'
+#' @param lang Character. Language of app; either `english` or `french`.
+#' @param options List. Shiny app options.
+#'
 #' @returns A Shiny app object
 #'
 #' @export
@@ -495,9 +498,9 @@ app_users <- function() {
     dplyr::select("user_id", "user_name") |>
     dplyr::left_join(dplyr::tbl(con, "access"), by = "user_id") |>
     dplyr::collect() |>
-    dplyr::mutate(user_roles = stringr::str_split(user_roles, ", ?")) |>
-    tidyr::unnest(user_roles) |>
-    dplyr::filter(user_roles != "commenter")
+    dplyr::mutate(user_roles = stringr::str_split(.data$user_roles, ", ?")) |>
+    tidyr::unnest("user_roles") |>
+    dplyr::filter(.data$user_roles != "commenter")
 }
 
 app_materials <- function() {

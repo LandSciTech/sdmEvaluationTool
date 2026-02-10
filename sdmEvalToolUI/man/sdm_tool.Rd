@@ -6,6 +6,11 @@
 \usage{
 sdm_tool(lang = "english", options = list(port = 8080))
 }
+\arguments{
+\item{lang}{Character. Language of app; either \code{english} or \code{french}.}
+
+\item{options}{List. Shiny app options.}
+}
 \value{
 A Shiny app object
 }

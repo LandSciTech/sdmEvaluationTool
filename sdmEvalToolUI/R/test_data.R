@@ -37,3 +37,16 @@ test_input_evals <- function(questions) {
 
   rlang::set_names(v, q)
 }
+
+
+#' Create dummy json evaluation body
+#'
+#' @returns Character. JSON string for hypothetical evaluation
+#'
+#' @export
+#' @examples
+#' test_evaluation_body()
+
+test_evaluation_body <- function() {
+  "[{\"question_id\":\"deployment1_bam_v5_can71_BBWA_observations_1_0\",\"label\":\"Are there areas where you are concerned about potential bias in the data? Identify areas with potential bias in the data.\",\"values\":[\"Very biased\",\"Moderately biased\",\"Accurate\",\"Unknown\"],\"response\":[{\"value\":\"Very biased\",\"subunits\":[\"id4\",\"id5\",\"id6\",\"id7\",\"id8\",\"id9\",\"id10\"]},{\"value\":\"Moderately biased\",\"subunits\":{}},{\"value\":\"Accurate\",\"subunits\":[\"id2\",\"id3\",\"id4\",\"id5\"]},{\"value\":\"Unknown\",\"subunits\":{}}]},{\"question_id\":\"deployment1_bam_v5_can71_BBWA_observations_2_0\",\"label\":\"Are there areas where this species is not sufficiently sampled? Identify areas that are not sufficiently sampled.\",\"values\":[\"Very undersampled\",\"Moderately undersampled\",\"Accurate\",\"Unknown\"],\"response\":[{\"value\":\"Very undersampled\",\"subunits\":[\"id3\",\"id4\",\"id5\",\"id6\",\"id7\",\"id8\"]},{\"value\":\"Moderately undersampled\",\"subunits\":{}},{\"value\":\"Accurate\",\"subunits\":{}},{\"value\":\"Unknown\",\"subunits\":[\"id4\",\"id5\",\"id6\",\"id7\",\"id8\",\"id9\"]}]},{\"question_id\":\"deployment1_bam_v5_can71_BBWA_observations_3_0\",\"label\":\"How concerned are you about the distribution of counts?\",\"values\":\"\",\"response\":\"Extremely\"},{\"question_id\":\"deployment1_bam_v5_can71_BBWA_observations_3_1\",\"label\":\"If so, explain. What is an appropriate truncation value (i.e. highest count)?\",\"values\":\"\",\"response\":\"\"},{\"question_id\":\"deployment1_bam_v5_can71_BBWA_observations_4_0\",\"label\":\"How concerned are you about the temporal distribution of detections?\",\"values\":\"\",\"response\":\"\"},{\"question_id\":\"deployment1_bam_v5_can71_BBWA_observations_4_1\",\"label\":\"If so, explain. What is an appropriate truncation value (i.e. minimum year)?\",\"values\":\"\",\"response\":\"\"},{\"question_id\":\"deployment1_bam_v5_can71_BBWA_observations_5_0\",\"label\":\"How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?\",\"values\":\"\",\"response\":\"\"}]"
+}

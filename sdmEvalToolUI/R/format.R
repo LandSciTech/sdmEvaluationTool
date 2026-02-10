@@ -42,7 +42,7 @@ fmt_tbl <- function(tbl, tbl_models, tbl_species) {
 #'
 #' @param time POSIXct time
 #'
-#' @returns
+#' @returns Character. Nicely formated date
 #'
 #' @export
 #' @examples

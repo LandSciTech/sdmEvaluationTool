@@ -4,7 +4,13 @@
 \alias{prep_questions}
 \title{Prepare Evaluation Questions}
 \usage{
-prep_questions(component_id = NULL, deployment_id, model_id, species_id)
+prep_questions(
+  component_id,
+  deployment_id,
+  model_id,
+  species_id,
+  user_id = NULL
+)
 }
 \arguments{
 \item{component_id}{Character. Component ID}
@@ -14,6 +20,8 @@ prep_questions(component_id = NULL, deployment_id, model_id, species_id)
 \item{model_id}{Character. Model ID}
 
 \item{species_id}{Character. Species ID}
+
+\item{user_id}{Character. User ID.}
 }
 \value{
 Data frame of questions
@@ -25,7 +33,7 @@ Reads, combines and prepares questions for use in UIs. \code{model_id} and
 \examples{
 \dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Return all questions
-prep_questions(NULL, "deployment1", "bam_v5_can71", "BBWO")
+prep_questions("ALL", "deployment1", "bam_v5_can71", "BBWO")
 
 # Return component specific questions
 prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
@@ -38,5 +46,15 @@ prep_questions("predictor_raster", "deployment1", "bam_v5_can71")
 
 # Return default questions
 prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
+
+# Follow up questions
+prep_questions("model_fit", "deployment2", "bam_v5_can71", "BBWO")
+
+# Add evaluations
+#prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "draper")
+prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "testuser")
+
+# For the abandon review
+prep_questions("app", "deployment1",  "bam_v5_can71", "BBWO", "testuser")
 \dontshow{\}) # examplesIf}
 }

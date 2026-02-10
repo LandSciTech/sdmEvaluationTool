@@ -83,7 +83,7 @@ mod_page_test_server <- function(id = "test", ...) {
       bindCache(deployment_id(), model_id(), species_id())
 
     output$ui_questions <- renderUI({
-      ui_questions(questions_init(), session = session)
+      ui_questions(questions_init())
     })
 
     questions <- reactive({

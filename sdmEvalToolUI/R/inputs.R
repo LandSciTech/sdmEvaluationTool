@@ -94,9 +94,10 @@ spatial_input <- function(
 #' therefore requires the Shiny session object for namespacing.
 #'
 #' @param questions Data frame prepared by `prep_questions()`.
-#' @param session Shiny session object of module namespacing
-#' @param spatial_ids Spatial IDs
-#' @param spatial_type Spatial type
+#' @param spatial_ids Character vector. All possible Spatial ID options for
+#'   spatial inputs choices.
+#' @param spatial_type Character. Spatial type, either `points` or `areas`.
+#' @param width Numeric. Optional width of Shiny UI input.
 #'
 #' @returns Shiny tagList of UI elements
 #'
@@ -108,9 +109,14 @@ spatial_input <- function(
 #' ui_questions(q, spatial_type = "areas")
 #'
 #' # More than one component
-#' q <- prep_questions(c("model_fit", "model_summary"), "deployment2", "bam_v5_can71", "BBWO", user_id = "testuser")
+#' q <- prep_questions(
+#'   c("model_fit", "model_summary"),
+#'   "deployment2",
+#'   "bam_v5_can71",
+#'   "BBWO",
+#'   user_id = "testuser"
+#' )
 #' u <- ui_questions(q, spatial_type = "areas")
-#' htmltools::browsable(u)
 
 ui_questions <- function(
   questions,

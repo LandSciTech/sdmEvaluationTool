@@ -1,15 +1,15 @@
 #' Fetch and format submitted evaluations
 #'
-#' @param user_id Character. ID of the user who created the evaluation to fetch.
-#' @param con DB connection
+#' @param user_id Character. User ID.
+#' @param deployment_id Character. Deployment ID
 #'
 #' @returns Data frame of evaluation details
 #'
 #' @export
 #' @examplesIf have_data()
-#' prep_evaluations(c("draper", "okoye"))
-#' prep_evaluations("holden")
-#' prep_evaluations("okoye")
+#' #prep_evaluations(c("draper", "okoye"))
+#' #prep_evaluations("holden")
+#' #prep_evaluations("okoye")
 #' prep_evaluations("testuser")
 
 prep_evaluations <- function(user_id, deployment_id = NULL) {
@@ -63,11 +63,14 @@ prep_evaluations <- function(user_id, deployment_id = NULL) {
 
 #' Save evaluations
 #'
-#' @param questions Questions
-#' @param input_list Input list
+#' @param questions Data frame. Data frame of questions; output of
+#' `prep_questions()`.
+#' @param input_list List. List of Shiny inputs; output of
+#' `reactiveValuesToList(input)`
+#' @param user_id Character. User ID.
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO", "testuser")
 #' a <- test_input_evals(q)
 #' save_evaluations(q, a, user_id = "testuser")
@@ -226,10 +229,6 @@ response_to_json <- function(component_id, questions, input_list) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' evals_details("holden", "modeler")
-#' evals_details("holden", "evaluator")
-#' evals_details("draper", "modeler")
-#' evals_details("draper", "evaluator")
 #' evals_details("testuser", "evaluator")
 
 evals_details <- function(user_id, user_role) {
@@ -369,11 +368,11 @@ evals_details <- function(user_id, user_role) {
 
   evals <- evals |>
     dplyr::select(-"n_q.eval") |>
-    dplyr::filter(component_id != "app") |>
+    dplyr::filter(.data$component_id != "app") |>
     dplyr::mutate(
       started = any(.data$n_q_complete > 0, na.rm = TRUE),
       completed = .data$n_q_complete == .data$n_q,
-      completed = tidyr::replace_na(completed, FALSE),
+      completed = tidyr::replace_na(.data$completed, FALSE),
       n_q_display = paste0(.data$n_q_complete, "/", .data$n_q),
       # Icon for check mark?
 
@@ -444,8 +443,7 @@ evals_details <- function(user_id, user_role) {
 #' @returns Data frame with evaluation information
 #'
 #' @examples
-#' body <- '[{"question": "Q1", "response": "Yes"}]'
-#' evals_extract(body)
+#' evals_extract(test_evaluation_body())
 #' @export
 
 evals_extract <- function(json) {
@@ -477,8 +475,7 @@ listify <- function(x) {
 #' @returns Data frame with columns: n_q (total questions), n_q_complete (completed questions)
 #'
 #' @examples
-#' body <- '[{"question": "Q1", "response": "Yes"}, {"question": "Q2", "response": ""}]'
-#' eval_data <- evals_extract(body)
+#' eval_data <- evals_extract(test_evaluation_body())
 #' evals_answered(eval_data)
 #' @export
 
@@ -522,12 +519,13 @@ check_q_mismatch <- function(q1, q2) {
 
 #' Convert questions to input list structure
 #'
-#' @param questions
+#' @param questions Data frame. Data frame of questions; output of
+#' `prep_questions()`.
 #'
 #' @returns List which imitates a Shiny input object
 #'
 #' @export
-#' @examples
+#' @examplesIf have_data()
 #' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWA", "testuser")
 #' evals_list(q)
 
