@@ -34,7 +34,7 @@ For evaluators, shows only their own evaluations. Returns a data frame with
 deployment, model, species, component, and completion information.
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 evals_details("testuser", "evaluator")
 \dontshow{\}) # examplesIf}
 }

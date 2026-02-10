@@ -18,7 +18,7 @@ A Shiny app object
 Launch the SDM Evaluation Tool Shiny Application
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 sdm_tool()
 \dontshow{\}) # examplesIf}
 }

@@ -20,7 +20,7 @@ A leaflet map object
 Create a Leaflet Map of Spatial Prediction Data
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 p <- spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 s <- deployment_subunits_prep("deployment1")
 spatial_prediction_map(p)

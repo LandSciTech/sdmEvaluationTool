@@ -20,7 +20,7 @@ Loaded file as an R object
 Load material files
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 prep_materials("observations", species_id = "BBWO", model_id = "bam_v5_can71")
 #prep_materials("model_metadata", model_id = "bam_v5_can71")
 prep_materials("predictor_metadata", model_id = "bam_v5_can71")

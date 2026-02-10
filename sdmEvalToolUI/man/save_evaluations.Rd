@@ -19,7 +19,7 @@ save_evaluations(questions, input_list, user_id)
 Save evaluations
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO", "testuser")
 a <- test_input_evals(q)
 save_evaluations(q, a, user_id = "testuser")

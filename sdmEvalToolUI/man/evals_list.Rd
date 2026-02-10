@@ -17,7 +17,7 @@ List which imitates a Shiny input object
 Convert questions to input list structure
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWA", "testuser")
 evals_list(q)
 \dontshow{\}) # examplesIf}

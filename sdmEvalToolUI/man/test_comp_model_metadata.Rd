@@ -16,7 +16,7 @@ A Shiny app object
 Test the Model Metadata Component
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 test_comp_model_metadata()
 \dontshow{\}) # examplesIf}
 }

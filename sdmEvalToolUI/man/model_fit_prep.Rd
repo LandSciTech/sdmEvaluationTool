@@ -18,7 +18,7 @@ Data frame
 Prepare Model Fit Data
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 model_fit_prep(model_ = "bam_v5_can71", species_id = "BBWO")
 \dontshow{\}) # examplesIf}
 }

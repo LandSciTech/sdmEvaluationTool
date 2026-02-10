@@ -18,7 +18,7 @@ Data frame of evaluation details
 Fetch and format submitted evaluations
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 #prep_evaluations(c("draper", "okoye"))
 #prep_evaluations("holden")
 #prep_evaluations("okoye")

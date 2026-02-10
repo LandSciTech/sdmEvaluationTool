@@ -31,7 +31,7 @@ Reads, combines and prepares questions for use in UIs. \code{model_id} and
 \code{species_id} required to create \code{material_id}.
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 # Return all questions
 prep_questions("ALL", "deployment1", "bam_v5_can71", "BBWO")
 

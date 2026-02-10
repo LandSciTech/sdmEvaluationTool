@@ -16,7 +16,7 @@ Subunits polygons
 Prepare Deployment Subunits
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 deployment_subunits_prep(deployment_id = "deployment1")
 \dontshow{\}) # examplesIf}
 }

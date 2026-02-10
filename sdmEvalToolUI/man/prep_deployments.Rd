@@ -18,7 +18,7 @@ Data frame of deployments
 Prepare Deployments
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 prep_deployments("deployment1", "deployment_questions")
 prep_deployments("deployment1", "deployment_subunits")
 prep_deployments("deployment2", "deployment_questions")

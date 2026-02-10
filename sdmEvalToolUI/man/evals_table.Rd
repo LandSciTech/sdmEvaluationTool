@@ -20,7 +20,7 @@ evaluators. The table shows deployment-model combinations, species,
 components, and their completion status.
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 #tbl <- evals_details("holden", "modeler")
 #evals_table(tbl, "modeler")
 #tbl <- evals_details("draper", "evaluator")
