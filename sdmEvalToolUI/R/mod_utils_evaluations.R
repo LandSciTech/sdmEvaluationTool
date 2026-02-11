@@ -136,7 +136,7 @@ mod_utils_evaluations_server <- function(
     })
 
     observe({
-      req(answers_changed(), !abandoned())
+      req(answers_changed())
       # Mark tab name as unsaved
       u <- unsaved()
       # Get parent session     # TODO: Is this fragile?
@@ -153,7 +153,7 @@ mod_utils_evaluations_server <- function(
         )
       })
     }) |>
-      bindEvent(answers_changed, abandoned(), ignoreInit = TRUE)
+      bindEvent(answers_changed(), ignoreInit = TRUE)
 
     # Date last modified ---------------------------
     output$modified <- renderUI({

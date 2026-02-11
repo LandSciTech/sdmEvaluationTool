@@ -327,6 +327,15 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       bindEvent(overview_inputs(), ignoreInit = TRUE)
 
     # Mark unsaved -----------------------------------------------------------------
+
+    observe({
+      # If abandoned Mark all saved
+      req(abandoned())
+      u <- purrr::map_lgl(page_options, \(x) FALSE)
+      unsaved(u)
+    }) |>
+      bindEvent(abandoned(), ignoreInit = TRUE)
+
     observe({
       purrr::iwalk(unsaved(), \(v, id) {
         shinyjs::toggleCssClass(
