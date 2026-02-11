@@ -4,7 +4,10 @@
 \alias{test_evaluation_body}
 \title{Create dummy json evaluation body}
 \usage{
-test_evaluation_body()
+test_evaluation_body(component_id = "observations")
+}
+\arguments{
+\item{component_id}{Character. Id of the test evaluation body to use.}
 }
 \value{
 Character. JSON string for hypothetical evaluation

@@ -4,7 +4,7 @@
 \alias{mod_page_test_ui}
 \title{Test Page UI}
 \usage{
-mod_page_test_ui(id = "test", review_width = "50\%")
+mod_page_test_ui(id, review_width = "50\%")
 }
 \arguments{
 \item{id}{Shiny module ID}
@@ -18,5 +18,5 @@ Shiny UI
 Test Page UI
 }
 \examples{
-mod_page_test_ui()
+mod_page_test_ui("id")
 }

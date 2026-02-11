@@ -22,7 +22,7 @@ test_page_model <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_page_model_ui()
+#' mod_page_model_ui("id", "title")
 mod_page_model_ui <- function(
   id,
   title,

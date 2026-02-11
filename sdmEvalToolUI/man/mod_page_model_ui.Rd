@@ -4,7 +4,7 @@
 \alias{mod_page_model_ui}
 \title{Model Page UI}
 \usage{
-mod_page_model_ui(id = "model", title = "Model", review_width = NULL)
+mod_page_model_ui(id, title, review_width = NULL)
 }
 \arguments{
 \item{id}{Shiny module ID}
@@ -20,5 +20,5 @@ Shiny UI
 Model Page UI
 }
 \examples{
-mod_page_model_ui()
+mod_page_model_ui("id", "title")
 }

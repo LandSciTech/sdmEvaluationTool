@@ -27,7 +27,7 @@ test_page_observations <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_page_observations_ui()
+#' mod_page_observations_ui("id", "title")
 
 mod_page_observations_ui <- function(
   id,

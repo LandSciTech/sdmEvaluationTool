@@ -41,6 +41,8 @@ test_input_evals <- function(questions) {
 
 #' Create dummy json evaluation body
 #'
+#' @param component_id Character. Id of the test evaluation body to use.
+#'
 #' @returns Character. JSON string for hypothetical evaluation
 #'
 #' @export

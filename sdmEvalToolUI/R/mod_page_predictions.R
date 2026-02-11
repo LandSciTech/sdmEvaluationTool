@@ -20,7 +20,7 @@ test_page_predictions <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_page_predictions_ui()
+#' mod_page_predictions_ui("id", "title")
 
 mod_page_predictions_ui <- function(
   id,

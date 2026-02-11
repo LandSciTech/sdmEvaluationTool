@@ -455,7 +455,7 @@ sdm_theme <- function() {
          position: relative;
        }
        .answer-changed::before {
-         content: '●';
+         content: '\u25CF';
          color: #ef4444;
          font-size: 1em;
          margin-right: 6px;
