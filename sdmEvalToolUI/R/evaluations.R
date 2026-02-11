@@ -348,7 +348,9 @@ evals_details <- function(user_id, user_role) {
     ) |>
     dplyr::mutate(
       species_id = tidyr::replace_na(.data$species_id, "ALL"),
-      n_q_complete = tidyr::replace_na(.data$n_q_complete, 0)
+      n_q_complete = tidyr::replace_na(.data$n_q_complete, 0),
+      # For totals, use recorded evaluations if available
+      n_q = dplyr::if_else(!is.na(.data$n_q.eval), .data$n_q.eval, .data$n_q)
     ) |>
     dplyr::mutate(
       abandoned = any(.data$abandoned, na.rm = TRUE),
@@ -477,19 +479,39 @@ listify <- function(x) {
 #' @examples
 #' eval_data <- evals_extract(test_evaluation_body())
 #' evals_answered(eval_data)
+#'
+#' eval_data <- evals_extract(test_evaluation_body(component_id = "model_fit_a"))
+#' evals_answered(eval_data)
+#'
+#' eval_data <- evals_extract(test_evaluation_body(component_id = "model_fit_b"))
+#' evals_answered(eval_data)
 #' @export
 
 evals_answered <- function(eval) {
-  dplyr::summarize(
-    eval,
-    n_q = dplyr::n(),
-    n_q_complete = sum(
-      purrr::map_lgl(.data$response, \(x) {
-        # Only NULL, NA, "" should be considered missing; Also catch dataframes
-        !is.null(x) && (is.data.frame(x) || (!is.na(x) && x != ""))
-      })
+  eval |>
+    dplyr::mutate(
+      order = stringr::str_extract(.data$question_id, "\\d+(?=_\\d{1,2}$)"),
+      part = stringr::str_extract(.data$question_id, "\\d+$")
+    ) |>
+    dplyr::mutate(
+      count = purrr::map_lgl(.data$response, \(x) {
+        any(unlist(x) %in% affirmative())
+      }),
+      count = any(.data$count),
+      .by = c("order")
+    ) |>
+    dplyr::mutate(count = .data$count | .data$part == 0) |>
+    dplyr::summarize(
+      n_q = sum(.data$count),
+      n_q_complete = sum(
+        purrr::map_lgl(.data$response[.data$count], \(x) {
+          # Only NULL, NA, "" should be considered missing; Also catch dataframes
+          !is.null(x) &&
+            ((is.data.frame(x) && any(x$subunits != "")) ||
+              (!is.data.frame(x) && !is.na(x) && x != ""))
+        })
+      )
     )
-  )
 }
 
 

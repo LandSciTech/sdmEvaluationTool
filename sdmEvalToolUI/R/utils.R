@@ -107,3 +107,18 @@ identical_loose <- function(i1, i2) {
 
   identical(i1, i2)
 }
+
+#' Evaluation answers in the affirmative
+#'
+#' Used to determine which parts should be displayed
+#'
+#' @returns Character vector of affirmative answers
+#'
+#' @export
+#' @examples
+#' affirmative()
+affirmative <- function() {
+  #TODO: Put this somewhere better?
+
+  c("Extremely", "Very", "Moderately", "Slightly", "Yes")
+}
