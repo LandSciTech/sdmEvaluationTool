@@ -23,12 +23,13 @@ test_page_predictors <- function(...) {
 #' mod_page_predictors_ui()
 
 mod_page_predictors_ui <- function(
-  id = "predictors",
-  title = "Predictors",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    span(title, class = "sdm-model-lvl"),
+    title = span(title, class = "sdm-model-lvl"),
+    value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(
         NS(id, "eval"),
@@ -63,6 +64,7 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -74,7 +76,8 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
       model_id = model_id,
       species_id = reactive("ALL"),
       opts = opts,
-      abandoned = abandoned
+      abandoned = abandoned,
+      unsaved = unsaved
     )
 
     mod_comp_predictor_metadata_server(

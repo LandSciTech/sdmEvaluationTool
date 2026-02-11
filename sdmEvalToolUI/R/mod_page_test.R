@@ -26,11 +26,12 @@ test_page_test <- function(...) {
 #' mod_page_test_ui()
 
 mod_page_test_ui <- function(
-  id = "test",
+  id,
   review_width = "50%"
 ) {
   nav_panel(
-    "Test",
+    title = "Test",
+    value = id,
     sdm_layout_sidebar(
       sidebar = sidebar(
         width = review_width,

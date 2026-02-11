@@ -53,3 +53,8 @@ fmt_time <- function(time) {
     format("%a, %b %d %Y<br>%I:%M %p") |>
     stringr::str_remove_all("(?<=(\\s|<br>))0")
 }
+
+
+fmt_pretty <- function(x) {
+  x |> stringr::str_replace_all("_|-", " ") |> stringr::str_to_title()
+}

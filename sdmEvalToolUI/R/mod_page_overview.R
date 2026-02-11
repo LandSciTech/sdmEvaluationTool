@@ -22,7 +22,8 @@ test_page_overview <- function(...) {
 
 mod_page_overview_ui <- function(id = "overview", title = "Overview") {
   nav_panel(
-    title,
+    title = title,
+    value = id,
     sdm_card(
       card_header(
         "Current status of review",

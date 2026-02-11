@@ -26,7 +26,10 @@ mod_utils_evaluations_ui <- function(
       style = "margin-top: -15px;"
     ),
     uiOutput(NS(id, "ui_questions")),
-    actionButton(inputId = NS(id, "save"), label = "Save Responses")
+    layout_column_wrap(
+      actionButton(inputId = NS(id, "save"), label = "Save Responses"),
+      actionButton(inputId = NS(id, "reset"), label = "Reset Responses")
+    )
   )
 }
 
@@ -40,12 +43,16 @@ mod_utils_evaluations_server <- function(
   species_id,
   spatial_ids = reactive(NULL),
   opts,
-  abandoned
+  abandoned,
+  unsaved
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
   stopifnot(is.reactive(spatial_ids))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
+
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -65,7 +72,9 @@ mod_utils_evaluations_server <- function(
         !abandoned()
       )
 
-      saved() # Also trigger refresh if values are saved
+      # Also trigger refresh if values are saved or reset
+      saved()
+      input$reset
 
       # Get Questions and any existing Evaluations
       q <- prep_questions(
@@ -131,6 +140,15 @@ mod_utils_evaluations_server <- function(
 
     observe({
       req(answers_changed())
+
+      # Mark tab name as unsaved
+      u <- unsaved()
+      # Get parent session     # TODO: Is this fragile?
+      id <- stringr::str_extract(session$ns(""), "^[^-]+")
+      u[id] <- any(unlist(answers_changed()))
+      unsaved(u)
+
+      # Mark answers as changed and unsaved
       purrr::imap(answers_changed(), \(r, i) {
         shinyjs::toggleClass(
           paste0(i, "-label"),
@@ -210,7 +228,7 @@ mod_utils_evaluations_server <- function(
     }) |>
       bindEvent(input$save)
 
-    # Save button -------------------------------------------
+    # Save/reset buttons -------------------------------------------
 
     observe({
       req(answers_changed())
@@ -223,14 +241,25 @@ mod_utils_evaluations_server <- function(
           label = "No Changes to Save",
           disabled = TRUE
         )
+        updateActionButton(
+          inputId = "reset",
+          label = "No Changes to Reset",
+          disabled = TRUE
+        )
       } else {
         updateActionButton(
           inputId = "save",
           label = "Save Responses",
           disabled = FALSE
         )
+        updateActionButton(
+          inputId = "reset",
+          label = "Reset Responses",
+          disabled = FALSE
+        )
       }
       shinyjs::toggleClass("save", class = "btn-success", condition = chg)
+      shinyjs::toggleClass("reset", class = "btn-warning", condition = chg)
     })
 
     # Return --------------------------------------------------------
