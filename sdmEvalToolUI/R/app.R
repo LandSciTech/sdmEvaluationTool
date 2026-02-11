@@ -103,6 +103,36 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       updateSelectInput(session, id, choices = choices, selected = selected)
     }
 
+    # Glossary -----------------------------------------
+    observe({
+      # PLACEHOLDER
+      deets <- list(
+        "overview" = "This is the information regarding the overview",
+        "predictions" = "This is how to evaluated predictions",
+        "observations" = "Nothing here",
+        "model" = "Model fit and summary information here",
+        "predictors" = "These apply to the model as a whole",
+        "model_metadata" = "Not yet implemented"
+      )
+
+      if (!all(names(deets) %in% names(page_options))) {
+        stop("Some glossary terms do not match a tab", call. = FALSE)
+      }
+
+      showModal(as_fill_carrier(
+        modalDialog(
+          size = "l",
+          title = "Glossary",
+          card(
+            card_header(page_options[input$sdm]),
+            card_body(deets[[input$sdm]])
+          ),
+          easyClose = TRUE
+        )
+      ))
+    }) |>
+      bindEvent(input$glossary)
+
     # Abandon Review -----------------------------------
     # CLEANUP: Similar to mod_utils_evaluations_server... could be merged?
     observe({
