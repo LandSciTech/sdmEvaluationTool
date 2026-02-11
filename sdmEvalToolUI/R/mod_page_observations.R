@@ -68,6 +68,7 @@ mod_page_observations_server <- function(id = "observations", ...) {
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
   stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -84,7 +85,8 @@ mod_page_observations_server <- function(id = "observations", ...) {
       species_id = species_id,
       spatial_ids = spatial_ids,
       opts = opts,
-      abandoned = abandoned
+      abandoned = abandoned,
+      unsaved = unsaved
     )
 
     # Create charts

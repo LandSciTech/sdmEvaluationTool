@@ -71,6 +71,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     overview_update <- reactiveVal(0)
     update_inputs <- reactiveVal(NULL) # Holds inputs to be updated by sdm_update_selector()
     abandoned <- reactiveVal(FALSE) # Marker to note if evaluation has been abandoned (species or model)
+    unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE)) # Holds ids of pages with TRUE/FALSE for unsaved answers
 
     sdm_update_selector <- function(
       type,
@@ -318,6 +319,18 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     }) |>
       bindEvent(overview_inputs(), ignoreInit = TRUE)
 
+    # Mark unsaved -----------------------------------------------------------------
+    observe({
+      purrr::iwalk(unsaved(), \(v, id) {
+        shinyjs::toggleCssClass(
+          selector = paste0(".nav-link[data-value='", id, "']"),
+          class = "answer-changed",
+          condition = v
+        )
+      })
+    }) |>
+      bindEvent(unsaved(), ignoreInit = TRUE)
+
     # Modules --------------------------------
     # - Define overview separately to specify overview_inputs
     mod_details_server(deployment_id = reactive(input$deployment_id))
@@ -332,7 +345,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       ),
       overview_inputs = overview_inputs,
       overview_update = overview_update,
-      abandoned = abandoned
+      abandoned = abandoned,
+      unsaved = unsaved
     )
 
     pages_server <- purrr::map(names(page_options)[-1], \(id) {
@@ -348,7 +362,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
           "user_id" = reactive(input$user_id),
           "user_role" = reactive(input$user_role)
         ),
-        abandoned = abandoned
+        abandoned = abandoned,
+        unsaved = unsaved
       )
     }
   }
@@ -361,7 +376,8 @@ sdm_theme <- function() {
     `species-colour` = "#2E5266",
     `model-colour` = "#DC851F",
     `enable-rounded` = FALSE,
-    `modal-header-padding` = "1rem"
+    `modal-header-padding` = "1rem",
+    `success` = "#476146"
   ) |>
 
     # General styling
@@ -418,19 +434,33 @@ sdm_theme <- function() {
          font-size: 90%;   
        }
        
-       .answer-changed::after {
-         content: ' **';
-         color: red;
-         font-weight: bold;
+       /* Unsaved changes indicator */
+       .answer-changed {
+         position: relative;
        }
-       .answer-changed + input,
-       .answer-changed + input.form-control:focus,
-       .answer-changed + div,
-       .answer-changed + div input,
-       .answer-changed + div .selectize-input,
-       .answer-changed + div textarea {
-         background: #a6a8cc4f;
-       }"
+       .answer-changed::before {
+         content: '●';
+         color: #ef4444;
+         font-size: 1em;
+         margin-right: 6px;
+        }
+
+        label.answer-changed {
+        padding-left: 15px;
+        text-indent: -15px;
+        }
+   
+        .answer-changed + input,
+        .answer-changed + div input,
+        .answer-changed + div .selectize-input,
+        .answer-changed + div textarea {
+           background-color: #fef2f2;
+           transition: all 0.2s ease;
+        }
+        .answer-changed + input:focus,
+        .answer-changed + div .selectize-input.focus {
+           box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.15);
+        }"
     ) |>
 
     # Buttons

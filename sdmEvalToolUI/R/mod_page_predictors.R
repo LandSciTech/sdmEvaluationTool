@@ -64,6 +64,7 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -75,7 +76,8 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
       model_id = model_id,
       species_id = reactive("ALL"),
       opts = opts,
-      abandoned = abandoned
+      abandoned = abandoned,
+      unsaved = unsaved
     )
 
     mod_comp_predictor_metadata_server(
