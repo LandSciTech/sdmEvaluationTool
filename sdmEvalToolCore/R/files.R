@@ -69,6 +69,9 @@ read_file <- function(path, ...) {
         "gpkg" = sf::read_sf(path, ...),
         "tif" = terra::rast(path, ...),
         "json" = jsonlite::fromJSON(readLines(path), ...),
+        "md" = readLines(path, ...),
+        "rmd" = readLines(path, ...),
+        "txt" = readLines(path, ...),
         stop(sprintf("File extension %s not recognized", ext))
     )
 }
@@ -93,6 +96,9 @@ write_file <- function(x, path, ...) {
         "gpkg" = sf::write_sf(x, path, delete_dsn = file.exists(path), ...),
         "tif" = terra::writeRaster(x, path, overwrite = TRUE, ...),
         "json" = writeLines(jsonlite::toJSON(x, ...), path),
+        "md" = writeLines(x, path, ...),
+        "rmd" = writeLines(x, path, ...),
+        "txt" = writeLines(x, path, ...),
         stop(sprintf("File extension %s not recognized", ext))
     )
 }
