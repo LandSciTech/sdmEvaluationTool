@@ -12,7 +12,10 @@ test_page <- function(
     title = "SDM Tool Testing",
     theme = sdm_theme(),
     header = shinyjs::useShinyjs(),
-    get(paste0(module, "_ui"))()
+    get(paste0(module, "_ui"))(
+      title = stringr::str_remove_all(module, "mod_page_") |> fmt_pretty(),
+      id = stringr::str_remove_all(module, "mod_page_"),
+    )
   )
 
   if (module == "mod_page_overview") {

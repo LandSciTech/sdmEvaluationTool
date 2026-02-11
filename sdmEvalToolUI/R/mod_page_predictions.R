@@ -23,12 +23,13 @@ test_page_predictions <- function(...) {
 #' mod_page_predictions_ui()
 
 mod_page_predictions_ui <- function(
-  id = "predictions",
-  title = "Predictions",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    span(title, class = "sdm-species-lvl"),
+    title = span(title, class = "sdm-species-lvl"),
+    value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
       mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))

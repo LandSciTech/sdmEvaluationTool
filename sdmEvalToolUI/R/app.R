@@ -10,13 +10,14 @@
 #' sdm_tool()
 
 sdm_tool <- function(lang = "english", options = list(port = 8080)) {
+  # Pages - Names become pretty Tab names, values are ids used for navigation (input$sdm)
   page_options <- c(
-    "overview",
-    "predictions",
-    "observations",
-    "model",
-    "predictors",
-    "model_metadata"
+    "overview" = "Overview",
+    "predictions" = "Predictions",
+    "observations" = "Observations",
+    "model" = "Model",
+    "predictors" = "Predictors",
+    "model_metadata" = "Model Metadata"
   )
 
   # Set language
@@ -30,23 +31,35 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
   #prep_data() |> expand_list()
 
   # UI --------------------------------------
-  pages_ui <- lapply(page_options, \(p) get(paste0("mod_page_", p, "_ui"))())
-  ui <- bslib::page_navbar(
-    id = "sdm",
-    title = "SDM Tool",
-    theme = sdm_theme(),
-    sidebar = mod_details_ui(),
-    gap = 0,
-    padding = 0,
-    header = shinyjs::useShinyjs(),
-    !!!pages_ui,
-    nav_spacer(),
-    !!!sdm_inputs(users),
+  pages_ui <- purrr::imap(page_options, \(title, id) {
+    get(paste0("mod_page_", id, "_ui"))(title = title, id = id)
+  }) |>
+    unname()
+
+  ui <- tagList(
+    bslib::page_navbar(
+      id = "sdm", # Used for navigation, input$sdm
+      title = "SDM Tool",
+      theme = sdm_theme(),
+      sidebar = mod_details_ui(),
+      gap = 0,
+      padding = 0,
+      header = shinyjs::useShinyjs(),
+      !!!pages_ui,
+      nav_spacer(),
+      !!!sdm_inputs(users),
+      nav_item(actionButton(
+        "abandon",
+        label = NULL,
+        icon = icon("x"),
+        class = "btn-sm btn-abandon"
+      ))
+    ),
     nav_item(actionButton(
-      "abandon",
+      "glossary",
       label = NULL,
-      icon = icon("x"),
-      class = "btn-sm btn-abandon"
+      icon = icon("circle-question", ),
+      class = "btn-mini btn-glossary"
     ))
   )
 
@@ -170,7 +183,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       )
 
       removeModal()
-      # nav_select("sdm", "Overview") # TODO: Go back to Overview?
+      # nav_select("sdm", "overview") # TODO: Go back to Overview?
       overview_update(overview_update() + 1)
     }) |>
       bindEvent(input$save)
@@ -292,8 +305,8 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       abandoned = abandoned
     )
 
-    pages_server <- lapply(page_options[-1], \(p) {
-      get(paste0("mod_page_", p, "_server"))
+    pages_server <- purrr::map(names(page_options)[-1], \(id) {
+      get(paste0("mod_page_", id, "_server"))
     })
 
     for (t in pages_server) {
@@ -320,106 +333,135 @@ sdm_theme <- function() {
     `enable-rounded` = FALSE,
     `modal-header-padding` = "1rem"
   ) |>
+
+    # General styling
     bs_add_rules(
-      "
-      h5 {
-        padding: 0;
-        margin: 0;
-        line-spacing: 0;
-      }
-      /* Differentiate between species and model-level pages */
-      a.nav-link > .sdm-species-lvl {
-        text-shadow: $species-colour 0 0 2px;
-      }
-      a.nav-link > .sdm-model-lvl {
-        text-shadow: $model-colour 0 0 2px;
-      }
-      /* Modal formatting */
-      .modal-body, .modal-footer {
-        padding: 1rem;
-      }
-      /* Format sub questions */
-      .sub-question {
-        padding-left: 15px;
-        padding-top: 5px;
-        border-radius: 5px;
-        background-color: #e2eae0;
-      }
-      /* Create a mini button (Copy button) */
-      .btn-species {
-        color: white;
-        background-color: $species-colour;
-        border-color: $species-colour;
-        width: 150px;
-      } 
-      .btn-model {
-        color: white;
-        background-color: $model-colour;
-        border-color: $model-colour;
-        width: 150px;
-      }
-      .btn-abandon {
-      border-radius: 100px;
-      }
+      "h5 {
+         padding: 0;
+         margin: 0;
+         line-spacing: 0;
+       }
+       /* Modal formatting */
+       .modal-body, .modal-footer {
+         padding: 1rem;
+       }
 
-      /* Mini Button (e.g. Copy) */
-      .btn-mini {
-        background-color: transparent;
-        border: 0;
-        padding: 5px;
-        margin: 0;
-      }
-      /* Create a small button (Nav buttons) */
-      li:has(button.btn-sm) {
-        margin-top: 3px !important;
-      }
+       /* Remove gaps between cards and page */
+       .main.bslib-gap-spacing {
+         padding: 0 !important;
+         padding-left: 20px !important;
+       }
+      /* Even out the spacing as the Overview page doesn't have an evaluation tab */
+       .main.bslib-gap-spacing [data-value='overview']{
+         padding: 0 !important;
+         padding-left: 20px !important;
+       }"
+    ) |>
 
-      /* For last-modified note */
-      .corner {
-        position: relative;
-        right: 0;
-        top: -25px;
-        margin-bottom: -25px;
-        margin-right: 25px;
-        display: block;
-        text-align: right;     
-        font-size: 90%;   
-      }
-      
-      .answer-changed::after {
-        content: ' **';
-        color: red;
-        font-weight: bold;
-      }
-      .answer-changed + input,
-      .answer-changed + input.form-control:focus,
-      .answer-changed + div,
-      .answer-changed + div input,
-      .answer-changed + div .selectize-input,
-      .answer-changed + div textarea {
-        background: #a6a8cc4f;
-      }
+    # Species- vs. Model-level differentiation
+    bs_add_rules(
+      "a.nav-link > .sdm-species-lvl {
+         text-shadow: $species-colour 0 0 2px;
+       }
+       a.nav-link > .sdm-model-lvl {
+         text-shadow: $model-colour 0 0 2px;
+       }"
+    ) |>
 
-      /* Allow Multiple legends (only legends in the bottom left corner) to go side by side */
-      .leaflet-bottom.leaflet-left > .info.legend.leaflet-control {
-        float: inherit !important;
-        display: inline-block;
-      }
-      /* Fix selectize dropdown appearing below leaflet controls */
-        .selectize-dropdown {
-          z-index: 1001 !important;
+    # Evaluations
+    bs_add_rules(
+      ".sub-question {
+         padding-left: 15px;
+         padding-top: 5px;
+         border-radius: 5px;
+         background-color: #e2eae0;
+       }
+       /* For last-modified note */
+       .corner {
+         position: relative;
+         right: 0;
+         top: -25px;
+         margin-bottom: -25px;
+         margin-right: 25px;
+         display: block;
+         text-align: right;     
+         font-size: 90%;   
+       }
+       
+       .answer-changed::after {
+         content: ' **';
+         color: red;
+         font-weight: bold;
+       }
+       .answer-changed + input,
+       .answer-changed + input.form-control:focus,
+       .answer-changed + div,
+       .answer-changed + div input,
+       .answer-changed + div .selectize-input,
+       .answer-changed + div textarea {
+         background: #a6a8cc4f;
+       }"
+    ) |>
+
+    # Buttons
+    bs_add_rules(
+      "/* Overview selection buttons */
+       .btn-species {
+         color: white;
+         background-color: $species-colour;
+         border-color: $species-colour;
+         width: 150px;
+       } 
+       .btn-model {
+         color: white;
+         background-color: $model-colour;
+         border-color: $model-colour;
+         width: 150px;
+       }
+
+       /* Abandon Evaluation Button */
+       .btn-abandon {
+         border-radius: 100px;         
+       }
+       li:has(button.btn-abandon) {
+         margin-top: 3px !important;
+       }
+
+       /* Glossary Button */
+        .btn-glossary {
+          position: fixed;
+          bottom: 20px;
+          right: 40px;
+          z-index: 1000;
+          font-size: 2em;
+          color: grey;
         }
-      /* Remove gaps between cards and page */
-        .main.bslib-gap-spacing {
-          padding: 0 !important;
-          padding-left: 20px !important;
+        .btn-glossary:hover {
+          color: black;
+          background-color: transparent;
         }
 
-        .main.bslib-gap-spacing [data-value='Overview']{
-          padding: 0 !important;
-          padding-left: 20px !important;
-        }
-    "
+       /* Mini Button (e.g. Copy) */
+       .btn-mini {
+         background-color: transparent;
+         border: 0;
+         padding: 2px 5px 2px 5px;
+         margin: 0;
+         border-radius: 50%; 
+       }"
+    ) |>
+
+    # Leaflet maps
+    bs_add_rules(
+      "/* Allow Multiple legends (only legends in the bottom left corner) to go side by side */
+       .leaflet-bottom.leaflet-left > .info.legend.leaflet-control {
+         float: inherit !important;
+         display: inline-block;
+       }
+       /* Fix selectize dropdown appearing below leaflet controls */
+       .selectize-dropdown {
+         z-index: 1001 !important;
+    }"
     )
 }
 

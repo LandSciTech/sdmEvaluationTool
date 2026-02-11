@@ -24,12 +24,13 @@ test_page_model <- function(...) {
 #' @examples
 #' mod_page_model_ui()
 mod_page_model_ui <- function(
-  id = "model",
-  title = "Model",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    span(title, class = "sdm-species-lvl"),
+    title = span(title, class = "sdm-species-lvl"),
+    value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
 

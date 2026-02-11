@@ -23,12 +23,13 @@ test_page_predictors <- function(...) {
 #' mod_page_predictors_ui()
 
 mod_page_predictors_ui <- function(
-  id = "predictors",
-  title = "Predictors",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    span(title, class = "sdm-model-lvl"),
+    title = span(title, class = "sdm-model-lvl"),
+    value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(
         NS(id, "eval"),

@@ -22,12 +22,13 @@ test_page_model_metadata <- function(...) {
 #' @examples
 #' mod_page_model_metadata_ui()
 mod_page_model_metadata_ui <- function(
-  id = "model_metadata",
-  title = "Model Metadata",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    span(title, class = "sdm-model-lvl"),
+    title = span(title, class = "sdm-model-lvl"),
+    value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(
         NS(id, "eval"),

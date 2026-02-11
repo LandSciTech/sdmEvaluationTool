@@ -30,12 +30,13 @@ test_page_observations <- function(...) {
 #' mod_page_observations_ui()
 
 mod_page_observations_ui <- function(
-  id = "observations",
-  title = "Observations",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    span(title, class = "sdm-species-lvl"),
+    title = span(title, class = "sdm-species-lvl"),
+    value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
       navset_card_tab(
