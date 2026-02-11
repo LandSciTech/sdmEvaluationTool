@@ -107,9 +107,15 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
     # Glossary -----------------------------------------
     observe({
       # PLACEHOLDER
+      legend <- span(
+        span("", class = "answer-changed"),
+        "Modified (unsaved) response",
+        style = "font-size: 90%"
+      )
+
       deets <- list(
         "overview" = "This is the information regarding the overview",
-        "predictions" = "This is how to evaluated predictions",
+        "predictions" = "This is how to evaluate predictions",
         "observations" = "Nothing here",
         "model" = "Model fit and summary information here",
         "predictors" = "These apply to the model as a whole",
@@ -124,6 +130,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
         modalDialog(
           size = "l",
           title = "Glossary",
+          card(card_header("Legend"), legend),
           card(
             card_header(page_options[input$sdm]),
             card_body(deets[[input$sdm]])
@@ -320,6 +327,15 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       bindEvent(overview_inputs(), ignoreInit = TRUE)
 
     # Mark unsaved -----------------------------------------------------------------
+
+    observe({
+      # If abandoned Mark all saved
+      req(abandoned())
+      u <- purrr::map_lgl(page_options, \(x) FALSE)
+      unsaved(u)
+    }) |>
+      bindEvent(abandoned(), ignoreInit = TRUE)
+
     observe({
       purrr::iwalk(unsaved(), \(v, id) {
         shinyjs::toggleCssClass(
@@ -439,7 +455,7 @@ sdm_theme <- function() {
          position: relative;
        }
        .answer-changed::before {
-         content: '●';
+         content: '\u25CF';
          color: #ef4444;
          font-size: 1em;
          margin-right: 6px;

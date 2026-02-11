@@ -4,11 +4,7 @@
 \alias{mod_page_observations_ui}
 \title{Observations Page UI}
 \usage{
-mod_page_observations_ui(
-  id = "observations",
-  title = "Observations",
-  review_width = NULL
-)
+mod_page_observations_ui(id, title, review_width = NULL)
 }
 \arguments{
 \item{id}{Shiny module ID}
@@ -25,5 +21,5 @@ Shiny UI
 Observations Page UI
 }
 \examples{
-mod_page_observations_ui()
+mod_page_observations_ui("id", "title")
 }

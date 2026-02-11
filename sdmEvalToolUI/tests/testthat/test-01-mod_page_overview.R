@@ -58,13 +58,13 @@ test_that("evals_answered() counts questions correctly", {
   expect_s3_class(result, "data.frame")
   expect_equal(nrow(result), 1)
   expect_named(result, c("n_q", "n_q_complete"), ignore.order = TRUE)
-  expect_equal(result$n_q, 7)
+  expect_equal(result$n_q, 6)
   expect_equal(result$n_q_complete, 3)
 })
 
 test_that("evals_answered() handles none answered", {
   eval_data <- data.frame(
-    question = c("Q1", "Q2", "Q3"),
+    question_id = c("Q1_1_0", "Q2_2_0", "Q3_3_0"),
     response = I(list(NULL, NULL, NULL))
   )
 
@@ -76,7 +76,7 @@ test_that("evals_answered() handles none answered", {
 
 test_that("evals_answered() handles empty data", {
   eval_data <- data.frame(
-    question = character(0),
+    question_id = character(0),
     response = I(list())
   )
 
@@ -88,7 +88,7 @@ test_that("evals_answered() handles empty data", {
 
 test_that("evals_answered() counts only truthy responses", {
   eval_data <- data.frame(
-    question = c("Q1", "Q2", "Q3", "Q4", "Q5", "Q6"),
+    question_id = c("Q1_1_0", "Q2_2_0", "Q3_3_0", "Q4_4_0", "Q5_5_0", "Q6_6_0"),
     response = I(list("Yes", "", 0, FALSE, 1, "answer"))
   )
 

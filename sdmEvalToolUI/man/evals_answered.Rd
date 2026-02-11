@@ -18,4 +18,10 @@ Summarizes evaluation data to count total questions and completed questions.
 \examples{
 eval_data <- evals_extract(test_evaluation_body())
 evals_answered(eval_data)
+
+eval_data <- evals_extract(test_evaluation_body(component_id = "model_fit_a"))
+evals_answered(eval_data)
+
+eval_data <- evals_extract(test_evaluation_body(component_id = "model_fit_b"))
+evals_answered(eval_data)
 }

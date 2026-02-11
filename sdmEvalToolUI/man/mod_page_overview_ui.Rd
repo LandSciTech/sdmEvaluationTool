@@ -4,7 +4,7 @@
 \alias{mod_page_overview_ui}
 \title{Overview Page UI}
 \usage{
-mod_page_overview_ui(id = "overview", title = "Overview")
+mod_page_overview_ui(id, title)
 }
 \arguments{
 \item{id}{Shiny module ID}
@@ -16,4 +16,7 @@ Shiny UI
 }
 \description{
 Overview Page UI
+}
+\examples{
+mod_page_overview_ui("id", "title")
 }

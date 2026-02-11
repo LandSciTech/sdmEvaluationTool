@@ -18,18 +18,9 @@ mod_utils_evaluations_ui <- function(
       if (level == "model") {
         strong("Note: Responses apply to Model across all Species", br())
       },
-      span(
-        span("", class = "answer-changed"),
-        "Modified (unsaved) response",
-        style = "font-size: 90%"
-      ),
       style = "margin-top: -15px;"
     ),
     uiOutput(NS(id, "ui_questions")),
-    layout_column_wrap(
-      actionButton(inputId = NS(id, "save"), label = "Save Responses"),
-      actionButton(inputId = NS(id, "reset"), label = "Reset Responses")
-    )
   )
 }
 
@@ -103,9 +94,15 @@ mod_utils_evaluations_server <- function(
 
       req(questions_init())
 
-      ui_questions(
-        questions_init(),
-        spatial_type = spatial_type
+      tagList(
+        ui_questions(
+          questions_init(),
+          spatial_type = spatial_type
+        ),
+        layout_column_wrap(
+          actionButton(inputId = ns("save"), label = "Save Responses"),
+          actionButton(inputId = ns("reset"), label = "Reset Responses")
+        )
       )
     })
 
@@ -140,7 +137,6 @@ mod_utils_evaluations_server <- function(
 
     observe({
       req(answers_changed())
-
       # Mark tab name as unsaved
       u <- unsaved()
       # Get parent session     # TODO: Is this fragile?
@@ -156,7 +152,8 @@ mod_utils_evaluations_server <- function(
           condition = r
         )
       })
-    })
+    }) |>
+      bindEvent(answers_changed(), ignoreInit = TRUE)
 
     # Date last modified ---------------------------
     output$modified <- renderUI({

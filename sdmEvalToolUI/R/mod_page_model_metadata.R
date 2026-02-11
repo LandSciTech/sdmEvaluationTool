@@ -20,7 +20,7 @@ test_page_model_metadata <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_page_model_metadata_ui()
+#' mod_page_model_metadata_ui("id", "title")
 mod_page_model_metadata_ui <- function(
   id,
   title,

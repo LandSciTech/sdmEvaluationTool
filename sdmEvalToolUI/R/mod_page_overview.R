@@ -19,8 +19,10 @@ test_page_overview <- function(...) {
 #' @returns Shiny UI
 #'
 #' @export
+#' @examples
+#' mod_page_overview_ui("id", "title")
 
-mod_page_overview_ui <- function(id = "overview", title = "Overview") {
+mod_page_overview_ui <- function(id, title) {
   nav_panel(
     title = title,
     value = id,

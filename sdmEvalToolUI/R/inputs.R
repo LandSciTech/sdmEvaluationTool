@@ -151,7 +151,17 @@ ui_questions <- function(
 
         # Follow up questions
         if (part > 0) {
-          i <- div(class = "sub-question", i)
+          parent_id <- stringr::str_replace(question_id, "\\d+$", "0")
+          i <- conditionalPanel(
+            #condition = paste0("input.", parent_id, " == 'Extremely'"),
+            condition = glue::glue(
+              "['",
+              glue::glue_collapse(affirmative(), sep = "', '"),
+              "'].includes(input.{parent_id})"
+            ),
+            div(class = "sub-question", i),
+            ns = ns
+          )
         }
 
         i
