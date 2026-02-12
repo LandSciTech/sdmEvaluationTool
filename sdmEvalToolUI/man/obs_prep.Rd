@@ -24,6 +24,5 @@ Prepare Observation Data
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
-obs_prep(model_id = "bam_v5_can71", species_id = "BBWO", output_type = "raster")
 \dontshow{\}) # examplesIf}
 }

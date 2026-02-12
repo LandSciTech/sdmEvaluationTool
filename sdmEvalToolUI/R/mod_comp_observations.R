@@ -38,7 +38,8 @@ mod_comp_observations_ui <- function(
             min_height = "40%",
             mod_utils_map_selections_ui(
                 NS(id, "select"),
-                spatial_type = "points"
+                # spatial_type = "points"
+                spatial_type = "areas"
             )
         )
     )
@@ -70,8 +71,15 @@ mod_comp_observations_server <- function(
     stopifnot(is.reactive(species_id))
 
     moduleServer(id, function(input, output, session) {
+        # Setup -------------------------------------------------------------
+        ns <- session$ns
+
         # Map -------------------------------------------------------------------
-        obs <- reactive(obs_prep(model_id(), species_id()))
+        obs <- reactive(obs_prep(
+            model_id(),
+            species_id(),
+            output_type = "points"
+        ))
 
         subunits <- reactive({
             deployment_subunits_prep(deployment_id())
@@ -83,24 +91,51 @@ mod_comp_observations_server <- function(
                 div(
                     style = "display:grid; grid-template-columns: 200px 200px; gap: 10px; padding-bottom:0;",
                     selectInput(
-                        "year",
+                        ns("year"),
                         label = "Year",
-                        choices = sort(unique(obs()$year))
+                        choices = sort(unique(obs()$year)),
+                        multiple = TRUE
                     ),
                     selectInput(
-                        "method",
+                        ns("method"),
                         label = "Method",
-                        choices = sort(unique(obs()$method))
+                        choices = sort(unique(obs()$method)),
+                        multiple = TRUE
                     )
                 )
             )
         })
 
-        output$map <- leaflet::renderLeaflet(obs_map(
-            obs(),
-            subunits(),
-            ns = session$ns
-        ))
+        output$map <- leaflet::renderLeaflet({
+            print(input$method)
+            print(input$year)
+            yr_sel <- if (is.null(input$year)) {
+                unique(obs()$year)
+            } else {
+                input$year
+            }
+            met_sel <- if (is.null(input$method)) {
+                unique(obs()$method)
+            } else {
+                input$method
+            }
+            obsf <- obs() |>
+                dplyr::filter(
+                    .data$method %in% met_sel,
+                    .data$year %in% yr_sel
+                )
+            r0 <- prep_materials(
+                "spatial_prediction",
+                model_id = model_id(),
+                species_id = species_id()
+            )
+            rast <- obs_prep_raster(obsf, r0)
+            obs_map_raster(
+                rast,
+                subunits(),
+                ns = session$ns
+            )
+        })
 
         # Process and show map selections ---------------------------------------
         interactions <- map_reactive_vals(input, "map")
@@ -182,13 +217,15 @@ obs_map_raster <- function(
             obs,
             layer = "absence",
             name = "Absence",
-            palette = "#90d5ff"
+            palette = "#90d5ff",
+            add_legend = FALSE
         ) |>
         add_raster(
             obs,
             layer = "presence",
             name = "Presence",
-            palette = "#36404a"
+            palette = "#36404a",
+            add_legend = FALSE
         ) |>
         add_subunits(subunits) |>
         add_control(groups = c("Absence", "Presence"))
@@ -206,7 +243,6 @@ obs_map_raster <- function(
 #' @export
 #' @examplesIf have_data()
 #' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
-#' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO", output_type = "raster")
 
 obs_prep <- function(
     model_id,
@@ -215,39 +251,30 @@ obs_prep <- function(
     ...
 ) {
     output_type <- match.arg(output_type)
+    obs <- prep_materials(
+        "observations",
+        model_id = model_id,
+        species_id = species_id
+    )
     switch(
         output_type,
         "points" = obs_prep_points(
-            model_id = model_id,
-            species_id = species_id,
+            obs,
             ...
         ),
         "raster" = obs_prep_raster(
-            model_id = model_id,
-            species_id = species_id,
+            obs,
             ...
         )
     )
 }
 
-obs_prep_raster <- function(model_id, species_id, scale = 10, level = 0, ...) {
-    obs <- prep_materials(
-        "observations",
-        model_id = model_id,
-        species_id = species_id
-    ) |>
-        dplyr::filter(
-            status >= level
-        ) |>
+obs_prep_raster <- function(obs, rast, scale = 10, ...) {
+    obs <- obs |>
         dplyr::mutate(
             status = ifelse(status > 0, 1, 0)
         )
-    rast <- prep_materials(
-        "spatial_prediction",
-        model_id = model_id,
-        species_id = species_id
-    ) |>
-        terra::resample(scale)
+    rast <- terra::resample(rast, scale)
 
     out0 <- terra::rasterize(
         x = obs[obs$status == 0, ],
@@ -266,12 +293,8 @@ obs_prep_raster <- function(model_id, species_id, scale = 10, level = 0, ...) {
     out
 }
 
-obs_prep_points <- function(model_id, species_id, ...) {
-    obs <- prep_materials(
-        "observations",
-        model_id = model_id,
-        species_id = species_id
-    ) |>
+obs_prep_points <- function(obs, ...) {
+    obs <- obs |>
         dplyr::mutate(
             year = as.numeric(stringr::str_extract(.data$time, "^\\d{4}")),
             layers = dplyr::if_else(.data$status == 0, "Absence", "Presence"),

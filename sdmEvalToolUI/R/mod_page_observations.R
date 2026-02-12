@@ -13,7 +13,7 @@
 #' test_page_observations(user_id = "testuser")
 
 test_page_observations <- function(...) {
-  test_page("mod_page_observations", ...)
+    test_page("mod_page_observations", ...)
 }
 
 #' Observations Page UI
@@ -30,27 +30,27 @@ test_page_observations <- function(...) {
 #' mod_page_observations_ui("id", "title")
 
 mod_page_observations_ui <- function(
-  id,
-  title,
-  review_width = NULL
+    id,
+    title,
+    review_width = NULL
 ) {
-  nav_panel(
-    title = span(title, class = "sdm-species-lvl"),
-    value = id,
-    sdm_layout_sidebar(
-      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-      navset_card_tab(
-        nav_panel(
-          "Charts",
-          mod_comp_obs_chart_ui(NS(id, "comp_obs_chart"))
-        ),
-        nav_panel(
-          "Map",
-          mod_comp_observations_ui(NS(id, "comp_obs"))
+    nav_panel(
+        title = span(title, class = "sdm-species-lvl"),
+        value = id,
+        sdm_layout_sidebar(
+            sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+            navset_card_tab(
+                nav_panel(
+                    "Charts",
+                    mod_comp_obs_chart_ui(NS(id, "comp_obs_chart"))
+                ),
+                nav_panel(
+                    "Map",
+                    mod_comp_observations_ui(NS(id, "comp_obs"))
+                )
+            )
         )
-      )
     )
-  )
 }
 
 #' Observations Page Server
@@ -63,47 +63,47 @@ mod_page_observations_ui <- function(
 #' @export
 
 mod_page_observations_server <- function(id = "observations", ...) {
-  expand_dots(...)
-  stopifnot(is.reactive(deployment_id))
-  stopifnot(is.reactive(model_id))
-  stopifnot(is.reactive(species_id))
-  stopifnot(is.reactive(abandoned)) # reactiveVal
-  stopifnot(is.reactive(unsaved)) # reactiveVal
-  purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
+    expand_dots(...)
+    stopifnot(is.reactive(deployment_id))
+    stopifnot(is.reactive(model_id))
+    stopifnot(is.reactive(species_id))
+    stopifnot(is.reactive(abandoned)) # reactiveVal
+    stopifnot(is.reactive(unsaved)) # reactiveVal
+    purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
-  moduleServer(id, function(input, output, session) {
-    # Placeholder reactiveVal until map created
-    spatial_ids <- reactiveVal(NULL)
+    moduleServer(id, function(input, output, session) {
+        # Placeholder reactiveVal until map created
+        spatial_ids <- reactiveVal(NULL)
 
-    # Prepare the evaluation questions
-    spatial_selection <- mod_utils_evaluations_server(
-      "eval",
-      component_id = "observations",
-      spatial_type = "points",
-      deployment_id = deployment_id,
-      model_id = model_id,
-      species_id = species_id,
-      spatial_ids = spatial_ids,
-      opts = opts,
-      abandoned = abandoned,
-      unsaved = unsaved
-    )
+        # Prepare the evaluation questions
+        spatial_selection <- mod_utils_evaluations_server(
+            "eval",
+            component_id = "observations",
+            spatial_type = "points",
+            deployment_id = deployment_id,
+            model_id = model_id,
+            species_id = species_id,
+            spatial_ids = spatial_ids,
+            opts = opts,
+            abandoned = abandoned,
+            unsaved = unsaved
+        )
 
-    # Create charts
-    mod_comp_obs_chart_server(
-      "comp_obs_chart",
-      model_id = model_id,
-      species_id = species_id
-    )
+        # Create charts
+        mod_comp_obs_chart_server(
+            "comp_obs_chart",
+            model_id = model_id,
+            species_id = species_id
+        )
 
-    # Create the map and return all spatial ids available
-    mod_comp_observations_server(
-      "comp_obs",
-      deployment_id = deployment_id,
-      model_id = model_id,
-      species_id = species_id,
-      spatial_selection = spatial_selection,
-      spatial_ids = spatial_ids #reactiveVal to update in module
-    )
-  })
+        # Create the map and return all spatial ids available
+        mod_comp_observations_server(
+            "comp_obs",
+            deployment_id = deployment_id,
+            model_id = model_id,
+            species_id = species_id,
+            spatial_selection = spatial_selection,
+            spatial_ids = spatial_ids #reactiveVal to update in module
+        )
+    })
 }
