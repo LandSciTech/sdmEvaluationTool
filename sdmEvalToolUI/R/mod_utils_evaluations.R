@@ -87,10 +87,31 @@ mod_utils_evaluations_server <- function(
     # Questions UI ---------------------------------------------------------
 
     output$ui_questions <- renderUI({
-      validate(need(
-        !abandoned(),
-        "This evaluation has been abandoned. To resume, click on the Red 'X' in the upper right corner and modify your response. "
-      ))
+      # If abandoned, don't create the inputs, but tell the user how to un-abandon
+      if (abandoned()) {
+        msg <- tagList(
+          strong("This evaluation has been abandoned"),
+          br(),
+          p(
+            "To resume, click on the Red 'X' in the upper right corner and modify your response."
+          ),
+
+          p(
+            "Note that if you have abandoned the ",
+            strong("whole model"),
+            "you'll need to select the model alone before clicking on the Red 'X'. You can do this by either"
+          ),
+          tags$ul(
+            tags$li(
+              "returning to the overview page click 'Select Model only', or"
+            ),
+            tags$li(
+              "click on the species input and backspace to remove the species."
+            )
+          )
+        )
+        return(msg)
+      }
 
       req(questions_init())
 
