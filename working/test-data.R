@@ -446,19 +446,21 @@ su <- su[, "subunit_id"]
 
 fo <- make_target_path(
     "deployments/{deployment_id}/deployment_subunits.gpkg",
-    data = list(deployment_id = "deployment1")
+    data = list(deployment_id = "deployment2")
 )
 write_file(su, fo)
 
-su_gr <- sf::st_make_grid(su)
+su_gr <- sf::st_make_grid(su) # n=20
 # su_gr <- sf::st_make_grid(su, square = FALSE)
 
 su <- sf::st_sf(subunit_id = as.character(1:length(su_gr)), geometry = su_gr)
 su <- sf::st_transform(su, 4326)
 
+# drop empty cells
+
 fo <- make_target_path(
     "deployments/{deployment_id}/deployment_subunits.gpkg",
-    data = list(deployment_id = "deployment2")
+    data = list(deployment_id = "deployment1")
 )
 write_file(su, fo)
 
