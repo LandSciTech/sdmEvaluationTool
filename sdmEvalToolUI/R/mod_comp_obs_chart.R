@@ -125,7 +125,10 @@ mod_comp_obs_chart_server <- function(
                 ggplot2::ylab("Frequency") # +
             # ggplot2::scale_y_log10()
 
-            plotly::ggplotly(p_counts)
+            plotly::ggplotly(p_counts) |>
+                plotly::config(
+                    displaylogo = FALSE
+                )
         })
 
         output$obs_chart_groups <- plotly::renderPlotly({
@@ -186,9 +189,13 @@ mod_comp_obs_chart_server <- function(
             p_groups <- p_groups +
                 ggplot2::geom_col() +
                 ggplot2::theme_light() +
-                ggplot2::xlab(tools::toTitleCase(input$fill)) +
+                ggplot2::xlab(tools::toTitleCase(input$groups)) +
                 ggplot2::ylab(tools::toTitleCase(input$summary))
-            plotly::ggplotly(p_groups)
+
+            plotly::ggplotly(p_groups) |>
+                plotly::config(
+                    displaylogo = FALSE
+                )
         })
     })
 }
