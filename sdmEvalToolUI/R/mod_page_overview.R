@@ -33,7 +33,7 @@ mod_page_overview_ui <- function(id, title) {
           NS(id, "refresh"),
           label = NULL,
           icon = icon("arrows-rotate"),
-          class = "btn-mini btn-outline-success"
+          class = "btn-mini btn-rnd btn-outline-success"
         )
       ),
 

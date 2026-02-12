@@ -60,7 +60,7 @@ sdm_tool <- function(lang = "english", options = list(port = 8080)) {
       "glossary",
       label = NULL,
       icon = icon("circle-question", ),
-      class = "btn-mini btn-glossary"
+      class = "btn-mini btn-rnd btn-glossary"
     ))
   )
 
@@ -555,7 +555,9 @@ sdm_theme <- function() {
          border: 0;
          padding: 2px 5px 2px 5px;
          margin: 0;
-         border-radius: 50%; 
+       }      
+       .btn-rnd {
+        border-radius: 50%;         
        }"
     ) |>
 
