@@ -20,17 +20,22 @@ test_page_predictors <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_page_predictors_ui()
+#' mod_page_predictors_ui("id", "title")
 
 mod_page_predictors_ui <- function(
-  id = "predictors",
-  title = "Predictors",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    title,
+    title = span(title, class = "sdm-model-lvl"),
+    value = id,
     sdm_layout_sidebar(
-      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+      sidebar = mod_utils_evaluations_ui(
+        NS(id, "eval"),
+        review_width,
+        level = "model"
+      ),
       mod_comp_predictor_raster_ui(
         NS(id, "predictor_raster"),
         height = "60%",
@@ -58,6 +63,8 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
   expand_dots(...)
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -68,7 +75,9 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = reactive("ALL"),
-      opts = opts
+      opts = opts,
+      abandoned = abandoned,
+      unsaved = unsaved
     )
 
     mod_comp_predictor_metadata_server(

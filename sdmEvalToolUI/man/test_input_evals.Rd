@@ -16,6 +16,8 @@ List of dummy input values. Mimics and \code{input} object from the Shiny app.
 Create dummy input values for evaluations
 }
 \examples{
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
 test_input_evals(q)
+\dontshow{\}) # examplesIf}
 }

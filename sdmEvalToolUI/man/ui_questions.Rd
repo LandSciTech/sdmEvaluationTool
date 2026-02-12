@@ -8,20 +8,18 @@ ui_questions(
   questions,
   spatial_ids = NULL,
   spatial_type = "points",
-  which = "ui",
-  session
+  width = NULL
 )
 }
 \arguments{
 \item{questions}{Data frame prepared by \code{prep_questions()}.}
 
-\item{spatial_ids}{Spatial IDs}
+\item{spatial_ids}{Character vector. All possible Spatial ID options for
+spatial inputs choices.}
 
-\item{spatial_type}{Spatial type}
+\item{spatial_type}{Character. Spatial type, either \code{points} or \code{areas}.}
 
-\item{which}{Which}
-
-\item{session}{Shiny session object of module namespacing}
+\item{width}{Numeric. Optional width of Shiny UI input.}
 }
 \value{
 Shiny tagList of UI elements
@@ -32,10 +30,20 @@ data frame. This is programatically created in the server module and
 therefore requires the Shiny session object for namespacing.
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 q <- prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
-ui_questions(q, spatial_type = "points", session = dummy_session)
+ui_questions(q, spatial_type = "points")
 q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
-ui_questions(q, spatial_type = "areas", session = dummy_session)
+ui_questions(q, spatial_type = "areas")
+
+# More than one component
+q <- prep_questions(
+  c("model_fit", "model_summary"),
+  "deployment2",
+  "bam_v5_can71",
+  "BBWO",
+  user_id = "testuser"
+)
+u <- ui_questions(q, spatial_type = "areas")
 \dontshow{\}) # examplesIf}
 }

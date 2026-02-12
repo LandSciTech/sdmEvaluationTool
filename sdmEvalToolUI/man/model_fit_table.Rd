@@ -16,7 +16,7 @@ Reactable table
 Create a Table for Model Fit Data
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 model_fit_prep(model_id = "bam_v5_can71", species_id = "BBWO") |>
   model_fit_table()
 \dontshow{\}) # examplesIf}

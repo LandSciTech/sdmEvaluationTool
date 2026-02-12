@@ -41,9 +41,9 @@ base_map <- function(ns = identity) {
     ) |>
     leaflet::addEasyButton(
       leaflet::easyButton(
-        icon = htmltools::span(
+        icon = span(
           class = "star",
-          htmltools::HTML("&starf;")
+          HTML("&starf;")
         ),
         onClick = leaflet::JS(
           # Based on: https://stackoverflow.com/a/62184472

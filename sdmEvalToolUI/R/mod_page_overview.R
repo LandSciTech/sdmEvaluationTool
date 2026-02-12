@@ -19,10 +19,13 @@ test_page_overview <- function(...) {
 #' @returns Shiny UI
 #'
 #' @export
+#' @examples
+#' mod_page_overview_ui("id", "title")
 
-mod_page_overview_ui <- function(id = "overview", title = "Overview") {
+mod_page_overview_ui <- function(id, title) {
   nav_panel(
-    title,
+    title = title,
+    value = id,
     sdm_card(
       card_header(
         "Current status of review",
@@ -56,21 +59,55 @@ mod_page_overview_server <- function(id = "overview", ...) {
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
   stopifnot(is.reactive(overview_inputs)) # reactiveVal
+  stopifnot(is.reactive(overview_update)) # reactiveVal
+  stopifnot(is.reactive(abandoned)) # reactiveVal
 
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
+    # Setup
+    tbl_updated <- reactiveVal(FALSE) # Tracks when tbl is updated so we can unnest the first column
+
     # Table for display
     tbl <- reactive({
       evals_details(opts$user_id(), opts$user_role())
     }) |>
-      bindEvent(opts$user_id(), opts$user_role(), input$refresh)
+      bindEvent(
+        opts$user_id(),
+        opts$user_role(),
+        input$refresh,
+        overview_update()
+      )
 
     # Table for input keys
     tbl_top <- reactive({
       tbl() |>
         dplyr::select("deployment_id", "model_id", "species_id") |>
         dplyr::distinct()
+    })
+
+    # Mark abandoned
+    observe({
+      req(tbl(), deployment_id(), model_id())
+      if (species_id() == "") {
+        s <- "ALL"
+      } else {
+        s <- species_id()
+      }
+      a <- dplyr::filter(
+        tbl(),
+        .data$deployment_id == deployment_id(),
+        .data$model_id == model_id(),
+        .data$species_id == s
+      ) |>
+        dplyr::select(
+          "abandoned",
+          "model_abandoned",
+          "deployment_model_name",
+          "species_id"
+        ) |>
+        dplyr::distinct()
+      abandoned(a$abandoned || a$model_abandoned)
     })
 
     output$tbl_overview <- reactable::renderReactable({
@@ -84,9 +121,13 @@ mod_page_overview_server <- function(id = "overview", ...) {
           "No deployments for this user in this role"
         )
       )
+      tbl_updated(TRUE)
+
+      # Render table
       evals_table(tbl(), opts$user_role())
     })
 
+    # Grab row inputs as Dep/model/species inputs
     observe({
       # Update reactiveVal created by sdm_tool()
       i <- tbl_top() |>
@@ -96,6 +137,22 @@ mod_page_overview_server <- function(id = "overview", ...) {
       overview_inputs(i)
     }) |>
       bindEvent(input$button_clicked, ignoreInit = TRUE)
+
+    # Expand first tier of nested groups when table updated/created
+    observe({
+      req(tbl_updated())
+
+      shinyjs::delay(200, {
+        for (i in seq_len(dplyr::n_distinct(tbl()$deployment_id))) {
+          shinyjs::runjs(
+            "var btn = document.querySelector(\".sdm-header .rt-expander-button[aria-expanded='false']\");
+          btn.click();"
+          )
+        }
+      })
+      tbl_updated(FALSE)
+    }) |>
+      bindEvent(tbl_updated(), ignoreInit = TRUE)
   })
 }
 
@@ -112,10 +169,10 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' tbl <- evals_details("holden", "modeler")
-#' evals_table(tbl, "modeler")
-#' tbl <- evals_details("draper", "evaluator")
-#' evals_table(tbl, "evaluator")
+#' #tbl <- evals_details("holden", "modeler")
+#' #evals_table(tbl, "modeler")
+#' #tbl <- evals_details("draper", "evaluator")
+#' #evals_table(tbl, "evaluator")
 #' tbl <- evals_details("testuser", "evaluator")
 #' evals_table(tbl, "evaluator")
 
@@ -130,19 +187,23 @@ evals_table <- function(tbl, user_role) {
   # Grouped tables https://glin.github.io/reactable/articles/examples.html?q=collaps#grouping-and-aggregation
   # Nested tables https://glin.github.io/reactable/articles/examples.html?q=collaps#nested-tables
 
-  pal <- c("white", grDevices::colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
-  pal_text <- c(rep("black", 50), rep("white", 51))
+  #pal <- c("white", grDevices::colorRampPalette(c("#d9fbfb", "#081a1c"))(100))
+  # scales::show_col(pal, ncol = 10)
+  pal <- c("white", grDevices::colorRampPalette(c("#88A187", "#031F02"))(100))
+  pal_text <- c(rep("black", 50), rep("white", 101 - 50))
 
   tbl_components <- tbl
 
   tbl_top <- tbl |>
     dplyr::summarize(
-      progress = sum(n_q_complete) / sum(n_q),
+      progress = sum(.data$n_q_complete) / sum(.data$n_q),
       .by = c(
         "deployment_model_name",
         "evaluation_create_user_name",
         "species_display",
-        "species_id" # Key which determines button presence
+        "species_id", # Key which determines button presence
+        "abandoned",
+        "model_abandoned"
       )
     ) |>
     dplyr::mutate(button = NA) |>
@@ -180,7 +241,7 @@ evals_table <- function(tbl, user_role) {
         reactable::reactable(
           comp,
           outlined = TRUE,
-          width = 500,
+          width = 558,
           columns = list(
             progress_perc = reactable::colDef(show = FALSE),
             Progress = reactable::colDef(
@@ -199,14 +260,50 @@ evals_table <- function(tbl, user_role) {
     },
     columns = list(
       species_id = reactable::colDef(show = FALSE),
+      model_abandoned = reactable::colDef(show = FALSE),
       # Button column
       button = reactable::colDef(
+        align = "center",
         name = "",
         sortable = FALSE,
+        maxWidth = 175,
         cell = \(v, i) {
           if (!is.na(tbl_top$species_id[i]) & tbl_top$species_id[i] != "ALL") {
-            htmltools::tags$button("Evaluate", class = "btn btn-sm btn-info")
+            tags$button(
+              "Select Species",
+              class = "btn btn-sm btn-species",
+              width = 175
+            )
+          } else {
+            tags$button(
+              "Select Model only",
+              class = "btn btn-sm btn-model",
+              width = 175
+            )
           }
+        }
+      ),
+      abandoned = reactable::colDef(
+        name = "",
+        align = "left",
+        sortable = FALSE,
+        cell = \(v, i) {
+          if (tbl_top$model_abandoned[i]) {
+            "Model Abandoned"
+          } else if (tbl_top$abandoned[i]) {
+            "Species Abandoned"
+          } else if (tbl_top$progress[i] == 1) {
+            "All Answered"
+          }
+        },
+        style = \(v, i) {
+          s <- "black"
+          if (tbl_top$abandoned[i]) {
+            s <- "dimgrey"
+          } else if (tbl_top$progress[i] == 1) {
+            s <- pal[20]
+          }
+          list(color = s, `font-style` = "italic")
         }
       ),
       deployment_model_name = reactable::colDef(
@@ -214,6 +311,7 @@ evals_table <- function(tbl, user_role) {
         html = TRUE,
         minWidth = 200,
         maxWidth = 250,
+        class = "sdm-header",
         grouped = reactable::JS(
           "function(cellInfo, state) {
         let [d, m] = cellInfo.value.split('---');
@@ -235,7 +333,27 @@ evals_table <- function(tbl, user_role) {
         name = "Species",
         html = TRUE,
         minWidth = 200,
-        maxWidth = 400
+        maxWidth = 400,
+        cell = \(v, i) {
+          if (!stringr::str_detect(v, "Model")) {
+            s <- span(
+              stringr::str_extract(v, "^[^\\(]+\\("),
+              span(
+                stringr::str_extract(v, "(?<=\\().+(?=\\))"),
+                style = "font-style:italic;"
+              ),
+              ")"
+            )
+          } else {
+            s <- v
+          }
+          if (tbl_top$abandoned[i]) {
+            s <- span(s, style = "color:darkgrey;")
+          } else if (tbl_top$progress[i] == 1) {
+            s <- span(s, style = paste0("color:", pal[20], ";"))
+          }
+          s
+        }
       ),
       progress = reactable::colDef(
         name = "Progress",

@@ -12,7 +12,10 @@ test_page <- function(
     title = "SDM Tool Testing",
     theme = sdm_theme(),
     header = shinyjs::useShinyjs(),
-    get(paste0(module, "_ui"))()
+    get(paste0(module, "_ui"))(
+      title = stringr::str_remove_all(module, "mod_page_") |> fmt_pretty(),
+      id = stringr::str_remove_all(module, "mod_page_"),
+    )
   )
 
   if (module == "mod_page_overview") {
@@ -25,7 +28,9 @@ test_page <- function(
           "user_id" = reactive(user_id),
           "user_role" = reactive(user_role)
         ),
-        overview_inputs = reactiveVal(NULL)
+        overview_inputs = reactiveVal(NULL),
+        overview_update = reactiveVal(NULL),
+        abandoned = reactiveVal(NULL)
       )
     }
   } else {
@@ -34,7 +39,8 @@ test_page <- function(
         deployment_id = reactive(deployment_id),
         model_id = reactive(model_id),
         species_id = reactive(species_id),
-        opts = purrr::map(opts, \(o) reactive(force(o)))
+        opts = purrr::map(opts, \(o) reactive(force(o))),
+        abandoned = reactiveVal(FALSE)
       )
     }
   }

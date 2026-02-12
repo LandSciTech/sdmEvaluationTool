@@ -42,7 +42,7 @@ fmt_tbl <- function(tbl, tbl_models, tbl_species) {
 #'
 #' @param time POSIXct time
 #'
-#' @returns
+#' @returns Character. Nicely formated date
 #'
 #' @export
 #' @examples
@@ -52,4 +52,9 @@ fmt_time <- function(time) {
   time |>
     format("%a, %b %d %Y<br>%I:%M %p") |>
     stringr::str_remove_all("(?<=(\\s|<br>))0")
+}
+
+
+fmt_pretty <- function(x) {
+  x |> stringr::str_replace_all("_|-", " ") |> stringr::str_to_title()
 }

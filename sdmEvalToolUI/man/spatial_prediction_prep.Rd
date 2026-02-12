@@ -18,7 +18,7 @@ terra Raster
 Prepare Spatial Prediction Data
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 spatial_prediction_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 \dontshow{\}) # examplesIf}
 }

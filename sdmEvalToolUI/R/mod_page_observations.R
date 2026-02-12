@@ -27,15 +27,16 @@ test_page_observations <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_page_observations_ui()
+#' mod_page_observations_ui("id", "title")
 
 mod_page_observations_ui <- function(
-  id = "observations",
-  title = "Observations",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    title,
+    title = span(title, class = "sdm-species-lvl"),
+    value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
       navset_card_tab(
@@ -66,6 +67,8 @@ mod_page_observations_server <- function(id = "observations", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -81,7 +84,9 @@ mod_page_observations_server <- function(id = "observations", ...) {
       model_id = model_id,
       species_id = species_id,
       spatial_ids = spatial_ids,
-      opts = opts
+      opts = opts,
+      abandoned = abandoned,
+      unsaved = unsaved
     )
 
     # Create charts

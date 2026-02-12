@@ -16,7 +16,7 @@ Output
 Display Model Metadata
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 skip_eg()
 # model_metadata_prep("bam_v5_can71") |> model_metadata_XXXX()
 \dontshow{\}) # examplesIf}

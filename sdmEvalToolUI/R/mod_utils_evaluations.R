@@ -1,4 +1,8 @@
-mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
+mod_utils_evaluations_ui <- function(
+  id = "evaluations",
+  review_width = NULL,
+  level = "species"
+) {
   review_width <- review_width %||% "35%"
   sidebar(
     width = review_width,
@@ -6,18 +10,17 @@ mod_utils_evaluations_ui <- function(id = "evaluations", review_width = NULL) {
     layout_column_wrap(
       width = NULL,
       fill = FALSE,
-      style = css(grid_template_columns = "3fr 1fr"),
-      div(
-        h3("Evaluations"),
-        span(
-          span("", class = "answer-changed"),
-          "Indicates a modified response (not yet saved)"
-        )
-      ),
+      style = css(grid_template_columns = "2fr 1fr"),
+      h3("Evaluations"),
       uiOutput(NS(id, "modified"), class = "corner")
     ),
+    div(
+      if (level == "model") {
+        strong("Note: Responses apply to Model across all Species", br())
+      },
+      style = "margin-top: -15px;"
+    ),
     uiOutput(NS(id, "ui_questions")),
-    actionButton(inputId = NS(id, "save"), label = "Save Responses")
   )
 }
 
@@ -30,12 +33,17 @@ mod_utils_evaluations_server <- function(
   model_id,
   species_id,
   spatial_ids = reactive(NULL),
-  opts
+  opts,
+  abandoned,
+  unsaved
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
   stopifnot(is.reactive(spatial_ids))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
+
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -47,9 +55,17 @@ mod_utils_evaluations_server <- function(
 
     # Evaluations ----------------------------------------------------
     questions_init <- reactive({
-      req(opts$user_id(), deployment_id(), model_id(), species_id())
+      req(
+        opts$user_id(),
+        deployment_id(),
+        model_id(),
+        species_id(),
+        !abandoned()
+      )
 
-      saved() # Also trigger refresh if values are saved
+      # Also trigger refresh if values are saved or reset
+      saved()
+      input$reset
 
       # Get Questions and any existing Evaluations
       q <- prep_questions(
@@ -71,11 +87,22 @@ mod_utils_evaluations_server <- function(
     # Questions UI ---------------------------------------------------------
 
     output$ui_questions <- renderUI({
+      validate(need(
+        !abandoned(),
+        "This evaluation has been abandoned. To resume, click on the Red 'X' in the upper right corner and modify your response. "
+      ))
+
       req(questions_init())
 
-      ui_questions(
-        questions_init(),
-        spatial_type = spatial_type
+      tagList(
+        ui_questions(
+          questions_init(),
+          spatial_type = spatial_type
+        ),
+        layout_column_wrap(
+          actionButton(inputId = ns("save"), label = "Save Responses"),
+          actionButton(inputId = ns("reset"), label = "Reset Responses")
+        )
       )
     })
 
@@ -110,6 +137,14 @@ mod_utils_evaluations_server <- function(
 
     observe({
       req(answers_changed())
+      # Mark tab name as unsaved
+      u <- unsaved()
+      # Get parent session     # TODO: Is this fragile?
+      id <- stringr::str_extract(session$ns(""), "^[^-]+")
+      u[id] <- any(unlist(answers_changed()))
+      unsaved(u)
+
+      # Mark answers as changed and unsaved
       purrr::imap(answers_changed(), \(r, i) {
         shinyjs::toggleClass(
           paste0(i, "-label"),
@@ -117,7 +152,8 @@ mod_utils_evaluations_server <- function(
           condition = r
         )
       })
-    })
+    }) |>
+      bindEvent(answers_changed(), ignoreInit = TRUE)
 
     # Date last modified ---------------------------
     output$modified <- renderUI({
@@ -134,14 +170,14 @@ mod_utils_evaluations_server <- function(
       req(show_clicked())
       spatial_ids <- questions_init() |>
         dplyr::filter(
-          question_id == stringr::str_remove(show_clicked(), "-show")
+          .data$question_id == stringr::str_remove(show_clicked(), "-show")
         ) |>
         dplyr::mutate(
-          id_spatial = purrr::map2(question_id, values, \(i, v) {
+          id_spatial = purrr::map2(.data$question_id, .data$values, \(i, v) {
             paste0(i, "-", value_to_input(unlist(v)))
           })
         ) |>
-        dplyr::pull(id_spatial) |>
+        dplyr::pull(.data$id_spatial) |>
         unlist() |>
         sapply(\(x) input[[x]])
 
@@ -154,7 +190,7 @@ mod_utils_evaluations_server <- function(
 
     show_btn_ids <- reactive({
       dplyr::filter(questions_init(), type == "spatial") |>
-        dplyr::pull(question_id) |>
+        dplyr::pull(.data$question_id) |>
         paste0("-show")
     })
 
@@ -189,7 +225,7 @@ mod_utils_evaluations_server <- function(
     }) |>
       bindEvent(input$save)
 
-    # Save button -------------------------------------------
+    # Save/reset buttons -------------------------------------------
 
     observe({
       req(answers_changed())
@@ -202,14 +238,25 @@ mod_utils_evaluations_server <- function(
           label = "No Changes to Save",
           disabled = TRUE
         )
+        updateActionButton(
+          inputId = "reset",
+          label = "No Changes to Reset",
+          disabled = TRUE
+        )
       } else {
         updateActionButton(
           inputId = "save",
           label = "Save Responses",
           disabled = FALSE
         )
+        updateActionButton(
+          inputId = "reset",
+          label = "Reset Responses",
+          disabled = FALSE
+        )
       }
       shinyjs::toggleClass("save", class = "btn-success", condition = chg)
+      shinyjs::toggleClass("reset", class = "btn-warning", condition = chg)
     })
 
     # Return --------------------------------------------------------

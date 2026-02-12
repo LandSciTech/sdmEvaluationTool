@@ -20,15 +20,16 @@ test_page_predictions <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_page_predictions_ui()
+#' mod_page_predictions_ui("id", "title")
 
 mod_page_predictions_ui <- function(
-  id = "predictions",
-  title = "Predictions",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    title,
+    title = span(title, class = "sdm-species-lvl"),
+    value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
       mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
@@ -50,6 +51,8 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -65,7 +68,9 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
       species_id = species_id,
       spatial_ids = spatial_ids,
       spatial_type = "areas",
-      opts = opts
+      opts = opts,
+      abandoned = abandoned,
+      unsaved = unsaved
     )
 
     mod_comp_spatial_prediction_server(

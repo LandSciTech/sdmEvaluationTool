@@ -6,6 +6,11 @@
 \usage{
 sdm_tool(lang = "english", options = list(port = 8080))
 }
+\arguments{
+\item{lang}{Character. Language of app; either \code{english} or \code{french}.}
+
+\item{options}{List. Shiny app options.}
+}
 \value{
 A Shiny app object
 }
@@ -13,7 +18,7 @@ A Shiny app object
 Launch the SDM Evaluation Tool Shiny Application
 }
 \examples{
-\dontshow{if (have_data()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 sdm_tool()
 \dontshow{\}) # examplesIf}
 }

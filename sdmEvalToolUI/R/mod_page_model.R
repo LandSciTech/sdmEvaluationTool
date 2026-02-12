@@ -22,14 +22,15 @@ test_page_model <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_page_model_ui()
+#' mod_page_model_ui("id", "title")
 mod_page_model_ui <- function(
-  id = "model",
-  title = "Model",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    title,
+    title = span(title, class = "sdm-species-lvl"),
+    value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
 
@@ -64,6 +65,9 @@ mod_page_model_server <- function(id = "model", ...) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
+
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -74,7 +78,9 @@ mod_page_model_server <- function(id = "model", ...) {
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id,
-      opts = opts
+      opts = opts,
+      abandoned = abandoned,
+      unsaved = unsaved
     )
 
     mod_comp_model_summary_server("model_summary", model_id, species_id)

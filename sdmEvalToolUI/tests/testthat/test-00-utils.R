@@ -13,7 +13,7 @@ test_that("prep_materials()", {
 
       for (c in comp) {
         #TODO: Update which we have/don't have as it changes
-        if (c %in% c("model_metadata", "predictor_raster")) {
+        if (c %in% "model_metadata") {
           expect_error(
             prep_materials(c, species_id = "BBWO", model_id = "bam_v5_can71"),
             "doesn't exist. Have you supplied the correct base path?"

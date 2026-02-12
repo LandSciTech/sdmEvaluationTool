@@ -2,19 +2,23 @@
 
 simple_text_input <- function(...) {
   expand_dots(...)
-  textInput(input_id_ns, label, value = response)
+  textInput(input_id_ns, label, value = response, width = width)
 }
 
-# yes_no_input <- function(...) {
-#   expand_dots(...)
-#   radioButtons(
-#     inputId = input_id_ns,
-#     label = label,
-#     choices = c("Yes" = TRUE, "No" = FALSE),
-#     selected = response,
-#     inline = TRUE
-#   )
-# }
+yes_no_input <- function(...) {
+  expand_dots(...)
+
+  r <- response %||% character(0)
+
+  radioButtons(
+    inputId = input_id_ns,
+    label = label,
+    choices = c("Yes", "No"),
+    selected = r,
+    inline = TRUE,
+    width = width
+  )
+}
 
 # slider_input <- function(...) {
 #   expand_dots(...)
@@ -90,10 +94,10 @@ spatial_input <- function(
 #' therefore requires the Shiny session object for namespacing.
 #'
 #' @param questions Data frame prepared by `prep_questions()`.
-#' @param session Shiny session object of module namespacing
-#' @param spatial_ids Spatial IDs
-#' @param spatial_type Spatial type
-#' @param which Which
+#' @param spatial_ids Character vector. All possible Spatial ID options for
+#'   spatial inputs choices.
+#' @param spatial_type Character. Spatial type, either `points` or `areas`.
+#' @param width Numeric. Optional width of Shiny UI input.
 #'
 #' @returns Shiny tagList of UI elements
 #'
@@ -105,15 +109,20 @@ spatial_input <- function(
 #' ui_questions(q, spatial_type = "areas")
 #'
 #' # More than one component
-#' q <- prep_questions(c("model_fit", "model_summary"), "deployment2", "bam_v5_can71", "BBWO", user_id = "testuser")
+#' q <- prep_questions(
+#'   c("model_fit", "model_summary"),
+#'   "deployment2",
+#'   "bam_v5_can71",
+#'   "BBWO",
+#'   user_id = "testuser"
+#' )
 #' u <- ui_questions(q, spatial_type = "areas")
-#' htmltools::browsable(u)
 
 ui_questions <- function(
   questions,
   spatial_ids = NULL,
   spatial_type = "points",
-  which = "ui"
+  width = NULL
 ) {
   ns <- getDefaultReactiveDomain()$ns %||% \(id) paste0("testing-", id)
 
@@ -137,12 +146,22 @@ ui_questions <- function(
           spatial_ids = spatial_ids,
           spatial_type = spatial_type,
           response = response,
-          which = which
+          width = width
         )
 
         # Follow up questions
         if (part > 0) {
-          i <- div(class = "sub-question", i)
+          parent_id <- stringr::str_replace(question_id, "\\d+$", "0")
+          i <- conditionalPanel(
+            #condition = paste0("input.", parent_id, " == 'Extremely'"),
+            condition = glue::glue(
+              "['",
+              glue::glue_collapse(affirmative(), sep = "', '"),
+              "'].includes(input.{parent_id})"
+            ),
+            div(class = "sub-question", i),
+            ns = ns
+          )
         }
 
         i

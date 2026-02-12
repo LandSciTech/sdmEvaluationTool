@@ -179,7 +179,7 @@ obs_prep <- function(model_id, species_id) {
 
   # HTMLify the labels
 
-  obs$popup <- purrr::map(obs$popup, htmltools::HTML)
+  obs$popup <- purrr::map(obs$popup, HTML)
 
   obs
 }

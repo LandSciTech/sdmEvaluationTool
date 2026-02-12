@@ -20,16 +20,21 @@ test_page_model_metadata <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_page_model_metadata_ui()
+#' mod_page_model_metadata_ui("id", "title")
 mod_page_model_metadata_ui <- function(
-  id = "model_metadata",
-  title = "Model Metadata",
+  id,
+  title,
   review_width = NULL
 ) {
   nav_panel(
-    title,
+    title = span(title, class = "sdm-model-lvl"),
+    value = id,
     sdm_layout_sidebar(
-      sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
+      sidebar = mod_utils_evaluations_ui(
+        NS(id, "eval"),
+        review_width,
+        level = "model"
+      ),
       mod_comp_model_metadata_ui(NS(id, "model_metadata"))
     )
   )
@@ -48,6 +53,8 @@ mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
   expand_dots(...)
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
+  stopifnot(is.reactive(abandoned)) # reactiveVal
+  stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
@@ -58,7 +65,9 @@ mod_page_model_metadata_server <- function(id = "model_metadata", ...) {
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = reactive("ALL"),
-      opts = opts
+      opts = opts,
+      abandoned = abandoned,
+      unsaved = unsaved
     )
 
     mod_comp_model_metadata_server("model_metadata", model_id)
