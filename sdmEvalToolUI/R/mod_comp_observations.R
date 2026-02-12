@@ -128,6 +128,7 @@ mod_comp_observations_server <- function(
 #' @param subunits Subunits
 #' @param ns Namespace
 #' @param output_type Character. Points or raster.
+#' @param ... Other parameters.
 #'
 #' @returns A leaflet map object
 #'
@@ -198,6 +199,7 @@ obs_map_raster <- function(
 #' @param model_id Character. Model ID
 #' @param species_id Character. Species ID
 #' @param output_type Character. Points or raster.
+#' @param ... Other parameters.
 #'
 #' @returns Spatial data frame
 #'

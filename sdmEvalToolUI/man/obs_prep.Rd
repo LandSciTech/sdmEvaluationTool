@@ -12,6 +12,8 @@ obs_prep(model_id, species_id, output_type = c("points", "raster"), ...)
 \item{species_id}{Character. Species ID}
 
 \item{output_type}{Character. Points or raster.}
+
+\item{...}{Other parameters.}
 }
 \value{
 Spatial data frame

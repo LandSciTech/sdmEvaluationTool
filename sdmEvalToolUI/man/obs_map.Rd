@@ -20,6 +20,8 @@ obs_map(
 \item{ns}{Namespace}
 
 \item{output_type}{Character. Points or raster.}
+
+\item{...}{Other parameters.}
 }
 \value{
 A leaflet map object
