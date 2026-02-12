@@ -107,8 +107,6 @@ mod_comp_observations_server <- function(
         })
 
         output$map <- leaflet::renderLeaflet({
-            print(input$method)
-            print(input$year)
             yr_sel <- if (is.null(input$year)) {
                 unique(obs()$year)
             } else {
