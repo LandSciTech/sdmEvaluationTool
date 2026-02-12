@@ -58,7 +58,7 @@ mod_comp_model_metadata_server <- function(
 
 model_metadata_table <- function(model_metadata) {
     colnames(model_metadata) <- tools::toTitleCase(colnames(model_metadata))
-    reactable::reactable(model_metadata)
+    reactable::reactable(model_metadata, searchable = TRUE)
 }
 
 #' Prepare Model Metadata Data

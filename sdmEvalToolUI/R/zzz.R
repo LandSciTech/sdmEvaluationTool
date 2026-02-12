@@ -12,8 +12,16 @@ utils::globalVariables(c(
   "show_spatial_ids", "status", "type", "values"
 ))
 
-
-.onLoad <- function(libname, pkgname) {
-  # CLEANUP: Change this, just for development right now
-  sdmevaltool_options(base = "../misc/base")
+.onAttach <- function(libname, pkgname) {
+    ver <- read.dcf(
+        file = system.file("DESCRIPTION", package = pkgname),
+        fields = c("Version")
+    )
+    packageStartupMessage(paste(pkgname, ver[1]))
+    invisible(NULL)
 }
+
+# .onLoad <- function(libname, pkgname) {
+#     # CLEANUP: Change this, just for development right now
+#     sdmevaltool_options(base = "../misc/base")
+# }

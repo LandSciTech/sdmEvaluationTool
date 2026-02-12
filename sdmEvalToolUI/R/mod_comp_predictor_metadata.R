@@ -9,7 +9,7 @@
 #' test_comp_predictor_metadata()
 
 test_comp_predictor_metadata <- function(...) {
-  test_comp("mod_comp_predictor_metadata", use = "model_id", ...)
+    test_comp("mod_comp_predictor_metadata", use = "model_id", ...)
 }
 
 #' Predictor Metadata Component UI
@@ -25,31 +25,31 @@ test_comp_predictor_metadata <- function(...) {
 #' mod_comp_predictor_metadata_ui()
 
 mod_comp_predictor_metadata_ui <- function(
-  id = "comp_predictor_metadata",
-  height = "40%",
-  header = NULL
+    id = "comp_predictor_metadata",
+    height = "40%",
+    header = NULL
 ) {
-  sdm_card(
-    min_height = height,
-    header,
-    card_body(
-      reactable::reactableOutput(NS(id, "predictor_metadata"))
+    sdm_card(
+        min_height = height,
+        header,
+        card_body(
+            reactable::reactableOutput(NS(id, "predictor_metadata"))
+        )
     )
-  )
 }
 
 
 mod_comp_predictor_metadata_server <- function(
-  id = "comp_predictor_metadata",
-  model_id
+    id = "comp_predictor_metadata",
+    model_id
 ) {
-  moduleServer(id, function(input, output, session) {
-    predictor_metadata <- reactive(predictor_metadata_prep(model_id()))
-    output$predictor_metadata <- reactable::renderReactable({
-      predictor_metadata() |>
-        predictor_metadata_table()
+    moduleServer(id, function(input, output, session) {
+        predictor_metadata <- reactive(predictor_metadata_prep(model_id()))
+        output$predictor_metadata <- reactable::renderReactable({
+            predictor_metadata() |>
+                predictor_metadata_table()
+        })
     })
-  })
 }
 
 
@@ -65,57 +65,58 @@ mod_comp_predictor_metadata_server <- function(
 #'   predictor_metadata_table()
 
 predictor_metadata_table <- function(predictor_metadata) {
-  validate(need(
-    nrow(predictor_metadata) > 0,
-    "No predictor metadata to display"
-  ))
-  reactable::reactable(
-    predictor_metadata,
-    defaultPageSize = nrow(predictor_metadata),
-    pagination = FALSE,
-    highlight = TRUE,
-    details = \(i) {
-      tagList(
-        div(
-          style = "padding-left: 2em;",
-          p(
-            style = "margin: 0.5em;",
-            strong("Provider: "),
-            predictor_metadata$provider[i]
-          ),
-          p(
-            style = "margin: 0.5em;",
-            strong("Source: "),
-            a(
-              href = predictor_metadata$source[i],
-              predictor_metadata$source[i]
+    validate(need(
+        nrow(predictor_metadata) > 0,
+        "No predictor metadata to display"
+    ))
+    reactable::reactable(
+        predictor_metadata,
+        defaultPageSize = nrow(predictor_metadata),
+        pagination = FALSE,
+        highlight = TRUE,
+        searchable = TRUE,
+        details = \(i) {
+            tagList(
+                div(
+                    style = "padding-left: 2em;",
+                    p(
+                        style = "margin: 0.5em;",
+                        strong("Provider: "),
+                        predictor_metadata$provider[i]
+                    ),
+                    p(
+                        style = "margin: 0.5em;",
+                        strong("Source: "),
+                        a(
+                            href = predictor_metadata$source[i],
+                            predictor_metadata$source[i]
+                        )
+                    ),
+                    p(
+                        style = "margin: 0.5em;",
+                        strong("Citation: "),
+                        predictor_metadata$citation[i]
+                    )
+                )
             )
-          ),
-          p(
-            style = "margin: 0.5em;",
-            strong("Citation: "),
-            predictor_metadata$citation[i]
-          )
+        },
+        defaultColDef = reactable::colDef(minWidth = 175),
+        columns = list(
+            # From reactable docs
+            predictor = reactable::colDef(
+                sticky = "left",
+                # Add a right border style to visually distinguish the sticky column
+                style = list(borderRight = "1px solid #eee"),
+                headerStyle = list(borderRight = "1px solid #eee")
+            ),
+            covariate_extraction = reactable::colDef(minWidth = 200),
+            prediction_resolution = reactable::colDef(minWidth = 200),
+            temporal_matching = reactable::colDef(minWidth = 200),
+            provider = reactable::colDef(show = FALSE),
+            citation = reactable::colDef(show = FALSE),
+            source = reactable::colDef(show = FALSE)
         )
-      )
-    },
-    defaultColDef = reactable::colDef(minWidth = 175),
-    columns = list(
-      # From reactable docs
-      predictor = reactable::colDef(
-        sticky = "left",
-        # Add a right border style to visually distinguish the sticky column
-        style = list(borderRight = "1px solid #eee"),
-        headerStyle = list(borderRight = "1px solid #eee")
-      ),
-      covariate_extraction = reactable::colDef(minWidth = 200),
-      prediction_resolution = reactable::colDef(minWidth = 200),
-      temporal_matching = reactable::colDef(minWidth = 200),
-      provider = reactable::colDef(show = FALSE),
-      citation = reactable::colDef(show = FALSE),
-      source = reactable::colDef(show = FALSE)
     )
-  )
 }
 
 #' Prepare Predictor Metadata Data
@@ -129,5 +130,5 @@ predictor_metadata_table <- function(predictor_metadata) {
 #' predictor_metadata_prep("bam_v5_can71")
 
 predictor_metadata_prep <- function(model_id) {
-  prep_materials("predictor_metadata", model_id = model_id)
+    prep_materials("predictor_metadata", model_id = model_id)
 }
