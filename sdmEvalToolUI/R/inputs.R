@@ -174,11 +174,6 @@ ui_questions <- function(
     })
   }
   tagList(
-    span(
-      span("", class = "answer-changed"),
-      "Modified (unsaved) response",
-      style = "font-size: 90%"
-    ),
     ui,
     shinyjs::hidden(
       radioButtons(

@@ -116,6 +116,11 @@ mod_utils_evaluations_server <- function(
       req(questions_init())
 
       tagList(
+        span(
+          span("", class = "answer-changed"),
+          "Modified (unsaved) response",
+          style = "font-size: 90%"
+        ),
         ui_questions(
           questions_init(),
           spatial_type = spatial_type
