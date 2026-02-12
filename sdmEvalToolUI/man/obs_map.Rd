@@ -4,7 +4,13 @@
 \alias{obs_map}
 \title{Create a Leaflet Map of Observation Data}
 \usage{
-obs_map(obs, subunits = NULL, ns = identity)
+obs_map(
+  obs,
+  subunits = NULL,
+  ns = identity,
+  output_type = c("points", "raster"),
+  ...
+)
 }
 \arguments{
 \item{obs}{sf data frame. Observations}
@@ -12,6 +18,8 @@ obs_map(obs, subunits = NULL, ns = identity)
 \item{subunits}{Subunits}
 
 \item{ns}{Namespace}
+
+\item{output_type}{Character. Points or raster.}
 }
 \value{
 A leaflet map object

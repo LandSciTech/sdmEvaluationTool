@@ -4,12 +4,14 @@
 \alias{obs_prep}
 \title{Prepare Observation Data}
 \usage{
-obs_prep(model_id, species_id)
+obs_prep(model_id, species_id, output_type = c("points", "raster"), ...)
 }
 \arguments{
 \item{model_id}{Character. Model ID}
 
 \item{species_id}{Character. Species ID}
+
+\item{output_type}{Character. Points or raster.}
 }
 \value{
 Spatial data frame
@@ -20,5 +22,6 @@ Prepare Observation Data
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+obs_prep(model_id = "bam_v5_can71", species_id = "BBWO", output_type = "raster")
 \dontshow{\}) # examplesIf}
 }
