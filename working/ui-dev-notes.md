@@ -27,6 +27,11 @@
 - Use `brand.yml` for theming to allow easy changes? - https://posit-dev.github.io/brand-yml/
 
 
+## Spatial Selections
+- If selecting by area, check that spatial_type is "area" or "raster" (not "points")
+    - Required in the 'page' for mod_utils_evalations as well potentially by the component server function (depending on whether it will be switchable)
+- The component needs an `observe(spatial_ids(subunits()$id))` for selection by subunits, or which ever object contains the ids being used (e.g., `observe(spatial_ids(obs()$id))` for points from observations). 
+
 ## Devtools
 
 - To add a test user to your database:
