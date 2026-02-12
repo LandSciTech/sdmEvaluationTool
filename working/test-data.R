@@ -435,7 +435,17 @@ write_file(fromJSON(deployments$deployment_settings[2]), fo)
 # ./deployments/<deployment_id>/deployment_subunits.gpkg
 r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
 r <- terra::project(r, "epsg:4326")
-bbox <- sf::st_as_sfc(sf::st_bbox(r))
+
+fi <- file.path(path, "data", "observations_can71.csv")
+xy <- read_file(fi)
+xy <- xy[, c("lat", "lon", "date", "method")]
+xy <- sf::st_as_sf(xy, coords = c("lon", "lat"))
+# lon/lat is 4326
+sf::st_crs(xy) <- 4326
+
+bbox1 <- sf::st_as_sfc(sf::st_bbox(r))
+bbox2 <- sf::st_as_sfc(sf::st_bbox(xy))
+bbox <- sf::st_as_sfc(sf::st_bbox(bbox1, bbox2))
 
 su <- sf::st_read(file.path(path, "subunits", "ecoprovinces.shp"))
 su <- sf::st_simplify(su, TRUE, 10)
@@ -444,23 +454,42 @@ su <- sf::st_intersection(su, bbox)
 su$subunit_id <- su$ECOPROVINC
 su <- su[, "subunit_id"]
 
-fo <- make_target_path(
-    "deployments/{deployment_id}/deployment_subunits.gpkg",
-    data = list(deployment_id = "deployment2")
-)
-write_file(su, fo)
-
-su_gr <- sf::st_make_grid(su) # n=20
+su_gr <- sf::st_make_grid(su, n = 20)
 # su_gr <- sf::st_make_grid(su, square = FALSE)
 
-su <- sf::st_sf(subunit_id = as.character(1:length(su_gr)), geometry = su_gr)
-su <- sf::st_transform(su, 4326)
+su2 <- sf::st_sf(subunit_id = as.character(1:length(su_gr)), geometry = su_gr)
+su2 <- sf::st_transform(su2, 4326)
+su2$keep <- TRUE
 
-# drop empty cells
+for (i in 1:nrow(su2)) {
+    rmsk <- terra::mask(r[[1]], su2[i, ])
+    if (all(is.na(values(rmsk)))) {
+        su2$keep[i] <- FALSE
+    }
+}
+
+# ii <- sf::st_intersects(xy, su2)
+ii <- sf::st_intersects(xy, su2, sparse = FALSE)
+table(rast = su2$keep, xy = colSums(ii) > 0)
+su2$keep <- su2$keep | colSums(ii) > 0
+
+su2 <- su2[su2$keep, ]
+su2$keep <- NULL
+# m <- terra::extract(r[[1]], su2, method = "bilinear")
+# rr <- r[[1]]
+# values(rr) <- ifelse(is.na(m$mean), NA, m$ID)
+# plot(r[[1]])
+# plot(su2$geometry, add = TRUE)
 
 fo <- make_target_path(
     "deployments/{deployment_id}/deployment_subunits.gpkg",
     data = list(deployment_id = "deployment1")
+)
+write_file(su2, fo)
+
+fo <- make_target_path(
+    "deployments/{deployment_id}/deployment_subunits.gpkg",
+    data = list(deployment_id = "deployment2")
 )
 write_file(su, fo)
 
