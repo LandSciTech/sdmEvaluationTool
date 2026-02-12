@@ -553,12 +553,14 @@ check_q_mismatch <- function(q1, q2) {
 #' @examplesIf have_data()
 #' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWA", "testuser")
 #' evals_list(q)
+#' q <- prep_questions("model_summary", "deployment1", "bam_v5_can71", "BBWA", "testuser")
+#' evals_list(q)
 
 evals_list <- function(questions) {
   q <- questions |>
     dplyr::mutate(
       values = dplyr::if_else(
-        !.data$type %in% c("spatial", "ordinal"),
+        !.data$type %in% "spatial",
         list(""),
         values
       ),
