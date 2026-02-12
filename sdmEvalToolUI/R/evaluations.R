@@ -322,14 +322,15 @@ evals_details <- function(user_id, user_role) {
 
   eval_complete <- prep_evaluations(eval_user)
 
+  # If first evaluation, grab details from expected questions and fill with placeholders
   if (nrow(eval_complete) == 0) {
     eval_complete <- eval_expect |>
       dplyr::select(
         "deployment_id",
         "material_id",
-        "evaluation_create_user"
+        "evaluation_create_user",
       ) |>
-      dplyr::mutate(n_q = NA, n_q_complete = 0)
+      dplyr::mutate(abandoned = FALSE, n_q = NA, n_q_complete = 0)
   }
 
   evals <- eval_expect |>
@@ -353,10 +354,6 @@ evals_details <- function(user_id, user_role) {
       n_q = dplyr::if_else(!is.na(.data$n_q.eval), .data$n_q.eval, .data$n_q)
     )
 
-  # sometimes abandoned column is missing
-  if (is.null(evals$abandoned)) {
-    evals$abandoned <- FALSE
-  }
   evals <- evals |>
     dplyr::mutate(
       abandoned = any(.data$abandoned, na.rm = TRUE),
