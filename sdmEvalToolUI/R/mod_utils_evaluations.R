@@ -134,6 +134,8 @@ mod_utils_evaluations_server <- function(
 
     # Add server side processing for inputs that pre-list the spatial ids
     observe({
+      # Note, we don't want this to run for non-spatial components
+      # So must depend on spatial_ids()
       req(input$ready, spatial_ids(), questions_init())
 
       spatial_ready(TRUE)

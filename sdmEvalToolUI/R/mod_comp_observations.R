@@ -149,8 +149,6 @@ mod_comp_observations_server <- function(
 
     # Return ---------------------
     observe(spatial_ids(subunits()$id))
-
-    spatial_ids
   })
 }
 

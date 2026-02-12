@@ -86,8 +86,6 @@ mod_comp_spatial_prediction_server <- function(
     observe({
       spatial_ids(subunits()$id)
     })
-
-    spatial_ids
   })
 }
 
