@@ -351,7 +351,13 @@ evals_details <- function(user_id, user_role) {
       n_q_complete = tidyr::replace_na(.data$n_q_complete, 0),
       # For totals, use recorded evaluations if available
       n_q = dplyr::if_else(!is.na(.data$n_q.eval), .data$n_q.eval, .data$n_q)
-    ) |>
+    )
+
+  # sometimes abandoned column is missing
+  if (is.null(evals$abandoned)) {
+    evals$abandoned <- FALSE
+  }
+  evals <- evals |>
     dplyr::mutate(
       abandoned = any(.data$abandoned, na.rm = TRUE),
       .by = c("deployment_id", "model_id", "species_id")
