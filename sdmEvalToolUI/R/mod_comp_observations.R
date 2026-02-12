@@ -142,10 +142,10 @@ mod_comp_observations_server <- function(
 
         mod_utils_map_selections_server(
             "select",
-            data = obs,
-            spatial_selection = spatial_selection,
-            interactions = interactions,
-            spatial_type = "points",
+            data = subunits,
+            spatial_selection,
+            interactions,
+            spatial_type = "areas",
             parent_session = session
         )
 
