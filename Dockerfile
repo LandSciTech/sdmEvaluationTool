@@ -9,9 +9,13 @@ FROM rocker/r2u:22.04
 RUN installGithub.r LandSciTech/sdmEvaluationTool/sdmEvalToolCore
 RUN installGithub.r LandSciTech/sdmEvaluationTool/sdmEvalToolUI
 
-WORKDIR /root
-ADD https://peter.solymos.org/testapi/sdmevaltool/sdm_evaluation_results.zip .
-RUN R -q -e "unzip('sdm_evaluation_results.zip')"
+RUN groupadd app && useradd -g app app
+WORKDIR /home/app
 
+ADD https://peter.solymos.org/testapi/sdmevaltool/sdm_evaluation_results.zip .
+RUN unzip ./sdm_evaluation_results.zip
+
+RUN chown app:app -R /home/app
+USER app
 EXPOSE 8080
 CMD ["R", "-q", "-e", "library(sdmEvalToolCore);library(sdmEvalToolUI);sdm_tool(options = list(host = '0.0.0.0', port = 8080))"]
