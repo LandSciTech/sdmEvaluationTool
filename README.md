@@ -27,7 +27,7 @@ RStudio (Session > Set Working Directory > Choose Directory) or `setwd()`:
 setwd("path/to/work/directory")
 ```
 
-Use this script in R to install required packages and download/extract example data set:
+Use this script in R to install required packages and download/extract the example data set:
 
 ```R
 source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
@@ -59,6 +59,18 @@ file.
 
 The GitHub Action workflows are triggered when changes are made to files in the
 corresponding folders, see YAML files inside the [`.github/workflows`](./.github/workflows/) folder.
+
+To test a vanilla install of the packages, use [Docker](https://docs.docker.com/get-started/introduction/get-docker-desktop/):
+
+```bash
+# build the image
+docker build -t sdmevaltool:v1 .
+
+# run the image
+docker run -p 8080:8080 sdmevaltool:v1
+```
+
+Visit <http://localhost:8080>.
 
 ## Contributing
 
