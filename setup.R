@@ -1,3 +1,6 @@
+# usage:
+# source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
+
 message("=========================================")
 message("   Installing the SDM Evaluation Tool")
 message("=========================================")
