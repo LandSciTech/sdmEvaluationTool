@@ -4,7 +4,7 @@
 \alias{sdm_tool}
 \title{Launch the SDM Evaluation Tool Shiny Application}
 \usage{
-sdm_tool(lang = "english", options = list(port = 8080))
+sdm_tool(lang = "english", options = list(host = "0.0.0.0", port = 8080))
 }
 \arguments{
 \item{lang}{Character. Language of app; either \code{english} or \code{french}.}

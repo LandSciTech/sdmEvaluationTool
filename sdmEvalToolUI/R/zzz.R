@@ -9,7 +9,7 @@ utils::globalVariables(c(
   "opts", "abandoned", "overview_update", "overview_inputs", "unsaved",
   "completed", "id", "id_spatial", "label", "input_id_ns",
   "layers", "part", "show_clicked", "response", "width", 
-  "show_spatial_ids", "status", "type", "values"
+  "show_spatial_ids", "status", "type", "values", "hssr"
 ))
 
 .onAttach <- function(libname, pkgname) {

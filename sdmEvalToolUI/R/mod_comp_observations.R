@@ -99,7 +99,7 @@ mod_comp_observations_server <- function(
                     selectInput(
                         ns("month"),
                         label = "Month",
-                        choices = na.omit(unique(obs()$month)[match(
+                        choices = stats::na.omit(unique(obs()$month)[match(
                             month.abb,
                             unique(obs()$month)
                         )]),

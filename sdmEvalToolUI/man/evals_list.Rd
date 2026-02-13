@@ -20,5 +20,7 @@ Convert questions to input list structure
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWA", "testuser")
 evals_list(q)
+q <- prep_questions("model_summary", "deployment1", "bam_v5_can71", "BBWA", "testuser")
+evals_list(q)
 \dontshow{\}) # examplesIf}
 }
