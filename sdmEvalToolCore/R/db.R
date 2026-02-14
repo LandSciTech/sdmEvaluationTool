@@ -61,6 +61,38 @@ db_disconnect <- function(con, ...) {
     DBI::dbDisconnect(con, ...)
 }
 
+#' Get Table from DB
+#'
+#' @param con DB connection.
+#' @param table_name Table name.
+#'
+#' @return A data frame with the table data.
+#'
+#' @export
+db_read_table <- function(con, table_name) {
+    dbplyr::dbplyr_edition()
+    out <- dplyr::tbl(con, table_name) |>
+        dplyr::collect() |>
+        db_timestamp()
+    jf <- sdmEvalToolCore::fields |>
+        dplyr::filter(type == "jsonb", table == table_name)
+    for (i in jf$field) {
+        out[[i]] <- lapply(
+            out[[i]],
+            \(z) {
+                if (is.na(z)) list() else jsonlite::fromJSON(z)
+            }
+        )
+    }
+    bf <- sdmEvalToolCore::fields |>
+        dplyr::filter(type == "boolean", table == table_name)
+    for (i in bf$field) {
+        out[[i]] <- as.logical(out[[i]])
+    }
+    out
+}
+
+
 #' Get User Info from DB
 #'
 #' @param con DB connection.
@@ -98,7 +130,12 @@ db_read_user_info <- function(con, user_id, deployment_id) {
     }
     v <- strsplit(tbl_access$user_roles, ",")[[1L]]
     roles <- get_user_roles(v)
-    out <- data.frame(tbl_user, user_roles = tbl_access$user_roles, roles)
+    out <- data.frame(
+        tbl_user,
+        deployment_id = deployment_id,
+        user_roles = tbl_access$user_roles,
+        roles
+    )
     attr(out, "user_roles") <- v
     out
 }
