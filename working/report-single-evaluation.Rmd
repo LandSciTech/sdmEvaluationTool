@@ -1,23 +1,42 @@
 ---
 title: SDM Evaluation Tool Report
 output: pdf_document
+params:
+  user_id: "testuser"
+  model_id: "bam_v5_can71"
+  species_id: "BBWA"
+  deployment_id: "deployment1"
+  base_path: "../misc/test"
 ---
 
 ```{r include=FALSE}
-# library(sdmEvalToolCore)
-# library(sdmEvalToolUI)
+
+#' Usage:
+#' rmarkdown::render(
+#'     input = "working/report-single-evaluation.Rmd", 
+#'     params = list(
+#'     user_id = "testuser",
+#'     model_id = "bam_v5_can71",
+#'     species_id = "BBWA",
+#'     deployment_id = "deployment1",
+#'     base_path = "../misc/test"
+#' ))
+
 library(sf)
 library(terra)
 
+# library(sdmEvalToolCore)
+# library(sdmEvalToolUI)
 devtools::load_all("../sdmEvalToolCore")
 devtools::load_all("../sdmEvalToolUI")
-sdmevaltool_options(base = "../misc/test")
+
+sdmevaltool_options(base = params$base_path)
 
 # values
-user_id <- "testuser"
-model_id <- "bam_v5_can71"
-species_id <- "BBWA"
-deployment_id <- "deployment1"
+user_id <- params$user_id
+model_id <- params$model_id
+species_id <- params$species_id
+deployment_id <- params$deployment_id
 
 # pull data
 con <- db_connect()
@@ -42,6 +61,7 @@ db_disconnect(con)
 cp <- sdmEvalToolCore::components |>
     dplyr::filter(type == "material", component != "app")
 
+# functions
 read_fun <- function(component) {
     f <- make_target_path(
         sdmEvalToolCore::components$path[
@@ -51,17 +71,41 @@ read_fun <- function(component) {
     )
     read_file(f)
 }
+print_evals <- function(ee) {
+    for (i in 1:nrow(ee)) {
+        cat("\n#### Question ", i, "\n\n")
+        cat("**Question**: ", ee$label[i], "\n\n")
+        v <- ee$response[i][[1]]
+        if (length(v) == 1L) {
+            cat("**Answer**: ", unlist(v), "\n\n")
+            m <- NULL
+        } else {
+            if (nrow(v) == 1L) {
+                cat("**Answer**: ", v$subunit, "\n\n")
+                m <- NULL
+            } else {
+                cat("**Answer**:\n\n")
+                print(knitr::kable(v))
+                m <- su
+                m$values <- NA_character_
+                for (j in nrow(v):1) {
+                    m$values[m$subunit_id %in% v$subunits[j][[1L]]] <- v$values[j]
+                }
+            }
+        }
+        if (!is.null(m)) {
+            plot(m[,"values"], lwd=0.5)
+        }
+        cat("\n")
+    }
+
+}
+
 
 # get evaluation time
 Tmin <- min(d$evaluation_create_time)
 Tmax <- max(d$evaluation_modify_time, na.rm = TRUE)
 Tdiff <- difftime(Tmax, Tmin, units = "mins")
-
-# head(as.data.frame(e), 2)
-# as.list(e[1, ])
-# as.data.frame(e)[, 1:6]
-# e$evaluation_body[1] |> jsonlite::fromJSON() |> jsonlite::toJSON(pretty = T)
-# colnames(e)
 ```
 
 # Settings
@@ -88,35 +132,7 @@ plot(su[[attr(su, "sf_column")]], add=TRUE, lwd=0.5, border="grey")
 ```
 
 ```{r echo=FALSE,results="asis"}
-ee <- e[endsWith(e$material_id, "spatial_prediction"),]
-for (i in 1:nrow(ee)) {
-    cat("\n#### Question ", i, "\n\n")
-    cat("**Question**: ", ee$label[i], "\n\n")
-    v <- ee$response[i][[1]]
-    if (length(v) == 1L) {
-        cat("**Answer**: ", unlist(v), "\n\n")
-        m <- NULL
-    } else {
-        if (nrow(v) == 1L) {
-            cat("**Answer**: ", v$subunit, "\n\n")
-            m <- NULL
-        } else {
-            cat("**Answer**:\n\n")
-            print(knitr::kable(v))
-            m <- su
-            m$values <- NA_character_
-            for (j in nrow(v):1) {
-                m$values[m$subunit_id %in% v$subunits[j][[1L]]] <- v$values[j]
-            }
-        }
-    }
-    if (!is.null(m)) {
-        plot(m[,"values"], lwd=0.5)
-        # plot(r[[1]], main="Feedback", alpha = 0.5)
-        # plot(m[,"values"], add=TRUE, lwd=0.5)
-    }
-    cat("\n")
-}
+ee <- e[endsWith(e$material_id, "spatial_prediction"),] |> print_evals()
 ```
 
 # Observations
@@ -136,35 +152,7 @@ plot(su[[attr(su, "sf_column")]], add=TRUE, lwd=0.5, border="grey")
 ```
 
 ```{r echo=FALSE,results="asis"}
-ee <- e[endsWith(e$material_id, "observations"),]
-for (i in 1:nrow(ee)) {
-    cat("\n#### Question ", i, "\n\n")
-    cat("**Question**: ", ee$label[i], "\n\n")
-    v <- ee$response[i][[1]]
-    if (length(v) == 1L) {
-        cat("**Answer**: ", unlist(v), "\n\n")
-        m <- NULL
-    } else {
-        if (nrow(v) == 1L) {
-            cat("**Answer**: ", v$subunit, "\n\n")
-            m <- NULL
-        } else {
-            cat("**Answer**:\n\n")
-            print(knitr::kable(v))
-            m <- su
-            m$values <- NA_character_
-            for (j in nrow(v):1) {
-                m$values[m$subunit_id %in% v$subunits[j][[1L]]] <- v$values[j]
-            }
-        }
-    }
-    if (!is.null(m)) {
-        plot(m[,"values"], lwd=0.5)
-        # plot(r[[1]], main="Feedback", alpha = 0.5)
-        # plot(m[,"values"], add=TRUE, lwd=0.5)
-    }
-    cat("\n")
-}
+ee <- e[endsWith(e$material_id, "observations"),] |> print_evals()
 ```
 
 # Model Summary
@@ -175,22 +163,7 @@ knitr::kable(x)
 ```
 
 ```{r echo=FALSE,results="asis"}
-ee <- e[endsWith(e$material_id, "model_summary"),]
-for (i in 1:nrow(ee)) {
-    cat("#### Question ", i, "\n\n")
-    cat("**Question**: ", ee$label[i], "\n\n")
-    v <- ee$response[i][[1]]
-    if (length(v) == 1L) {
-        cat("**Answer**: ", unlist(v), "\n\n")
-    } else {
-        if (nrow(v) == 1L) {
-            cat("**Answer**: ", v$subunit, "\n\n")
-        } else {
-            cat("**Answer**:\n\n")
-            print(knitr::kable(v))
-        }
-    }
-}
+ee <- e[endsWith(e$material_id, "model_summary"),] |> print_evals()
 ```
 
 # Model Fit
@@ -201,70 +174,27 @@ knitr::kable(x)
 ```
 
 ```{r echo=FALSE,results="asis"}
-ee <- e[endsWith(e$material_id, "model_fit"),]
-for (i in 1:nrow(ee)) {
-    cat("#### Question ", i, "\n\n")
-    cat("**Question**: ", ee$label[i], "\n\n")
-    v <- ee$response[i][[1]]
-    if (length(v) == 1L) {
-        cat("**Answer**: ", unlist(v), "\n\n")
-    } else {
-        if (nrow(v) == 1L) {
-            cat("**Answer**: ", v$subunit, "\n\n")
-        } else {
-            cat("**Answer**:\n\n")
-            print(knitr::kable(v))
-        }
-    }
-}
+ee <- e[endsWith(e$material_id, "model_fit"),] |> print_evals()
 ```
 
 # Predictor Raster
 
 ```{r echo=FALSE}
+# too many layers, unclear how to display
 # x <- read_fun("predictor_raster")
 ```
 
 ```{r echo=FALSE,results="asis"}
-ee <- e[endsWith(e$material_id, "predictor_raster"),]
-for (i in 1:nrow(ee)) {
-    cat("#### Question ", i, "\n\n")
-    cat("**Question**: ", ee$label[i], "\n\n")
-    v <- ee$response[i][[1]]
-    if (length(v) == 1L) {
-        cat("**Answer**: ", unlist(v), "\n\n")
-    } else {
-        if (nrow(v) == 1L) {
-            cat("**Answer**: ", v$subunit, "\n\n")
-        } else {
-            cat("**Answer**:\n\n")
-            print(knitr::kable(v))
-        }
-    }
-}
+ee <- e[endsWith(e$material_id, "predictor_raster"),] |> print_evals()
 ```
 
 # Predictor Metadata
 
 ```{r echo=FALSE}
+# too many columns, unclear how to display
 # x <- read_fun("predictor_metadata")
 ```
 
 ```{r echo=FALSE,results="asis"}
-ee <- e[endsWith(e$material_id, "predictor_metadata"),]
-for (i in 1:nrow(ee)) {
-    cat("#### Question ", i, "\n\n")
-    cat("**Question**: ", ee$label[i], "\n\n")
-    v <- ee$response[i][[1]]
-    if (length(v) == 1L) {
-        cat("**Answer**: ", unlist(v), "\n\n")
-    } else {
-        if (nrow(v) == 1L) {
-            cat("**Answer**: ", v$subunit, "\n\n")
-        } else {
-            cat("**Answer**:\n\n")
-            print(knitr::kable(v))
-        }
-    }
-}
+ee <- e[endsWith(e$material_id, "predictor_metadata"),] |> print_evals()
 ```
