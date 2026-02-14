@@ -1,5 +1,6 @@
 ---
 title: SDM Evaluation Tool Report
+output: pdf_document
 ---
 
 ```{r include=FALSE}
@@ -79,7 +80,9 @@ r <- read_fun("spatial_prediction")
 
 plot(r[[1]], main="Estimate")
 plot(su[[attr(su, "sf_column")]], add=TRUE, lwd=0.5, border="grey")
+```
 
+```{r echo=FALSE}
 plot(r[[2]], main="Variation")
 plot(su[[attr(su, "sf_column")]], add=TRUE, lwd=0.5, border="grey")
 ```
