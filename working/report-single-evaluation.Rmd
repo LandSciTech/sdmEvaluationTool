@@ -10,7 +10,7 @@ library(terra)
 
 devtools::load_all("../sdmEvalToolCore")
 devtools::load_all("../sdmEvalToolUI")
-sdmevaltool_options(base = "test")
+sdmevaltool_options(base = "../misc/test")
 
 # values
 user_id <- "testuser"
@@ -87,19 +87,32 @@ plot(su[[attr(su, "sf_column")]], add=TRUE, lwd=0.5, border="grey")
 ```{r echo=FALSE,results="asis"}
 ee <- e[endsWith(e$material_id, "spatial_prediction"),]
 for (i in 1:nrow(ee)) {
-    cat("#### Question ", i, "\n\n")
+    cat("\n#### Question ", i, "\n\n")
     cat("**Question**: ", ee$label[i], "\n\n")
     v <- ee$response[i][[1]]
     if (length(v) == 1L) {
         cat("**Answer**: ", unlist(v), "\n\n")
+        m <- NULL
     } else {
         if (nrow(v) == 1L) {
             cat("**Answer**: ", v$subunit, "\n\n")
+            m <- NULL
         } else {
             cat("**Answer**:\n\n")
             print(knitr::kable(v))
+            m <- su
+            m$values <- NA_character_
+            for (j in nrow(v):1) {
+                m$values[m$subunit_id %in% v$subunits[j][[1L]]] <- v$values[j]
+            }
         }
     }
+    if (!is.null(m)) {
+        plot(m[,"values"], lwd=0.5)
+        # plot(r[[1]], main="Feedback", alpha = 0.5)
+        # plot(m[,"values"], add=TRUE, lwd=0.5)
+    }
+    cat("\n")
 }
 ```
 
@@ -122,19 +135,32 @@ plot(su[[attr(su, "sf_column")]], add=TRUE, lwd=0.5, border="grey")
 ```{r echo=FALSE,results="asis"}
 ee <- e[endsWith(e$material_id, "observations"),]
 for (i in 1:nrow(ee)) {
-    cat("#### Question ", i, "\n\n")
+    cat("\n#### Question ", i, "\n\n")
     cat("**Question**: ", ee$label[i], "\n\n")
     v <- ee$response[i][[1]]
     if (length(v) == 1L) {
         cat("**Answer**: ", unlist(v), "\n\n")
+        m <- NULL
     } else {
         if (nrow(v) == 1L) {
             cat("**Answer**: ", v$subunit, "\n\n")
+            m <- NULL
         } else {
             cat("**Answer**:\n\n")
             print(knitr::kable(v))
+            m <- su
+            m$values <- NA_character_
+            for (j in nrow(v):1) {
+                m$values[m$subunit_id %in% v$subunits[j][[1L]]] <- v$values[j]
+            }
         }
     }
+    if (!is.null(m)) {
+        plot(m[,"values"], lwd=0.5)
+        # plot(r[[1]], main="Feedback", alpha = 0.5)
+        # plot(m[,"values"], add=TRUE, lwd=0.5)
+    }
+    cat("\n")
 }
 ```
 
