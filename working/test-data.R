@@ -457,31 +457,23 @@ su$subunit_id <- su$ECOPROVINC
 su <- su[, "subunit_id"]
 
 su_gr <- sf::st_make_grid(su, n = 20)
-# su_gr <- sf::st_make_grid(su, square = FALSE)
+# su_gr <- sf::st_make_grid(su, n = 20, square = FALSE)
 
 su2 <- sf::st_sf(subunit_id = as.character(1:length(su_gr)), geometry = su_gr)
 su2 <- sf::st_transform(su2, 4326)
-su2$keep <- TRUE
 
-for (i in 1:nrow(su2)) {
-    rmsk <- terra::mask(r[[1]], su2[i, ])
-    if (all(is.na(values(rmsk)))) {
-        su2$keep[i] <- FALSE
-    }
-}
+su2$id <- seq_len(nrow(su2))
+u <- rasterize(su2, r[[1]], "id")
+values(u)[is.na(values(r[[1]]))] <- NA
+su2$keep <- su2$id %in% na.omit(unique(values(u)[, 1]))
 
-# ii <- sf::st_intersects(xy, su2)
 ii <- sf::st_intersects(xy, su2, sparse = FALSE)
-table(rast = su2$keep, xy = colSums(ii) > 0)
 su2$keep <- su2$keep | colSums(ii) > 0
 
 su2 <- su2[su2$keep, ]
 su2$keep <- NULL
-# m <- terra::extract(r[[1]], su2, method = "bilinear")
-# rr <- r[[1]]
-# values(rr) <- ifelse(is.na(m$mean), NA, m$ID)
-# plot(r[[1]])
-# plot(su2$geometry, add = TRUE)
+su2$id <- NULL
+
 
 fo <- make_target_path(
     "deployments/{deployment_id}/deployment_subunits.gpkg",
