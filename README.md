@@ -21,11 +21,10 @@ and implements the SDM Evaluation Tool.
 ## Install
 
 Before installation, first create a new RStudio Project where you'll store the 
-data required for this tool (_File_ > _New Project_). 
-Put it in a location you'll remember (e.g., `c:/users/user_name/work/sdmEvaluationTool`).
+data required for this tool. To do so, select _File_ > _New Project_. When prompted, select _New Directory_ and _New Project_. Under the field _Directory name_, type in _sdmEvaluationTool_, then, click on the *Browse* button and select a location you'll remember (e.g., `c:/users/user_name/work`).
 
 Use this script in R to install required packages and download/extract the example 
-data set (say 'yes' to updating packages if asked):
+data set (say 'yes' or select the 'All' option to update packages if asked):
 
 ```R
 source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
@@ -42,7 +41,7 @@ library(sdmEvalToolUI)
 sdm_tool()
 ```
 
-Lastly, visit the following link in your browser: <http://localhost:8080>
+A window should pop-up with the loaded app. Alternatively, you can visit the following link in your browser: <http://localhost:8080>.
 
 If you see an error message `Error: Could not connect to database`,
 try setting the right folder with `sdmevaltool_options()`:
