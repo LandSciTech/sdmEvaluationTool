@@ -34,7 +34,7 @@
 #' @param ... Arguments passed to the write function.
 #'
 #' @export
-write_file_and_add_material_entry <- function(
+upload_material <- function(
     x,
     model_id,
     species_id,
