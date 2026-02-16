@@ -5,7 +5,7 @@ pkg <- "sdmEvalToolCore"
 # update the config file before running data-raw script
 file.copy(
     "spec/config.yml",
-    paste0(pkg, "/inst/config/config.yml"),
+    paste0(pkg, "/inst/config.yml"),
     overwrite = TRUE
 )
 
@@ -30,6 +30,23 @@ write.csv(q, row.names = F, file = "_tmp/default_questions.csv")
 # --- UI ---
 
 pkg <- "sdmEvalToolUI"
+
+# o <- setwd(pkg)
+# local({ source("data-raw/DATASET.R", local = TRUE) })
+# setwd(o)
+
+devtools::document(pkg)
+rcmdcheck::rcmdcheck(pkg)
+devtools::run_examples(pkg) # Will be skipped in package check because missing data
+
+# devtools::install(pkg, upgrade = "never")
+# remotes::install_github("LandSciTech/sdmEvaluationTool/sdmEvalToolUI")
+
+devtools::load_all(pkg)
+
+# --- Up ---
+
+pkg <- "sdmEvalToolUp"
 
 # o <- setwd(pkg)
 # local({ source("data-raw/DATASET.R", local = TRUE) })
