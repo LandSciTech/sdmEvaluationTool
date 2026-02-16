@@ -19,6 +19,82 @@
 # this would pull the entry from db and would update the modify user/time fields
 # besides overwriting the file itself
 
+#' Write File and Insert/Update Material DB Entry
+#'
+#' @param x Object.
+#' @param model_id Model ID.
+#' @param species_id Species ID.
+#' @param component_id Component ID.
+#' @param user_id User ID.
+#' @param deployment_id Deployment ID.
+#' @param material_settings Material settings.
+#' @param con Database connection (use `NULL` to avoid inserting a record).
+#' @param update Logical. Is this a new entry (`FALSE`, default)
+#'   or an update (`TRUE`) to an existing material entry.
+#' @param ... Arguments passed to the write function.
+#'
+#' @export
+write_file_and_add_material_entry <- function(
+    x,
+    model_id,
+    species_id,
+    component_id,
+    user_id,
+    deployment_id = NULL,
+    material_settings = NULL,
+    con = NULL,
+    update = FALSE,
+    ...
+) {
+    rule <- sdmEvalToolCore::get_comp_rule(component_id, "upload")
+    fo <- sdmEvalToolCore::make_target_path(
+        rule$output$path,
+        data = list(
+            model_id = model_id,
+            species_id = species_id,
+            deployment_id = deployment_id
+        )
+    )
+    # FIXME: handle overwrite based on update T/F
+    sdmEvalToolCore::write_file(x, fo, ...)
+
+    if (update) {
+        mtid <- sdmEvalToolCore::make_material_id(
+            model_id = model_id,
+            species_id = species_id,
+            component_id = component_id
+        )
+        mt <- sdmEvalToolCore::db_read_table(con, table_name = "materials")
+        mt <- mt |>
+            dplyr::filter(.data$material_id == .env$mtid)
+        mt$material_modify_user <- user_id
+        mt$material_modify_time <- sdmEvalToolCore::timestamp_to(sdmEvalToolCore::now())
+        if (!is.null(material_settings)) {
+            mt$material_settings <- material_settings
+        }
+    } else {
+        mt <- sdmEvalToolCore::prepare_material_entry(
+            model_id = model_id,
+            species_id = species_id,
+            component_id = component_id,
+            user_id = user_id,
+            material_settings = if (is.null(material_settings)) {
+                "[]"
+            } else {
+                material_settings
+            }
+        )
+    }
+    sdmEvalToolCore::db_write_table(
+        con = con,
+        table = "materials",
+        data = mt,
+        mode = if (update) "update" else "insert",
+        check = TRUE
+    )
+    invisible(TRUE)
+}
+
 #' Prepare Deployment Questions
 #'
 #' @param deployment_id Deployment ID.
