@@ -1,7 +1,7 @@
 ## code to prepare `DATASET` dataset goes here
 
-#conf <- yaml::read_yaml("inst/config/config.yml")
-conf <- yaml::read_yaml("../spec/config.yml")
+conf <- yaml::read_yaml("inst/config.yml")
+# conf <- yaml::read_yaml("../spec/config.yml")
 
 user_roles <- do.call(rbind, lapply(conf$roles, as.data.frame))
 
