@@ -5,7 +5,7 @@
 <!-- badges: end -->
 
 The goal of sdmEvalToolUI is to implement Shiny functionality according to
-the SDM Evaluation Tool requirements.
+the SDM Evaluation Tool requirements for evaluating materials.
 
 ## Installation
 
