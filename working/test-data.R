@@ -173,9 +173,6 @@ materials_fun <- function(
 }
 materials <- NULL
 
-# --------- model_metadata ----
-# not yet available
-
 # --------- predictor_metadata ----
 
 rule <- get_comp_rule("predictor_metadata", "upload")
@@ -189,7 +186,7 @@ drule <- get_comp_rule("predictor_metadata", "display")
 ms <- jsonlite::toJSON(drule$materials_settings)
 materials <- materials_fun(materials, model_id, NA, "predictor_metadata", ms)
 
-# ------- ODMAP metadata --------------
+# --------- model_metadata / ODMAP ----
 
 rule <- get_comp_rule("model_metadata", "upload")
 fi <- file.path(path, "ODMAP", "ODMAP_Knight_2025-12-16.csv")

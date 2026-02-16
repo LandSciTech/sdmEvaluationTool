@@ -214,3 +214,39 @@ make_material_id <- function(model_id, species_id, component_id) {
         component_id
     )
 }
+
+#' Prepare Material Entry
+#'
+#' @param model_id Model ID.
+#' @param species_id Species ID.
+#' @param component_id Component ID.
+#' @param user_id User ID.
+#' @param material_settings Material settings.
+#'
+#' @examples
+#' prepare_material_entry("model1", "CAWA", "predictor_raster", "testuser")
+#'
+#' @export
+prepare_material_entry <- function(
+    model_id,
+    species_id,
+    component_id,
+    user_id,
+    material_settings = "[]"
+) {
+    data.frame(
+        material_id = make_material_id(
+            model_id,
+            species_id,
+            component_id
+        ),
+        model_id = model_id,
+        species_id = as.character(species_id),
+        component_id = component_id,
+        material_create_user = user_id,
+        material_create_time = timestamp_to(now()),
+        material_modify_user = NA_character_,
+        material_modify_time = NA_integer_,
+        material_settings = material_settings
+    )
+}
