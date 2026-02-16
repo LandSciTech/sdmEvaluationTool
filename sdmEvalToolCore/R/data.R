@@ -193,3 +193,24 @@ default_species_table_canada <- function() {
     )
     x
 }
+
+#' Make Material ID
+#'
+#' @param model_id Model ID.
+#' @param species_id Species ID.
+#' @param component_id Component ID.
+#'
+#' @examples
+#' make_material_id("model1", NA, "predictor_metadata")
+#' make_material_id("model1", "CAWA", "predictor_raster")
+#'
+#' @export
+make_material_id <- function(model_id, species_id, component_id) {
+    paste0(
+        model_id,
+        "_",
+        ifelse(is.na(species_id), "ALL", as.character(species_id)),
+        "_",
+        component_id
+    )
+}
