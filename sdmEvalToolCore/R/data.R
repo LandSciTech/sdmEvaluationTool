@@ -170,3 +170,26 @@ check_table <- function(x, table_name, dryrun = FALSE) {
     }
     invisible(ok)
 }
+
+#' Default Species Table
+#'
+#' @return Data frame.
+#'
+#' @examples
+#' str(default_species_table_canada())
+#'
+#' @export
+default_species_table_canada <- function() {
+    x <- utils::read.csv(system.file(
+        "species-canada.csv",
+        package = "sdmEvalToolCore"
+    ))
+    x <- x[, c("code", "name_latin", "name_english", "name_french")]
+    colnames(x) <- c(
+        "species_id",
+        "scientific_name",
+        "english_name",
+        "french_name"
+    )
+    x
+}
