@@ -4,12 +4,14 @@
 \alias{prep_deployment_settings}
 \title{Prepare Deployment Settings}
 \usage{
-prep_deployment_settings(deployment_id, x)
+prep_deployment_settings(deployment_id, x, ...)
 }
 \arguments{
 \item{deployment_id}{Deployment ID.}
 
 \item{x}{Lits with deployment.}
+
+\item{...}{Arguments passed to the write function.}
 }
 \description{
 Prepare Deployment Settings

@@ -9,7 +9,8 @@ prep_deployment_subunits(
   x = NULL,
   reference,
   n = c(20, 20),
-  square = TRUE
+  square = TRUE,
+  ...
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ prep_deployment_subunits(
 \item{n}{Number of grid cells in x and y direction.}
 
 \item{square}{Logical. If `FALSE``, create hexagonal grid.}
+
+\item{...}{Arguments passed to the write function.}
 }
 \description{
 Prepare Deployment Subunits

@@ -3,6 +3,7 @@
 export(prep_deployment_questions)
 export(prep_deployment_settings)
 export(prep_deployment_subunits)
+export(prep_model_fit)
 export(prep_model_metadata)
 export(prep_model_summary)
 export(prep_observations)

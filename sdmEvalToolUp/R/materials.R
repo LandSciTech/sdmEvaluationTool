@@ -35,10 +35,10 @@
 #'
 #' @export
 upload_material <- function(
+    component_id,
     x,
     model_id,
     species_id,
-    component_id,
     user_id,
     deployment_id = NULL,
     material_settings = NULL,
@@ -99,13 +99,14 @@ upload_material <- function(
 #'
 #' @param deployment_id Deployment ID.
 #' @param x Table with questions or `NULL`.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
 prep_deployment_questions <- function(
     deployment_id,
-    x = NULL
+    x = NULL,
+    ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule("deployment_questions", "upload")
     if (is.null(x)) {
         q <- sdmEvalToolCore::default_questions
     } else {
@@ -116,12 +117,12 @@ prep_deployment_questions <- function(
         paste0(z, collapse = ", ")
     })
     q$values <- v
-    fo <- sdmEvalToolCore::make_target_path(
-        rule$output$path,
-        data = list(deployment_id = deployment_id)
+    upload_material(
+        "deployment_questions",
+        x = q,
+        deployment_id = deployment_id,
+        ...
     )
-    sdmEvalToolCore::write_file(q, fo)
-
     invisible(TRUE)
 }
 
@@ -129,20 +130,20 @@ prep_deployment_questions <- function(
 #'
 #' @param deployment_id Deployment ID.
 #' @param x Lits with deployment.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
 prep_deployment_settings <- function(
     deployment_id,
-    x
+    x,
+    ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule("deployment_settings", "upload")
-    fo <- sdmEvalToolCore::make_target_path(
-        rule$output$path,
-        data = list(deployment_id = deployment_id)
+    upload_material(
+        "deployment_settings",
+        x = jsonlite::toJSON(x),
+        deployment_id = deployment_id,
+        ...
     )
-    # FIXME: should we use the default template from config here?
-    sdmEvalToolCore::write_file(jsonlite::toJSON(x), fo)
-
     invisible(TRUE)
 }
 
@@ -153,6 +154,7 @@ prep_deployment_settings <- function(
 #' @param reference Reference raster.
 #' @param n Number of grid cells in x and y direction.
 #' @param square Logical. If `FALSE``, create hexagonal grid.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
 prep_deployment_subunits <- function(
@@ -160,10 +162,9 @@ prep_deployment_subunits <- function(
     x = NULL,
     reference,
     n = c(20, 20),
-    square = TRUE
+    square = TRUE,
+    ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule("deployment_subunits", "upload")
-
     if (is.null(x)) {
         bbox <- sf::st_as_sfc(sf::st_bbox(reference))
         su_gr <- sf::st_make_grid(bbox, n = n, square = square)
@@ -184,13 +185,12 @@ prep_deployment_subunits <- function(
         su <- sf::st_simplify(su, TRUE, 10)
         su <- sf::st_transform(su, 4326)
     }
-
-    fo <- sdmEvalToolCore::make_target_path(
-        rule$output$path,
-        data = list(deployment_id = deployment_id)
+    upload_material(
+        "deployment_subunits",
+        x = su,
+        deployment_id = deployment_id,
+        ...
     )
-    sdmEvalToolCore::write_file(su, fo)
-
     invisible(TRUE)
 }
 
@@ -203,6 +203,8 @@ prep_deployment_subunits <- function(
 #' @param user_id User ID.
 #' @param material_settings Material settings.
 #' @param con Database connection (use `NULL` to avoid inserting new record).
+#' @param update Logical. Is this a new entry or an update to an existing one.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
 prep_predictor_raster <- function(
@@ -211,32 +213,23 @@ prep_predictor_raster <- function(
     model_id,
     user_id,
     material_settings = "[]",
-    con = NULL
+    con = NULL,
+    update = FALSE,
+    ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule("predictor_raster", "upload")
     x <- terra::resample(x, resolution)
     x <- terra::project(x, "epsg:4326")
-    fo <- sdmEvalToolCore::make_target_path(
-        rule$output$path,
-        data = list(model_id = model_id)
+    upload_material(
+        "predictor_raster",
+        x = x,
+        model_id = model_id,
+        species_id = NA_character_,
+        user_id = user_id,
+        material_settings = material_settings,
+        con = con,
+        update = update,
+        ...
     )
-    sdmEvalToolCore::write_file(x, fo)
-    if (!is.null(con)) {
-        new_material <- sdmEvalToolCore::prepare_material_entry(
-            model_id = model_id,
-            species_id = NA_character_,
-            component_id = "predictor_raster",
-            user_id = user_id,
-            material_settings = material_settings
-        )
-        sdmEvalToolCore::db_write_table(
-            con = con,
-            table = "materials",
-            data = new_material,
-            mode = "insert", # will fail if already exists
-            check = TRUE
-        )
-    }
     invisible(TRUE)
 }
 
@@ -247,6 +240,8 @@ prep_predictor_raster <- function(
 #' @param user_id User ID.
 #' @param material_settings Material settings.
 #' @param con Database connection (use `NULL` to avoid inserting new record).
+#' @param update Logical. Is this a new entry or an update to an existing one.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
 prep_predictor_metadata <- function(
@@ -254,32 +249,23 @@ prep_predictor_metadata <- function(
     model_id,
     user_id,
     material_settings = "[]",
-    con = NULL
+    con = NULL,
+    update = FALSE,
+    ...
 ) {
     rule <- sdmEvalToolCore::get_comp_rule("predictor_metadata", "upload")
     x <- x[, rule$output$columns]
-    fo <- sdmEvalToolCore::make_target_path(
-        rule$output$path,
-        data = list(model_id = model_id)
+    upload_material(
+        "predictor_metadata",
+        x = x,
+        model_id = model_id,
+        species_id = NA_character_,
+        user_id = user_id,
+        material_settings = material_settings,
+        con = con,
+        update = update,
+        ...
     )
-    sdmEvalToolCore::write_file(x, fo)
-
-    if (!is.null(con)) {
-        new_material <- sdmEvalToolCore::prepare_material_entry(
-            model_id = model_id,
-            species_id = NA_character_,
-            component_id = "predictor_metadata",
-            user_id = user_id,
-            material_settings = material_settings
-        )
-        sdmEvalToolCore::db_write_table(
-            con = con,
-            table = "materials",
-            data = new_material,
-            mode = "insert", # will fail if already exists
-            check = TRUE
-        )
-    }
     invisible(TRUE)
 }
 
@@ -290,6 +276,8 @@ prep_predictor_metadata <- function(
 #' @param user_id User ID.
 #' @param material_settings Material settings.
 #' @param con Database connection (use `NULL` to avoid inserting new record).
+#' @param update Logical. Is this a new entry or an update to an existing one.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
 prep_model_metadata <- function(
@@ -297,31 +285,21 @@ prep_model_metadata <- function(
     model_id,
     user_id,
     material_settings = "[]",
-    con = NULL
+    con = NULL,
+    update = FALSE,
+    ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule("model_metadata", "upload")
-    fo <- sdmEvalToolCore::make_target_path(
-        rule$output$path,
-        data = list(model_id = model_id)
+    upload_material(
+        "model_metadata",
+        x = x,
+        model_id = model_id,
+        species_id = NA_character_,
+        user_id = user_id,
+        material_settings = material_settings,
+        con = con,
+        update = update,
+        ...
     )
-    sdmEvalToolCore::write_file(x, fo)
-
-    if (!is.null(con)) {
-        new_material <- sdmEvalToolCore::prepare_material_entry(
-            model_id = model_id,
-            species_id = NA_character_,
-            component_id = "model_metadata",
-            user_id = user_id,
-            material_settings = material_settings
-        )
-        sdmEvalToolCore::db_write_table(
-            con = con,
-            table = "materials",
-            data = new_material,
-            mode = "insert", # will fail if already exists
-            check = TRUE
-        )
-    }
     invisible(TRUE)
 }
 
@@ -333,6 +311,8 @@ prep_model_metadata <- function(
 #' @param user_id User ID.
 #' @param material_settings Material settings.
 #' @param con Database connection (use `NULL` to avoid inserting new record).
+#' @param update Logical. Is this a new entry or an update to an existing one.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
 prep_spatial_prediction <- function(
@@ -341,32 +321,22 @@ prep_spatial_prediction <- function(
     species_id,
     user_id,
     material_settings = "[]",
-    con = NULL
+    con = NULL,
+    update = FALSE,
+    ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule("spatial_prediction", "upload")
     x <- terra::project(x, "epsg:4326")
-    fo <- sdmEvalToolCore::make_target_path(
-        rule$output$path,
-        data = list(model_id = model_id, species_id = species_id)
+    upload_material(
+        "spatial_prediction",
+        x = x,
+        model_id = model_id,
+        species_id = species_id,
+        user_id = user_id,
+        material_settings = material_settings,
+        con = con,
+        update = update,
+        ...
     )
-    sdmEvalToolCore::write_file(x, fo)
-
-    if (!is.null(con)) {
-        new_material <- sdmEvalToolCore::prepare_material_entry(
-            model_id = model_id,
-            species_id = species_id,
-            component_id = "spatial_prediction",
-            user_id = user_id,
-            material_settings = material_settings
-        )
-        sdmEvalToolCore::db_write_table(
-            con = con,
-            table = "materials",
-            data = new_material,
-            mode = "insert", # will fail if already exists
-            check = TRUE
-        )
-    }
     invisible(TRUE)
 }
 
@@ -379,6 +349,8 @@ prep_spatial_prediction <- function(
 #' @param user_id User ID.
 #' @param material_settings Material settings.
 #' @param con Database connection (use `NULL` to avoid inserting new record).
+#' @param update Logical. Is this a new entry or an update to an existing one.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
 prep_observations <- function(
@@ -388,9 +360,10 @@ prep_observations <- function(
     species_id,
     user_id,
     material_settings = "[]",
-    con = NULL
+    con = NULL,
+    update = FALSE,
+    ...
 ) {
-    rule <- get_comp_rule("observations", "upload")
     SPP <- colnames(x)[colnames(x) %in% species$species_id]
     x$date <- as.POSIXct(x$date)
     for (species_id in SPP) {
@@ -405,29 +378,17 @@ prep_observations <- function(
             POSIXct.out = TRUE
         )
         z$hssr <- as.numeric(difftime(z$time, sr$time, units = "hours"))
-
-        fo <- sdmEvalToolCore::make_target_path(
-            rule$output$path,
-            data = list(model_id = model_id, species_id = species_id)
+        upload_material(
+            "observations",
+            x = z,
+            model_id = model_id,
+            species_id = species_id,
+            user_id = user_id,
+            material_settings = material_settings,
+            con = con,
+            update = update,
+            ...
         )
-        sdmEvalToolCore::write_file(z, fo)
-
-        if (!is.null(con)) {
-            new_material <- sdmEvalToolCore::prepare_material_entry(
-                model_id = model_id,
-                species_id = species_id,
-                component_id = "observations",
-                user_id = user_id,
-                material_settings = material_settings
-            )
-            sdmEvalToolCore::db_write_table(
-                con = con,
-                table = "materials",
-                data = new_material,
-                mode = "insert", # will fail if already exists
-                check = TRUE
-            )
-        }
     }
     invisible(TRUE)
 }
@@ -441,6 +402,8 @@ prep_observations <- function(
 #' @param user_id User ID.
 #' @param material_settings Material settings.
 #' @param con Database connection (use `NULL` to avoid inserting new record).
+#' @param update Logical. Is this a new entry or an update to an existing one.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
 prep_model_summary <- function(
@@ -450,34 +413,24 @@ prep_model_summary <- function(
     species_id,
     user_id,
     material_settings = "[]",
-    con = NULL
+    con = NULL,
+    update = FALSE,
+    ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule("model_summary", "upload")
     SPP <- colnames(x)[colnames(x) %in% species$species_id]
     for (species_id in SPP) {
         z <- x[x$species_id == species_id, ]
-        fo <- sdmEvalToolCore::make_target_path(
-            rule$output$path,
-            data = list(model_id = model_id, species_id = species_id)
+        upload_material(
+            "model_summary",
+            x = z,
+            model_id = model_id,
+            species_id = species_id,
+            user_id = user_id,
+            material_settings = material_settings,
+            con = con,
+            update = update,
+            ...
         )
-        sdmEvalToolCore::write_file(z, fo)
-
-        if (!is.null(con)) {
-            new_material <- sdmEvalToolCore::prepare_material_entry(
-                model_id = model_id,
-                species_id = species_id,
-                component_id = "model_summary",
-                user_id = user_id,
-                material_settings = material_settings
-            )
-            sdmEvalToolCore::db_write_table(
-                con = con,
-                table = "materials",
-                data = new_material,
-                mode = "insert", # will fail if already exists
-                check = TRUE
-            )
-        }
     }
     invisible(TRUE)
 }
@@ -491,44 +444,36 @@ prep_model_summary <- function(
 #' @param user_id User ID.
 #' @param material_settings Material settings.
 #' @param con Database connection (use `NULL` to avoid inserting new record).
+#' @param update Logical. Is this a new entry or an update to an existing one.
+#' @param ... Arguments passed to the write function.
 #'
 #' @export
-prep_observations <- function(
+prep_model_fit <- function(
     x,
     species,
     model_id,
     species_id,
     user_id,
     material_settings = "[]",
-    con = NULL
+    con = NULL,
+    update = FALSE,
+    ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule("model_fit", "upload")
     SPP <- colnames(x)[colnames(x) %in% species$species_id]
     for (species_id in SPP) {
         z <- x[x$species_id == species_id, ]
         # z <- data.frame(metric = colnames(z), value = unlist(z))
-        fo <- sdmEvalToolCore::make_target_path(
-            rule$output$path,
-            data = list(model_id = model_id, species_id = species_id)
+        upload_material(
+            "model_fit",
+            x = z,
+            model_id = model_id,
+            species_id = species_id,
+            user_id = user_id,
+            material_settings = material_settings,
+            con = con,
+            update = update,
+            ...
         )
-        sdmEvalToolCore::write_file(z, fo)
-
-        if (!is.null(con)) {
-            new_material <- sdmEvalToolCore::prepare_material_entry(
-                model_id = model_id,
-                species_id = species_id,
-                component_id = "model_fit",
-                user_id = user_id,
-                material_settings = material_settings
-            )
-            sdmEvalToolCore::db_write_table(
-                con = con,
-                table = "materials",
-                data = new_material,
-                mode = "insert", # will fail if already exists
-                check = TRUE
-            )
-        }
     }
     invisible(TRUE)
 }

@@ -4,7 +4,15 @@
 \alias{prep_model_metadata}
 \title{Prepare Model Metadata}
 \usage{
-prep_model_metadata(x, model_id, user_id, material_settings = "[]", con = NULL)
+prep_model_metadata(
+  x,
+  model_id,
+  user_id,
+  material_settings = "[]",
+  con = NULL,
+  update = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{ODMAP table.}
@@ -16,6 +24,10 @@ prep_model_metadata(x, model_id, user_id, material_settings = "[]", con = NULL)
 \item{material_settings}{Material settings.}
 
 \item{con}{Database connection (use \code{NULL} to avoid inserting new record).}
+
+\item{update}{Logical. Is this a new entry or an update to an existing one.}
+
+\item{...}{Arguments passed to the write function.}
 }
 \description{
 Prepare Model Metadata

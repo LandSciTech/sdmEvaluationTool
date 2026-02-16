@@ -4,12 +4,14 @@
 \alias{prep_deployment_questions}
 \title{Prepare Deployment Questions}
 \usage{
-prep_deployment_questions(deployment_id, x = NULL)
+prep_deployment_questions(deployment_id, x = NULL, ...)
 }
 \arguments{
 \item{deployment_id}{Deployment ID.}
 
 \item{x}{Table with questions or \code{NULL}.}
+
+\item{...}{Arguments passed to the write function.}
 }
 \description{
 Prepare Deployment Questions

@@ -10,7 +10,9 @@ prep_spatial_prediction(
   species_id,
   user_id,
   material_settings = "[]",
-  con = NULL
+  con = NULL,
+  update = FALSE,
+  ...
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ prep_spatial_prediction(
 \item{material_settings}{Material settings.}
 
 \item{con}{Database connection (use \code{NULL} to avoid inserting new record).}
+
+\item{update}{Logical. Is this a new entry or an update to an existing one.}
+
+\item{...}{Arguments passed to the write function.}
 }
 \description{
 Prepare Spatial Prediction

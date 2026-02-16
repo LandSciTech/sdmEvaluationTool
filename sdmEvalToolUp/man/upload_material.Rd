@@ -5,10 +5,10 @@
 \title{Write File and Insert/Update Material DB Entry}
 \usage{
 upload_material(
+  component_id,
   x,
   model_id,
   species_id,
-  component_id,
   user_id,
   deployment_id = NULL,
   material_settings = NULL,
@@ -18,13 +18,13 @@ upload_material(
 )
 }
 \arguments{
+\item{component_id}{Component ID.}
+
 \item{x}{Object.}
 
 \item{model_id}{Model ID.}
 
 \item{species_id}{Species ID.}
-
-\item{component_id}{Component ID.}
 
 \item{user_id}{User ID.}
 

@@ -52,6 +52,8 @@ pkg <- "sdmEvalToolUp"
 # local({ source("data-raw/DATASET.R", local = TRUE) })
 # setwd(o)
 
+devtools::load_all("sdmEvalToolCore")
+
 devtools::document(pkg)
 rcmdcheck::rcmdcheck(pkg)
 devtools::run_examples(pkg) # Will be skipped in package check because missing data
