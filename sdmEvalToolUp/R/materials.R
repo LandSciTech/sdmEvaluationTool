@@ -15,6 +15,10 @@
 # sdmEvalToolCore::db_write_table have to be replaced by API function
 # fun(api_endpoint_url, data, callback_url)
 
+# FIXME: add update=TRUE argument
+# this would pull the entry from db and would update the modify user/time fields
+# besides overwriting the file itself
+
 #' Prepare Deployment Questions
 #'
 #' @param deployment_id Deployment ID.
@@ -351,8 +355,6 @@ prep_observations <- function(
     }
     invisible(TRUE)
 }
-
-# -------- model summary -----------
 
 #' Prepare Model Summary
 #'
