@@ -16,7 +16,7 @@ prep_predictor_raster(
   resolution = 5,
   model_id,
   user_id,
-  material_settings = "[]",
+  material_settings = NULL,
   con = NULL,
   update = FALSE,
   ...
@@ -26,7 +26,7 @@ prep_predictor_metadata(
   x,
   model_id,
   user_id,
-  material_settings = "[]",
+  material_settings = NULL,
   con = NULL,
   update = FALSE,
   ...
@@ -36,7 +36,7 @@ prep_model_metadata(
   x,
   model_id,
   user_id,
-  material_settings = "[]",
+  material_settings = NULL,
   con = NULL,
   update = FALSE,
   ...
@@ -47,7 +47,7 @@ prep_spatial_prediction(
   model_id,
   species_id,
   user_id,
-  material_settings = "[]",
+  material_settings = NULL,
   con = NULL,
   update = FALSE,
   ...
@@ -57,9 +57,8 @@ prep_observations(
   x,
   species,
   model_id,
-  species_id,
   user_id,
-  material_settings = "[]",
+  material_settings = NULL,
   con = NULL,
   update = FALSE,
   ...
@@ -69,9 +68,8 @@ prep_model_summary(
   x,
   species,
   model_id,
-  species_id,
   user_id,
-  material_settings = "[]",
+  material_settings = NULL,
   con = NULL,
   update = FALSE,
   ...
@@ -81,9 +79,8 @@ prep_model_fit(
   x,
   species,
   model_id,
-  species_id,
   user_id,
-  material_settings = "[]",
+  material_settings = NULL,
   con = NULL,
   update = FALSE,
   ...

@@ -42,40 +42,44 @@ upload_material <- function(
     # FIXME: handle overwrite based on update T/F
     write_file(x, fo, ...)
 
-    if (update) {
-        mtid <- make_material_id(
-            model_id = model_id,
-            species_id = species_id,
-            component_id = component_id
-        )
-        mt <- db_read_table(con, table_name = "materials")
-        mt <- mt |>
-            dplyr::filter(.data$material_id == .env$mtid)
-        mt$material_modify_user <- user_id
-        mt$material_modify_time <- timestamp_to(now())
-        if (!is.null(material_settings)) {
-            mt$material_settings <- material_settings
-        }
-    } else {
-        mt <- prepare_material_entry(
-            model_id = model_id,
-            species_id = species_id,
-            component_id = component_id,
-            user_id = user_id,
-            material_settings = if (is.null(material_settings)) {
-                "[]"
-            } else {
-                material_settings
+    if (!is.null(con)) {
+        if (update) {
+            mtid <- make_material_id(
+                model_id = model_id,
+                species_id = species_id,
+                component_id = component_id
+            )
+            mt <- db_read_table(con, table_name = "materials")
+            mt <- mt |>
+                dplyr::filter(.data$material_id == .env$mtid)
+            mt$material_modify_user <- user_id
+            mt$material_modify_time <- timestamp_to(now())
+            if (!is.null(material_settings)) {
+                mt$material_settings <- material_settings
             }
+        } else {
+            drule <- get_comp_rule(component_id, "display")
+            ms <- jsonlite::toJSON(drule$materials_settings)
+            mt <- prepare_material_entry(
+                model_id = model_id,
+                species_id = species_id,
+                component_id = component_id,
+                user_id = user_id,
+                material_settings = if (is.null(material_settings)) {
+                    ms
+                } else {
+                    material_settings
+                }
+            )
+        }
+        db_write_table(
+            con = con,
+            table = "materials",
+            data = mt,
+            mode = if (update) "update" else "insert",
+            check = TRUE
         )
     }
-    db_write_table(
-        con = con,
-        table = "materials",
-        data = mt,
-        mode = if (update) "update" else "insert",
-        check = TRUE
-    )
     invisible(TRUE)
 }
 
@@ -98,6 +102,7 @@ prep_deployment_questions <- function(
     x = NULL,
     ...
 ) {
+    cat("> Preparing deployment questions\n")
     if (is.null(x)) {
         q <- sdmEvalToolCore::default_questions
     } else {
@@ -112,6 +117,8 @@ prep_deployment_questions <- function(
         "deployment_questions",
         x = q,
         deployment_id = deployment_id,
+        model_id = NA_character_,
+        species_id = NA_character_,
         ...
     )
     invisible(TRUE)
@@ -124,10 +131,13 @@ prep_deployment_settings <- function(
     x,
     ...
 ) {
+    cat("> Preparing deployment settings\n")
     upload_material(
         "deployment_settings",
         x = jsonlite::toJSON(x),
         deployment_id = deployment_id,
+        model_id = NA_character_,
+        species_id = NA_character_,
         ...
     )
     invisible(TRUE)
@@ -143,8 +153,10 @@ prep_deployment_subunits <- function(
     square = TRUE,
     ...
 ) {
+    cat("> Preparing deployment subunits\n")
+    reference <- terra::project(reference, "epsg:4326")
+    bbox <- sf::st_as_sfc(sf::st_bbox(reference))
     if (is.null(x)) {
-        bbox <- sf::st_as_sfc(sf::st_bbox(reference))
         su_gr <- sf::st_make_grid(bbox, n = n, square = square)
         su <- sf::st_sf(
             subunit_id = as.character(seq_len(length(su_gr))),
@@ -160,13 +172,16 @@ prep_deployment_subunits <- function(
         su$id <- NULL
     } else {
         su <- x[, "subunit_id"]
-        su <- sf::st_simplify(su, TRUE, 10)
         su <- sf::st_transform(su, 4326)
+        su <- sf::st_simplify(su, TRUE, 10)
+        su <- suppressWarnings(sf::st_intersection(su, bbox))
     }
     upload_material(
         "deployment_subunits",
         x = su,
         deployment_id = deployment_id,
+        model_id = NA_character_,
+        species_id = NA_character_,
         ...
     )
     invisible(TRUE)
@@ -196,11 +211,12 @@ prep_predictor_raster <- function(
     resolution = 5,
     model_id,
     user_id,
-    material_settings = "[]",
+    material_settings = NULL,
     con = NULL,
     update = FALSE,
     ...
 ) {
+    cat("> Preparing predictor raster\n")
     x <- terra::resample(x, resolution)
     x <- terra::project(x, "epsg:4326")
     upload_material(
@@ -223,11 +239,12 @@ prep_predictor_metadata <- function(
     x,
     model_id,
     user_id,
-    material_settings = "[]",
+    material_settings = NULL,
     con = NULL,
     update = FALSE,
     ...
 ) {
+    cat("> Preparing predictor metadata\n")
     rule <- get_comp_rule("predictor_metadata", "upload")
     x <- x[, rule$output$columns]
     upload_material(
@@ -250,11 +267,12 @@ prep_model_metadata <- function(
     x,
     model_id,
     user_id,
-    material_settings = "[]",
+    material_settings = NULL,
     con = NULL,
     update = FALSE,
     ...
 ) {
+    cat("> Preparing model metadata\n")
     upload_material(
         "model_metadata",
         x = x,
@@ -276,11 +294,12 @@ prep_spatial_prediction <- function(
     model_id,
     species_id,
     user_id,
-    material_settings = "[]",
+    material_settings = NULL,
     con = NULL,
     update = FALSE,
     ...
 ) {
+    cat("> Preparing spatial prediction for species", species_id, "\n")
     x <- terra::project(x, "epsg:4326")
     upload_material(
         "spatial_prediction",
@@ -302,16 +321,16 @@ prep_observations <- function(
     x,
     species,
     model_id,
-    species_id,
     user_id,
-    material_settings = "[]",
+    material_settings = NULL,
     con = NULL,
     update = FALSE,
     ...
 ) {
-    SPP <- colnames(x)[colnames(x) %in% species$species_id]
-    x$date <- as.POSIXct(x$date)
+    SPP <- sort(colnames(x)[colnames(x) %in% species$species_id])
+    x$time <- as.POSIXct(x$time)
     for (species_id in SPP) {
+        cat("> Preparing observations for species", species_id, "\n")
         z <- x[, c("latitude", "longitude", "time", "method", species_id)]
         colnames(z) <- c("latitude", "longitude", "time", "method", "status")
         z <- sf::st_as_sf(z, coords = c("longitude", "latitude"))
@@ -344,15 +363,15 @@ prep_model_summary <- function(
     x,
     species,
     model_id,
-    species_id,
     user_id,
-    material_settings = "[]",
+    material_settings = NULL,
     con = NULL,
     update = FALSE,
     ...
 ) {
-    SPP <- colnames(x)[colnames(x) %in% species$species_id]
+    SPP <- sort(unique(x$species_id[x$species_id %in% species$species_id]))
     for (species_id in SPP) {
+        cat("> Preparing model summary for species", species_id, "\n")
         z <- x[x$species_id == species_id, ]
         upload_material(
             "model_summary",
@@ -375,17 +394,18 @@ prep_model_fit <- function(
     x,
     species,
     model_id,
-    species_id,
     user_id,
-    material_settings = "[]",
+    material_settings = NULL,
     con = NULL,
     update = FALSE,
     ...
 ) {
-    SPP <- colnames(x)[colnames(x) %in% species$species_id]
+    SPP <- sort(unique(x$species_id[x$species_id %in% species$species_id]))
     for (species_id in SPP) {
+        cat("> Preparing model fit for species", species_id, "\n")
         z <- x[x$species_id == species_id, ]
-        # z <- data.frame(metric = colnames(z), value = unlist(z))
+        z$species_id <- NULL
+        z <- data.frame(metric = colnames(z), value = unlist(z))
         upload_material(
             "model_fit",
             x = z,
