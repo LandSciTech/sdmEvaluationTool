@@ -21,6 +21,7 @@ Imports:
     jsonlite,
     lorem,
     sf,
+    suntools,
     RSQLite,
     terra,
     rlang

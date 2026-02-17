@@ -1,23 +1,7 @@
-# Prepare materials: save and add a db entry
-# observations - DONE
-# model_metadata - DONE
-# predictor_metadata - DONE
-# predictor_raster - DONE
-# spatial_prediction - DONE
-# model_summary - DONE
-# model_fit - DONE
-# deployment_settings - DONE only file upload, but should write to db too?
-# deployment_questions - DONE only file upload
-# deployment_subunits - DONE only file upload
-
 # FIXME: later add logic here that recognizes local file vs remote upload
 # e.g. if path starts with http then use upload
-# sdmEvalToolCore::db_write_table have to be replaced by API function
+# db_write_table have to be replaced by API function
 # fun(api_endpoint_url, data, callback_url)
-
-# FIXME: add update=TRUE argument
-# this would pull the entry from db and would update the modify user/time fields
-# besides overwriting the file itself
 
 #' Write File and Insert/Update Material DB Entry
 #'
@@ -46,8 +30,8 @@ upload_material <- function(
     update = FALSE,
     ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule(component_id, "upload")
-    fo <- sdmEvalToolCore::make_target_path(
+    rule <- get_comp_rule(component_id, "upload")
+    fo <- make_target_path(
         rule$output$path,
         data = list(
             model_id = model_id,
@@ -56,24 +40,24 @@ upload_material <- function(
         )
     )
     # FIXME: handle overwrite based on update T/F
-    sdmEvalToolCore::write_file(x, fo, ...)
+    write_file(x, fo, ...)
 
     if (update) {
-        mtid <- sdmEvalToolCore::make_material_id(
+        mtid <- make_material_id(
             model_id = model_id,
             species_id = species_id,
             component_id = component_id
         )
-        mt <- sdmEvalToolCore::db_read_table(con, table_name = "materials")
+        mt <- db_read_table(con, table_name = "materials")
         mt <- mt |>
             dplyr::filter(.data$material_id == .env$mtid)
         mt$material_modify_user <- user_id
-        mt$material_modify_time <- sdmEvalToolCore::timestamp_to(sdmEvalToolCore::now())
+        mt$material_modify_time <- timestamp_to(now())
         if (!is.null(material_settings)) {
             mt$material_settings <- material_settings
         }
     } else {
-        mt <- sdmEvalToolCore::prepare_material_entry(
+        mt <- prepare_material_entry(
             model_id = model_id,
             species_id = species_id,
             component_id = component_id,
@@ -85,7 +69,7 @@ upload_material <- function(
             }
         )
     }
-    sdmEvalToolCore::db_write_table(
+    db_write_table(
         con = con,
         table = "materials",
         data = mt,
@@ -95,12 +79,19 @@ upload_material <- function(
     invisible(TRUE)
 }
 
-#' Prepare Deployment Questions
+#' Prepare Deployment Materials
 #'
 #' @param deployment_id Deployment ID.
-#' @param x Table with questions or `NULL`.
+#' @param x An object to upload.
+#' @param reference Reference raster.
+#' @param n Number of grid cells in x and y direction.
+#' @param square Logical. If `FALSE``, create hexagonal grid.
 #' @param ... Arguments passed to the write function.
 #'
+#' @name upload-deployments
+NULL
+
+#' @rdname upload-deployments
 #' @export
 prep_deployment_questions <- function(
     deployment_id,
@@ -112,7 +103,7 @@ prep_deployment_questions <- function(
     } else {
         q <- x
     }
-    q <- sdmEvalToolCore::combine_questions(q)
+    q <- combine_questions(q)
     v <- sapply(q$values, \(z) {
         paste0(z, collapse = ", ")
     })
@@ -126,12 +117,7 @@ prep_deployment_questions <- function(
     invisible(TRUE)
 }
 
-#' Prepare Deployment Settings
-#'
-#' @param deployment_id Deployment ID.
-#' @param x Lits with deployment.
-#' @param ... Arguments passed to the write function.
-#'
+#' @rdname upload-deployments
 #' @export
 prep_deployment_settings <- function(
     deployment_id,
@@ -147,15 +133,7 @@ prep_deployment_settings <- function(
     invisible(TRUE)
 }
 
-#' Prepare Deployment Subunits
-#'
-#' @param deployment_id Deployment ID.
-#' @param x A spatial file with subunits or `NULL`.
-#' @param reference Reference raster.
-#' @param n Number of grid cells in x and y direction.
-#' @param square Logical. If `FALSE``, create hexagonal grid.
-#' @param ... Arguments passed to the write function.
-#'
+#' @rdname upload-deployments
 #' @export
 prep_deployment_subunits <- function(
     deployment_id,
@@ -195,17 +173,23 @@ prep_deployment_subunits <- function(
 }
 
 
-#' Prepare Predictor Raster
+#' Prepare Upload Materials
 #'
-#' @param x Raster file.
+#' @param x An object to upload.
 #' @param resolution Raster resampling resolution
 #' @param model_id Model ID.
+#' @param species_id Species ID.
 #' @param user_id User ID.
 #' @param material_settings Material settings.
+#' @param species Reference species table.
 #' @param con Database connection (use `NULL` to avoid inserting new record).
 #' @param update Logical. Is this a new entry or an update to an existing one.
 #' @param ... Arguments passed to the write function.
 #'
+#' @name upload-materials
+NULL
+
+#' @rdname upload-materials
 #' @export
 prep_predictor_raster <- function(
     x,
@@ -233,16 +217,7 @@ prep_predictor_raster <- function(
     invisible(TRUE)
 }
 
-#' Prepare Predictor Metadata
-#'
-#' @param x Predictor metadata table.
-#' @param model_id Model ID.
-#' @param user_id User ID.
-#' @param material_settings Material settings.
-#' @param con Database connection (use `NULL` to avoid inserting new record).
-#' @param update Logical. Is this a new entry or an update to an existing one.
-#' @param ... Arguments passed to the write function.
-#'
+#' @rdname upload-materials
 #' @export
 prep_predictor_metadata <- function(
     x,
@@ -253,7 +228,7 @@ prep_predictor_metadata <- function(
     update = FALSE,
     ...
 ) {
-    rule <- sdmEvalToolCore::get_comp_rule("predictor_metadata", "upload")
+    rule <- get_comp_rule("predictor_metadata", "upload")
     x <- x[, rule$output$columns]
     upload_material(
         "predictor_metadata",
@@ -269,16 +244,7 @@ prep_predictor_metadata <- function(
     invisible(TRUE)
 }
 
-#' Prepare Model Metadata
-#'
-#' @param x ODMAP table.
-#' @param model_id Model ID.
-#' @param user_id User ID.
-#' @param material_settings Material settings.
-#' @param con Database connection (use `NULL` to avoid inserting new record).
-#' @param update Logical. Is this a new entry or an update to an existing one.
-#' @param ... Arguments passed to the write function.
-#'
+#' @rdname upload-materials
 #' @export
 prep_model_metadata <- function(
     x,
@@ -303,17 +269,7 @@ prep_model_metadata <- function(
     invisible(TRUE)
 }
 
-#' Prepare Spatial Prediction
-#'
-#' @param x Raster file.
-#' @param model_id Model ID.
-#' @param species_id Species ID.
-#' @param user_id User ID.
-#' @param material_settings Material settings.
-#' @param con Database connection (use `NULL` to avoid inserting new record).
-#' @param update Logical. Is this a new entry or an update to an existing one.
-#' @param ... Arguments passed to the write function.
-#'
+#' @rdname upload-materials
 #' @export
 prep_spatial_prediction <- function(
     x,
@@ -340,18 +296,7 @@ prep_spatial_prediction <- function(
     invisible(TRUE)
 }
 
-#' Prepare Observations
-#'
-#' @param x Table with multi species observations.
-#' @param species Reference species table.
-#' @param model_id Model ID.
-#' @param species_id Species ID.
-#' @param user_id User ID.
-#' @param material_settings Material settings.
-#' @param con Database connection (use `NULL` to avoid inserting new record).
-#' @param update Logical. Is this a new entry or an update to an existing one.
-#' @param ... Arguments passed to the write function.
-#'
+#' @rdname upload-materials
 #' @export
 prep_observations <- function(
     x,
@@ -393,18 +338,7 @@ prep_observations <- function(
     invisible(TRUE)
 }
 
-#' Prepare Model Summary
-#'
-#' @param x Table with multi species model summary.
-#' @param species Reference species table.
-#' @param model_id Model ID.
-#' @param species_id Species ID.
-#' @param user_id User ID.
-#' @param material_settings Material settings.
-#' @param con Database connection (use `NULL` to avoid inserting new record).
-#' @param update Logical. Is this a new entry or an update to an existing one.
-#' @param ... Arguments passed to the write function.
-#'
+#' @rdname upload-materials
 #' @export
 prep_model_summary <- function(
     x,
@@ -435,18 +369,7 @@ prep_model_summary <- function(
     invisible(TRUE)
 }
 
-#' Prepare Observations
-#'
-#' @param x Table with multi species observations.
-#' @param species Reference species table.
-#' @param model_id Model ID.
-#' @param species_id Species ID.
-#' @param user_id User ID.
-#' @param material_settings Material settings.
-#' @param con Database connection (use `NULL` to avoid inserting new record).
-#' @param update Logical. Is this a new entry or an update to an existing one.
-#' @param ... Arguments passed to the write function.
-#'
+#' @rdname upload-materials
 #' @export
 prep_model_fit <- function(
     x,
