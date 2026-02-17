@@ -20,6 +20,12 @@ and implements the SDM Evaluation Tool.
 
 ## Install
 
+Prerequisites:
+
+- [R](https://cran.r-project.org/)
+- [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
+- [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or a similar environment of you choosing
+
 Before installation, first create a new RStudio Project where you'll store the 
 data required for this tool (_File_ > _New Project_). 
 Put it in a location you'll remember (e.g., `c:/users/user_name/work/sdmEvaluationTool`).
