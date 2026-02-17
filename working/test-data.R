@@ -7,10 +7,10 @@ library(DBI)
 library(RSQLite)
 library(jsonlite)
 library(suntools)
+devtools::load_all("sdmEvalToolCore")
 
 path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
 conf <- yaml::read_yaml("spec/config.yml")
-devtools::load_all("sdmEvalToolCore")
 # DIR <- "./misc/test"
 DIR <- "./misc/sdm_evaluation_results"
 sdmevaltool_options(base = DIR) # use the misc folder
@@ -531,16 +531,6 @@ file.copy(
     make_target_path("sdm_evaluation_db.sqlite"),
     make_target_path("sdm_evaluation_db_og.sqlite")
 )
-
-od <- setwd("misc")
-utils::zip(
-    "./sdm_evaluation_results.zip",
-    file.path(
-        "sdm_evaluation_results",
-        list.files("sdm_evaluation_results", recursive = TRUE)
-    )
-)
-setwd(od)
 
 od <- setwd("misc")
 utils::zip(
