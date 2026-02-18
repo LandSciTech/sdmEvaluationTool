@@ -270,7 +270,7 @@ When the info is uploaded, we organize the files inside the `./materials/` folde
 ./sdm_evaluation_db.sqlite
 
 ./materials/<model_id>/
-./materials/<model_id>/metadata/model_metadata.csv
+./materials/<model_id>/metadata/model_metadata.parquet
 ./materials/<model_id>/predictors/predictor_metadata.parquet
 ./materials/<model_id>/predictors/predictor_raster.tif
 
@@ -369,3 +369,19 @@ If this is a file server, we can have static HTML files displaying rasters:
 ./shared/predictors/<predictor_id>/predictor_raster.tif
 ./shared/predictors/<predictor_id>/index.html
 ```
+
+We will also consider storing generated reports organized by deployments
+and evaluators.
+
+```bash
+./deployments/<deployment_id>/reports/sdm_report_<deployment_id>_synthesis.<html/docx/pdf>
+./deployments/<deployment_id>/reports/sdm_report_<deployment_id>_<user_id>.<html/docx/pdf>
+./deployments/<deployment_id>/reports/sdm_report_<deployment_id>_synthesis.gpkg
+./deployments/<deployment_id>/reports/sdm_report_<deployment_id>_synthesis.csv
+```
+
+The reports are rendered into one or more formats (html, docx, pdf),
+the outputs from the synthesis will be saved as geospatial files
+(subunits with evaluations as attributes, as gpkg) and as tables (csv).
+Reports can be generated on demand or generated once the evaluation process
+is closed.

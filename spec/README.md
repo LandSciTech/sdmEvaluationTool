@@ -298,6 +298,8 @@ determined here, i.e. which page/tab/section it will be displayed.
 Components can be defined for **materials** or for **deployments**. Here
 are the material specific components:
 
+- **app** (mandatory): A special component to store high level reason
+  for not completing an evaluation.
 - **observations** (mandatory): Detections or counts by location and
   timestamp for a single or multiple species.
 - **model_metadata** (mandatory): ODMAP protocol metadata.
@@ -315,6 +317,21 @@ Here are the deployment specific components:
 - **deployment_settings** (mandatory): Deployment settings.
 - **deployment_subunits** (optional): Deployment subunits.
 - **deployment_questions** (optional): Deployment questions.
+
+### (`app`)
+
+A special component to store high level reason for not completing an
+evaluation.
+
+**Mandatory**: Yes
+
+**Input**:
+
+**Output**:
+
+Output path:
+
+**Display**:
 
 ### Observations (`observations`)
 
@@ -543,7 +560,7 @@ When the info is uploaded, we organize the files inside the
 ./sdm_evaluation_db.sqlite
 
 ./materials/<model_id>/
-./materials/<model_id>/metadata/model_metadata.csv
+./materials/<model_id>/metadata/model_metadata.parquet
 ./materials/<model_id>/predictors/predictor_metadata.parquet
 ./materials/<model_id>/predictors/predictor_raster.tif
 
@@ -602,6 +619,8 @@ previous uploads.
 Question types:
 
 - **Simple Text Input**: Free form text input.
+- **Yes/No Question**: A Yes or No question. Follow up questions are
+  conditional on Yes.
 - **Ordinal**: Ordinal for importance or difficulty (-2 – +2) to answer
   questions such as: To what degree …
 - **Spatial**: A list of subunit IDs saved for each of the values.
@@ -644,3 +663,19 @@ server, we can have static HTML files displaying rasters:
 ./shared/predictors/<predictor_id>/predictor_raster.tif
 ./shared/predictors/<predictor_id>/index.html
 ```
+
+We will also consider storing generated reports organized by deployments
+and evaluators.
+
+``` bash
+./deployments/<deployment_id>/reports/sdm_report_<deployment_id>_synthesis.<html/docx/pdf>
+./deployments/<deployment_id>/reports/sdm_report_<deployment_id>_<user_id>.<html/docx/pdf>
+./deployments/<deployment_id>/reports/sdm_report_<deployment_id>_synthesis.gpkg
+./deployments/<deployment_id>/reports/sdm_report_<deployment_id>_synthesis.csv
+```
+
+The reports are rendered into one or more formats (html, docx, pdf), the
+outputs from the synthesis will be saved as geospatial files (subunits
+with evaluations as attributes, as gpkg) and as tables (csv). Reports
+can be generated on demand or generated once the evaluation process is
+closed.
