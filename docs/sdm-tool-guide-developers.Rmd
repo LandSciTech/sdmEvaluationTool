@@ -1,0 +1,45 @@
+---
+output:
+  md_document:
+    variant: gfm
+---
+
+# SDM Model Evaluation Tool User Guide for Developers
+
+> How to make changes to R packages
+
+## Installation
+
+devtools, roxygen, rcmdcheck
+
+Linting using air
+
+## Core vs UI
+
+What goes into which package
+
+## Config and core data sets
+
+Explain how the config is used in the packages
+
+## Writing functions
+
+Naming conventions etc.
+
+## Documenting functions
+
+Roxygen style comments
+
+## Checking the package
+
+See RELEASE file
+
+## Shiny modules
+
+Intro to modules
+
+### Organization
+
+Naming and organization logic
+
+What is in each file (i.e. testing UI etc., UI/server function, utils)

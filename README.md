@@ -12,6 +12,7 @@
 This repo contains R packages, Shiny apps, and documentation that describes
 and implements the SDM Evaluation Tool.
 
+- [`docs`](./docs/): Documentation for _evaluators_, _modelers_, and _developers_.
 - [`misc`](./misc/): A folder where we keep gitignored files (materials used for testing, etc.)
 - [`sdmEvalToolCore`](./sdmEvalToolCore/): R package implementing the SDM Evaluation Tool core functionality
 - [`sdmEvalToolUI`](./sdmEvalToolUI/): R package implementing the SDM Evaluation Tool UI modules and Shiny apps
