@@ -241,14 +241,16 @@ obs_map_raster <- function(
             layer = "absence",
             name = "Absence",
             palette = "#90d5ff",
-            add_legend = FALSE
+            add_legend = FALSE,
+            min_0 = TRUE
         ) |>
         add_raster(
             obs,
             layer = "presence",
             name = "Presence",
             palette = "#36404a",
-            add_legend = FALSE
+            add_legend = FALSE,
+            min_0 = TRUE
         ) |>
         add_subunits(subunits) |>
         add_control(groups = c("Absence", "Presence"))
