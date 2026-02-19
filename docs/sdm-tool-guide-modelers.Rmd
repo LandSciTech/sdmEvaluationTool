@@ -23,3 +23,9 @@ Use cases
 ### Subunits
 
 ### Questions
+
+Notes:
+
+- how to copy an existing deployment (deployment materials etc.)
+  to help with multiple use cases etc. (copy everything but change use case and questions etc)
+- also revisit if questions & subunits should be added to the db or keep at the file level

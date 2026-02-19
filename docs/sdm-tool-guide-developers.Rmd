@@ -43,3 +43,7 @@ Intro to modules
 Naming and organization logic
 
 What is in each file (i.e. testing UI etc., UI/server function, utils)
+
+## Extending the configuration
+
+How to add new components (e.g. extrapolation maps)
