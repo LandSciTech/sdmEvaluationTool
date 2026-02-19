@@ -26,21 +26,21 @@ NULL
 ## unix times in seconds
 ## function to transform unix dates to POSIXct
 timestamp_from <- function(ms, tz = NULL, ...) {
-    if (is.null(tz)) {
-        tz <- sdmevaltool_options()$tz
-    }
-    as.POSIXct(as.numeric(ms), tz = tz, origin = "1970-01-01", ...)
+  if (is.null(tz)) {
+    tz <- sdmevaltool_options()$tz
+  }
+  as.POSIXct(as.numeric(ms), tz = tz, origin = "1970-01-01", ...)
 }
 
 #' @export
 #' @rdname timestamp
 ## turning POSIXct to unix time
 timestamp_to <- function(dt) {
-    as.integer(round(unclass(as.POSIXct(dt))))
+  as.integer(round(unclass(as.POSIXct(dt))))
 }
 
 #' @export
 #' @rdname timestamp
 now <- function() {
-    Sys.time()
+  Sys.time()
 }

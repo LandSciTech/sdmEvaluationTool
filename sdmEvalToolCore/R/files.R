@@ -9,7 +9,7 @@
 #'
 #' @export
 get_file_ext <- function(path) {
-    tolower(tools::file_ext(basename(path)))
+  tolower(tools::file_ext(basename(path)))
 }
 
 #' Make Target Path
@@ -31,11 +31,11 @@ get_file_ext <- function(path) {
 #'
 #' @export
 make_target_path <- function(path, data = list(), base = NULL) {
-    if (is.null(base)) {
-        base <- sdmevaltool_options()$base
-    }
-    path <- glue::glue_data(.x = data, path)
-    file.path(base, path)
+  if (is.null(base)) {
+    base <- sdmevaltool_options()$base
+  }
+  path <- glue::glue_data(.x = data, path)
+  file.path(base, path)
 }
 
 #' Make Directory
@@ -48,7 +48,7 @@ make_target_path <- function(path, data = list(), base = NULL) {
 #'
 #' @export
 make_dir <- function(path, ...) {
-    dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE, ...)
+  dir.create(dirname(path), showWarnings = FALSE, recursive = TRUE, ...)
 }
 
 #' Read File
@@ -60,20 +60,20 @@ make_dir <- function(path, ...) {
 #'
 #' @export
 read_file <- function(path, ...) {
-    ext <- get_file_ext(path)
-    switch(
-        ext,
-        "csv" = utils::read.csv(path, ...),
-        "rds" = base::readRDS(path, ...),
-        "parquet" = arrow::read_parquet(path, ...),
-        "gpkg" = sf::read_sf(path, ...),
-        "tif" = terra::rast(path, ...),
-        "json" = jsonlite::fromJSON(readLines(path), ...),
-        "md" = readLines(path, ...),
-        "rmd" = readLines(path, ...),
-        "txt" = readLines(path, ...),
-        stop(sprintf("File extension %s not recognized", ext))
-    )
+  ext <- get_file_ext(path)
+  switch(
+    ext,
+    "csv" = utils::read.csv(path, ...),
+    "rds" = base::readRDS(path, ...),
+    "parquet" = arrow::read_parquet(path, ...),
+    "gpkg" = sf::read_sf(path, ...),
+    "tif" = terra::rast(path, ...),
+    "json" = jsonlite::fromJSON(readLines(path), ...),
+    "md" = readLines(path, ...),
+    "rmd" = readLines(path, ...),
+    "txt" = readLines(path, ...),
+    stop(sprintf("File extension %s not recognized", ext))
+  )
 }
 
 #' Write File
@@ -86,19 +86,19 @@ read_file <- function(path, ...) {
 #'
 #' @export
 write_file <- function(x, path, ...) {
-    make_dir(path)
-    ext <- get_file_ext(path)
-    switch(
-        ext,
-        "csv" = utils::write.csv(x, path, ...),
-        "rds" = base::saveRDS(x, path, ...),
-        "parquet" = arrow::write_parquet(x, path, ...),
-        "gpkg" = sf::write_sf(x, path, delete_dsn = file.exists(path), ...),
-        "tif" = terra::writeRaster(x, path, overwrite = TRUE, ...),
-        "json" = writeLines(jsonlite::toJSON(x, ...), path),
-        "md" = writeLines(x, path, ...),
-        "rmd" = writeLines(x, path, ...),
-        "txt" = writeLines(x, path, ...),
-        stop(sprintf("File extension %s not recognized", ext))
-    )
+  make_dir(path)
+  ext <- get_file_ext(path)
+  switch(
+    ext,
+    "csv" = utils::write.csv(x, path, ...),
+    "rds" = base::saveRDS(x, path, ...),
+    "parquet" = arrow::write_parquet(x, path, ...),
+    "gpkg" = sf::write_sf(x, path, delete_dsn = file.exists(path), ...),
+    "tif" = terra::writeRaster(x, path, overwrite = TRUE, ...),
+    "json" = writeLines(jsonlite::toJSON(x, ...), path),
+    "md" = writeLines(x, path, ...),
+    "rmd" = writeLines(x, path, ...),
+    "txt" = writeLines(x, path, ...),
+    stop(sprintf("File extension %s not recognized", ext))
+  )
 }

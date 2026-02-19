@@ -39,9 +39,9 @@
 #' get_fields("components")
 #' @export
 get_fields <- function(table_name) {
-    tab <- sdmEvalToolCore::fields
-    table_name <- match.arg(table_name, unique(tab$table), several.ok = FALSE)
-    tab[tab$table == table_name, colnames(tab) != "table"]
+  tab <- sdmEvalToolCore::fields
+  table_name <- match.arg(table_name, unique(tab$table), several.ok = FALSE)
+  tab[tab$table == table_name, colnames(tab) != "table"]
 }
 
 #' Scaffold Table
@@ -56,14 +56,14 @@ get_fields <- function(table_name) {
 #'
 #' @export
 scaffold_table <- function(table_name) {
-    tt <- get_fields(table_name)
-    cat(
-        paste0(table_name, " <- data.frame("),
-        paste0("    ", tt$field[1:(nrow(tt) - 1)], " = ...,"),
-        paste0("    ", tt$field[nrow(tt)], " = ...)"),
-        sep = "\n"
-    )
-    invisible(tt)
+  tt <- get_fields(table_name)
+  cat(
+    paste0(table_name, " <- data.frame("),
+    paste0("    ", tt$field[1:(nrow(tt) - 1)], " = ...,"),
+    paste0("    ", tt$field[nrow(tt)], " = ...)"),
+    sep = "\n"
+  )
+  invisible(tt)
 }
 
 #' Check Table
@@ -100,73 +100,73 @@ scaffold_table <- function(table_name) {
 #'
 #' @export
 check_table <- function(x, table_name, dryrun = FALSE) {
-    verbose <- sdmevaltool_options()$verbose
-    if (verbose >= 1) {
-        cat("Checking table", sQuote(table_name))
+  verbose <- sdmevaltool_options()$verbose
+  if (verbose >= 1) {
+    cat("Checking table", sQuote(table_name))
+  }
+  tt <- get_fields(table_name)
+  ok <- TRUE
+  c1 <- setdiff(colnames(x), tt$field)
+  if (length(c1) > 0L) {
+    ok <- FALSE
+    if (verbose >= 2) {
+      cat(
+        "\n* [FAIL] Additional fields found:",
+        paste0(c1, collapse = ", ")
+      )
     }
-    tt <- get_fields(table_name)
-    ok <- TRUE
-    c1 <- setdiff(colnames(x), tt$field)
-    if (length(c1) > 0L) {
-        ok <- FALSE
-        if (verbose >= 2) {
-            cat(
-                "\n* [FAIL] Additional fields found:",
-                paste0(c1, collapse = ", ")
-            )
-        }
-    } else {
-        if (verbose >= 2) {
-            cat("\n* [OK] Checking additional fields")
-        }
+  } else {
+    if (verbose >= 2) {
+      cat("\n* [OK] Checking additional fields")
     }
-    c2 <- setdiff(tt$field, colnames(x))
-    if (length(c2) > 0L) {
-        ok <- FALSE
-        if (verbose >= 2) {
-            cat("\n* [FAIL] Missing fields:", paste0(c2, collapse = ", "))
-        }
-    } else {
-        if (verbose >= 2) {
-            cat("\n* [OK] Checking missing fields")
-        }
+  }
+  c2 <- setdiff(tt$field, colnames(x))
+  if (length(c2) > 0L) {
+    ok <- FALSE
+    if (verbose >= 2) {
+      cat("\n* [FAIL] Missing fields:", paste0(c2, collapse = ", "))
     }
-    cn <- intersect(tt$field, colnames(x))
-    for (i in cn) {
-        k <- which(tt$field == i)
-        ok_type <- switch(
-            tt$type[k],
-            "text" = is.character(x[[tt$field[k]]]),
-            "boolean" = is.logical(x[[tt$field[k]]]),
-            "jsonb" = is.character(x[[tt$field[k]]]),
-            "timestamp" = is.integer(x[[tt$field[k]]])
+  } else {
+    if (verbose >= 2) {
+      cat("\n* [OK] Checking missing fields")
+    }
+  }
+  cn <- intersect(tt$field, colnames(x))
+  for (i in cn) {
+    k <- which(tt$field == i)
+    ok_type <- switch(
+      tt$type[k],
+      "text" = is.character(x[[tt$field[k]]]),
+      "boolean" = is.logical(x[[tt$field[k]]]),
+      "jsonb" = is.character(x[[tt$field[k]]]),
+      "timestamp" = is.integer(x[[tt$field[k]]])
+    )
+    if (!ok_type) {
+      ok <- FALSE
+      if (verbose >= 2) {
+        cat(
+          "\n* [FAIL] Type for field",
+          sQuote(tt$field[k]),
+          "should be",
+          tt$type[k],
+          "but found",
+          typeof(x[[tt$field[k]]])
         )
-        if (!ok_type) {
-            ok <- FALSE
-            if (verbose >= 2) {
-                cat(
-                    "\n* [FAIL] Type for field",
-                    sQuote(tt$field[k]),
-                    "should be",
-                    tt$type[k],
-                    "but found",
-                    typeof(x[[tt$field[k]]])
-                )
-            }
-        } else {
-            if (verbose >= 2) {
-                cat(
-                    "\n* [OK] Checking type for field",
-                    sQuote(tt$field[k])
-                )
-            }
-        }
+      }
+    } else {
+      if (verbose >= 2) {
+        cat(
+          "\n* [OK] Checking type for field",
+          sQuote(tt$field[k])
+        )
+      }
     }
-    if (verbose >= 1) {
-        cat("\n")
-    }
-    if (!dryrun && !ok) {
-        stop("Check for table ", sQuote(table_name), " FAILED")
-    }
-    invisible(ok)
+  }
+  if (verbose >= 1) {
+    cat("\n")
+  }
+  if (!dryrun && !ok) {
+    stop("Check for table ", sQuote(table_name), " FAILED")
+  }
+  invisible(ok)
 }
