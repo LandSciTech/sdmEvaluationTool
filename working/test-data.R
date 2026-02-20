@@ -7,10 +7,10 @@ library(DBI)
 library(RSQLite)
 library(jsonlite)
 library(suntools)
+devtools::load_all("sdmEvalToolCore")
 
 path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
 conf <- yaml::read_yaml("spec/config.yml")
-devtools::load_all("sdmEvalToolCore")
 # DIR <- "./misc/test"
 DIR <- "./misc/sdm_evaluation_results"
 sdmevaltool_options(base = DIR) # use the misc folder
@@ -173,9 +173,6 @@ materials_fun <- function(
 }
 materials <- NULL
 
-# --------- model_metadata ----
-# not yet available
-
 # --------- predictor_metadata ----
 
 rule <- get_comp_rule("predictor_metadata", "upload")
@@ -189,7 +186,7 @@ drule <- get_comp_rule("predictor_metadata", "display")
 ms <- jsonlite::toJSON(drule$materials_settings)
 materials <- materials_fun(materials, model_id, NA, "predictor_metadata", ms)
 
-# ------- ODMAP metadata --------------
+# --------- model_metadata / ODMAP ----
 
 rule <- get_comp_rule("model_metadata", "upload")
 fi <- file.path(path, "ODMAP", "ODMAP_Knight_2025-12-16.csv")
@@ -457,31 +454,23 @@ su$subunit_id <- su$ECOPROVINC
 su <- su[, "subunit_id"]
 
 su_gr <- sf::st_make_grid(su, n = 20)
-# su_gr <- sf::st_make_grid(su, square = FALSE)
+# su_gr <- sf::st_make_grid(su, n = 20, square = FALSE)
 
 su2 <- sf::st_sf(subunit_id = as.character(1:length(su_gr)), geometry = su_gr)
 su2 <- sf::st_transform(su2, 4326)
-su2$keep <- TRUE
 
-for (i in 1:nrow(su2)) {
-    rmsk <- terra::mask(r[[1]], su2[i, ])
-    if (all(is.na(values(rmsk)))) {
-        su2$keep[i] <- FALSE
-    }
-}
+su2$id <- seq_len(nrow(su2))
+u <- rasterize(su2, r[[1]], "id")
+values(u)[is.na(values(r[[1]]))] <- NA
+su2$keep <- su2$id %in% na.omit(unique(values(u)[, 1]))
 
-# ii <- sf::st_intersects(xy, su2)
 ii <- sf::st_intersects(xy, su2, sparse = FALSE)
-table(rast = su2$keep, xy = colSums(ii) > 0)
 su2$keep <- su2$keep | colSums(ii) > 0
 
 su2 <- su2[su2$keep, ]
 su2$keep <- NULL
-# m <- terra::extract(r[[1]], su2, method = "bilinear")
-# rr <- r[[1]]
-# values(rr) <- ifelse(is.na(m$mean), NA, m$ID)
-# plot(r[[1]])
-# plot(su2$geometry, add = TRUE)
+su2$id <- NULL
+
 
 fo <- make_target_path(
     "deployments/{deployment_id}/deployment_subunits.gpkg",
@@ -542,16 +531,6 @@ file.copy(
     make_target_path("sdm_evaluation_db.sqlite"),
     make_target_path("sdm_evaluation_db_og.sqlite")
 )
-
-od <- setwd("misc")
-utils::zip(
-    "./sdm_evaluation_results.zip",
-    file.path(
-        "sdm_evaluation_results",
-        list.files("sdm_evaluation_results", recursive = TRUE)
-    )
-)
-setwd(od)
 
 od <- setwd("misc")
 utils::zip(

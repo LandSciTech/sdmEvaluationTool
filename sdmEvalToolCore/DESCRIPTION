@@ -7,8 +7,7 @@ Authors@R: c(
     person("Steffi", "LaZerte", email = "sel@steffilazerte.ca", role = c("aut"),
            comment = c(ORCID = "0000-0002-7690-8360")))
 Description: The goal of sdmEvalToolCore is to implement the data model and 
-    non-interactive functionality for sdmEvalToolUI according to the SDM 
-    Evaluation Tool requirements.
+    common non-interactive functionality for the SDM Evaluation Tool packages.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -22,6 +21,7 @@ Imports:
     jsonlite,
     lorem,
     sf,
+    suntools,
     RSQLite,
     terra,
     rlang

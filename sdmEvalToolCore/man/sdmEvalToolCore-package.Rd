@@ -6,7 +6,7 @@
 \alias{sdmEvalToolCore-package}
 \title{sdmEvalToolCore: SDM Evaluation Tool Core Functions}
 \description{
-The goal of sdmEvalToolCore is to implement the data model and non-interactive functionality for sdmEvalToolUI according to the SDM Evaluation Tool requirements.
+The goal of sdmEvalToolCore is to implement the data model and common non-interactive functionality for the SDM Evaluation Tool packages.
 }
 \author{
 \strong{Maintainer}: Peter Solymos \email{psolymos@gmail.com} (\href{https://orcid.org/0000-0001-7337-1740}{ORCID})

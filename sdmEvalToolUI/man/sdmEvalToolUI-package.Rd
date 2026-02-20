@@ -6,7 +6,7 @@
 \alias{sdmEvalToolUI-package}
 \title{sdmEvalToolUI: SDM Evaluation Tool Shiny UI}
 \description{
-The goal of sdmEvalToolUI is to implement Shiny functionality according to the SDM Evaluation Tool requirements.
+The goal of sdmEvalToolUI is to implement Shiny functionality according to the SDM Evaluation Tool requirements to evaluate materials.
 }
 \author{
 \strong{Maintainer}: Peter Solymos \email{psolymos@gmail.com} (\href{https://orcid.org/0000-0001-7337-1740}{ORCID})
