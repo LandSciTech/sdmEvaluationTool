@@ -4,12 +4,22 @@
 \alias{sdm_tool}
 \title{Launch the SDM Evaluation Tool Shiny Application}
 \usage{
-sdm_tool(lang = "english", options = list(host = "0.0.0.0", port = 8080))
+sdm_tool(
+  lang = "english",
+  options = list(host = "0.0.0.0", port = 8080),
+  tabs = c("overview", "predictions", "observations", "model", "predictors",
+    "model_metadata"),
+  ...
+)
 }
 \arguments{
 \item{lang}{Character. Language of app; either \code{english} or \code{french}.}
 
 \item{options}{List. Shiny app options.}
+
+\item{tabs}{Character. List the tabs that the UI should have.}
+
+\item{...}{Other arguments passed to \code{\link[shiny:shinyApp]{shiny::shinyApp()}}.}
 }
 \value{
 A Shiny app object
