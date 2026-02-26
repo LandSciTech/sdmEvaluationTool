@@ -1105,6 +1105,24 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What other concerns or comments do you have about using the model for the intended model applications?
     fr: ""
   followup_level: 0
+# --------- deployment_subunits ------------
+- component: deployment_subunits
+  type: simple_text
+  order: 1
+  part: 0
+  body:
+    en: Describe your overall assessment regarding this species.
+    fr: ""
+  followup_level: 0
+- component: deployment_subunits
+  type: spatial
+  order: 2
+  part: 0
+  body:
+    en: Identify the areas on the map where you have hight confidence about your knowledge of the species.
+    fr: ""
+  values: ["Confident"]
+  followup_level: 0
 
 question_types:
   simple_text:
