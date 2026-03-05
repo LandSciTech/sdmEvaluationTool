@@ -30,7 +30,8 @@ test_page <- function(
         ),
         overview_inputs = reactiveVal(NULL),
         overview_update = reactiveVal(NULL),
-        abandoned = reactiveVal(NULL)
+        abandoned = reactiveVal(NULL),
+        unsaved = reactiveVal(NULL)
       )
     }
   } else {
@@ -40,7 +41,8 @@ test_page <- function(
         model_id = reactive(model_id),
         species_id = reactive(species_id),
         opts = purrr::map(opts, \(o) reactive(force(o))),
-        abandoned = reactiveVal(FALSE)
+        abandoned = reactiveVal(FALSE),
+        unsaved = reactiveVal(FALSE)
       )
     }
   }
