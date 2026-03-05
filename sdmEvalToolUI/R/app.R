@@ -57,6 +57,12 @@ sdm_tool <- function(
     unname()
 
   ui <- tagList(
+    div(
+      uiOutput("usecase"),
+      style = "text-align:center;",
+      class = "alert alert-success",
+      role = "alert"
+    ),
     bslib::page_navbar(
       id = "sdm", # Used for navigation, input$sdm
       title = "SDM Tool",
@@ -377,6 +383,26 @@ sdm_tool <- function(
     }) |>
       bindEvent(overview_inputs(), ignoreInit = TRUE)
 
+    # Deployment details -------------------------------------------------------
+    details <- reactive({
+      validate_ids(deployment_id = input$deployment_id)
+      con <- withr::local_db_connection(db_connect())
+
+      d <- dplyr::tbl(con, "deployments") |>
+        dplyr::collect() |>
+        dplyr::filter(.data$deployment_id == input$deployment_id)
+
+      d
+    })
+
+    output$usecase <- renderUI({
+      req(!is.null(details()))
+      d <- details()
+      d <- jsonlite::fromJSON(d$deployment_settings)
+      usecase <- d$use_case[[stringr::str_which(lang(), names(d$use_case))]]
+      tagList("Evaluating models in the context of ", strong(unlist(usecase)))
+    })
+
     # Mark unsaved -----------------------------------------------------------------
 
     observe({
@@ -400,7 +426,7 @@ sdm_tool <- function(
 
     # Modules --------------------------------
     # - Define overview separately to specify overview_inputs
-    mod_utils_details_server(deployment_id = reactive(input$deployment_id))
+    mod_utils_details_server(details = details)
 
     mod_page_overview_server(
       deployment_id = reactive(input$deployment_id),
@@ -444,7 +470,9 @@ sdm_theme <- function() {
     `model-colour` = "#DC851F",
     `enable-rounded` = FALSE,
     `modal-header-padding` = "1rem",
-    `success` = "#476146"
+    `success` = "#476146",
+    `alert-padding-x` = "0.3rem",
+    `alert-padding-y` = "0.3rem"
   ) |>
 
     # General styling
