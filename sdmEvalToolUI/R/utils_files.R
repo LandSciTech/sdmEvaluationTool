@@ -150,6 +150,7 @@ prep_files <- function(path, name, ...) {
 #'
 #' # Follow up questions
 #' prep_questions("model_fit", "deployment2", "bam_v5_can71", "BBWO")
+#' prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
 #'
 #' # Add evaluations
 #' #prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "draper")
@@ -242,6 +243,7 @@ prep_questions <- function(
 
 fetch_questions <- function(deployment_id, component_id) {
   # Do we have a valid set of deployment questions? If not use defaults
+
   q <- tryCatch(
     prep_deployments(deployment_id, "deployment_questions") |>
       dplyr::mutate(values = stringr::str_split(.data$values, ", ?")),

@@ -145,9 +145,7 @@ mod_utils_evaluations_server <- function(
       )
     })
 
-    # TODO: Save values temporarily, so not lost if don't "Save Responses"?
-    #   Highlight Save Responses in different colours if not saved
-    #   Highlight Page tab in different colours if not saved
+    # IDEA: Save values temporarily, so not lost if don't "Save Responses"?
     #   Modal warns user when switching deployments/models/species if have unsaved work.
 
     # Changes ------------------------
@@ -243,7 +241,7 @@ mod_utils_evaluations_server <- function(
     # Save evaluations ----------------------------------------------
 
     observe({
-      # TODO: Warn user if overwriting?
+      # IDEA: Warn user if overwriting?
       save_evaluations(
         questions = questions_init(),
         reactiveValuesToList(input),

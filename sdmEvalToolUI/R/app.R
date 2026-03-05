@@ -272,7 +272,7 @@ sdm_tool <- function(
       )
 
       removeModal()
-      # nav_select("sdm", "overview") # TODO: Go back to Overview?
+      # nav_select("sdm", "overview") # IDEA: Go back to Overview?
       overview_update(overview_update() + 1)
     }) |>
       bindEvent(input$save)
@@ -603,7 +603,7 @@ sdm_theme <- function() {
 #' sdm_inputs()
 
 sdm_inputs <- function(users) {
-  # TODO: Add tool tips with model/deployment descriptions on hover?
+  # IDEA: Add tool tips with model/deployment descriptions on hover?
   # Or other details somewhere?
   list(
     nav_item(
