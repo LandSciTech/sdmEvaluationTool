@@ -168,7 +168,6 @@ ui_questions <- function(
           )
 
           # Follow up questions
-          # TODO: FIGURE OUT CONDITION TO SHOW/NOT SHOW spatial
           if (part > 0) {
             parent_id <- stringr::str_replace(question_id, "\\d+$", "0")
             if (parent_spatial) {
