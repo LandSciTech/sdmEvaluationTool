@@ -38,7 +38,7 @@ db_timestamp <- function(x) {
 db_connect <- function(dbname = NULL, ...) {
   if (sdmevaltool_options()$db == "sqlite") {
     if (is.null(dbname)) {
-      dbname <- make_target_path("sdm_evaluation_db.sqlite")
+      dbname <- db_path()
     }
     db_con <- DBI::dbConnect(
       drv = RSQLite::SQLite(),
@@ -49,6 +49,15 @@ db_connect <- function(dbname = NULL, ...) {
     stop("Use SQLite for now...")
   }
   db_con
+}
+
+#' Path to Database
+#'
+#' @return Path to default database
+#'
+#' @export
+db_path <- function() {
+  make_target_path("sdm_evaluation_db.sqlite")
 }
 
 #' Disconnect from Database

@@ -29,12 +29,7 @@ mod_page_overview_ui <- function(id, title) {
     sdm_card(
       card_header(
         "Current status of review",
-        actionButton(
-          NS(id, "refresh"),
-          label = NULL,
-          icon = icon("arrows-rotate"),
-          class = "btn-mini btn-rnd btn-outline-success"
-        )
+        uiOutput(NS(id, "buttons"))
       ),
 
       reactable::reactableOutput(NS(id, "tbl_overview"))
@@ -67,6 +62,41 @@ mod_page_overview_server <- function(id = "overview", ...) {
   moduleServer(id, function(input, output, session) {
     # Setup
     tbl_updated <- reactiveVal(FALSE) # Tracks when tbl is updated so we can unnest the first column
+
+    # Buttons
+    output$buttons <- renderUI({
+      req(opts$user_role())
+
+      if (opts$user_role() == "admin") {
+        button <- downloadButton(
+          NS(id, "download"),
+          label = NULL,
+          class = "btn-mini btn-rnd btn-outline-success"
+        )
+      } else {
+        button <- actionButton(
+          NS(id, "refresh"),
+          label = NULL,
+          icon = icon("arrows-rotate"),
+          class = "btn-mini btn-rnd btn-outline-success"
+        )
+      }
+      button
+    })
+
+    # Download data for admins
+    output$download <- downloadHandler(
+      filename = function() {
+        stringr::str_replace(
+          basename(db_path()),
+          "(\\.[^\\.]*)$",
+          paste0("_", Sys.Date(), "\\1")
+        )
+      },
+      content = function(file) {
+        file.copy(db_path(), file)
+      }
+    )
 
     # Table for display
     tbl <- reactive({
@@ -163,7 +193,7 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #' components, and their completion status.
 #'
 #' @param tbl Data frame. Evaluation details from `evals_details()`
-#' @param user_role Character. User role ("modeler" or "evaluator")
+#' @param user_role Character. User role ("admin", "modeler", or "evaluator")
 #'
 #' @returns A reactable table object
 #'
@@ -175,12 +205,14 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #' #evals_table(tbl, "evaluator")
 #' tbl <- evals_details("testuser", "evaluator")
 #' evals_table(tbl, "evaluator")
+#' tbl <- evals_details("testuser", "admin")
+#' evals_table(tbl, "evaluator")
 
 evals_table <- function(tbl, user_role) {
   # If evaluator only show evaluations created
   # If modeler only show deployments created
   group_by <- "deployment_model_name"
-  if (user_role == "modeler") {
+  if (user_role %in% c("admin", "modeler")) {
     group_by <- c(group_by, "evaluation_create_user_name")
   }
 
@@ -268,7 +300,7 @@ evals_table <- function(tbl, user_role) {
         sortable = FALSE,
         maxWidth = 175,
         cell = \(v, i) {
-          if (!is.na(tbl_top$species_id[i]) & tbl_top$species_id[i] != "ALL") {
+          if (!is.na(tbl_top$species_id[i]) && tbl_top$species_id[i] != "ALL") {
             tags$button(
               "Select Species",
               class = "btn btn-sm btn-species",
@@ -327,7 +359,7 @@ evals_table <- function(tbl, user_role) {
         name = "Evaluator",
         minWidth = 200,
         maxWidth = 250,
-        show = user_role == "modeler"
+        show = user_role %in% c("admin", "modeler")
       ),
       species_display = reactable::colDef(
         name = "Species",
