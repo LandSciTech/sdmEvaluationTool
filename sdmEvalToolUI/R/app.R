@@ -61,7 +61,7 @@ sdm_tool <- function(
       id = "sdm", # Used for navigation, input$sdm
       title = "SDM Tool",
       theme = sdm_theme(),
-      sidebar = mod_details_ui(),
+      sidebar = mod_utils_details_ui(),
       gap = 0,
       padding = 0,
       header = shinyjs::useShinyjs(),
@@ -400,7 +400,7 @@ sdm_tool <- function(
 
     # Modules --------------------------------
     # - Define overview separately to specify overview_inputs
-    mod_details_server(deployment_id = reactive(input$deployment_id))
+    mod_utils_details_server(deployment_id = reactive(input$deployment_id))
 
     mod_page_overview_server(
       deployment_id = reactive(input$deployment_id),
