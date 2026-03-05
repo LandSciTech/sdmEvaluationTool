@@ -117,8 +117,20 @@ identical_loose <- function(i1, i2) {
 #' @export
 #' @examples
 #' affirmative()
-affirmative <- function() {
-  #TODO: Put this somewhere better?
+#' affirmative("spatial")
 
-  c("Extremely", "Very", "Moderately", "Slightly", "Yes")
+affirmative <- function(type = "standard") {
+  # CLEANUP: Put this somewhere better?
+
+  if (type == "standard") {
+    a <- c("Extremely", "Very", "Moderately", "Slightly", "Yes")
+  } else if (type == "spatial") {
+    a <- c(
+      "Very_biased",
+      "Moderately_biased",
+      "Very_undersampled",
+      "Moderately_undersampled"
+    )
+  }
+  a
 }

@@ -126,46 +126,75 @@ ui_questions <- function(
 ) {
   ns <- getDefaultReactiveDomain()$ns %||% \(id) paste0("testing-", id)
 
-  ui <- dplyr::select(
-    questions,
-    "component",
-    "type",
-    "question_id",
-    "label",
-    "part",
-    "values",
-    "response"
-  ) |>
+  ui <- questions |>
+    dplyr::mutate(
+      parent_spatial = .data$type[1] == "spatial",
+      parent_values = list(parent_vals(.data$values)),
+      .by = c("component", "order")
+    ) |>
+    dplyr::select(
+      "component",
+      "type",
+      "question_id",
+      "label",
+      "part",
+      "values",
+      "response",
+      "parent_spatial",
+      "parent_values"
+    ) |>
     dplyr::group_split(.data[["component"]], .keep = FALSE) |>
     purrr::map(\(c) {
-      purrr::pmap(c, \(type, question_id, label, part, values, response) {
-        i <- get(glue::glue("{type}_input"))(
-          input_id_ns = ns(question_id),
-          label = label,
-          values = unlist(values),
-          spatial_ids = spatial_ids,
-          spatial_type = spatial_type,
-          response = response,
-          width = width
-        )
-
-        # Follow up questions
-        if (part > 0) {
-          parent_id <- stringr::str_replace(question_id, "\\d+$", "0")
-          i <- conditionalPanel(
-            #condition = paste0("input.", parent_id, " == 'Extremely'"),
-            condition = glue::glue(
-              "['",
-              glue::glue_collapse(affirmative(), sep = "', '"),
-              "'].includes(input.{parent_id})"
-            ),
-            div(class = "sub-question", i),
-            ns = ns
+      purrr::pmap(
+        c,
+        \(
+          type,
+          question_id,
+          label,
+          part,
+          values,
+          response,
+          parent_spatial,
+          parent_values
+        ) {
+          i <- get(glue::glue("{type}_input"))(
+            input_id_ns = ns(question_id),
+            label = label,
+            values = unlist(values),
+            spatial_ids = spatial_ids,
+            spatial_type = spatial_type,
+            response = response,
+            width = width
           )
-        }
 
-        i
-      })
+          # Follow up questions
+          # TODO: FIGURE OUT CONDITION TO SHOW/NOT SHOW spatial
+          if (part > 0) {
+            parent_id <- stringr::str_replace(question_id, "\\d+$", "0")
+            if (parent_spatial) {
+              condition <- glue::glue(
+                "input['{parent_id}-{parent_values}'].length > 0"
+              ) |>
+                glue::glue_collapse(sep = " || ")
+            } else {
+              condition <- glue::glue(
+                "['",
+                glue::glue_collapse(affirmative(), sep = "', '"),
+                "'].includes(input.{parent_id})"
+              )
+            }
+            cat(condition, "\n\n\n")
+            i <- conditionalPanel(
+              #condition = paste0("input.", parent_id, " == 'Extremely'"),
+              condition = condition,
+              div(class = "sub-question", i),
+              ns = ns
+            )
+          }
+
+          i
+        }
+      )
     })
 
   if (length(ui) > 1) {
@@ -223,4 +252,9 @@ value_to_input <- function(v) {
 
 input_to_value <- function(i) {
   stringr::str_replace_all(i, "_", " ")
+}
+
+parent_vals <- \(v) {
+  v <- value_to_input(unlist(v))
+  v[v %in% affirmative("spatial")]
 }
