@@ -33,7 +33,7 @@ sdm_tool <- function(
     "predictors" = "Predictors",
     "model_metadata" = "Model Metadata"
   )
-  if (any(duplicated(tabs))) {
+  if (anyDuplicated(tabs) > 0) {
     stop("The `tabs` argument must not have duplicate values.")
   }
   tabs <- match.arg(tabs, names(page_options), several.ok = TRUE)
