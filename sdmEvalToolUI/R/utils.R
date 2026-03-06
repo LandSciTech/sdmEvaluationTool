@@ -112,9 +112,12 @@ identical_loose <- function(i1, i2) {
 #'
 #' Used to determine which parts should be displayed
 #'
+#' @param type Character. "standard" (currently for ordinal inputs), or
+#' "spatial"
+#'
 #' @returns Character vector of affirmative answers
 #'
-#' @export
+#' @noRd
 #' @examples
 #' affirmative()
 #' affirmative("spatial")

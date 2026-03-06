@@ -2,7 +2,6 @@
 
 export(add_selected_subunits)
 export(add_subunits)
-export(affirmative)
 export(base_map)
 export(check_q_mismatch)
 export(deployment_subunits_prep)
