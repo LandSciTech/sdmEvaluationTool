@@ -39,7 +39,11 @@ map_reactive_vals <- function(
   x1 <- c(x1, js_x)
 
   # Create individual observers to update the Reactive Values
-  purrr::walk2(x, x1, \(x, x1) observe(rv[[x]] <- input[[x1]]))
+  purrr::walk2(x, x1, \(x, x1) {
+    observe({
+      rv[[x]] <- input[[x1]]
+    })
+  })
   rv
 }
 

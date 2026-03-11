@@ -97,6 +97,8 @@ mod_page_template_server <- function(id = "template", ...) {
       unsaved = unsaved
     )
 
+    # NOTE: No deployment id required because materials only associated
+    #   with model and species
     mod_comp_template_server("template1", model_id, species_id)
     mod_comp_template_server("template2", model_id, species_id)
   })

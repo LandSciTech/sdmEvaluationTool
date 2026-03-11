@@ -182,7 +182,7 @@ ui_questions <- function(
                 "'].includes(input.{parent_id})"
               )
             }
-            cat(condition, "\n\n\n")
+
             i <- conditionalPanel(
               #condition = paste0("input.", parent_id, " == 'Extremely'"),
               condition = condition,

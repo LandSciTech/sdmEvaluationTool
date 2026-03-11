@@ -538,7 +538,7 @@ evals_answered <- function(eval) {
 #' @export
 
 check_q_mismatch <- function(q1, q2) {
-  if (any(!is.na(q2)) && any(q1[!is.na(q2)] != q2[!is.na(q2)], na.rm = TRUE)) {
+  if (!all(is.na(q2)) && any(q1[!is.na(q2)] != q2[!is.na(q2)], na.rm = TRUE)) {
     stop("Mismatch between evaluated and deployed questions", call. = FALSE)
   }
 }

@@ -36,6 +36,9 @@ mod_comp_template_server <- function(
   model_id,
   species_id
 ) {
+  # NOTE: No deployment id required because materials only associated
+  #   with model and species
+
   moduleServer(id, function(input, output, session) {
     template <- reactive(template_prep(model_id(), species_id()))
     output$template <- reactable::renderReactable(template_table(template()))

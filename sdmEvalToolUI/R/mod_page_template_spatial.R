@@ -115,7 +115,7 @@ mod_page_template_spatial_server <- function(id = "template_spatial", ...) {
     # Spatial Component
     mod_comp_template_spatial_server(
       "template_spatial",
-      deployment_id = deployment_id,
+      deployment_id = deployment_id, # Require deployment_id for subunits on maps
       model_id = model_id,
       species_id = species_id,
       spatial_selection = spatial_selection,
