@@ -480,6 +480,24 @@ sdm_theme <- function() {
          padding: 1rem;
        }
 
+       
+       /* Cards within Cards (e.g. spatial maps over selection tables) */
+       .sub-card > .card-body {
+         padding: 0 !important;
+       }
+       div:has(> .sub-card) {
+         gap: 0 !important;
+         padding: 0px !important;
+       }
+       .card.sub-card {
+         border: 0 !important;
+       }
+
+       /* Cards within Tabs (e.g., observations map) */
+       .sdm-tab-pane .card {
+         border: 0 !important;
+       }
+
        /* Remove gaps between cards and page */
        .main.bslib-gap-spacing {
          padding: 0 !important;

@@ -42,11 +42,11 @@ mod_page_observations_ui <- function(
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
       navset_card_tab(
-        nav_panel(
+        sdm_nav_panel(
           "Charts",
           mod_comp_obs_chart_ui(NS(id, "comp_obs_chart"))
         ),
-        nav_panel(
+        sdm_nav_panel(
           "Map",
           mod_comp_observations_ui(NS(id, "comp_obs"))
         )

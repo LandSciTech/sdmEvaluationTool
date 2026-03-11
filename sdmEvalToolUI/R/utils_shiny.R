@@ -67,6 +67,10 @@ sdm_card <- function(
   )
 }
 
+sdm_nav_panel <- function(title, ..., class = "sdm-tab-pane") {
+  nav_panel(title, class = class, ...)
+}
+
 sdm_layout_sidebar <- function(..., gap = 0, border = FALSE) {
   layout_sidebar(
     gap = gap,

@@ -27,19 +27,20 @@ mod_comp_template_spatial_ui <- function(
   id = "comp_template_spatial",
   header = NULL
 ) {
-  tagList(
-    # EXAMPLE: Arrange Map and Map selections output
+  # TEMPLATE: Arrange Map and Map selections output, require both if
+  # making spatial selections
+  sdm_card(
+    header,
     sdm_card(
+      class = "p-0 sub-card",
       min_height = "60%",
-      header,
-      uiOutput(NS(id, "ui_selectors")),
       sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
     ),
     sdm_card(
+      class = "p-0 sub-card",
       min_height = "40%",
       mod_utils_map_selections_ui(
         NS(id, "select"),
-        # spatial_type = "points"
         spatial_type = "areas" # "points" or "areas" depending on what is being selected
       )
     )
@@ -61,7 +62,7 @@ mod_comp_template_spatial_ui <- function(
 #' @export
 mod_comp_template_spatial_server <- function(
   id = "comp_template_spatial",
-  deployment_id,
+  deployment_id, # Require deployment_id for subunits on maps
   model_id,
   species_id,
   spatial_selection,
