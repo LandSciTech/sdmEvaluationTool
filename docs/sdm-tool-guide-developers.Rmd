@@ -61,7 +61,7 @@ Further examples
 - `mod_page_model()` is a good page to use as a template for species-level components
 - `mod_page_model_metadata()` is a good page to use as a template for model-level components
 - Don't use the `mod_page_overview()` as a template, it's non-standard
-
+- `mod_page_model()` is a good page to use as an example of multiple components in a single page
 
 - Provided the new materials are file types defined in `sdmToolCore::read_file()`, `prep_materials()` should just work.
 
@@ -71,6 +71,8 @@ Further examples
 - spatial prediction component is more basic
 
 ## Notes
-- `affirmative()` needs to be updated if questions change
+- Only Spatial, Ordinal, and Yes/No questions can have follow ups
+- Followups only show if the 'answer' to the parent questions is 'Affirmative' (see `affirmative()`)
+- `affirmative()` needs to be updated if questions change, note this is especially the case for Spatial questions.
 - Pages include `span(title, class = "sdm-species-lvl")` or `sdm-model-lvl` to define a page as model- or species-level information (mostly this just colours the tab names).
 - observations components uses areas, but the observations processing is in points which are later converted to polygons
