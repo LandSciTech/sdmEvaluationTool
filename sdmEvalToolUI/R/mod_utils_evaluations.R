@@ -193,25 +193,7 @@ mod_utils_evaluations_server <- function(
 
     # Show Spatial IDs -----------------------------
     show_spatial_ids <- reactive({
-      req(show_clicked())
-      spatial_ids <- questions_init() |>
-        dplyr::filter(
-          .data$question_id == stringr::str_remove(show_clicked(), "-show")
-        ) |>
-        dplyr::mutate(
-          id_spatial = purrr::map2(.data$question_id, .data$values, \(i, v) {
-            paste0(i, "-", value_to_input(unlist(v)))
-          })
-        ) |>
-        dplyr::pull(.data$id_spatial) |>
-        unlist() |>
-        sapply(\(x) input[[x]])
-
-      nms <- names(spatial_ids) |>
-        stringr::str_extract("[^-]*$") |>
-        pretty()
-
-      rlang::set_names(spatial_ids, nms)
+      show_spatial(show_clicked(), questions_init(), input)
     })
 
     show_btn_ids <- reactive({
@@ -291,4 +273,73 @@ mod_utils_evaluations_server <- function(
       "show_clicked" = show_clicked
     )
   })
+}
+
+
+#' Get a list of selected spatial areas
+#'
+#' Returns a list of selected spatial areas by question value. Used to
+#' show selections on the map when "Show identified area" button associated
+#' with spatial questions is clicked.
+#'
+#' @param show_clicked Button input for "Show identified area" for
+#'   a specific spatial question. Only contains buttons just clicked.
+#' @param questions Data frame of original questions.
+#'
+#' @returns Named list of Question values and spatial subunits for each.
+#'
+#' @export
+#' @examples
+#' # Example from test_page_summary()
+#' c <- "deployment_subunits"
+#' d <- "deployment1"
+#' m <- "bam_v5_can71"
+#' s <- "BBWO"
+#' o <- 2
+#' v <- "Confident"
+#' sp <- paste(d, m, s, c, o, 0, sep = "_")
+#'
+#' input <- list(c(4,5,9))
+#' names(input) <- paste0(sp, "-", v)
+#' clicked <- paste0(sp, "-show")
+#' questions <- prep_questions(c, d, m, s)
+#' show_spatial(clicked, questions, input)
+#'
+#' # Example from test_page_preditions()
+#' c <- "spatial_prediction"
+#' d <- "deployment1"
+#' m <- "bam_v5_can71"
+#' s <- "BBWO"
+#' o <- 1
+#' v <- c("Severe_over", "Moderate_over", "Accurate", "Moderate_under", "Severe_under", "Unknown")
+#' sp <- paste(d, m, s, c, o, 0, sep = "_")
+#'
+#' input <- list(c(4,5,9), NULL, NULL, c(3,5,10), NULL, NULL)
+#' names(input) <- paste0(sp, "-", v)
+#' clicked <- paste0(sp, "-show")
+#' questions <- prep_questions(c, d, m, s)
+#' show_spatial(clicked, questions, input)
+
+show_spatial <- function(show_clicked, questions, input) {
+  req(show_clicked)
+
+  nms <- questions |>
+    dplyr::filter(
+      .data$question_id == stringr::str_remove(show_clicked, "-show")
+    ) |>
+    dplyr::mutate(
+      id_spatial = purrr::map2(.data$question_id, .data$values, \(i, v) {
+        paste0(i, "-", value_to_input(unlist(v)))
+      })
+    ) |>
+    dplyr::pull(.data$id_spatial) |>
+    unlist()
+
+  spatial_ids <- purrr::map(nms, \(x) input[[x]])
+
+  nms <- nms |>
+    stringr::str_extract("[^-]*$") |>
+    pretty()
+
+  rlang::set_names(spatial_ids, nms)
 }
