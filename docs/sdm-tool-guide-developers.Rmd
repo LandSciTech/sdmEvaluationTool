@@ -47,3 +47,30 @@ What is in each file (i.e. testing UI etc., UI/server function, utils)
 ## Extending the configuration
 
 How to add new components (e.g. extrapolation maps)
+
+- Decide if this is a new component (`mod_comp_xxx.R`) on a new page (`mod_page_xxx.R`), 
+or just a new component added to an *existing* page. 
+- Decide if this is a species-level or model-level addition.
+- Explore `mod_page_template.R` and `mod_page_template_spatial.R` for an overview
+  of how to create new non-spatial and spatial (or at least partially spatial)
+  pages.
+- Explore `mod_comp_template.R` and `mod_comp_template_spatial.R` for an overview
+  of how to create new non-spatial and spatial components.
+
+Further examples
+- `mod_page_model()` is a good page to use as a template for species-level components
+- `mod_page_model_metadata()` is a good page to use as a template for model-level components
+- Don't use the `mod_page_overview()` as a template, it's non-standard
+
+
+- Provided the new materials are file types defined in `sdmToolCore::read_file()`, `prep_materials()` should just work.
+
+
+## Notes Spatial
+- observation component is more customized
+- spatial prediction component is more basic
+
+## Notes
+- `affirmative()` needs to be updated if questions change
+- Pages include `span(title, class = "sdm-species-lvl")` or `sdm-model-lvl` to define a page as model- or species-level information (mostly this just colours the tab names).
+- observations components uses areas, but the observations processing is in points which are later converted to polygons
