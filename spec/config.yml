@@ -834,7 +834,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 1
   part: 1
   body:
-    en: Are you sure that you want to quit the evaluation?
+    en: Are you sure that you want to quit the evaluation? If you quit, you can still continue the evaluation later.
     fr: ""
   followup_level: 0
 - component: app
@@ -895,9 +895,9 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 1
   part: 0
   body:
-    en: Are there areas where you are concerned about potential bias in the data? Identify areas with potential bias in the data.
+    en: Are there areas where you are concerned about potential inaccuracies in the data? Identify areas with potential inaccuracies in the data.
     fr: ""
-  values: ["Very biased", "Moderately biased", "Accurate", "Unknown"]
+  values: ["Very inaccuracies", "Moderately inaccuracies", "Accurate", "Unknown"]
   followup_level: 0
 - component: observations
   type: spatial
