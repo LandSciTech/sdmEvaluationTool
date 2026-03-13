@@ -86,7 +86,8 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
     )
     mod_comp_predictor_raster_server(
       "predictor_raster",
-      model_id = model_id
+      model_id = model_id,
+      deployment_id = deployment_id
     )
   })
 }
