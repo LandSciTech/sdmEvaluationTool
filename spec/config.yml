@@ -584,10 +584,10 @@ components:
           The predictor column should list the short names of the predictors
           that match the band names in the predictor raster.
         file_ext: [csv, rds, parquet]
-        columns: [predictor, definition, predictor_class, resolution, source, provider, citation, covariate_extraction, prediction_resolution, years, temporal_matching]
+        columns: [predictor, definition, class, resolution, source, provider, citation, covariate_extraction, prediction_resolution, years, temporal_matching]
       output:
         description: A file is written with the listed columns.
-        columns: [predictor, definition, predictor_class, resolution, source, provider, citation, covariate_extraction, prediction_resolution, years, temporal_matching]
+        columns: [predictor, definition, class, resolution, source, provider, citation, covariate_extraction, prediction_resolution, years, temporal_matching]
         path: "materials/{model_id}/predictors/predictor_metadata.parquet"
     display:
       type: table
