@@ -46,7 +46,7 @@ file.edit(file.path(pkg, "DESCRIPTION"))
 file.edit(file.path(pkg, "NEWS.md"))
 
 ## Standard checks ------------------------------------------
-devtools::test() # Use Ctrl-Shift-T to test non-interactively
+devtools::test(pkg) # Use Ctrl-Shift-T to test non-interactively in the package
 devtools::document(pkg)
 rcmdcheck::rcmdcheck(pkg)
 devtools::run_examples(pkg) # Will be skipped in package check because missing data
