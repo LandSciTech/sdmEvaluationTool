@@ -1,7 +1,14 @@
-# --- Core ---
+# --- Core --------------------------
 
 pkg <- "sdmEvalToolCore"
 
+# Bump version
+file.edit(file.path(pkg, "DESCRIPTION"))
+
+# Add changes to NEWS
+file.edit(file.path(pkg, "NEWS.md"))
+
+## Update data -----------------------
 # update the config file before running data-raw script
 file.copy(
     "spec/config.yml",
@@ -16,6 +23,7 @@ local({
 })
 setwd(o)
 
+## Standard checks ------------------------------------------
 devtools::document(pkg)
 rcmdcheck::rcmdcheck(pkg)
 # devtools::install(pkg, upgrade = "never")
@@ -25,16 +33,20 @@ devtools::load_all(pkg)
 
 q <- default_questions
 q$values <- sapply(q$values, \(x) paste0(unlist(x), collapse = ","))
-write.csv(q, row.names = F, file = "_tmp/default_questions.csv")
+write.csv(q, row.names = FALSE, file = "_tmp/default_questions.csv")
 
-# --- UI ---
+# --- UI -----------------------------
 
 pkg <- "sdmEvalToolUI"
 
-# o <- setwd(pkg)
-# local({ source("data-raw/DATASET.R", local = TRUE) })
-# setwd(o)
+# Bump version
+file.edit(file.path(pkg, "DESCRIPTION"))
 
+# Add changes to NEWS
+file.edit(file.path(pkg, "NEWS.md"))
+
+## Standard checks ------------------------------------------
+devtools::test() # Use Ctrl-Shift-T to test non-interactively
 devtools::document(pkg)
 rcmdcheck::rcmdcheck(pkg)
 devtools::run_examples(pkg) # Will be skipped in package check because missing data
@@ -44,7 +56,7 @@ devtools::run_examples(pkg) # Will be skipped in package check because missing d
 
 devtools::load_all(pkg)
 
-# --- Up ---
+# --- Up -----------------------------------
 
 pkg <- "sdmEvalToolUp"
 
@@ -54,6 +66,7 @@ pkg <- "sdmEvalToolUp"
 
 devtools::load_all("sdmEvalToolCore")
 
+## Standard checks ------------------------------------------
 devtools::document(pkg)
 rcmdcheck::rcmdcheck(pkg)
 devtools::run_examples(pkg) # Will be skipped in package check because missing data
