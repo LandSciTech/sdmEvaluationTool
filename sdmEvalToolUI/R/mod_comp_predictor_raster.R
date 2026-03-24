@@ -57,8 +57,12 @@ mod_comp_predictor_raster_ui <- function(
 
 mod_comp_predictor_raster_server <- function(
   id = "comp_predictor_raster",
-  model_id
+  model_id,
+  deployment_id
 ) {
+  stopifnot(is.reactive(deployment_id))
+  stopifnot(is.reactive(model_id))
+
   moduleServer(id, function(input, output, session) {
     # Setup -------------------------------------------------------------
     ns <- session$ns
@@ -84,10 +88,18 @@ mod_comp_predictor_raster_server <- function(
       )
     })
 
+    subunits <- reactive({
+      deployment_subunits_prep(deployment_id())
+    })
+
     map <- reactive({
       validate_ids(model_id = model_id)
       req(input_ready())
-      predictor_raster_map(predictor_raster(), isolate(input$predictor))
+      predictor_raster_map(
+        predictor_raster(),
+        isolate(input$predictor),
+        subunits()
+      )
     })
 
     output$map <- leaflet::renderLeaflet({
@@ -118,13 +130,26 @@ mod_comp_predictor_raster_server <- function(
 #' predictor_raster_prep("bam_v5_can71") |>
 #'   predictor_raster_map(layers = "year")
 
-predictor_raster_map <- function(predictor_raster, layers = NULL) {
+predictor_raster_map <- function(
+  predictor_raster,
+  layers = NULL,
+  subunits = NULL
+) {
   base_map() |>
-    predictor_raster_layer(raster = predictor_raster, layers = layers)
+    predictor_raster_layer(
+      raster = predictor_raster,
+      layers = layers,
+      subunits = subunits
+    )
 }
 
 
-predictor_raster_layer <- function(map, raster = NULL, layers = NULL) {
+predictor_raster_layer <- function(
+  map,
+  raster = NULL,
+  layers = NULL,
+  subunits = NULL
+) {
   if (is.null(layers)) {
     return(map)
   }
@@ -150,6 +175,8 @@ predictor_raster_layer <- function(map, raster = NULL, layers = NULL) {
   } else {
     g <- character(0)
   }
+
+  map <- add_subunits(map, subunits)
 
   map <- add_control(map, groups = g)
 
