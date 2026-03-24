@@ -97,6 +97,10 @@ sdm_card <- function(
   )
 }
 
+sdm_card_header <- function(..., class = "bg-sdm") {
+  card_header(..., class = class)
+}
+
 sdm_nav_panel <- function(title, ..., class = "sdm-tab-pane") {
   nav_panel(title, class = class, ...)
 }

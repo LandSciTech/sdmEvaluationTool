@@ -44,11 +44,11 @@ mod_page_template_spatial_ui <- function(
         # EXAMPLE: Arrange component modules
         mod_comp_template_ui(
           NS(id, "template"),
-          header = card_header("Template")
+          header = sdm_card_header("Template")
         ),
         mod_comp_template_spatial_ui(
           NS(id, "template_spatial"),
-          header = card_header("Template Spatial")
+          header = sdm_card_header("Template Spatial")
         )
         # mod_comp_...._ui(), etc.
       )

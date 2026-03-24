@@ -61,7 +61,7 @@ sdm_tool <- function(
     div(
       uiOutput("usecase"),
       style = "text-align:center;",
-      class = "alert alert-success",
+      class = "alert bg-sdm",
       role = "alert"
     ),
     bslib::page_navbar(
@@ -209,11 +209,6 @@ sdm_tool <- function(
           size = "xl",
           title = "Glossary",
           reactable::renderReactable(tab),
-          # card(card_header("Legend"), legend),
-          # card(
-          #     card_header(page_options[input$sdm]),
-          #     card_body(deets[[input$sdm]])
-          # ),
           easyClose = TRUE
         )
       ))
@@ -418,6 +413,7 @@ sdm_tool <- function(
       d
     })
 
+    # Banner ---------------------------------------
     output$usecase <- renderUI({
       req(user_id())
 
@@ -510,11 +506,13 @@ sdm_tool <- function(
 
 sdm_theme <- function() {
   bs_theme(
+    `primary` = "#2E5266",
+    `theme-colors` = "('sdm': #d8ded8)",
+    `success` = "#476146", # For the secondary questions
     `species-colour` = "#2E5266",
     `model-colour` = "#DC851F",
     `enable-rounded` = FALSE,
     `modal-header-padding` = "1rem",
-    `success` = "#476146",
     `alert-padding-x` = "0.3rem",
     `alert-padding-y` = "0.3rem"
   ) |>
@@ -526,6 +524,12 @@ sdm_theme <- function() {
          margin: 0;
          line-spacing: 0;
        }
+
+       /* Validate/need messages */
+      .shiny-output-error {
+        padding-left:0.5em;
+       }
+
        /* Modal formatting */
        .modal-body, .modal-footer {
          padding: 1rem;

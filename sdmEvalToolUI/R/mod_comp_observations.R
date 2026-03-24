@@ -27,7 +27,7 @@ mod_comp_observations_ui <- function(
   id = "comp_observations",
   header = NULL
 ) {
-  sdm_card(
+  tagList(
     sdm_card(
       class = "p-0 sub-card",
       min_height = "60%",

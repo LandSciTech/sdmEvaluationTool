@@ -9,7 +9,7 @@
 #' test_comp_model_metadata()
 
 test_comp_model_metadata <- function(...) {
-    test_comp("mod_comp_model_metadata", use = "model_id", ...)
+  test_comp("mod_comp_model_metadata", use = "model_id", ...)
 }
 
 #' Model Metadata Component UI
@@ -23,25 +23,26 @@ test_comp_model_metadata <- function(...) {
 #' @examples
 #' mod_comp_model_metadata_ui()
 mod_comp_model_metadata_ui <- function(
-    id = "comp_model_metadata",
-    header = NULL
+  id = "comp_model_metadata",
+  header = NULL
 ) {
-    sdm_card(
-        header,
-        reactable::reactableOutput(NS(id, "model_metadata"))
-    )
+  sdm_card(
+    class = "p-0 sub-card",
+    header,
+    reactable::reactableOutput(NS(id, "model_metadata"))
+  )
 }
 
 
 mod_comp_model_metadata_server <- function(
-    id = "comp_model_metadata",
-    model_id
+  id = "comp_model_metadata",
+  model_id
 ) {
-    moduleServer(id, function(input, output, session) {
-        stopifnot(is.reactive(model_id))
-        model_metadata <- reactive(model_metadata_prep(model_id()))
-        output$model_metadata <- reactable::renderReactable(model_metadata_table(model_metadata()))
-    })
+  moduleServer(id, function(input, output, session) {
+    stopifnot(is.reactive(model_id))
+    model_metadata <- reactive(model_metadata_prep(model_id()))
+    output$model_metadata <- reactable::renderReactable(model_metadata_table(model_metadata()))
+  })
 }
 
 
@@ -57,8 +58,8 @@ mod_comp_model_metadata_server <- function(
 #' # model_metadata_prep("bam_v5_can71") |> model_metadata_table()
 
 model_metadata_table <- function(model_metadata) {
-    colnames(model_metadata) <- tools::toTitleCase(colnames(model_metadata))
-    reactable::reactable(model_metadata, searchable = TRUE)
+  colnames(model_metadata) <- tools::toTitleCase(colnames(model_metadata))
+  reactable::reactable(model_metadata, searchable = TRUE)
 }
 
 #' Prepare Model Metadata Data
@@ -73,5 +74,5 @@ model_metadata_table <- function(model_metadata) {
 #' # model_metadata_prep("bam_v5_can71")
 
 model_metadata_prep <- function(model_id) {
-    prep_materials("model_metadata", model_id = model_id)
+  prep_materials("model_metadata", model_id = model_id)
 }

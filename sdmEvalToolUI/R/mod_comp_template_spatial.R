@@ -29,7 +29,7 @@ mod_comp_template_spatial_ui <- function(
 ) {
   # TEMPLATE: Arrange Map and Map selections output, require both if
   # making spatial selections
-  sdm_card(
+  tagList(
     header,
     sdm_card(
       class = "p-0 sub-card",

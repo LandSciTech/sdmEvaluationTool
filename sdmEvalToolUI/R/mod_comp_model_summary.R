@@ -9,7 +9,7 @@
 #' test_comp_model_summary()
 
 test_comp_model_summary <- function(...) {
-    test_comp("mod_comp_model_summary", use = c("model_id", "species_id"), ...)
+  test_comp("mod_comp_model_summary", use = c("model_id", "species_id"), ...)
 }
 
 #' Model Summary Component UI
@@ -24,25 +24,26 @@ test_comp_model_summary <- function(...) {
 #' mod_comp_model_summary_ui()
 
 mod_comp_model_summary_ui <- function(
-    id = "comp_model_summary",
-    header = NULL
+  id = "comp_model_summary",
+  header = NULL
 ) {
-    sdm_card(
-        header,
-        reactable::reactableOutput(NS(id, "model_summary"))
-    )
+  sdm_card(
+    class = "p-0 sub-card",
+    header,
+    reactable::reactableOutput(NS(id, "model_summary"))
+  )
 }
 
 
 mod_comp_model_summary_server <- function(
-    id = "comp_model_summary",
-    model_id,
-    species_id
+  id = "comp_model_summary",
+  model_id,
+  species_id
 ) {
-    moduleServer(id, function(input, output, session) {
-        model_summary <- reactive(model_summary_prep(model_id(), species_id()))
-        output$model_summary <- reactable::renderReactable(model_summary_table(model_summary()))
-    })
+  moduleServer(id, function(input, output, session) {
+    model_summary <- reactive(model_summary_prep(model_id(), species_id()))
+    output$model_summary <- reactable::renderReactable(model_summary_table(model_summary()))
+  })
 }
 
 
@@ -58,25 +59,25 @@ mod_comp_model_summary_server <- function(
 #'   model_summary_table()
 
 model_summary_table <- function(model_summary) {
-    if (nrow(model_summary) > 50) {
-        size <- 50
-    } else {
-        size <- nrow(model_summary)
-    }
-    reactable::reactable(
-        model_summary,
-        searchable = TRUE,
-        defaultPageSize = size,
-        minRows = size,
-        columns = list(
-            mean_rel_inf = reactable::colDef(
-                format = reactable::colFormat(digits = 3)
-            ),
-            sd_rel_inf = reactable::colDef(
-                format = reactable::colFormat(digits = 3)
-            )
-        )
+  if (nrow(model_summary) > 50) {
+    size <- 50
+  } else {
+    size <- nrow(model_summary)
+  }
+  reactable::reactable(
+    model_summary,
+    searchable = TRUE,
+    defaultPageSize = size,
+    minRows = size,
+    columns = list(
+      mean_rel_inf = reactable::colDef(
+        format = reactable::colFormat(digits = 3)
+      ),
+      sd_rel_inf = reactable::colDef(
+        format = reactable::colFormat(digits = 3)
+      )
     )
+  )
 }
 
 #' Prepare Model Summary Data
@@ -91,9 +92,9 @@ model_summary_table <- function(model_summary) {
 #' model_summary_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 
 model_summary_prep <- function(model_id, species_id) {
-    prep_materials(
-        "model_summary",
-        model_id = model_id,
-        species_id = species_id
-    )
+  prep_materials(
+    "model_summary",
+    model_id = model_id,
+    species_id = species_id
+  )
 }

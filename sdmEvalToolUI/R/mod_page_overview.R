@@ -27,7 +27,8 @@ mod_page_overview_ui <- function(id, title) {
     title = title,
     value = id,
     sdm_card(
-      card_header(
+      class = "p-0 sub-card",
+      sdm_card_header(
         "Current status of review",
         uiOutput(NS(id, "buttons"))
       ),

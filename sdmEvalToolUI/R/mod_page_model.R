@@ -6,7 +6,6 @@
 #' @examplesIf have_data()
 #' test_page_model()
 #' test_page_model(deployment_id = "deployment2")
-#' test_page_model(user_id = "testuser")
 
 test_page_model <- function(...) {
   test_page("mod_page_model", ...)
@@ -34,13 +33,13 @@ mod_page_model_ui <- function(
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
 
-        mod_comp_model_fit_ui(
-          NS(id, "model_fit"),
-          header = card_header("Model Fit")
-        ),
-        mod_comp_model_summary_ui(
-          NS(id, "model_summary"),
-          header = card_header("Model Summary")
+      mod_comp_model_fit_ui(
+        NS(id, "model_fit"),
+        header = sdm_card_header("Model Fit")
+      ),
+      mod_comp_model_summary_ui(
+        NS(id, "model_summary"),
+        header = sdm_card_header("Model Summary")
       )
     )
   )

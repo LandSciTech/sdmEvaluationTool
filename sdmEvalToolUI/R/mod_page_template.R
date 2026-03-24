@@ -44,11 +44,11 @@ mod_page_template_ui <- function(
         # EXAMPLE: Arrange component modules
         mod_comp_template_ui(
           NS(id, "template1"),
-          header = card_header("Template 1")
+          header = sdm_card_header("Template 1")
         ),
         mod_comp_template_ui(
           NS(id, "template2"),
-          header = card_header("Template 2")
+          header = sdm_card_header("Template 2")
         )
         # mod_comp_...._ui(), etc.
       )
