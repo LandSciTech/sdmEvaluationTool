@@ -9,7 +9,7 @@ evals_details(user_id, user_role)
 \arguments{
 \item{user_id}{Character string. User identifier}
 
-\item{user_role}{Character string. User role ("admin", "modeler" or "evaluator")}
+\item{user_role}{Character string. User role ("modeler" or "evaluator")}
 }
 \value{
 Data frame with columns:

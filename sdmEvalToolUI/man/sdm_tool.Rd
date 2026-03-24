@@ -9,6 +9,7 @@ sdm_tool(
   options = list(host = "0.0.0.0", port = 8080),
   tabs = c("overview", "predictions", "observations", "model", "predictors",
     "model_metadata", "summary"),
+  user = NULL,
   ...
 )
 }
@@ -18,6 +19,8 @@ sdm_tool(
 \item{options}{List. Shiny app options.}
 
 \item{tabs}{Character. List the tabs that the UI should have.}
+
+\item{user}{Character. User id.}
 
 \item{...}{Other arguments passed to \code{\link[shiny:shinyApp]{shiny::shinyApp()}}.}
 }

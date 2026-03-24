@@ -9,7 +9,7 @@ evals_table(tbl, user_role)
 \arguments{
 \item{tbl}{Data frame. Evaluation details from \code{evals_details()}}
 
-\item{user_role}{Character. User role ("admin", "modeler", or "evaluator")}
+\item{user_role}{Character. User role ("modeler", or "evaluator")}
 }
 \value{
 A reactable table object
@@ -27,7 +27,7 @@ components, and their completion status.
 #evals_table(tbl, "evaluator")
 tbl <- evals_details("testuser", "evaluator")
 evals_table(tbl, "evaluator")
-tbl <- evals_details("testuser", "admin")
+tbl <- evals_details("testuser", "modeler")
 evals_table(tbl, "evaluator")
 \dontshow{\}) # examplesIf}
 }

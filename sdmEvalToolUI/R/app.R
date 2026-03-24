@@ -3,6 +3,7 @@
 #' @param lang Character. Language of app; either `english` or `french`.
 #' @param options List. Shiny app options.
 #' @param tabs Character. List the tabs that the UI should have.
+#' @param user Character. User id.
 #' @param ... Other arguments passed to [shiny::shinyApp()].
 #'
 #' @returns A Shiny app object
