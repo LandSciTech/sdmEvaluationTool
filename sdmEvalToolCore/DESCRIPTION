@@ -5,10 +5,18 @@ Authors@R: c(
     person("Peter", "Solymos", email = "psolymos@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-7337-1740")),
     person("Steffi", "LaZerte", email = "sel@steffilazerte.ca", role = c("aut"),
-           comment = c(ORCID = "0000-0002-7690-8360")))
+           comment = c(ORCID = "0000-0002-7690-8360")),
+    person(given="Analythium Solutions Inc.",
+           role = c("cph")),
+    person(given="Her Majesty the Queen in Right of Canada as represented by the Minister of the Environment",
+           role = c("cph"),
+           comment = "Copyright holder for default evaluation/drill down questions."),
+    person(given="Alberta Biodiversity Monitoring Institute",
+           role = c("cph"),
+           comment = "Copyright holder for glossary.csv, and default evaluation/drill down questions."))
 Description: The goal of sdmEvalToolCore is to implement the data model and 
     common non-interactive functionality for the SDM Evaluation Tool packages.
-License: MIT + file LICENSE
+License: Apache License 2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

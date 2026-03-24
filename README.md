@@ -84,4 +84,6 @@ See the [`CONTRIBUTING.md`](./CONTRIBUTING.md) file.
 
 ## License
 
-TBD
+[Apache License 2.0](./LICENSE)
+
+See file headers for additional copyright information.
