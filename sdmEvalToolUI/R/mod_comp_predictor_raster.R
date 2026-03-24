@@ -120,8 +120,9 @@ mod_comp_predictor_raster_server <- function(
 
 #' Create a Leaflet Map of Predictor Raster Data
 #'
-#' @param predictor_raster terra Raster. Predictor information
-#' @param layers Layers
+#' @param predictor_raster terra Raster. Predictor information.
+#' @param layers Layers.
+#' @param subunits Spatial Data frame. Deployment subunits.
 #'
 #' @returns A leaflet map object
 #'

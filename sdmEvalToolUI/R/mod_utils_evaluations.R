@@ -285,6 +285,7 @@ mod_utils_evaluations_server <- function(
 #' @param show_clicked Button input for "Show identified area" for
 #'   a specific spatial question. Only contains buttons just clicked.
 #' @param questions Data frame of original questions.
+#' @param input Input.
 #'
 #' @returns Named list of Question values and spatial subunits for each.
 #'

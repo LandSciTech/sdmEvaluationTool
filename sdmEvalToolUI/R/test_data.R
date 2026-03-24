@@ -1,8 +1,15 @@
 #' Create dummy questions for testing
 #'
+#' @param component Component.
+#' @param deployment_id Deployment ID.
+#' @param model_id Model ID.
+#' @param species_id Species ID.
+#' @param types Question types.
+#' @param user_name User name.
+#'
 #' @examples
 #' test_questions()
-#'
+#' @export
 test_questions <- function(
   component = "observations",
   deployment_id = "deployment_test",

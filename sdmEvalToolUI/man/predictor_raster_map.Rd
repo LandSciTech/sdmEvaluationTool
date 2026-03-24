@@ -4,12 +4,14 @@
 \alias{predictor_raster_map}
 \title{Create a Leaflet Map of Predictor Raster Data}
 \usage{
-predictor_raster_map(predictor_raster, layers = NULL)
+predictor_raster_map(predictor_raster, layers = NULL, subunits = NULL)
 }
 \arguments{
-\item{predictor_raster}{terra Raster. Predictor information}
+\item{predictor_raster}{terra Raster. Predictor information.}
 
-\item{layers}{Layers}
+\item{layers}{Layers.}
+
+\item{subunits}{Spatial Data frame. Deployment subunits.}
 }
 \value{
 A leaflet map object

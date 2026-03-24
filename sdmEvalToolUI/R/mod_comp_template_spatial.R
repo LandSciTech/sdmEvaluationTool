@@ -202,12 +202,20 @@ template_spatial_prep <- function(model_id, species_id) {
 
   # Create mean layer with some spatial pattern
   mean_layer <- r
-  terra::values(mean_layer) <- runif(terra::ncell(mean_layer), min = 0, max = 1)
+  terra::values(mean_layer) <- stats::runif(
+    terra::ncell(mean_layer),
+    min = 0,
+    max = 1
+  )
   names(mean_layer) <- "mean"
 
   # Create sd layer
   sd_layer <- r
-  terra::values(sd_layer) <- runif(terra::ncell(sd_layer), min = 0, max = 0.3)
+  terra::values(sd_layer) <- stats::runif(
+    terra::ncell(sd_layer),
+    min = 0,
+    max = 0.3
+  )
   names(sd_layer) <- "sd"
 
   # Combine layers

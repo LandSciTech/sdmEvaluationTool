@@ -7,14 +7,26 @@
 test_evaluation_body(component_id = "observations")
 }
 \arguments{
-\item{component_id}{Character. Id of the test evaluation body to use.}
+\item{component_id}{Character. Id of the test evaluation body to use.
+Currently "observations", "model_fit_a", or "model_fit_b"}
 }
 \value{
 Character. JSON string for hypothetical evaluation
 }
 \description{
-Create dummy json evaluation body
+This can be used for testing loading/extracting/counting/etc. questions.
+These are created by running the App, saving data, and then extracting the
+JSON bodies. They can be updated the same way. Note that there are different
+bodies to test different kinds of behaviour.
 }
 \examples{
 test_evaluation_body()
+
+\dontrun{
+  # After created through app with 'testuser' and `deployment2` retrieved with:
+  db_read_evaluations(db_connect(), "deployment2", "testuser") |>
+    dplyr::filter(component_id == "model_fit") |>
+    dplyr::slice(1) |>
+    dplyr::pull(evaluation_body)
+}
 }

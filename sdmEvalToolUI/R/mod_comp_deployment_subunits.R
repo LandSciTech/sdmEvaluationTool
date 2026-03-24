@@ -8,8 +8,12 @@
 #' @examplesIf have_data()
 #' test_comp_summary()
 
-test_comp_summary <- function(...) {
-  test_comp("mod_comp_summary", use = c("model_id", "species_id"), ...)
+test_comp_deployment_subunits <- function(...) {
+  test_comp(
+    "mod_comp_deployment_subunits",
+    use = c("model_id", "species_id"),
+    ...
+  )
 }
 
 #' Summary Component UI
@@ -21,7 +25,7 @@ test_comp_summary <- function(...) {
 #'
 #' @export
 #' @examples
-#' mod_comp_summary_ui()
+#' mod_comp_deployment_subunits_ui()
 
 mod_comp_deployment_subunits_ui <- function(
   id = "comp_summary",
@@ -117,7 +121,6 @@ mod_comp_deployment_subunits_server <- function(
 
 #' Create a Leaflet Map of Subunits
 #'
-#' @param template_spatial terra Raster. Template spatial data
 #' @param subunits Spatial Data frame. Deployment subunits.
 #' @param ns Namespace.
 #'

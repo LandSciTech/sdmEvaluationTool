@@ -88,5 +88,5 @@ template_prep <- function(model_id, species_id) {
   # prep_materials("model_fit", model_id = model_id, species_id = species_id)
 
   # TEMPLATE: For this example, we'll use dummy data
-  mtcars
+  datasets::mtcars
 }
