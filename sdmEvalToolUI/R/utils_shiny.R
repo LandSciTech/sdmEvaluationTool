@@ -14,6 +14,32 @@ validate_ids <- function(...) {
   validate(!!!n)
 }
 
+#' Test if a reactive is ready
+#'
+#' Silently catches the reactive error and returns TRUE if no error (ready),
+#' FALSE if error (not ready).
+#'
+#' @param reactive Shiny reactive.
+#'
+#' @returns
+#'
+#' @export
+#' @examples
+#' r <- reactive("I'm ready")
+#' isolate(is_ready(r()))
+#' r <- reactive(stop("I'm not ready"))
+#' isolate(is_ready(r()))
+
+is_ready <- function(reactive) {
+  tryCatch(
+    expr = {
+      reactive
+      TRUE
+    },
+    error = \(e) FALSE
+  )
+}
+
 map_reactive_vals <- function(
   input,
   map,

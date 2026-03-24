@@ -421,11 +421,30 @@ sdm_tool <- function(
     })
 
     output$usecase <- renderUI({
-      req(!is.null(details()))
+      req(user_id())
+
+      name <- users$user_name[users$user_id == user_id()] |> unique()
+      greet <- tagList("Hi", strong(name))
+      if (user_admin()) {
+        greet <- tagList(greet, tooltip(icon("crown"), "You are an Admin"))
+      }
+
+      if (!isTruthy(input$user_role)) {
+        out <- "- Please select a Role"
+      } else if (!isTruthy(input$deployment_id)) {
+        out <- "- Please select a Deployment"
+      } else if (is_ready(details)) {
       d <- details()
       d <- jsonlite::fromJSON(d$deployment_settings)
-      usecase <- d$use_case[[stringr::str_which(lang(), names(d$use_case))]]
-      tagList("Evaluating models in the context of ", strong(unlist(usecase)))
+        d <- d$use_case[[stringr::str_which(lang(), names(d$use_case))]]
+        d <- unlist(d)
+        out <- tagList(
+          "- You are evaluating models in the context of ",
+          strong(d)
+        )
+      }
+
+      tagList(greet, out)
     })
 
     # Mark unsaved -----------------------------------------------------------------
