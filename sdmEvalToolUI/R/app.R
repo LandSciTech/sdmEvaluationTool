@@ -50,9 +50,6 @@ sdm_tool <- function(
   users <- app_users()
   materials <- app_materials()
 
-  # Data
-  #prep_data() |> expand_list()
-
   # UI --------------------------------------
   pages_ui <- purrr::imap(page_options, \(title, id) {
     get(paste0("mod_page_", id, "_ui"))(title = title, id = id)
@@ -434,8 +431,8 @@ sdm_tool <- function(
       } else if (!isTruthy(input$deployment_id)) {
         out <- "- Please select a Deployment"
       } else if (is_ready(details)) {
-      d <- details()
-      d <- jsonlite::fromJSON(d$deployment_settings)
+        d <- details()
+        d <- jsonlite::fromJSON(d$deployment_settings)
         d <- d$use_case[[stringr::str_which(lang(), names(d$use_case))]]
         d <- unlist(d)
         out <- tagList(
@@ -703,7 +700,7 @@ sdm_inputs <- function(users) {
         id = "div_id",
         shinyjs::disabled(selectInput(
           "deployment_id",
-          width = 180,
+          width = 250,
           label = NULL,
           choices = c("Deployment" = "")
         ))

@@ -19,7 +19,7 @@ test_page <- function(
     header = shinyjs::useShinyjs(),
     get(paste0(module, "_ui"))(
       title = stringr::str_remove_all(module, "mod_page_") |> fmt_pretty(),
-      id = stringr::str_remove_all(module, "mod_page_"),
+      id = stringr::str_remove_all(module, "mod_page_")
     )
   )
 

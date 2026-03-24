@@ -153,7 +153,7 @@ Further examples
 - `mod_page_prediction()` is an example of a more basic spatial component and page
 
 ### New Data Processing
-- Provided the new component materials are file types defined in `sdmToolCore::read_file()`, `prep_materials()` should just work. Otherwise `read_file()` will need to be updated.
+- Provided the new component materials are file types defined in `sdmEvalToolCore::read_file()`, `prep_materials()` should just work. Otherwise `read_file()` will need to be updated.
 - New component types also need to be included in the `components` data frame, 
   created from the specs in the sdmEvalToolCore package (`data-raw/DATASET.R`).
   Therefore new components should be added to the `spec/config.yml` and then 
