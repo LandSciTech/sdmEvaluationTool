@@ -193,7 +193,7 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #' components, and their completion status.
 #'
 #' @param tbl Data frame. Evaluation details from `evals_details()`
-#' @param user_role Character. User role ("admin", "modeler", or "evaluator")
+#' @param user_role Character. User role ("modeler", or "evaluator")
 #'
 #' @returns A reactable table object
 #'
@@ -205,7 +205,7 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #' #evals_table(tbl, "evaluator")
 #' tbl <- evals_details("testuser", "evaluator")
 #' evals_table(tbl, "evaluator")
-#' tbl <- evals_details("testuser", "admin")
+#' tbl <- evals_details("testuser", "modeler")
 #' evals_table(tbl, "evaluator")
 
 evals_table <- function(tbl, user_role) {

@@ -23,6 +23,7 @@ sdm_tool <- function(
     "model_metadata",
     "summary"
   ),
+  user = NULL,
   ...
 ) {
   # Pages - Names become pretty Tab names, values are ids used for navigation (input$sdm)
@@ -74,6 +75,15 @@ sdm_tool <- function(
       padding = 0,
       header = shinyjs::useShinyjs(),
       !!!pages_ui,
+      nav_item(div(
+        id = "div_id",
+        selectInput(
+          "user_role",
+          width = 130,
+          label = NULL,
+          choices = c("Role" = "")
+        )
+      )),
       nav_spacer(),
       !!!sdm_inputs(users),
       nav_item(actionButton(
@@ -108,7 +118,7 @@ sdm_tool <- function(
     # Holds ids of pages with TRUE/FALSE for unsaved answers
     unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE))
 
-    # Updates User/Role/Deployment/Model/Species selectors
+    # Updates Deployment/Model/Species selectors
     #  created locally in order to have access to input & session directly
     sdm_update_selector <- function(
       type,
@@ -147,6 +157,28 @@ sdm_tool <- function(
         selected = selected
       )
     }
+
+    # User ID and roles --------------------------------
+    user_id <- reactive({
+      # TODO: Currently this uses the user_id argument of sdm_tool()
+      #   In future may get user_id from somewhere else
+      user
+    })
+
+    user_roles <- reactive({
+      dplyr::filter(
+        users,
+        .data$user_id == user_id(),
+        .data$user_roles != "admin"
+      ) |>
+        dplyr::pull(.data$user_roles) |>
+        unique()
+    })
+
+    user_admin <- reactive({
+      a <- users$user_roles[users$user_id == user_id()]
+      any(a == "admin")
+    })
 
     # Glossary -----------------------------------------
     # Create Glossary Modal when use clicks on (?) button
@@ -218,7 +250,7 @@ sdm_tool <- function(
         input$deployment_id,
         input$model_id,
         input$species_id,
-        user_id = input$user_id
+        user_id = user_id()
       )
     })
 
@@ -269,7 +301,7 @@ sdm_tool <- function(
       save_evaluations(
         questions = questions_init(),
         reactiveValuesToList(input),
-        user_id = input$user_id
+        user_id = user_id()
       )
 
       removeModal()
@@ -279,29 +311,28 @@ sdm_tool <- function(
       bindEvent(input$save)
 
     # Navbar inputs -------------------------------------------
+
+    # User Role
     observe({
-      sdm_update_selector(
-        type = "role",
-        id = "user_role",
-        required = "user_id",
-        choices = {
-          c <- users |>
-            dplyr::filter(.data$user_id == input$user_id) |>
-            dplyr::pull(.data$user_roles) |>
-            unique()
-          rlang::set_names(c, pretty(c))
-        }
-      )
+      req(user_id(), user_roles())
+
+      choices <- rlang::set_names(user_roles(), pretty(user_roles()))
+      if (length(choices) > 1) {
+        choices <- c("", choices)
+        names(choices)[1] <- glue::glue("Select a role")
+      }
+
+      updateSelectInput(session, "user_role", choices = choices)
     })
 
     observe({
       sdm_update_selector(
         type = "deployment",
-        required = c("user_id", "user_role"),
+        required = "user_role",
         choices = {
           users |>
             dplyr::filter(
-              .data$user_id == input$user_id,
+              .data$user_id == user_id(),
               .data$user_roles == input$user_role
             ) |>
             dplyr::left_join(materials, by = "deployment_id") |>
@@ -382,7 +413,6 @@ sdm_tool <- function(
     details <- reactive({
       validate_ids(deployment_id = input$deployment_id)
       con <- withr::local_db_connection(db_connect())
-
       d <- dplyr::tbl(con, "deployments") |>
         dplyr::collect() |>
         dplyr::filter(.data$deployment_id == input$deployment_id)
@@ -420,6 +450,14 @@ sdm_tool <- function(
       bindEvent(unsaved(), ignoreInit = TRUE)
 
     # Modules --------------------------------
+
+    # User-related options
+    opts <- list(
+      "user_id" = user_id, # Reactive
+      "user_role" = reactive(input$user_role),
+      "user_admin" = user_admin # Reactive
+    )
+
     # - Define overview separately to specify overview_inputs
     mod_utils_details_server(details = details)
 
@@ -427,10 +465,7 @@ sdm_tool <- function(
       deployment_id = reactive(input$deployment_id),
       model_id = reactive(input$model_id),
       species_id = reactive(input$species_id),
-      opts = list(
-        "user_id" = reactive(input$user_id),
-        "user_role" = reactive(input$user_role)
-      ),
+      opts = opts,
       overview_inputs = overview_inputs,
       overview_update = overview_update,
       abandoned = abandoned,
@@ -446,10 +481,7 @@ sdm_tool <- function(
         deployment_id = reactive(input$deployment_id),
         model_id = reactive(input$model_id),
         species_id = reactive(input$species_id),
-        opts = list(
-          "user_id" = reactive(input$user_id),
-          "user_role" = reactive(input$user_role)
-        ),
+        opts = opts,
         abandoned = abandoned,
         unsaved = unsaved
       )
@@ -647,32 +679,6 @@ sdm_inputs <- function(users) {
   # IDEA: Add tool tips with model/deployment descriptions on hover?
   # Or other details somewhere?
   list(
-    nav_item(
-      tags$style(
-        "#div_id .selectize-input:after{content: none;} .selectize-input{white-space:nowrap;}"
-      ),
-      div(
-        id = "div_id",
-        selectInput(
-          "user_id",
-          width = 140,
-          label = NULL,
-          choices = c(
-            "Select a user" = "",
-            named_ids(users, match = "user")
-          )
-        )
-      )
-    ),
-    nav_item(div(
-      id = "div_id",
-      shinyjs::disabled(selectInput(
-        "user_role",
-        width = 100,
-        label = NULL,
-        choices = c("Role" = "")
-      ))
-    )),
     nav_item(
       div(
         id = "div_id",
