@@ -8,42 +8,167 @@ output:
 
 > How to make changes to R packages
 
-## Installation
+## Packages
+The `sdm_tool()` Shiny App is created as an R package (sdmEvalToolUI) to simplify
+installation of dependencies and tracking package versions. 
 
-devtools, roxygen, rcmdcheck
+The sdmEvalToolCore contains database and file-related management tools which
+are used to support sdmEvalToolUI. 
 
-Linting using air
+Therefore sdmEvalToolCore is a dependency of sdmEvalToolUI.
 
-## Core vs UI
+## Gettings started
+We use a standard [R package development workflow](https://r-pkgs.org/) which
+involves helper packages such as devtools and usethis. 
+Documentation is compiled with *roxygen2* (or `devtools::document()`), and we 
+use *rcmdcheck* for package checks.
 
-What goes into which package
+Install development dependencies:
+```r
+pak::pkg_install(c("devtools", "usethis", "rcmdcheck")) # Development deps
+```
+
+Clone repository if you haven't already:
+```r
+usethis::create_from_github("LandSciTech/sdmEvaluationTool")
+```
+
+Open the package (sdmEvalToolUI or sdmEvalTooCore) you want to work with and 
+install any missing package dependencies:
+```r
+pak::local_install_dev_deps()  # Package Deps
+```
+
+## Development Workflow
+- Add/modify functions
+- Use examples sections for development tests (see Documentation and Examples)
+- Use `test_XXX()` functions to test Shiny Modules
+- Use `sdm_tool()` to test the Shiny module overall
+- Add tests
+- Add/modify documentation 
+- Check and release the packages, see the steps in `RELEASE.R`
+
+## Style
+- The packages use broadly standard tidyverse-ish styling
+    - snake-case names
+    - generally `noun_verb()` or `category_description()` naming
+    - Native R pipes (`|>`) and annoymous functions (`\(x)`)
+    - `.data` and `.env` from rlang for NSE
+    - tidyverse functions (dplyr, tidyr, purrr, rlang)
+- Explicit function naming (shiny, bslib, and sdmEvalTool packages as exceptions)
+- We use the [Air](https://posit-dev.github.io/air/) R formatter for linting
+- [roxygen2 Rmarkdown documentation](https://roxygen2.r-lib.org/articles/rd-formatting.html)
+    - E.g., [function()] to indicate functions and link to their docs
+
+## Names and Organization
+- Functions are grouped into different files by type
+- `mod_` functions and files refer to modules
+- `utils_` files refer to utility functions for different aspects of the app
+- `test_` files and functions refer to those used for testing (including `utils_tests.R`)
+- `sdmEvalToolXXX-package.R` and `zzz.R` files contain package settings
+  - `sdmEvalToolXXX-package.R` contain imports and package-level documentation (if present) 
+  - `zzz.R` files contain Startup messages, startup options, and any global variables which need to be declared to avoid check NOTES.
+
+## Documentation and Examples
+- Document most functions, internal included. These are marked as `@noRd` to 
+  avoid showing up in documentation for users
+- Use `@examplesIf have_data()` for examples which require local data.
+- Use `@examplesIf interactive()` for examples which require an interactive session.
+
+## Writing Functions
+- Check args 
+  - If user feedback is required in Shiny functions, use `validate(need(x, msg)` 
+    to create sensible user messages.
+  - If no feedback is required, but a function could be used in a Shiny contexts, 
+    use `req()` to check argument requirements.
+- Try to keep functions modular for reuse and easier testing
+
 
 ## Config and core data sets
 
-Explain how the config is used in the packages
+@psolymos, you may want to review/add to this
 
-## Writing functions
+The config file (`sdmEvalToolCore/inst/config.yml`) comes from `spec/config.yml`
+- Defines component types
+- Expected file paths and naming
+- Expected displays for each component (used by the developer, not programmatic)
+- Expected data structure
 
-Naming conventions etc.
+This is used in `data-raw/DATASET.R` to create datasets in sdmEvalToolCore:
+- `components`: All available components, ids, names, paths, and general info
+- `tables`: Database tables
+- `fields`: Database fields by table and constraints
+- `default_questions` and `followup_questions`: Question templates if no questions provided
+- `user_roles`: User roles and permissions
 
-## Documenting functions
+These are re-built/created when following the steps in `RELEASE.R`
 
-Roxygen style comments
+### Shiny App Organization
+- `app.R` contains the main Shiny App with UI and Server logic as well as app-level
+  options (theme, etc.)
+- `mod_xxx.R` contain structural and utility modules
+    - `mod_page_xxx.R` are structural modules for each page/tab in the app
+    - `mod_comp_xxx.R` are structural modules for each component in the app 
+      (often, there is one component on one page, but occasionally there are two
+       components on a page)
+    - `mod_utils_xxx.R` are utility modules used throughout the app
+- Each module has at least three functions:
+    - `test_xxx()`, `mod_xxx_ui()` and `mod_xxx_server()`
+    - Optionally, a module may also have *module-specific* support functions used to 
+      create outputs, etc. General support functions will be found elsewhere.
+- `test_xxx()` functions launch that module independently of the rest of the app
+  with a collection of predefined materials (which can be changed). 
 
-## Checking the package
+Structural modules are nested: app > mod_page > mod_comp. However, utility modules
+are used a different levels, and modify inputs/outputs/reactiveVals.
 
-See RELEASE file
+- Evaluations are provided by `mod_utils_evaluations` and are included in 
+  page-level modules.
+- Components which use spatial *selections* also require `mod_utils_map_selections` 
+  in the component-level modules. 
 
-## Shiny modules
+To best understand, explore the template modules: 
+- Without spatial selections: `mod_page_template.R`, `mod_comp_template.R`
+- With spatial selections: `mod_page_template_spatial.R`, `mod_comp_template_spatial.R`
 
-Intro to modules
+## Adding Components
 
-### Organization
+### New Shiny Modules
+- Decide if your change is a new component (`mod_comp_xxx.R`) on a *new* page 
+  (`mod_page_xxx.R`), or a new component added to an *existing* page. 
+- Decide if this is a species-level or model-level addition.
+- Explore `mod_page_template.R` and `mod_page_template_spatial.R` for an overview
+  of how to create new non-spatial and spatial (or at least partially spatial)
+  pages.
+- Explore `mod_comp_template.R` and `mod_comp_template_spatial.R` for an overview
+  of how to create new non-spatial and spatial components.
 
-Naming and organization logic
+Further examples
 
-What is in each file (i.e. testing UI etc., UI/server function, utils)
+- `mod_page_model()` is a good page to use as a template for species-level components
+- `mod_page_model_metadata()` is a good page to use as a template for model-level components
+- Don't use the `mod_page_overview()` as a template, it's non-standard
+- `mod_page_model()` is a good page to use as an example of multiple components in a single page
+- `mod_page_observations()` is an example of a highly customized spatial component and page
+- `mod_page_prediction()` is an example of a more basic spatial component and page
 
-## Extending the configuration
+### New Data Processing
+- Provided the new component materials are file types defined in `sdmToolCore::read_file()`, `prep_materials()` should just work. Otherwise `read_file()` will need to be updated.
+- New component types also need to be included in the `components` data frame, 
+  created from the specs in the sdmEvalToolCore package (`data-raw/DATASET.R`).
+  Therefore new components should be added to the `spec/config.yml` and then 
+  the `components` data frame can be rebuilt (see `RELEASE.R`). 
 
-How to add new components (e.g. extrapolation maps)
+
+## Fiddly Notes
+
+### Pages/Components
+- Pages include `span(title, class = "sdm-species-lvl")` or `sdm-model-lvl` to define a page as model- or species-level information (mostly this just colours the tab names).
+- The observations component uses areas, but the observations processing is in points which are later converted to polygons
+
+### Evaluations
+- Only Spatial, Ordinal, and Yes/No questions can have follow ups
+- Followups only show if the 'answer' to the parent questions is 'Affirmative' (see `affirmative()`)
+- `affirmative()` needs to be updated if questions change, note this is especially the case for Spatial questions.
+- Saving/Reloading evaluations (i.e. going from Shiny inputs, to evaluations list/df to JSON stored in data base, back to evaluations list/df and then back into Shiny inputs), can be fiddly, especially with the nested nature of the lists and R objects and with converting among formats. `test_data.R` contains several functions which create dummy data for testing these features. It can be tricky to ensure that these data sets match what is actually created by the Shiny app, however, so use caution.
+- Currently ordinal values (i.e. One of "Extremely, "Moderately", "Slightly", etc.) are stored in a similar manner as spatial values (value = NA, subunits = "Extremely"). This works, but doesn't make much sense so may change in future.

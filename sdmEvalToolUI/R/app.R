@@ -20,7 +20,8 @@ sdm_tool <- function(
     "observations",
     "model",
     "predictors",
-    "model_metadata"
+    "model_metadata",
+    "summary"
   ),
   ...
 ) {
@@ -31,9 +32,10 @@ sdm_tool <- function(
     "observations" = "Observations",
     "model" = "Model",
     "predictors" = "Predictors",
-    "model_metadata" = "Model Metadata"
+    "model_metadata" = "Model Metadata",
+    "summary" = "Summary"
   )
-  if (any(duplicated(tabs))) {
+  if (anyDuplicated(tabs) > 0) {
     stop("The `tabs` argument must not have duplicate values.")
   }
   tabs <- match.arg(tabs, names(page_options), several.ok = TRUE)
@@ -57,11 +59,17 @@ sdm_tool <- function(
     unname()
 
   ui <- tagList(
+    div(
+      uiOutput("usecase"),
+      style = "text-align:center;",
+      class = "alert alert-success",
+      role = "alert"
+    ),
     bslib::page_navbar(
       id = "sdm", # Used for navigation, input$sdm
       title = "SDM Tool",
       theme = sdm_theme(),
-      sidebar = mod_details_ui(),
+      sidebar = mod_utils_details_ui(),
       gap = 0,
       padding = 0,
       header = shinyjs::useShinyjs(),
@@ -85,14 +93,23 @@ sdm_tool <- function(
 
   server <- function(input, output, session) {
     # Setup ---------------------------------------------
-    # Placeholder reactiveVal until overview created
+
+    # Placeholder reactiveVals until overview created
     # Will be updated by overview module when button clicked to select evaluation
     overview_inputs <- reactiveVal(NULL)
     overview_update <- reactiveVal(0)
-    update_inputs <- reactiveVal(NULL) # Holds inputs to be updated by sdm_update_selector()
-    abandoned <- reactiveVal(FALSE) # Marker to note if evaluation has been abandoned (species or model)
-    unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE)) # Holds ids of pages with TRUE/FALSE for unsaved answers
 
+    # Holds inputs to be updated by sdm_update_selector()
+    update_inputs <- reactiveVal(NULL)
+
+    # Marker to note if evaluation has been abandoned (species or model)
+    abandoned <- reactiveVal(FALSE)
+
+    # Holds ids of pages with TRUE/FALSE for unsaved answers
+    unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE))
+
+    # Updates User/Role/Deployment/Model/Species selectors
+    #  created locally in order to have access to input & session directly
     sdm_update_selector <- function(
       type,
       required,
@@ -132,27 +149,8 @@ sdm_tool <- function(
     }
 
     # Glossary -----------------------------------------
+    # Create Glossary Modal when use clicks on (?) button
     observe({
-      # PLACEHOLDER
-      # legend <- span(
-      #     span("", class = "answer-changed"),
-      #     "Modified (unsaved) response",
-      #     style = "font-size: 90%"
-      # )
-
-      # deets <- list(
-      #     "overview" = "This is the information regarding the overview",
-      #     "predictions" = "This is how to evaluate predictions",
-      #     "observations" = "Nothing here",
-      #     "model" = "Model fit and summary information here",
-      #     "predictors" = "These apply to the model as a whole",
-      #     "model_metadata" = "Not yet implemented"
-      # )
-
-      # if (!all(names(deets) %in% names(page_options))) {
-      #     stop("Some glossary terms do not match a tab", call. = FALSE)
-      # }
-
       tab <- system.file("glossary.csv", package = "sdmEvalToolUI") |>
         sdmEvalToolCore::read_file()
       tab$description <- if (lang == "english") {
@@ -224,6 +222,7 @@ sdm_tool <- function(
       )
     })
 
+    # Create Modals for Abandon
     observe({
       ui <- ui_questions(questions_init(), width = "100%")
 
@@ -252,6 +251,7 @@ sdm_tool <- function(
       }) |>
         bindEvent(input[[id]])
 
+      # Create Modal
       showModal(as_fill_carrier(modalDialog(
         size = "l",
         title = "Abandon Review?",
@@ -264,6 +264,7 @@ sdm_tool <- function(
     }) |>
       bindEvent(input$abandon)
 
+    # Save the Abandon questions
     observe({
       save_evaluations(
         questions = questions_init(),
@@ -272,7 +273,7 @@ sdm_tool <- function(
       )
 
       removeModal()
-      # nav_select("sdm", "overview") # TODO: Go back to Overview?
+      # nav_select("sdm", "overview") # IDEA: Go back to Overview?
       overview_update(overview_update() + 1)
     }) |>
       bindEvent(input$save)
@@ -377,6 +378,26 @@ sdm_tool <- function(
     }) |>
       bindEvent(overview_inputs(), ignoreInit = TRUE)
 
+    # Deployment details -------------------------------------------------------
+    details <- reactive({
+      validate_ids(deployment_id = input$deployment_id)
+      con <- withr::local_db_connection(db_connect())
+
+      d <- dplyr::tbl(con, "deployments") |>
+        dplyr::collect() |>
+        dplyr::filter(.data$deployment_id == input$deployment_id)
+
+      d
+    })
+
+    output$usecase <- renderUI({
+      req(!is.null(details()))
+      d <- details()
+      d <- jsonlite::fromJSON(d$deployment_settings)
+      usecase <- d$use_case[[stringr::str_which(lang(), names(d$use_case))]]
+      tagList("Evaluating models in the context of ", strong(unlist(usecase)))
+    })
+
     # Mark unsaved -----------------------------------------------------------------
 
     observe({
@@ -400,7 +421,7 @@ sdm_tool <- function(
 
     # Modules --------------------------------
     # - Define overview separately to specify overview_inputs
-    mod_details_server(deployment_id = reactive(input$deployment_id))
+    mod_utils_details_server(details = details)
 
     mod_page_overview_server(
       deployment_id = reactive(input$deployment_id),
@@ -444,7 +465,9 @@ sdm_theme <- function() {
     `model-colour` = "#DC851F",
     `enable-rounded` = FALSE,
     `modal-header-padding` = "1rem",
-    `success` = "#476146"
+    `success` = "#476146",
+    `alert-padding-x` = "0.3rem",
+    `alert-padding-y` = "0.3rem"
   ) |>
 
     # General styling
@@ -457,6 +480,24 @@ sdm_theme <- function() {
        /* Modal formatting */
        .modal-body, .modal-footer {
          padding: 1rem;
+       }
+
+       
+       /* Cards within Cards (e.g. spatial maps over selection tables) */
+       .sub-card > .card-body {
+         padding: 0 !important;
+       }
+       div:has(> .sub-card) {
+         gap: 0 !important;
+         padding: 0px !important;
+       }
+       .card.sub-card {
+         border: 0 !important;
+       }
+
+       /* Cards within Tabs (e.g., observations map) */
+       .sdm-tab-pane .card {
+         border: 0 !important;
        }
 
        /* Remove gaps between cards and page */
@@ -603,7 +644,7 @@ sdm_theme <- function() {
 #' sdm_inputs()
 
 sdm_inputs <- function(users) {
-  # TODO: Add tool tips with model/deployment descriptions on hover?
+  # IDEA: Add tool tips with model/deployment descriptions on hover?
   # Or other details somewhere?
   list(
     nav_item(

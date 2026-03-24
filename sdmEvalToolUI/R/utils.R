@@ -10,7 +10,7 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 pretty <- function(x) {
   x |>
     stringr::str_replace_all("_", " ") |>
-    stringr::str_remove_all("id") |>
+    stringr::str_remove_all("\\bid\\b") |>
     stringr::str_to_title()
 }
 
@@ -112,13 +112,28 @@ identical_loose <- function(i1, i2) {
 #'
 #' Used to determine which parts should be displayed
 #'
+#' @param type Character. "standard" (currently for ordinal inputs), or
+#' "spatial"
+#'
 #' @returns Character vector of affirmative answers
 #'
-#' @export
+#' @noRd
 #' @examples
 #' affirmative()
-affirmative <- function() {
-  #TODO: Put this somewhere better?
+#' affirmative("spatial")
 
-  c("Extremely", "Very", "Moderately", "Slightly", "Yes")
+affirmative <- function(type = "standard") {
+  # CLEANUP: Put this somewhere better?
+
+  if (type == "standard") {
+    a <- c("Extremely", "Very", "Moderately", "Slightly", "Yes")
+  } else if (type == "spatial") {
+    a <- c(
+      "Very_biased",
+      "Moderately_biased",
+      "Very_undersampled",
+      "Moderately_undersampled"
+    )
+  }
+  a
 }

@@ -49,6 +49,7 @@ prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO")
 
 # Follow up questions
 prep_questions("model_fit", "deployment2", "bam_v5_can71", "BBWO")
+prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
 
 # Add evaluations
 #prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO", "draper")

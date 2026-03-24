@@ -212,7 +212,7 @@ response_to_json <- function(component_id, questions, input_list) {
 #' deployment, model, species, component, and completion information.
 #'
 #' @param user_id Character string. User identifier
-#' @param user_role Character string. User role ("modeler" or "evaluator")
+#' @param user_role Character string. User role ("admin", "modeler" or "evaluator")
 #'
 #' @returns Data frame with columns:
 #'   - `deployment_model_name`
@@ -234,15 +234,15 @@ response_to_json <- function(component_id, questions, input_list) {
 evals_details <- function(user_id, user_role) {
   con <- withr::local_db_connection(db_connect())
   validate(need(
-    user_role %in% c("modeler", "evaluator"),
-    "Overview table only relevant for modelers and evaluators"
+    user_role %in% c("admin", "modeler", "evaluator"),
+    "Overview table only relevant for admins, modelers, and evaluators"
   ))
 
   # Deployment details we're working with
   deployments <- dplyr::tbl(con, "access") |>
     dplyr::collect() |>
     dplyr::mutate(
-      modeler = stringr::str_detect(.data$user_roles, "modeler"),
+      modeler = stringr::str_detect(.data$user_roles, "admin|modeler"),
       evaluator = stringr::str_detect(.data$user_roles, "evaluator")
     )
   deployment_ids <- deployments |>
@@ -252,15 +252,16 @@ evals_details <- function(user_id, user_role) {
     ) |>
     dplyr::pull(.data$deployment_id)
 
-  if (user_role == "modeler") {
+  if (user_role %in% c("admin", "modeler")) {
     deploy_user <- user_id
-    # Which users expected to have evaluations modeler wants to check progress on?
+    # Which users expected to have evaluations admin or modeler wants to check progress on?
     eval_user <- deployments |>
       dplyr::filter(
         .data$deployment_id %in% .env$deployment_ids,
         stringr::str_detect(.data$user_roles, "evaluator")
       ) |>
-      dplyr::pull(.data$user_id)
+      dplyr::pull(.data$user_id) |>
+      unique() # In case users with multiple deployments
   } else if (user_role == "evaluator") {
     # Don't care who the deployer/modeller is when looking at own evaluations
     deploy_user <- NULL
@@ -537,7 +538,7 @@ evals_answered <- function(eval) {
 #' @export
 
 check_q_mismatch <- function(q1, q2) {
-  if (any(!is.na(q2)) && any(q1[!is.na(q2)] != q2[!is.na(q2)], na.rm = TRUE)) {
+  if (!all(is.na(q2)) && any(q1[!is.na(q2)] != q2[!is.na(q2)], na.rm = TRUE)) {
     stop("Mismatch between evaluated and deployed questions", call. = FALSE)
   }
 }

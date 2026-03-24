@@ -39,7 +39,11 @@ map_reactive_vals <- function(
   x1 <- c(x1, js_x)
 
   # Create individual observers to update the Reactive Values
-  purrr::walk2(x, x1, \(x, x1) observe(rv[[x]] <- input[[x1]]))
+  purrr::walk2(x, x1, \(x, x1) {
+    observe({
+      rv[[x]] <- input[[x1]]
+    })
+  })
   rv
 }
 
@@ -65,6 +69,10 @@ sdm_card <- function(
     min_height = min_height,
     ...
   )
+}
+
+sdm_nav_panel <- function(title, ..., class = "sdm-tab-pane") {
+  nav_panel(title, class = class, ...)
 }
 
 sdm_layout_sidebar <- function(..., gap = 0, border = FALSE) {

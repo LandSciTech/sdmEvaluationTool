@@ -27,14 +27,16 @@ mod_comp_observations_ui <- function(
   id = "comp_observations",
   header = NULL
 ) {
-  tagList(
+  sdm_card(
     sdm_card(
+      class = "p-0 sub-card",
       min_height = "60%",
       header,
       uiOutput(NS(id, "ui_selectors")),
       sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
     ),
     sdm_card(
+      class = "p-0 sub-card",
       min_height = "40%",
       mod_utils_map_selections_ui(
         NS(id, "select"),
