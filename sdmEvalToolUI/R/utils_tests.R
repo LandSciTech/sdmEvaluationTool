@@ -3,7 +3,7 @@ test_page <- function(
   deployment_id = "deployment1",
   model_id = "bam_v5_can71",
   species_id = "BBWO",
-  user_id = "holden",
+  user_id = "testuser",
   user_role = "evaluator",
   user_admin = FALSE
 ) {

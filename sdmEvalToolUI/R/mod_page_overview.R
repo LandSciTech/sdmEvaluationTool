@@ -5,7 +5,7 @@
 #'
 #' @examplesIf have_data()
 #' test_page_overview()
-#' test_page_overview(user_id = "testuser")
+#' test_page_overview(user_admin = TRUE)
 
 test_page_overview <- function(...) {
   test_page("mod_page_overview", ...)
@@ -60,28 +60,40 @@ mod_page_overview_server <- function(id = "overview", ...) {
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
-    # Setup
+    # Setup --------------------------------
     tbl_updated <- reactiveVal(FALSE) # Tracks when tbl is updated so we can unnest the first column
 
-    # Buttons
+    # Buttons ---------------------------
     output$buttons <- renderUI({
-      req(opts$user_role())
+      req(!is.null(opts$user_admin()), !is.null(opts$user_role()))
 
-      if (opts$user_role() == "admin") {
-        button <- downloadButton(
-          NS(id, "download"),
-          label = NULL,
-          class = "btn-mini btn-rnd btn-outline-success"
-        )
-      } else {
-        button <- actionButton(
-          NS(id, "refresh"),
-          label = NULL,
-          icon = icon("arrows-rotate"),
-          class = "btn-mini btn-rnd btn-outline-success"
+      buttons <- tagList()
+
+      if (opts$user_role() == "evaluator") {
+        buttons <- tagList(
+          buttons,
+          actionButton(
+            NS(id, "refresh"),
+            label = NULL,
+            icon = icon("arrows-rotate"),
+            class = "btn-mini btn-rnd btn-outline-success"
+          )
         )
       }
-      button
+
+      if (opts$user_admin()) {
+        buttons <- tagList(
+          buttons,
+          div(class = "flex-fill"),
+          downloadButton(
+            NS(id, "download"),
+            label = "Download Database",
+            class = "btn-mini btn-outline-success"
+          )
+        )
+      }
+
+      buttons
     })
 
     # Download data for admins
