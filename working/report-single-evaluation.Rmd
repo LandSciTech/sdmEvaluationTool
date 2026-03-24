@@ -49,11 +49,11 @@ t_sp <- db_read_table(con, "species") |>
 t_u <- db_read_user_info(con, user_id = user_id, deployment_id = deployment_id)
 d <- db_read_evaluations(
     con,
-    deployment_id = "deployment1",
-    user_id = "testuser"
+    deployment_id = deployment_id,
+    user_id = user_id
 )
-q <- prep_evaluations("testuser")
-e <- prep_evaluations("testuser") |>
+q <- prep_evaluations(user_id = user_id)
+e <- prep_evaluations(user_id = user_id) |>
     tidyr::unnest("answers")
 db_disconnect(con)
 
@@ -100,7 +100,6 @@ print_evals <- function(ee) {
     }
 
 }
-
 
 # get evaluation time
 Tmin <- min(d$evaluation_create_time)

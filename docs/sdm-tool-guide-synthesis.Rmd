@@ -10,10 +10,101 @@ output:
 
 ## Installation
 
+Install the following R packages:
+
+- rmarkdown
+- sf
+- terra
+- sdmEvalToolCore
+- sdmEvalToolUI
+
 ## Finding material/deployment related files
+
+The files are organized according to the [SDM Tool Specifications](../spec/)
 
 ## Working with the database
 
+Connect to the database:
+```r
+con <- db_connect()
+```
+
+Read the deployments table and filter to a select `deployment_id`:
+```r
+t_dp <- db_read_table(con, "deployments") |>
+    dplyr::filter(deployment_id == .env$deployment_id)
+```
+
+Read the models table and filter to a select `model_id`:
+```r
+t_mo <- db_read_table(con, "models") |>
+    dplyr::filter(model_id == .env$model_id)
+```
+
+Read the species table and filter to a select `species_id`:
+```r
+t_sp <- db_read_table(con, "species") |>
+    dplyr::filter(species_id == .env$species_id)
+```
+
+Read the user information for a deployment:
+```r
+t_u <- db_read_user_info(con, user_id = user_id, deployment_id = deployment_id)
+```
+
+Read evaluations for a user and deployment:
+```r
+d <- db_read_evaluations(
+    con,
+    deployment_id = deployment_id,
+    user_id = user_id
+)
+```
+
+A nicely formatted version of the evaluations:
+```r
+q <- prep_evaluations(user_id = user_id)
+e <- prep_evaluations(user_id = user_id) |>
+    tidyr::unnest("answers")
+```
+
+Disconnect from the database:
+```r
+db_disconnect(con)
+```
+
 ## Single evaluations
 
+See the [parametrized Rmd template](../working/report-single-evaluation.Rmd).
+
+The template takes the following parameters:
+
+- `user_id`: user ID for the single evaluation
+- `model_id`: model ID
+- `species_id`: species ID
+- `deployment_id`: deployment ID
+- `base_path`: base path relative to the Rmd file
+
+You can provide these when rendering the file:
+
+```r
+rmarkdown::render(
+    input = "working/report-single-evaluation.Rmd", 
+    params = list(
+    user_id = "testuser",
+    model_id = "bam_v5_can71",
+    species_id = "BBWA",
+    deployment_id = "deployment1",
+    base_path = "../misc/test"
+))
+```
+
+Follow along the Rmd file to see how to display various types of model
+materials and the corresponding evaluations.
+
+The Rmd file also shows how to calculate the time it takes for the evaluation to
+be completed based on the saved timestamps.
+
 ## Multiple evaluations
+
+To be added.
