@@ -224,7 +224,7 @@ evals_table <- function(tbl, user_role) {
   # If evaluator only show evaluations created
   # If modeler only show deployments created
   group_by <- "deployment_model_name"
-  if (user_role %in% c("admin", "modeler")) {
+  if (user_role == "modeler") {
     group_by <- c(group_by, "evaluation_create_user_name")
   }
 
@@ -371,7 +371,7 @@ evals_table <- function(tbl, user_role) {
         name = "Evaluator",
         minWidth = 200,
         maxWidth = 250,
-        show = user_role %in% c("admin", "modeler")
+        show = user_role == "modeler"
       ),
       species_display = reactable::colDef(
         name = "Species",

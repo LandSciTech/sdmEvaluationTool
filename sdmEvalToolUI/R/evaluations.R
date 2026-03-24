@@ -212,7 +212,7 @@ response_to_json <- function(component_id, questions, input_list) {
 #' deployment, model, species, component, and completion information.
 #'
 #' @param user_id Character string. User identifier
-#' @param user_role Character string. User role ("admin", "modeler" or "evaluator")
+#' @param user_role Character string. User role ("modeler" or "evaluator")
 #'
 #' @returns Data frame with columns:
 #'   - `deployment_model_name`
@@ -234,15 +234,15 @@ response_to_json <- function(component_id, questions, input_list) {
 evals_details <- function(user_id, user_role) {
   con <- withr::local_db_connection(db_connect())
   validate(need(
-    user_role %in% c("admin", "modeler", "evaluator"),
-    "Overview table only relevant for admins, modelers, and evaluators"
+    user_role %in% c("modeler", "evaluator"),
+    "Overview table only relevant for modelers and evaluators"
   ))
 
   # Deployment details we're working with
   deployments <- dplyr::tbl(con, "access") |>
     dplyr::collect() |>
     dplyr::mutate(
-      modeler = stringr::str_detect(.data$user_roles, "admin|modeler"),
+      modeler = stringr::str_detect(.data$user_roles, "modeler"),
       evaluator = stringr::str_detect(.data$user_roles, "evaluator")
     )
   deployment_ids <- deployments |>
@@ -252,9 +252,9 @@ evals_details <- function(user_id, user_role) {
     ) |>
     dplyr::pull(.data$deployment_id)
 
-  if (user_role %in% c("admin", "modeler")) {
+  if (user_role == "modeler") {
     deploy_user <- user_id
-    # Which users expected to have evaluations admin or modeler wants to check progress on?
+    # Which users expected to have evaluations a modeler would check progress on?
     eval_user <- deployments |>
       dplyr::filter(
         .data$deployment_id %in% .env$deployment_ids,
