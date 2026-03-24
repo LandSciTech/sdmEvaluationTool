@@ -34,10 +34,6 @@ mod_page_model_ui <- function(
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
 
-      layout_column_wrap(
-        width = NULL,
-        gap = 0,
-        style = css(grid_template_columns = "1fr 3fr"),
         mod_comp_model_fit_ui(
           NS(id, "model_fit"),
           header = card_header("Model Fit")
@@ -45,7 +41,6 @@ mod_page_model_ui <- function(
         mod_comp_model_summary_ui(
           NS(id, "model_summary"),
           header = card_header("Model Summary")
-        )
       )
     )
   )
