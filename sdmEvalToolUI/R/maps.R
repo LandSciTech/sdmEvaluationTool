@@ -2,7 +2,7 @@
 
 #' Base Map with Provider Tiles
 #'
-#' @param ns Namespace.
+#' @param ns Namespace. Required for spatial selections.
 #'
 #' @export
 base_map <- function(ns = identity) {
