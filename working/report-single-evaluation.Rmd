@@ -71,6 +71,32 @@ read_fun <- function(component) {
     )
     read_file(f)
 }
+
+prep_evaluations_further <- function(x, subunit = NULL) {
+    if (nrow(x) != 1L) {
+        stop("x must have")
+    }
+    i <- 1L
+    v <- x$response[i][[1]]
+    if (length(v) == 1L) {
+        m <- NULL
+    } else {
+        if (nrow(v) == 1L) {
+            m <- NULL
+        } else {
+            if (is.null(subunit)) {
+                stop("Spatial evaluations require subunit to be provided.")
+            }
+            m <- subunit
+            m$values <- NA_character_
+            for (j in nrow(v):1) {
+                m$values[m$subunit_id %in% v$subunits[j][[1L]]] <- v$values[j]
+            }
+        }
+    }
+    list(question = x$label[i], response = v, map = m)
+}
+
 print_evals <- function(ee) {
     for (i in 1:nrow(ee)) {
         cat("\n#### Question ", i, "\n\n")
