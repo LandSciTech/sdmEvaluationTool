@@ -75,7 +75,7 @@ db_disconnect(con)
 
 ## Single evaluations
 
-See the [parametrized Rmd template](../working/report-single-evaluation.Rmd).
+See the [parametrized Rmd template](report-single-evaluation.Rmd).
 
 The template takes the following parameters:
 

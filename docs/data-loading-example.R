@@ -1,26 +1,5 @@
-# SDM Model Evaluation Tool User Guide for Modelers
+# Organize files for minim BAM project
 
-> How to manage materials and deployments
-
-## Installation
-
-Install the following R packages:
-
-- sf
-- terra
-- DBI
-- RSQLite
-- jsonlite
-- suntools
-- sdmEvalToolCore
-
-## Uploading model materials
-
-See the [`data-loading-example.R`](data-loading-example.R) script.
-
-We first load libraries and set up variables:
-
-``` r
 library(sf)
 library(terra)
 library(mefa4)
@@ -28,40 +7,29 @@ library(DBI)
 library(RSQLite)
 library(jsonlite)
 library(suntools)
-library(sdmEvalToolCore)
+devtools::load_all("sdmEvalToolCore")
 
-path <- "c:/path/to/data/Model Upload/BAM"
-conf <- yaml::read_yaml(system.file("config.yml", package = "sdmEvalToolCore"))
-DIR <- "misc/sdm_evaluation_results"
+path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
+conf <- yaml::read_yaml("spec/config.yml")
+DIR <- "./misc/test2"
+# DIR <- "./misc/sdm_evaluation_results"
+sdmevaltool_options(base = DIR) # use the misc folder
+
+unlink(DIR, recursive = TRUE)
 dir.create(DIR, recursive = TRUE)
 
-sdmevaltool_options(base = DIR)
-```
+# --------- create new database file ------------
 
-Use an existing database file (copy it to the root of the `DIR` folder),
-or create a new database file and turn foreign key constraints on:
-
-``` r
 con <- db_connect(make_target_path("sdm_evaluation_db.sqlite"))
 rs <- DBI::dbSendQuery(con, "PRAGMA foreign_keys = ON;")
 DBI::dbClearResult(rs)
-```
 
-If using a fresh database, use the `db_create_tables()` function to
-create the empty tables:
-
-``` r
+dbListTables(con)
 db_create_tables(con)
-```
+dbListTables(con)
 
-Due to the foreign key constraint, tables need to be updated respecting
-the keys relationships. If a key is used as a foreign key, it needs to
-exist in the parent table as a primary key.
+# -------- components ----------
 
-The components table should not change, the defaults are used from the
-package:
-
-``` r
 components <- sdmEvalToolCore::components[, c(
   "component",
   "description",
@@ -73,51 +41,20 @@ colnames(components) <- c(
   "component_mandatory"
 )
 db_write_table(con, "components", components)
-```
 
-The species table should also not change frequently, however, this is
-only a small portion of all expected species:
+# ------- users table -----------
 
-``` r
-species <- structure(
-  list(
-    species_id = c(
-      "BBWA", ... , "TEWA"
-    ),
-    scientific_name = c(
-      "Setophaga castanea", ... , "Oreothlypis peregrina"
-    ),
-    english_name = c(
-      "Bay-breasted Warbler", ... , "Tennessee Warbler"
-    ),
-    french_name = c(
-      "Paruline à poitrine baie", ... , "Paruline obscure"
-    )
-  ),
-  row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
-  class = "data.frame"
-)
-db_write_table(con, "species", species)
-```
-
-The model table:
-
-``` r
-model_id <- "bam_v5_can71" # we'll use the model ID later
-
-models <- data.frame(
-  model_id = model_id,
-  model_name = "BAM v5 Can 71",
-  model_description = "BAM version 5 Canada model in BCR 71"
-)
-db_write_table(con, "models", models)
-```
-
-Create the users table next:
-
-``` r
-user_id <- "testuser" # user who uploads the materials
-
+# users <- data.frame(
+#     user_id = c("holden", "draper", "okoye"),
+#     user_name = c("James Holden", "Bobbie Draper", "Elvi Okoye"),
+#     user_email = c(
+#         "jim@rocinante.org",
+#         "bdraper@mcrn.gov",
+#         "okoye@rce.com"
+#     ),
+#     user_affiliation = c("Rocinante", "MCRN", "RCE"),
+#     admin = c(TRUE, FALSE, FALSE)
+# )
 users <- data.frame(
   user_id = "testuser",
   user_name = "Test User",
@@ -126,11 +63,82 @@ users <- data.frame(
   admin = FALSE
 )
 db_write_table(con, "users", users)
-```
 
-Predictor metadata:
+# ------- species table ----------
 
-``` r
+species <- structure(
+  list(
+    species_id = c(
+      "BBWA",
+      "BBWO",
+      "BLPW",
+      "CAWA",
+      "CONW",
+      "LEYE",
+      "OSFL",
+      "OVEN",
+      "RUBL",
+      "SOSA",
+      "TEWA"
+    ),
+    scientific_name = c(
+      "Setophaga castanea",
+      "Picoides arcticus",
+      "Setophaga striata",
+      "Cardellina canadensis",
+      "Oporornis agilis",
+      "Tringa flavipes",
+      "Contopus cooperi",
+      "Seiurus aurocapilla",
+      "Euphagus carolinus",
+      "Tringa solitaria",
+      "Oreothlypis peregrina"
+    ),
+    english_name = c(
+      "Bay-breasted Warbler",
+      "Black-backed Woodpecker",
+      "Blackpoll Warbler",
+      "Canada Warbler",
+      "Connecticut Warbler",
+      "Lesser Yellowlegs",
+      "Olive-sided Flycatcher",
+      "Ovenbird",
+      "Rusty Blackbird",
+      "Solitary Sandpiper",
+      "Tennessee Warbler"
+    ),
+    french_name = c(
+      "Paruline à poitrine baie",
+      "Pic à dos noir",
+      "Paruline rayée",
+      "Paruline du Canada",
+      "Paruline à gorge grise",
+      "Petit Chevalier",
+      "Moucherolle à côtés olive",
+      "Paruline couronnée",
+      "Quiscale rouilleux",
+      "Chevalier solitaire",
+      "Paruline obscure"
+    )
+  ),
+  row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
+  class = "data.frame"
+)
+db_write_table(con, "species", species)
+
+# ------- models table ----------
+
+user_id <- "testuser" # user who uploads the materials
+model_id <- "bam_v5_can71"
+models <- data.frame(
+  model_id = model_id,
+  model_name = "BAM v5 Can 71",
+  model_description = "BAM version 5 Canada model in BCR 71"
+)
+db_write_table(con, "models", models)
+
+# --------- predictor_metadata ----
+
 rule <- get_comp_rule("predictor_metadata", "upload")
 fi <- file.path(path, "predictors", "predictor_metadata.csv")
 x <- read_file(fi)
@@ -144,11 +152,9 @@ prep_predictor_metadata(
   con = con,
   update = FALSE
 )
-```
 
-Model (ODMAP) metadata:
+# --------- model_metadata / ODMAP ----
 
-``` r
 fi <- file.path(path, "ODMAP", "ODMAP_Knight_2025-12-16.csv")
 x <- read_file(fi)
 
@@ -160,11 +166,9 @@ prep_model_metadata(
   con = con,
   update = FALSE
 )
-```
 
-Predictor raster (resampled to save space):
+# ------- predictor_raster RESAMPLED ------
 
-``` r
 fi <- file.path(path, "predictors", "predictor_stack.tif")
 x <- read_file(fi)
 
@@ -177,15 +181,21 @@ prep_predictor_raster(
   con = con,
   update = FALSE
 )
-```
+# FIXME: we might have to organize predictor summaries and rasters a bit better? Check names etc...
 
-Species observations, processing multiple species:
+# -------- observations -----------
 
-``` r
 fi <- file.path(path, "data", "observations_can71.csv")
 x <- read_file(fi)
-colnames(x)[1:7] <- c("id", "latitude", "longitude",
-  "buffer", "time", "method", "year")
+colnames(x)[1:7] <- c(
+  "id",
+  "latitude",
+  "longitude",
+  "buffer",
+  "time",
+  "method",
+  "year"
+)
 prep_observations(
   x = x,
   species = species,
@@ -195,11 +205,9 @@ prep_observations(
   con = con,
   update = FALSE
 )
-```
 
-Model summaries for the species:
+# -------- model summary -----------
 
-``` r
 fi <- file.path(path, "predictors", "predictor_importance.csv")
 x <- read_file(fi)
 colnames(x)[1] <- "species_id"
@@ -214,11 +222,9 @@ prep_model_summary(
   con = con,
   update = FALSE
 )
-```
 
-Model fit for the species:
+# -------- model fit -----------
 
-``` r
 fi <- file.path(path, "reliability", "validation_can71.csv")
 x <- read_file(fi)
 colnames(x)[1] <- "species_id"
@@ -233,11 +239,9 @@ prep_model_fit(
   con = con,
   update = FALSE
 )
-```
 
-Species predictions:
+# -------- spatial_prediction ----
 
-``` r
 for (species_id in species$species_id) {
   fi <- file.path(path, "predictions", paste0(species_id, "_can71_2020.tif"))
   x <- read_file(fi)
@@ -252,14 +256,13 @@ for (species_id in species$species_id) {
     update = FALSE
   )
 }
-```
 
-## Managing deployments
+# --------- DEPLOYMENTS -----------
 
-Create 2 deployments, keeping the `deploylemt_settings` empty (`[]`) for
-now. This field is JSON, we’ll add the value later:
+rule <- get_comp_rule("deployment_settings", "upload")
+fi <- file.path(path, "welcome", "evaluator_welcome.md")
+x <- read_file(fi)
 
-``` r
 deployments <- data.frame(
   deployment_id = c("deployment1", "deployment2"),
   deployment_name = c("BAM: Pop. Assessment", "BAM: Prioritization"),
@@ -271,20 +274,6 @@ deployments <- data.frame(
   deployment_create_time = timestamp_to(now()),
   deployment_settings = c("[]", "[]")
 )
-```
-
-Let’s read in the welcome message (markdown file):
-
-``` r
-rule <- get_comp_rule("deployment_settings", "upload")
-fi <- file.path(path, "welcome", "evaluator_welcome.md")
-x <- read_file(fi)
-```
-
-Next we define the `deployment_settings` using the welcome message and
-the use case:
-
-``` r
 d1 <- d2 <- conf$templates$deployment_settings
 d1$use_case <- list(list(en = "Population assessment", fr = ""))
 d2$use_case <- list(list(en = "Spatial prioritization", fr = ""))
@@ -292,67 +281,45 @@ d1$instructions_to_evaluators <- paste0(x, collapse = "\n")
 d2$instructions_to_evaluators <- paste0(x, collapse = "\n")
 deployments$deployment_settings[1] <- jsonlite::toJSON(d1)
 deployments$deployment_settings[2] <- jsonlite::toJSON(d2)
-```
 
-We write the table to the database:
-
-``` r
 db_write_table(con, "deployments", deployments)
-```
 
-Write the deployment settings to the files as well:
+# --------- deployment settings -----------
 
-``` r
 for (j in 1:nrow(deployments)) {
   prep_deployment_settings(
     deployment_id = deployments$deployment_id[j],
     x = fromJSON(deployments$deployment_settings[j])
   )
 }
-```
 
-The default deployment questions can be written to the files using the
-following expression (you can also provide your own as the argument
-`x`):
+# --------- deployment questions -----------
 
-``` r
+# default questions - no drilldown
 prep_deployment_questions(
   deployment_id = "deployment1",
   x = NULL
 )
-```
 
-The file now can be edited as needed.
-
-If drilldown questions are needed, edit the `followup_level` field,
-like:
-
-``` r
+# default questions - with drilldown
 q <- sdmEvalToolCore::default_questions
 q$followup_level[5] <- 3
 prep_deployment_questions(
   deployment_id = "deployment2",
   x = q
 )
-```
 
-Define user access to the deployments (add evaluator user names here):
+# --------- ACCESS -----------
 
-``` r
 access <- data.frame(
   user_id = user_id,
   deployment_id = deployments$deployment_id,
   user_roles = "evaluator"
 )
 db_write_table(con, "access", access)
-```
 
-The deployment materials repeat the materials for each deployment. To do
-this part, we read in the materials (filter if deployments involve a
-subset), add the deployment ID. Finally, write the table to the
-database:
+# --------- DEPLOYMENT MATERIALS -----------
 
-``` r
 materials <- db_read_table(con, "materials")
 
 deployment_materials <- data.frame(
@@ -369,18 +336,14 @@ deployment_materials <- data.frame(
   ),
   material_id = materials$material_id
 )
-
 db_write_table(
   con,
   "deployment_materials",
   deployment_materials
 )
-```
 
-Deployment subunits can be set up as a regular grid based on the extent
-of a raster template:
+# --------- deployment subunits -----------
 
-``` r
 # raster template
 r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
 
@@ -391,19 +354,36 @@ prep_deployment_subunits(
   n = c(20, 20),
   square = TRUE
 )
-```
 
-Alternatively, deployment subunits can be defined based on custom vector
-layers, e.g. ecoregions/ecoprovinces:
-
-``` r
 # ecoprovinces
 su <- sf::st_read(file.path(path, "subunits", "ecoprovinces.shp"))
 su$subunit_id <- su$ECOPROVINC
+# note this does not compare observation locations to the template
+# points can sometimes fall outside of raster cells
 
 prep_deployment_subunits(
   deployment_id = "deployment2",
   x = su,
   reference = r
 )
-```
+
+sort(unique(sdmEvalToolCore::fields$table))
+dbListTables(con)
+db_disconnect(con)
+
+if (FALSE) {
+  file.copy(
+    make_target_path("sdm_evaluation_db.sqlite"),
+    make_target_path("sdm_evaluation_db_og.sqlite")
+  )
+
+  od <- setwd("misc")
+  utils::zip(
+    "./sdm_evaluation_results.zip",
+    file.path(
+      "sdm_evaluation_results",
+      list.files("sdm_evaluation_results", recursive = TRUE)
+    )
+  )
+  setwd(od)
+}
