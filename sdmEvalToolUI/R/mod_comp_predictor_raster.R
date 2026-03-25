@@ -9,7 +9,11 @@
 #' test_comp_predictor_raster()
 
 test_comp_predictor_raster <- function(...) {
-  test_comp("mod_comp_predictor_raster", use = "model_id", ...)
+  test_comp(
+    "mod_comp_predictor_raster",
+    use = c("model_id", "deployment_id"),
+    ...
+  )
 }
 
 #' Predictor Raster Component UI
