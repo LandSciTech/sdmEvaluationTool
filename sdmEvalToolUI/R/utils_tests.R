@@ -85,3 +85,16 @@ test_comp <- function(
 
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
+
+skip_if_no_data <- function(env = rlang::caller_env()) {
+  withr::local_options(
+    .new = list(
+      "sdmevaltool_options" = list(
+        base = testthat::test_path("../../../misc/base"),
+        lang = "english"
+      )
+    ),
+    .local_envir = env
+  )
+  if (!have_data()) testthat::skip("No data available for testing")
+}
