@@ -11,15 +11,15 @@ file.edit(file.path(pkg, "NEWS.md"))
 ## Update data -----------------------
 # update the config file before running data-raw script
 file.copy(
-    "spec/config.yml",
-    paste0(pkg, "/inst/config.yml"),
-    overwrite = TRUE
+  "spec/config.yml",
+  paste0(pkg, "/inst/config.yml"),
+  overwrite = TRUE
 )
 
 # update data sets based on config
 o <- setwd(pkg)
 local({
-    source("data-raw/DATASET.R", local = TRUE)
+  source("data-raw/DATASET.R", local = TRUE)
 })
 setwd(o)
 

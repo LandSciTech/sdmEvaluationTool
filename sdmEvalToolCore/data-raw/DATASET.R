@@ -77,6 +77,7 @@ e <- do.call(
   rbind,
   lapply(conf$default_questions, \(z) {
     z$values <- NULL
+    z$odmap_subsection <- NULL
     as.data.frame(z)
   })
 )
@@ -95,10 +96,15 @@ for (i in 1:nrow(e)) {
     e$values[i] <- list(conf$default_questions[[i]]$values)
   }
 }
+e$odmap_subsection <- NA_character_
+for (i in 1:nrow(e)) {
+  if (!is.null(conf$default_questions[[i]]$odmap_subsection)) {
+    e$odmap_subsection[i] <- list(conf$default_questions[[i]]$odmap_subsection)
+  }
+}
 # e$english <- gsub("[\r\n\t]", "", e$english)
 # e$french <- gsub("[\r\n\t]", "", e$french)
 default_questions <- e
-
 
 # Follow-up Questions ------------------------------------------------------
 e <- do.call(

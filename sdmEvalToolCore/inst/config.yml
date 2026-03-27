@@ -837,6 +837,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Are you sure that you want to quit the evaluation? If you quit, you can still continue the evaluation later.
     fr: ""
   followup_level: 0
+  odmap_subsection: ~
 - component: app
   type: simple_text
   order: 1
@@ -845,6 +846,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Describe the reason why you do not wish to continue the evaluation.
     fr: ""
   followup_level: 0
+  odmap_subsection: ~
 # --------- spatial prediction --------
 - component: spatial_prediction
   type: spatial
@@ -855,6 +857,7 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   values: ["Severe over", "Moderate over", "Accurate", "Moderate under", "Severe under", "Unknown"]
   followup_level: 0
+  odmap_subsection: ~
 - component: spatial_prediction
   type: spatial
   order: 2
@@ -864,6 +867,7 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   values: ["Too high", "Accurate", "Unknown"]
   followup_level: 0
+  odmap_subsection: ~
 ## ------------ model fit ------------
 - component: model_fit
   type: ordinal
@@ -873,6 +877,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about the adequacy or appropriateness of the validation metrics?
     fr: ""
   followup_level: 0
+  odmap_subsection: [m_estim_1, m_estim_2, m_estim_3]
 - component: model_fit
   type: simple_text
   order: 2
@@ -881,6 +886,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What are the metrics that should be used and why?
     fr: ""
   followup_level: 0
+  odmap_subsection: ~
 - component: model_fit
   type: simple_text
   order: 3
@@ -889,6 +895,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What other concerns do you have about model performance?
     fr: ""
   followup_level: 0
+  odmap_subsection: [m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3, m_selection_4]
 # ---------- observations ------------
 - component: observations
   type: spatial
@@ -899,6 +906,7 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   values: ["Very inaccuracies", "Moderately inaccuracies", "Accurate", "Unknown"]
   followup_level: 0
+  odmap_subsection: ~
 - component: observations
   type: spatial
   order: 2
@@ -908,6 +916,7 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   values: ["Very undersampled", "Moderately undersampled", "Accurate", "Unknown"]
   followup_level: 0
+  odmap_subsection: ~
 - component: observations
   type: ordinal
   order: 3
@@ -916,6 +925,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about the distribution of counts?
     fr: ""
   followup_level: 0
+  odmap_subsection: ~
 - component: observations
   type: simple_text
   order: 3
@@ -924,6 +934,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: If so, explain. What is an appropriate truncation value (i.e. highest count)?
     fr: ""
   followup_level: 0
+  odmap_subsection: ~
 - component: observations
   type: ordinal
   order: 4
@@ -932,6 +943,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about the temporal distribution of detections?
     fr: ""
   followup_level: 0
+  odmap_subsection: ~
 - component: observations
   type: simple_text
   order: 4
@@ -940,6 +952,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: If so, explain. What is an appropriate truncation value (i.e. minimum year)?
     fr: ""
   followup_level: 0
+  odmap_subsection: ~
 - component: observations
   type: ordinal
   order: 5
@@ -948,6 +961,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_bio_10]
 # ------------ model metadata -----------
 - component: model_metadata
   type: ordinal
@@ -957,6 +971,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Are you concerned about the description and treatment of predictor data, as described in the model metadata.
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_pred_2, m_multicol_1, m_preselect_1, m_estim_3]
 # ------------ predictor metadata -----------
 - component: predictor_metadata
   type: ordinal
@@ -966,6 +981,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about missing predictors?
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_pred_2, m_multicol_1, m_estim_3]
 - component: predictor_metadata
   type: simple_text
   order: 2
@@ -974,6 +990,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What predictors are missing and why?
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_pred_2]
 - component: predictor_metadata
   type: ordinal
   order: 3
@@ -982,6 +999,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about superfluous or inappropriate predictors?
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_pred_2, m_estim_3]
 - component: predictor_metadata
   type: simple_text
   order: 4
@@ -990,6 +1008,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Which predictors should be removed and why?
     fr: ""
   followup_level: 0
+  odmap_subsection: ~
 # ------------ predictor raster -----------
 - component: predictor_raster
   type: ordinal
@@ -999,6 +1018,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about inaccuracy in the model predictors?
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_pred_2, p_uncertainty_1, p_uncertainty_2, p_uncertainty_3, p_uncertainty_4]
 - component: predictor_raster
   type: simple_text
   order: 1
@@ -1007,6 +1027,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: If so, describe the predictor(s) and the areas of concern.
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_pred_2]
 - component: predictor_raster
   type: ordinal
   order: 2
@@ -1015,6 +1036,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about the spatial resolution of the predictor variables?
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_pred_2, m_preselect_1]
 ## ------------ model summary ------------
 - component: model_summary
   type: ordinal
@@ -1024,6 +1046,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about missing predictor interactions or nonlinear relationships?
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_pred_2, m_preselect_1]
 - component: model_summary
   type: simple_text
   order: 2
@@ -1032,6 +1055,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What interactions or nonlinear relationships are missing?
     fr: ""
   followup_level: 0
+  odmap_subsection: [d_pred_2, m_preselect_1]
 - component: model_summary
   type: ordinal
   order: 3
@@ -1040,6 +1064,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are your about the reported relative importance of predictors?
     fr: ""
   followup_level: 0
+  odmap_subsection: [m_estim_2]
 - component: model_summary
   type: simple_text
   order: 4
@@ -1048,6 +1073,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Which predictors would you expect to be more or less important and why?
     fr: ""
   followup_level: 0
+  odmap_subsection: [m_estim_2]
 - component: model_summary
   type: ordinal
   order: 5
@@ -1056,6 +1082,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about the appropriateness of the modeling algorithm for the model objectives and application?
     fr: ""
   followup_level: 0
+  odmap_subsection: [o_algorithms_1, o_algorithms_2]
 - component: model_summary
   type: ordinal
   order: 6
@@ -1064,6 +1091,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about how well the modelling framework addresses important statistical assumptions?
     fr: ""
   followup_level: 0
+  odmap_subsection: [o_algorithms_2, o_workflow_1, o_objective_2, m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, o_workflow_2, m_selection_3, m_selection_4]
 - component: model_summary
   type: ordinal
   order: 7
@@ -1072,6 +1100,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about how well important biological assumptions are explained and justified?
     fr: ""
   followup_level: 0
+  odmap_subsection: [o_objective_1, o_objective_2, o_concept_1, o_assumptions_1]
 - component: model_summary
   type: simple_text
   order: 8
@@ -1080,6 +1109,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What other concerns or comments do you have about model complexity?
     fr: ""
   followup_level: 0
+  odmap_subsection: [m_settings_1, o_algorithms_2]
 # ---------- deployment settings --------
 - component: deployment_settings
   type: simple_text
@@ -1089,6 +1119,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Are there any non-target applications that you think this model is unsuitable for? Please explain.
     fr: ""
   followup_level: 0
+  odmap_subsection: [o_objective_1, o_objective_2, o_utility_2, o_utility_3]
 - component: deployment_settings
   type: ordinal
   order: 2
@@ -1097,6 +1128,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about how well suited the model is for the intended application of the model?
     fr: ""
   followup_level: 0
+  odmap_subsection: [o_objective_1, o_utility_2]
 - component: deployment_settings
   type: simple_text
   order: 3
@@ -1105,6 +1137,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What other concerns or comments do you have about using the model for the intended model applications?
     fr: ""
   followup_level: 0
+  odmap_subsection: [o_objective_1, o_utility_2]
 # --------- deployment_subunits ------------
 - component: deployment_subunits
   type: simple_text
@@ -1114,6 +1147,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Describe your overall assessment regarding this species.
     fr: ""
   followup_level: 0
+  odmap_subsection: ~
 - component: deployment_subunits
   type: spatial
   order: 2
@@ -1123,6 +1157,7 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   values: ["Confident"]
   followup_level: 0
+  odmap_subsection: ~
 
 question_types:
   simple_text:

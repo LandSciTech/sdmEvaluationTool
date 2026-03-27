@@ -30,6 +30,7 @@ combine_questions <- function(q) {
     f$component <- q$component[i]
     f$order <- q$order[i]
     f$part <- q$part[i]
+    f$odmap_subsection <- q$odmap_subsection[i]
     qq <- rbind(qq, f[, colnames(qq)])
     q$followup_level[i] <- 0
   }
@@ -37,5 +38,3 @@ combine_questions <- function(q) {
   o <- rbind(q, qq)
   o[order(o$component, o$order, o$part, o$followup_level), ]
 }
-
-# devtools::load_all("sdmEvalToolCore/")
