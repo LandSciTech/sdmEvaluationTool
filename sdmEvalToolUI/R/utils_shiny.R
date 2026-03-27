@@ -14,6 +14,32 @@ validate_ids <- function(...) {
   validate(!!!n)
 }
 
+#' Test if a reactive is ready
+#'
+#' Silently catches the reactive error and returns TRUE if no error (ready),
+#' FALSE if error (not ready).
+#'
+#' @param r Shiny reactive.
+#'
+#' @returns Logical whether the reactive is ready (not erroring) or not
+#'
+#' @noRd
+#' @examples
+#' r <- shiny::reactive("I'm ready")
+#' shiny::isolate(is_ready(r()))
+#' r <- shiny::reactive(stop("I'm not ready"))
+#' shiny::isolate(is_ready(r()))
+
+is_ready <- function(r) {
+  tryCatch(
+    expr = {
+      r
+      TRUE
+    },
+    error = \(e) FALSE
+  )
+}
+
 map_reactive_vals <- function(
   input,
   map,
@@ -69,6 +95,10 @@ sdm_card <- function(
     min_height = min_height,
     ...
   )
+}
+
+sdm_card_header <- function(..., class = "bg-sdm") {
+  card_header(..., class = class)
 }
 
 sdm_nav_panel <- function(title, ..., class = "sdm-tab-pane") {

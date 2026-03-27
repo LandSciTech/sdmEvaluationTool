@@ -32,7 +32,10 @@ mod_page_predictions_ui <- function(
     value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-      mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
+      mod_comp_spatial_prediction_ui(
+        NS(id, "spatial_prediction"),
+        header = sdm_card_header("Predictions")
+      )
     )
   )
 }

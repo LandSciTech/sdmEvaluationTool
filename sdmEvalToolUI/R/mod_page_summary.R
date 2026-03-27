@@ -37,7 +37,7 @@ mod_page_summary_ui <- function(
 
       mod_comp_deployment_subunits_ui(
         NS(id, "deployment_subunits"),
-        header = card_header("Comfort zones")
+        header = sdm_card_header("Comfort zones")
       )
     )
   )

@@ -3,6 +3,7 @@
 #' @param lang Character. Language of app; either `english` or `french`.
 #' @param options List. Shiny app options.
 #' @param tabs Character. List the tabs that the UI should have.
+#' @param user Character. User id.
 #' @param ... Other arguments passed to [shiny::shinyApp()].
 #'
 #' @returns A Shiny app object
@@ -23,6 +24,7 @@ sdm_tool <- function(
     "model_metadata",
     "summary"
   ),
+  user = NULL,
   ...
 ) {
   # Pages - Names become pretty Tab names, values are ids used for navigation (input$sdm)
@@ -49,9 +51,6 @@ sdm_tool <- function(
   users <- app_users()
   materials <- app_materials()
 
-  # Data
-  #prep_data() |> expand_list()
-
   # UI --------------------------------------
   pages_ui <- purrr::imap(page_options, \(title, id) {
     get(paste0("mod_page_", id, "_ui"))(title = title, id = id)
@@ -62,7 +61,7 @@ sdm_tool <- function(
     div(
       uiOutput("usecase"),
       style = "text-align:center;",
-      class = "alert alert-success",
+      class = "alert bg-sdm",
       role = "alert"
     ),
     bslib::page_navbar(
@@ -74,6 +73,15 @@ sdm_tool <- function(
       padding = 0,
       header = shinyjs::useShinyjs(),
       !!!pages_ui,
+      nav_item(div(
+        id = "div_id",
+        selectInput(
+          "user_role",
+          width = 130,
+          label = NULL,
+          choices = c("Role" = "")
+        )
+      )),
       nav_spacer(),
       !!!sdm_inputs(users),
       nav_item(actionButton(
@@ -108,7 +116,7 @@ sdm_tool <- function(
     # Holds ids of pages with TRUE/FALSE for unsaved answers
     unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE))
 
-    # Updates User/Role/Deployment/Model/Species selectors
+    # Updates Deployment/Model/Species selectors
     #  created locally in order to have access to input & session directly
     sdm_update_selector <- function(
       type,
@@ -148,6 +156,28 @@ sdm_tool <- function(
       )
     }
 
+    # User ID and roles --------------------------------
+    user_id <- reactive({
+      # TODO: Currently this uses the user_id argument of sdm_tool()
+      #   In future may get user_id from somewhere else
+      user
+    })
+
+    user_roles <- reactive({
+      dplyr::filter(
+        users,
+        .data$user_id == user_id(),
+        .data$user_roles != "admin"
+      ) |>
+        dplyr::pull(.data$user_roles) |>
+        unique()
+    })
+
+    user_admin <- reactive({
+      a <- users$user_roles[users$user_id == user_id()]
+      any(a == "admin")
+    })
+
     # Glossary -----------------------------------------
     # Create Glossary Modal when use clicks on (?) button
     observe({
@@ -179,11 +209,6 @@ sdm_tool <- function(
           size = "xl",
           title = "Glossary",
           reactable::renderReactable(tab),
-          # card(card_header("Legend"), legend),
-          # card(
-          #     card_header(page_options[input$sdm]),
-          #     card_body(deets[[input$sdm]])
-          # ),
           easyClose = TRUE
         )
       ))
@@ -218,7 +243,7 @@ sdm_tool <- function(
         input$deployment_id,
         input$model_id,
         input$species_id,
-        user_id = input$user_id
+        user_id = user_id()
       )
     })
 
@@ -269,7 +294,7 @@ sdm_tool <- function(
       save_evaluations(
         questions = questions_init(),
         reactiveValuesToList(input),
-        user_id = input$user_id
+        user_id = user_id()
       )
 
       removeModal()
@@ -279,29 +304,28 @@ sdm_tool <- function(
       bindEvent(input$save)
 
     # Navbar inputs -------------------------------------------
+
+    # User Role
     observe({
-      sdm_update_selector(
-        type = "role",
-        id = "user_role",
-        required = "user_id",
-        choices = {
-          c <- users |>
-            dplyr::filter(.data$user_id == input$user_id) |>
-            dplyr::pull(.data$user_roles) |>
-            unique()
-          rlang::set_names(c, pretty(c))
-        }
-      )
+      req(user_id(), user_roles())
+
+      choices <- rlang::set_names(user_roles(), pretty(user_roles()))
+      if (length(choices) > 1) {
+        choices <- c("", choices)
+        names(choices)[1] <- glue::glue("Select a role")
+      }
+
+      updateSelectInput(session, "user_role", choices = choices)
     })
 
     observe({
       sdm_update_selector(
         type = "deployment",
-        required = c("user_id", "user_role"),
+        required = "user_role",
         choices = {
           users |>
             dplyr::filter(
-              .data$user_id == input$user_id,
+              .data$user_id == user_id(),
               .data$user_roles == input$user_role
             ) |>
             dplyr::left_join(materials, by = "deployment_id") |>
@@ -382,7 +406,6 @@ sdm_tool <- function(
     details <- reactive({
       validate_ids(deployment_id = input$deployment_id)
       con <- withr::local_db_connection(db_connect())
-
       d <- dplyr::tbl(con, "deployments") |>
         dplyr::collect() |>
         dplyr::filter(.data$deployment_id == input$deployment_id)
@@ -390,12 +413,32 @@ sdm_tool <- function(
       d
     })
 
+    # Banner ---------------------------------------
     output$usecase <- renderUI({
-      req(!is.null(details()))
-      d <- details()
-      d <- jsonlite::fromJSON(d$deployment_settings)
-      usecase <- d$use_case[[stringr::str_which(lang(), names(d$use_case))]]
-      tagList("Evaluating models in the context of ", strong(unlist(usecase)))
+      req(user_id())
+
+      name <- users$user_name[users$user_id == user_id()] |> unique()
+      greet <- tagList("Hi", strong(name))
+      if (user_admin()) {
+        greet <- tagList(greet, tooltip(icon("crown"), "You are an Admin"))
+      }
+
+      if (!isTruthy(input$user_role)) {
+        out <- "- Please select a Role"
+      } else if (!isTruthy(input$deployment_id)) {
+        out <- "- Please select a Deployment"
+      } else if (is_ready(details)) {
+        d <- details()
+        d <- jsonlite::fromJSON(d$deployment_settings)
+        d <- d$use_case[[stringr::str_which(lang(), names(d$use_case))]]
+        d <- unlist(d)
+        out <- tagList(
+          "- You are evaluating models in the context of ",
+          strong(d)
+        )
+      }
+
+      tagList(greet, out)
     })
 
     # Mark unsaved -----------------------------------------------------------------
@@ -420,6 +463,14 @@ sdm_tool <- function(
       bindEvent(unsaved(), ignoreInit = TRUE)
 
     # Modules --------------------------------
+
+    # User-related options
+    opts <- list(
+      "user_id" = user_id, # Reactive
+      "user_role" = reactive(input$user_role),
+      "user_admin" = user_admin # Reactive
+    )
+
     # - Define overview separately to specify overview_inputs
     mod_utils_details_server(details = details)
 
@@ -427,10 +478,7 @@ sdm_tool <- function(
       deployment_id = reactive(input$deployment_id),
       model_id = reactive(input$model_id),
       species_id = reactive(input$species_id),
-      opts = list(
-        "user_id" = reactive(input$user_id),
-        "user_role" = reactive(input$user_role)
-      ),
+      opts = opts,
       overview_inputs = overview_inputs,
       overview_update = overview_update,
       abandoned = abandoned,
@@ -446,10 +494,7 @@ sdm_tool <- function(
         deployment_id = reactive(input$deployment_id),
         model_id = reactive(input$model_id),
         species_id = reactive(input$species_id),
-        opts = list(
-          "user_id" = reactive(input$user_id),
-          "user_role" = reactive(input$user_role)
-        ),
+        opts = opts,
         abandoned = abandoned,
         unsaved = unsaved
       )
@@ -461,11 +506,13 @@ sdm_tool <- function(
 
 sdm_theme <- function() {
   bs_theme(
+    `primary` = "#2E5266",
+    `theme-colors` = "('sdm': #d8ded8)",
+    `success` = "#476146", # For the secondary questions
     `species-colour` = "#2E5266",
     `model-colour` = "#DC851F",
     `enable-rounded` = FALSE,
     `modal-header-padding` = "1rem",
-    `success` = "#476146",
     `alert-padding-x` = "0.3rem",
     `alert-padding-y` = "0.3rem"
   ) |>
@@ -477,6 +524,12 @@ sdm_theme <- function() {
          margin: 0;
          line-spacing: 0;
        }
+
+       /* Validate/need messages */
+      .shiny-output-error {
+        padding-left:0.5em;
+       }
+
        /* Modal formatting */
        .modal-body, .modal-footer {
          padding: 1rem;
@@ -648,37 +701,11 @@ sdm_inputs <- function(users) {
   # Or other details somewhere?
   list(
     nav_item(
-      tags$style(
-        "#div_id .selectize-input:after{content: none;} .selectize-input{white-space:nowrap;}"
-      ),
-      div(
-        id = "div_id",
-        selectInput(
-          "user_id",
-          width = 140,
-          label = NULL,
-          choices = c(
-            "Select a user" = "",
-            named_ids(users, match = "user")
-          )
-        )
-      )
-    ),
-    nav_item(div(
-      id = "div_id",
-      shinyjs::disabled(selectInput(
-        "user_role",
-        width = 100,
-        label = NULL,
-        choices = c("Role" = "")
-      ))
-    )),
-    nav_item(
       div(
         id = "div_id",
         shinyjs::disabled(selectInput(
           "deployment_id",
-          width = 180,
+          width = 250,
           label = NULL,
           choices = c("Deployment" = "")
         ))

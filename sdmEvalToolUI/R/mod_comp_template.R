@@ -25,6 +25,7 @@ test_comp_template <- function(...) {
 
 mod_comp_template_ui <- function(id = "comp_template", header = NULL) {
   sdm_card(
+    class = "p-0 sub-card",
     header,
     reactable::reactableOutput(NS(id, "template"))
   )

@@ -9,7 +9,11 @@
 #' test_comp_predictor_raster()
 
 test_comp_predictor_raster <- function(...) {
-  test_comp("mod_comp_predictor_raster", use = "model_id", ...)
+  test_comp(
+    "mod_comp_predictor_raster",
+    use = c("model_id", "deployment_id"),
+    ...
+  )
 }
 
 #' Predictor Raster Component UI
@@ -97,8 +101,8 @@ mod_comp_predictor_raster_server <- function(
       req(input_ready())
       predictor_raster_map(
         predictor_raster(),
-        isolate(input$predictor),
-        subunits()
+        layers = isolate(input$predictor),
+        subunits = subunits()
       )
     })
 
@@ -129,27 +133,43 @@ mod_comp_predictor_raster_server <- function(
 #' @export
 #' @examplesIf have_data()
 #' predictor_raster_prep("bam_v5_can71") |>
-#'   predictor_raster_map(layers = "year")
+#'   predictor_raster_map(
+#'     layers = "year",
+#'     subunits = deployment_subunits_prep("deployment1")
+#'   )
 
 predictor_raster_map <- function(
   predictor_raster,
   layers = NULL,
   subunits = NULL
 ) {
-  base_map() |>
+  map <- base_map() |>
     predictor_raster_layer(
       raster = predictor_raster,
-      layers = layers,
-      subunits = subunits
-    )
+      layers = layers
+    ) |>
+    add_subunits(subunits)
+
+  # Add in layer controls at map creation level because `add_control()` can't
+  # use leafletProxy
+
+  # Show selections for multiple layers only
+  if (length(layers) > 1) {
+    g <- layers
+  } else {
+    g <- character(0)
+  }
+
+  map <- add_control(map, groups = g)
+
+  map
 }
 
 
 predictor_raster_layer <- function(
   map,
   raster = NULL,
-  layers = NULL,
-  subunits = NULL
+  layers = NULL
 ) {
   if (is.null(layers)) {
     return(map)
@@ -169,17 +189,6 @@ predictor_raster_layer <- function(
       min_0 = FALSE
     )
   }
-
-  # Show selections for multiple layers
-  if (length(layers) > 1) {
-    g <- layers
-  } else {
-    g <- character(0)
-  }
-
-  map <- add_subunits(map, subunits)
-
-  map <- add_control(map, groups = g)
 
   map
 }

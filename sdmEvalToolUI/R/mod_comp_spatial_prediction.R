@@ -27,11 +27,11 @@ mod_comp_spatial_prediction_ui <- function(
   id = "comp_spatial_prediction",
   header = NULL
 ) {
-  sdm_card(
-    header,
+  tagList(
     sdm_card(
       class = "p-0 sub-card",
       min_height = "60%",
+      header,
       sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
     ),
     sdm_card(

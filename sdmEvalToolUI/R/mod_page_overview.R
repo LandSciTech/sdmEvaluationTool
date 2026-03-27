@@ -5,7 +5,7 @@
 #'
 #' @examplesIf have_data()
 #' test_page_overview()
-#' test_page_overview(user_id = "testuser")
+#' test_page_overview(user_admin = TRUE)
 
 test_page_overview <- function(...) {
   test_page("mod_page_overview", ...)
@@ -27,7 +27,8 @@ mod_page_overview_ui <- function(id, title) {
     title = title,
     value = id,
     sdm_card(
-      card_header(
+      class = "p-0 sub-card",
+      sdm_card_header(
         "Current status of review",
         uiOutput(NS(id, "buttons"))
       ),
@@ -60,28 +61,40 @@ mod_page_overview_server <- function(id = "overview", ...) {
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
 
   moduleServer(id, function(input, output, session) {
-    # Setup
+    # Setup --------------------------------
     tbl_updated <- reactiveVal(FALSE) # Tracks when tbl is updated so we can unnest the first column
 
-    # Buttons
+    # Buttons ---------------------------
     output$buttons <- renderUI({
-      req(opts$user_role())
+      req(!is.null(opts$user_admin()), !is.null(opts$user_role()))
 
-      if (opts$user_role() == "admin") {
-        button <- downloadButton(
-          NS(id, "download"),
-          label = NULL,
-          class = "btn-mini btn-rnd btn-outline-success"
-        )
-      } else {
-        button <- actionButton(
-          NS(id, "refresh"),
-          label = NULL,
-          icon = icon("arrows-rotate"),
-          class = "btn-mini btn-rnd btn-outline-success"
+      buttons <- tagList()
+
+      if (opts$user_role() == "evaluator") {
+        buttons <- tagList(
+          buttons,
+          actionButton(
+            NS(id, "refresh"),
+            label = NULL,
+            icon = icon("arrows-rotate"),
+            class = "btn-mini btn-rnd btn-outline-success"
+          )
         )
       }
-      button
+
+      if (opts$user_admin()) {
+        buttons <- tagList(
+          buttons,
+          div(class = "flex-fill"),
+          downloadButton(
+            NS(id, "download"),
+            label = "Download Database",
+            class = "btn-mini btn-outline-success"
+          )
+        )
+      }
+
+      buttons
     })
 
     # Download data for admins
@@ -193,7 +206,7 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #' components, and their completion status.
 #'
 #' @param tbl Data frame. Evaluation details from `evals_details()`
-#' @param user_role Character. User role ("admin", "modeler", or "evaluator")
+#' @param user_role Character. User role ("modeler", or "evaluator")
 #'
 #' @returns A reactable table object
 #'
@@ -205,14 +218,14 @@ mod_page_overview_server <- function(id = "overview", ...) {
 #' #evals_table(tbl, "evaluator")
 #' tbl <- evals_details("testuser", "evaluator")
 #' evals_table(tbl, "evaluator")
-#' tbl <- evals_details("testuser", "admin")
+#' tbl <- evals_details("testuser", "modeler")
 #' evals_table(tbl, "evaluator")
 
 evals_table <- function(tbl, user_role) {
   # If evaluator only show evaluations created
   # If modeler only show deployments created
   group_by <- "deployment_model_name"
-  if (user_role %in% c("admin", "modeler")) {
+  if (user_role == "modeler") {
     group_by <- c(group_by, "evaluation_create_user_name")
   }
 
@@ -359,7 +372,7 @@ evals_table <- function(tbl, user_role) {
         name = "Evaluator",
         minWidth = 200,
         maxWidth = 250,
-        show = user_role %in% c("admin", "modeler")
+        show = user_role == "modeler"
       ),
       species_display = reactable::colDef(
         name = "Species",

@@ -3,10 +3,15 @@ test_page <- function(
   deployment_id = "deployment1",
   model_id = "bam_v5_can71",
   species_id = "BBWO",
-  user_id = "holden",
-  user_role = "evaluator"
+  user_id = "testuser",
+  user_role = "evaluator",
+  user_admin = FALSE
 ) {
-  opts <- list(user_id = user_id, user_role = user_role)
+  opts <- list(
+    user_id = user_id,
+    user_role = user_role,
+    user_admin = user_admin
+  )
 
   ui <- bslib::page_navbar(
     title = "SDM Tool Testing",
@@ -14,7 +19,7 @@ test_page <- function(
     header = shinyjs::useShinyjs(),
     get(paste0(module, "_ui"))(
       title = stringr::str_remove_all(module, "mod_page_") |> fmt_pretty(),
-      id = stringr::str_remove_all(module, "mod_page_"),
+      id = stringr::str_remove_all(module, "mod_page_")
     )
   )
 
@@ -24,10 +29,7 @@ test_page <- function(
         deployment_id = reactive(deployment_id),
         model_id = reactive(model_id),
         species_id = reactive(species_id),
-        opts = list(
-          "user_id" = reactive(user_id),
-          "user_role" = reactive(user_role)
-        ),
+        opts = purrr::map(opts, \(o) reactive(force(o))),
         overview_inputs = reactiveVal(NULL),
         overview_update = reactiveVal(NULL),
         abandoned = reactiveVal(NULL),

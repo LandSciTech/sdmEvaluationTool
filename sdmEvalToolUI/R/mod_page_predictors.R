@@ -39,12 +39,12 @@ mod_page_predictors_ui <- function(
       mod_comp_predictor_raster_ui(
         NS(id, "predictor_raster"),
         height = "60%",
-        header = card_header("Predictor Raster")
+        header = sdm_card_header("Predictor Raster")
       ),
       mod_comp_predictor_metadata_ui(
         NS(id, "predictor_metadata"),
         height = "40%",
-        header = card_header("Predictor Metadata")
+        header = sdm_card_header("Predictor Metadata")
       )
     )
   )
