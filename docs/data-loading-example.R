@@ -304,6 +304,8 @@ prep_deployment_questions(
 # default questions - with drilldown
 q <- sdmEvalToolCore::default_questions
 q$followup_level[5] <- 3
+q <- combine_questions(q)
+
 prep_deployment_questions(
   deployment_id = "deployment2",
   x = q

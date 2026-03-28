@@ -199,6 +199,7 @@ default_species_table_canada <- function() {
 #' @param model_id Model ID.
 #' @param species_id Species ID.
 #' @param component_id Component ID.
+#' @param sep Character. Separator.
 #'
 #' @examples
 #' make_material_id("model1", NA, "predictor_metadata")

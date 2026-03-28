@@ -30,7 +30,7 @@ upload_material(
 
 \item{deployment_id}{Deployment ID.}
 
-\item{material_settings}{Material settings.}
+\item{material_settings}{List with the material settings.}
 
 \item{con}{Database connection (use \code{NULL} to avoid inserting a record).}
 

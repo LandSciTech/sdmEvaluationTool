@@ -4,7 +4,7 @@
 \alias{make_material_id}
 \title{Make Material ID}
 \usage{
-make_material_id(model_id, species_id, component_id)
+make_material_id(model_id, species_id, component_id, sep = "_")
 }
 \arguments{
 \item{model_id}{Model ID.}
@@ -12,6 +12,8 @@ make_material_id(model_id, species_id, component_id)
 \item{species_id}{Species ID.}
 
 \item{component_id}{Component ID.}
+
+\item{sep}{Character. Separator.}
 }
 \description{
 Make Material ID

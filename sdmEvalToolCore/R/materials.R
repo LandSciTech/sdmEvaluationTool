@@ -125,6 +125,7 @@ prep_deployment_questions <- function(
     paste0(z, collapse = ", ")
   })
   q$values <- v
+  q$odmap_id <- NULL
   upload_material(
     "deployment_questions",
     x = q,
