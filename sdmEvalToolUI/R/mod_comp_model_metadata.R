@@ -29,7 +29,8 @@ mod_comp_model_metadata_ui <- function(
   sdm_card(
     class = "p-0 sub-card",
     header,
-    reactable::reactableOutput(NS(id, "model_metadata"))
+    reactable::reactableOutput(NS(id, "model_metadata")),
+    card_footer(shiny::textOutput(NS(id, "model_metadata_legend")))
   )
 }
 
@@ -41,6 +42,9 @@ mod_comp_model_metadata_server <- function(
   moduleServer(id, function(input, output, session) {
     stopifnot(is.reactive(model_id))
     model_metadata <- reactive(model_metadata_prep(model_id()))
+    output$model_fit_legend <- renderText({
+      get_material_settings(model_metadata())$legend[["en"]]
+    })
     output$model_metadata <- reactable::renderReactable(model_metadata_table(model_metadata()))
   })
 }

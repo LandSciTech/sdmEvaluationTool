@@ -32,6 +32,7 @@ mod_comp_observations_ui <- function(
       class = "p-0 sub-card",
       min_height = "60%",
       header,
+      card_footer(shiny::textOutput(NS(id, "observations_legend"))),
       uiOutput(NS(id, "ui_selectors")),
       sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
     ),
@@ -75,6 +76,13 @@ mod_comp_observations_server <- function(
   moduleServer(id, function(input, output, session) {
     # Setup -------------------------------------------------------------
     ns <- session$ns
+
+    # Legend
+    output$observations_legend <- renderText({
+      prep_material_settings("observations", model_id(), species_id())$legend[[
+        "en"
+      ]]
+    })
 
     # Map -------------------------------------------------------------------
     obs <- reactive(obs_prep(
