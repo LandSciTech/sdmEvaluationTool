@@ -11,7 +11,7 @@
 #' @param component_id Component ID.
 #' @param user_id User ID.
 #' @param deployment_id Deployment ID.
-#' @param material_settings Material settings.
+#' @param material_settings List with the material settings.
 #' @param con Database connection (use `NULL` to avoid inserting a record).
 #' @param update Logical. Is this a new entry (`FALSE`, default)
 #'   or an update (`TRUE`) to an existing material entry.
@@ -52,10 +52,22 @@ upload_material <- function(
       mt <- db_read_table(con, table_name = "materials")
       mt <- mt |>
         dplyr::filter(.data$material_id == .env$mtid)
+      if (nrow(mt) == 0) {
+        stop(
+          "Database entry not found for ",
+          make_material_id(
+            model_id = model_id,
+            species_id = species_id,
+            component_id = component_id,
+            sep = ", "
+          )
+        )
+      }
+      mt$material_create_time <- timestamp_to(mt$material_create_time)
       mt$material_modify_user <- user_id
       mt$material_modify_time <- timestamp_to(now())
       if (!is.null(material_settings)) {
-        mt$material_settings <- material_settings
+        mt$material_settings <- jsonlite::toJSON(material_settings)
       }
     } else {
       drule <- get_comp_rule(component_id, "display")
