@@ -11,10 +11,10 @@ prep_materials(component_id, model_id, species_id = NULL)
 
 \item{model_id}{Character. Model ID}
 
-\item{species_id}{Character. Model ID}
+\item{species_id}{Character. Species ID}
 }
 \value{
-Loaded file as an R object
+Loaded file as an R object, material settings returned as an attribute.
 }
 \description{
 Load material files

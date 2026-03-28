@@ -14,7 +14,8 @@ prep_deployment_settings(deployment_id, x, ...)
 prep_deployment_subunits(
   deployment_id,
   x = NULL,
-  reference,
+  reference_raster,
+  reference_points,
   n = c(20, 20),
   square = TRUE,
   ...
@@ -27,7 +28,9 @@ prep_deployment_subunits(
 
 \item{...}{Arguments passed to the write function.}
 
-\item{reference}{Reference raster.}
+\item{reference_raster}{Reference raster layer.}
+
+\item{reference_points}{Reference spatial points object.}
 
 \item{n}{Number of grid cells in x and y direction.}
 

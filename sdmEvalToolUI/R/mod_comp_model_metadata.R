@@ -80,7 +80,6 @@ model_metadata_table <- function(model_metadata) {
 model_metadata_prep <- function(model_id) {
   out <- prep_materials("model_metadata", model_id = model_id)
   ms <- prep_material_settings("model_metadata", model_id = model_id)
-  str(ms)
   attr(out, "material_settings") <- ms
   out
 }

@@ -7,7 +7,7 @@
 base_map(ns = identity)
 }
 \arguments{
-\item{ns}{Namespace.}
+\item{ns}{Namespace. Required for spatial selections.}
 }
 \description{
 Base Map with Provider Tiles
