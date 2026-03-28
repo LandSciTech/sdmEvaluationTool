@@ -99,7 +99,8 @@ upload_material <- function(
 #'
 #' @param deployment_id Deployment ID.
 #' @param x An object to upload.
-#' @param reference Reference raster.
+#' @param reference_raster Reference raster layer.
+#' @param reference_points Reference spatial points object.
 #' @param n Number of grid cells in x and y direction.
 #' @param square Logical. If `FALSE``, create hexagonal grid.
 #' @param ... Arguments passed to the write function.
@@ -161,14 +162,18 @@ prep_deployment_settings <- function(
 prep_deployment_subunits <- function(
   deployment_id,
   x = NULL,
-  reference,
+  reference_raster,
+  reference_points,
   n = c(20, 20),
   square = TRUE,
   ...
 ) {
   cat("> Preparing deployment subunits\n")
-  reference <- terra::project(reference, "epsg:4326")
-  bbox <- sf::st_as_sfc(sf::st_bbox(reference))
+  reference_raster <- terra::project(reference_raster, "epsg:4326")
+  reference_points <- sf::st_set_crs(reference_points, 4326)
+  bbox1 <- sf::st_as_sfc(sf::st_bbox(reference_raster))
+  bbox2 <- sf::st_as_sfc(sf::st_bbox(reference_points))
+  bbox <- sf::st_as_sfc(sf::st_bbox(bbox1, bbox2))
   if (is.null(x)) {
     su_gr <- sf::st_make_grid(bbox, n = n, square = square)
     su <- sf::st_sf(
@@ -177,9 +182,16 @@ prep_deployment_subunits <- function(
       geometry = su_gr
     )
     su <- sf::st_transform(su, 4326)
-    u <- terra::rasterize(su, reference[[1]], "id")
-    terra::values(u)[is.na(terra::values(reference[[1]]))] <- NA
+
+    # compare to raster
+    u <- terra::rasterize(su, reference_raster[[1]], "id")
+    terra::values(u)[is.na(terra::values(reference_raster[[1]]))] <- NA
     su$keep <- su$id %in% stats::na.omit(unique(terra::values(u)[, 1]))
+
+    # compare to points
+    ii <- sf::st_intersects(reference_points, su, sparse = FALSE)
+    su$keep <- su$keep | colSums(ii) > 0
+
     su <- su[su$keep, ]
     su$keep <- NULL
     su$id <- NULL
