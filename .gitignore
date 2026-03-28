@@ -51,3 +51,5 @@ _tmp
 # folder to store files that don't belong to git
 misc/*
 !misc/.gitkeep
+sdm_evaluation_results/*
+sdm_evaluation_results.zip

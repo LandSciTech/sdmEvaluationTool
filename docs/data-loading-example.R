@@ -11,8 +11,8 @@ devtools::load_all("sdmEvalToolCore")
 
 path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
 conf <- yaml::read_yaml("spec/config.yml")
-DIR <- "./misc/test2"
-# DIR <- "./misc/sdm_evaluation_results"
+# DIR <- "./misc/test"
+DIR <- "./misc/sdm_evaluation_results"
 sdmevaltool_options(base = DIR) # use the misc folder
 
 unlink(DIR, recursive = TRUE)
