@@ -71,7 +71,7 @@ upload_material <- function(
       }
     } else {
       drule <- get_comp_rule(component_id, "display")
-      ms <- jsonlite::toJSON(drule$materials_settings)
+      ms <- jsonlite::toJSON(drule$material_settings)
       mt <- prepare_material_entry(
         model_id = model_id,
         species_id = species_id,
