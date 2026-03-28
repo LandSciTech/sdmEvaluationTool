@@ -20,9 +20,9 @@ prep_data <- function() {
 #'
 #' @param component_id Character. Component ID
 #' @param model_id Character. Model ID
-#' @param species_id Character. Model ID
+#' @param species_id Character. Species ID
 #'
-#' @returns Loaded file as an R object
+#' @returns Loaded file as an R object, material settings returned as an attribute.
 #'
 #' @export
 #' @examplesIf have_data()
@@ -52,12 +52,68 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
     validate_ids(model_id = model_id)
   }
 
-  prep_files(
+  ms <- prep_material_settings(component_id, model_id, species_id)
+
+  out <- prep_files(
     path,
     name = component_id,
     model_id = model_id,
     species_id = species_id
   )
+  attr(out, "material_settings") <- ms
+  out
+}
+
+#' Prepare Material Settings
+#'
+#' @param component_id Character. Component ID
+#' @param model_id Character. Model ID
+#' @param species_id Character. Species ID
+#'
+#' @returns A list with material settings
+#'
+#' @export
+#' @examplesIf have_data()
+#' prep_material_settings("observations", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_material_settings("predictor_metadata", model_id = "bam_v5_can71")
+#' prep_material_settings("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_material_settings("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_material_settings("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
+
+prep_material_settings <- function(component_id, model_id, species_id = NULL) {
+  con <- withr::local_db_connection(db_connect())
+  mt <- dplyr::tbl(con, "materials") |>
+    dplyr::filter(
+      component_id == .env$component_id,
+      model_id == .env$model_id
+    ) |>
+    dplyr::collect()
+  if (!is.null(species_id)) {
+    if (is.na(species_id)) {
+      mt <- mt |>
+        dplyr::filter(
+          is.na(species_id)
+        )
+    } else {
+      mt <- mt |>
+        dplyr::filter(
+          species_id == .env$species_id
+        )
+    }
+  }
+  jsonlite::fromJSON(mt$material_settings)
+}
+
+#' Get Material Settings
+#'
+#' @param x Object.
+#'
+#' @returns The value of the material settings attribute
+#'
+#' @export
+
+get_material_settings <- function(x) {
+  attr(x, "material_settings")
 }
 
 #' Prepare Deployments
