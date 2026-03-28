@@ -54,7 +54,8 @@ mod_comp_predictor_raster_ui <- function(
           ),
         )
       )
-    )
+    ),
+    card_footer(shiny::textOutput(NS(id, "predictor_raster_legend")))
   )
 }
 
@@ -68,6 +69,13 @@ mod_comp_predictor_raster_server <- function(
   stopifnot(is.reactive(model_id))
 
   moduleServer(id, function(input, output, session) {
+    # Legend -------------------------------------------------------
+    output$predictor_raster_legend <- renderText({
+      prep_material_settings("predictor_raster", model_id())$legend[[
+        "en"
+      ]]
+    })
+
     # Setup -------------------------------------------------------------
     ns <- session$ns
 
