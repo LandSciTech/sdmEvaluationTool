@@ -254,6 +254,37 @@ for (species_id in species$species_id) {
 }
 ```
 
+## Material settings
+
+Default material settings are defined in the YAML specification. To
+access these, you can use the following:
+
+``` r
+component_id <- "predictor_metadata"
+str(get_comp_rule(component_id, "display")$material_settings)
+```
+
+    ## List of 1
+    ##  $ legend:List of 2
+    ##   ..$ en: chr "Predictor metadata table."
+    ##   ..$ fr: chr ""
+
+This default is used when using the above `prep_<component_id>()`
+functions. Using the same structure, we can pass a new legend:
+
+``` r
+prep_predictor_metadata(
+  x = x,
+  model_id = model_id,
+  user_id = user_id,
+  material_settings = list(en = "Table with predictor metadata.", fr = ""),
+  con = con,
+  update = TRUE
+)
+```
+
+Using `update = TRUE` we can update an existing material.
+
 ## Managing deployments
 
 Create 2 deployments, keeping the `deploylemt_settings` empty (`[]`) for
