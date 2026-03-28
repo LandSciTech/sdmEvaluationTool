@@ -348,11 +348,17 @@ db_write_table(
 
 # raster template
 r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+# spatial points template
+xy <- read_file(file.path(path, "data", "observations_can71.csv"))
+xy <- xy[, c("lat", "lon")]
+xy <- sf::st_as_sf(xy, coords = c("lon", "lat"))
+sf::st_crs(xy) <- 4326
 
 prep_deployment_subunits(
   deployment_id = "deployment1",
   x = NULL,
-  reference = r,
+  reference_raster = r,
+  reference_points = xy,
   n = c(20, 20),
   square = TRUE
 )
@@ -360,13 +366,12 @@ prep_deployment_subunits(
 # ecoprovinces
 su <- sf::st_read(file.path(path, "subunits", "ecoprovinces.shp"))
 su$subunit_id <- su$ECOPROVINC
-# note this does not compare observation locations to the template
-# points can sometimes fall outside of raster cells
 
 prep_deployment_subunits(
   deployment_id = "deployment2",
   x = su,
-  reference = r
+  reference_raster = r,
+  reference_points = xy
 )
 
 sort(unique(sdmEvalToolCore::fields$table))

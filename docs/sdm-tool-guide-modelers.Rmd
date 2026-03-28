@@ -357,11 +357,14 @@ prep_deployment_questions(
 
 The file now can be edited as needed.
 
-If drilldown questions are needed, edit the `followup_level` field, like:
+If drilldown questions are needed, edit the `followup_level` field and
+apply the `combine_questions()` function like:
 
 ```R
 q <- sdmEvalToolCore::default_questions
 q$followup_level[5] <- 3
+q <- combine_questions(q)
+
 prep_deployment_questions(
   deployment_id = "deployment2",
   x = q
@@ -409,23 +412,32 @@ db_write_table(
 ```
 
 Deployment subunits can be set up as a regular grid based on the extent
-of a raster template:
+of a reference raster (distribution maps) and the spatial points 
+(observations) object:
 
 ```R
 # raster template
 r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+# spatial points template
+xy <- read_file(file.path(path, "data", "observations_can71.csv"))
+xy <- xy[, c("lat", "lon")]
+xy <- sf::st_as_sf(xy, coords = c("lon", "lat"))
+sf::st_crs(xy) <- 4326
 
 prep_deployment_subunits(
   deployment_id = "deployment1",
   x = NULL,
-  reference = r,
+  reference_raster = r,
+  reference_points = xy,
   n = c(20, 20),
   square = TRUE
 )
 ```
 
 Alternatively, deployment subunits can be defined based on custom vector layers,
-e.g. ecoregions/ecoprovinces:
+e.g. ecoregions/ecoprovinces. In this case the subunit vector layer will be
+transformed to epsg:4326 and clipped to the bounding box of the reference
+layers:
 
 ```R
 # ecoprovinces
@@ -435,6 +447,7 @@ su$subunit_id <- su$ECOPROVINC
 prep_deployment_subunits(
   deployment_id = "deployment2",
   x = su,
-  reference = r
+  reference_raster = r,
+  reference_points = xy
 )
 ```
