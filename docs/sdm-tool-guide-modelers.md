@@ -128,6 +128,10 @@ users <- data.frame(
 db_write_table(con, "users", users)
 ```
 
+Add as many users as needed. You can make a CSV file following the
+column names. Read in the file with `read.csv()` to have the full
+`users` table.
+
 Predictor metadata:
 
 ``` r
@@ -380,6 +384,20 @@ access <- data.frame(
 db_write_table(con, "access", access)
 ```
 
+Add `"evaluator"` role to all users who need it (see `users` table). You
+can use a loop like this:
+
+``` r
+for (user_id in users$user_id) {
+  access <- rbind(access, data.frame(
+    user_id = user_id,
+    deployment_id = deployments$deployment_id,
+    user_roles = "evaluator"
+  ))
+}
+db_write_table(con, "access", access, mode = "upsert")
+```
+
 The deployment materials repeat the materials for each deployment. To do
 this part, we read in the materials (filter if deployments involve a
 subset), add the deployment ID. Finally, write the table to the
@@ -449,4 +467,100 @@ prep_deployment_subunits(
   reference_raster = r,
   reference_points = xy
 )
+```
+
+## Local deployment
+
+To share the deployment with evaluators, follow these steps.
+
+Compress the deployment materials and the fresh database:
+
+``` r
+od <- setwd("misc")
+utils::zip(
+  "./sdm_evaluation_results.zip",
+  file.path(
+    "sdm_evaluation_results",
+    list.files("sdm_evaluation_results", recursive = TRUE)
+  )
+)
+setwd(od)
+```
+
+This will create the `misc/sdm_evaluation_results.zip` file. Send this
+file to the evaluators with the following setup instructions.
+
+### Prerequisites
+
+- [R](https://cran.r-project.org/)
+- [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
+- [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or a
+  similar environment of you choosing
+
+Before installation, first create a new RStudio Project where you’ll
+store the data required for this tool. To do so, select *File* \> *New
+Project*. When prompted, select *New Directory* and *New Project*. Under
+the field *Directory name*, type in *sdmEvaluationTool*, then, click on
+the *Browse* button and select a location you’ll remember (e.g.,
+`c:/users/user_name/work`).
+
+### Installation
+
+Use this script in R to install required packages and download/extract
+the example data set (say ‘yes’ or select the ‘All’ option to update
+packages if asked):
+
+``` r
+source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
+```
+
+### Adding the data set
+
+The evaluators will have to first remove the
+`sdm_evaluation_results.zip` and the `sdm_evaluation_results` folder
+with its contents. Then they will need to save and extract the archive
+containing the real deployment. Use a system tool or the following
+command:
+
+``` r
+unzip("./sdm_evaluation_results.zip")
+```
+
+### Running the app locally
+
+Provide the following script to the evaluators:
+
+- replace the `"<evaluator_user_name>"` with their user name
+- use the subset of `tabs` as needed, i.e. by excluding the `"model"`
+  and `"model_metadata"` tabs.
+
+``` r
+# load libraries
+library(sdmEvalToolCore)
+library(sdmEvalToolUI)
+
+# start the app
+sdm_tool(
+  user = "<evaluator_user_name>",
+  tabs = c(
+    "overview",
+    "predictions",
+    "observations",
+    "model",
+    "predictors",
+    "model_metadata",
+    "summary"
+  )
+)
+```
+
+A window should pop-up with the loaded app. Alternatively, you can visit
+the following link in your browser: <http://localhost:8080>.
+
+If you see an error message `Error: Could not connect to database`, try
+setting the right folder with `sdmevaltool_options()`:
+
+``` r
+# use your path here to point to the right folder
+sdmevaltool_options(base = "./sdm_evaluation_results")
 ```
