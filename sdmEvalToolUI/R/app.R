@@ -29,7 +29,7 @@ sdm_tool <- function(
 ) {
   # Pages - Names become pretty Tab names, values are ids used for navigation (input$sdm)
   page_options <- c(
-    "overview" = "Overview",
+    "overview" = "Index",
     "predictions" = "Predictions",
     "observations" = "Observations",
     "model" = "Model",
