@@ -142,7 +142,7 @@ spatial_prediction_map <- function(
     ) |>
     add_raster(
       spatial_prediction,
-      layer = "cv",
+      layer = "standarderror",
       name = "Uncertainty",
       palette = "viridis",
       min_0 = TRUE
