@@ -177,7 +177,7 @@ Further examples
 ### New Data Processing
 
 - Provided the new component materials are file types defined in
-  `sdmToolCore::read_file()`, `prep_materials()` should just work.
+  `sdmEvalToolCore::read_file()`, `prep_materials()` should just work.
   Otherwise `read_file()` will need to be updated.
 - New component types also need to be included in the `components` data
   frame, created from the specs in the sdmEvalToolCore package

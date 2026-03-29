@@ -533,6 +533,7 @@ Provide the following script to the evaluators:
 - replace the `"<evaluator_user_name>"` with their user name
 - use the subset of `tabs` as needed, i.e. by excluding the `"model"`
   and `"model_metadata"` tabs.
+- change the order of the tabs as desired
 
 ``` r
 # load libraries
