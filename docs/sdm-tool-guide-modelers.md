@@ -520,7 +520,7 @@ The evaluators will have to first remove the
 `sdm_evaluation_results.zip` and the `sdm_evaluation_results` folder
 with its contents. Then they will need to save and extract the archive
 containing the real deployment. Use a system tool or the following
-command:
+command to extract the files:
 
 ``` r
 unzip("./sdm_evaluation_results.zip")

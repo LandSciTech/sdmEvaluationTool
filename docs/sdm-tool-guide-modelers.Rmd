@@ -513,7 +513,7 @@ source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/hea
 The evaluators will have to first remove the `sdm_evaluation_results.zip`
 and the `sdm_evaluation_results` folder with its contents.
 Then they will need to save and extract the archive containing the real deployment.
-Use a system tool or the following command:
+Use a system tool or the following command to extract the files:
 
 ```R
 unzip("./sdm_evaluation_results.zip")
