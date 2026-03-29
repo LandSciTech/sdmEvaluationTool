@@ -181,7 +181,6 @@ prep_predictor_raster(
   con = con,
   update = FALSE
 )
-# FIXME: we might have to organize predictor summaries and rasters a bit better? Check names etc...
 
 # -------- observations -----------
 
