@@ -1,0 +1,26 @@
+{
+  "input": {
+
+  },
+  "output": {
+    "comp_predictor_raster-map": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "comp_predictor_raster-ui_selectors": {
+      "message": "Predictor Raster doesn't exist. Have you supplied the correct base path?\n../misc/base/materials/bam_v5_can71/predictors/predictor_raster.tif",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    }
+  },
+  "export": {
+
+  }
+}

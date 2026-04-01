@@ -44,6 +44,7 @@ Imports:
     viridisLite (>= 0.4.2)
 Suggests:
     rmarkdown,
+    shinytest2,
     testthat (>= 3.0.0),
     withr
 Remotes:

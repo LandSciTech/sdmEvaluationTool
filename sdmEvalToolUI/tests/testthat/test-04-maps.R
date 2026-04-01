@@ -42,7 +42,7 @@ test_that("add_selected_subunits() NULL subunits", {
 })
 
 test_that("add_raster() & add_control()", {
-  raster <- template_spatial_prep()
+  raster <- test_raster()
   map <- base_map()
 
   expect_silent(

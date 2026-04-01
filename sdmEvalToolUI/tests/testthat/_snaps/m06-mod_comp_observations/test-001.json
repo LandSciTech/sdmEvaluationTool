@@ -1,0 +1,43 @@
+{
+  "input": {
+    "comp_observations-select-selected_copy": 0
+  },
+  "output": {
+    "comp_observations-map": {
+      "message": "Observations doesn't exist. Have you supplied the correct base path?\n../misc/base/materials/bam_v5_can71/species/BBWO/observations.gpkg",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "comp_observations-select-selected": {
+      "message": "",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "comp_observations-select-tbl_selected": {
+      "message": "No areas selected",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    },
+    "comp_observations-select-tbl_title": "Currently selected areas",
+    "comp_observations-ui_selectors": {
+      "message": "Observations doesn't exist. Have you supplied the correct base path?\n../misc/base/materials/bam_v5_can71/species/BBWO/observations.gpkg",
+      "call": "NULL",
+      "type": [
+        "shiny.silent.error",
+        "validation"
+      ]
+    }
+  },
+  "export": {
+
+  }
+}

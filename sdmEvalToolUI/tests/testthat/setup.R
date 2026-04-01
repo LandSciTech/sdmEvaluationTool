@@ -1,3 +1,5 @@
+library(shinytest2)
+
 # Set data folder for testing
 opts <- sdmevaltool_options()
 
