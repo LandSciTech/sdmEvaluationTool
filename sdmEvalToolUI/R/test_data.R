@@ -1,3 +1,35 @@
+#' Create input list for quick tests
+#'
+#'
+#' @param component Character. Component ids to include
+#' @param deployment_id Character. Deployment ids to include
+#' @param model_id Character. Model ids to include
+#' @param species_id Character. Species ids to include
+#' @param user_id Character. User id to include
+#'
+#' @returns Named list
+#'
+#' @noRd
+#' @examples
+#' do.call(prep_questions, test_inputs())
+
+test_inputs <- function(
+  component = "observations",
+  deployment_id = "deployment_test",
+  model_id = "bam_v5_can71",
+  species_id = "BBWO",
+  user_id = "test_user"
+) {
+  list(
+    component = component,
+    deployment_id = deployment_id,
+    model_id = model_id,
+    species_id = species_id,
+    user_id = user_id
+  )
+}
+
+
 #' Create dummy questions for testing
 #'
 #' @param component Component.
@@ -153,4 +185,20 @@ test_evaluation_body <- function(component_id = "observations") {
   }
 
   b
+}
+
+
+test_points <- function() {
+  data.frame(
+    id = 1:5,
+    popup = c("Toronto", "Ottawa", "Thunder Bay", "Sudbury", "Windsor"),
+    type = factor(c("l1", "l1", "l2", "l2", "l3")),
+    layers = factor(c("present", "present", "absent", "absent", "absent")),
+    longitude = c(-79.3832, -75.6972, -89.2477, -80.9930, -83.0366),
+    latitude = c(43.6532, 45.4215, 48.3809, 46.4917, 42.3149)
+  ) |>
+    sf::st_as_sf(
+      coords = c("longitude", "latitude"),
+      crs = 4326
+    )
 }
