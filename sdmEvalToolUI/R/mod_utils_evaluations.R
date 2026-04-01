@@ -340,7 +340,7 @@ show_spatial <- function(show_clicked, questions, input) {
 
   nms <- nms |>
     stringr::str_extract("[^-]*$") |>
-    pretty()
+    fmt_pretty()
 
   rlang::set_names(spatial_ids, nms)
 }

@@ -9,14 +9,16 @@
 #'
 #' @noRd
 #' @examples
-#' pretty("model_id")
-#' pretty("deployment_id")
-#' pretty("species_id")
+#' fmt_pretty("model_id")
+#' fmt_pretty("deployment_id")
+#' fmt_pretty("species_id")
+#' fmt_pretty("observations")
+#' fmt_pretty("model_fit")
 
-pretty <- function(x) {
+fmt_pretty <- function(x) {
   x |>
-    stringr::str_replace_all("_", " ") |>
-    stringr::str_remove_all("\\b id\\b") |>
+    stringr::str_replace_all("_|-", " ") |>
+    stringr::str_remove_all("\\b ?id\\b") |>
     stringr::str_to_title()
 }
 
@@ -59,9 +61,4 @@ fmt_time <- function(time) {
   time |>
     format("%a, %b %d %Y<br>%I:%M %p") |>
     stringr::str_remove_all("(?<=(\\s|<br>))0")
-}
-
-
-fmt_pretty <- function(x) {
-  x |> stringr::str_replace_all("_|-", " ") |> stringr::str_to_title()
 }

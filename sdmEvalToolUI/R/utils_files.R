@@ -90,7 +90,7 @@ prep_files <- function(path, name, ...) {
   validate(need(
     file.exists(path),
     paste0(
-      pretty(name),
+      fmt_pretty(name),
       " doesn't exist. Have you supplied the correct base path?\n",
       path
     )

@@ -197,7 +197,7 @@ ui_questions <- function(
     })
 
   if (length(ui) > 1) {
-    ui <- purrr::map2(ui, pretty(unique(questions$component)), \(u, c) {
+    ui <- purrr::map2(ui, fmt_pretty(unique(questions$component)), \(u, c) {
       list(h5(c), u)
     })
   }

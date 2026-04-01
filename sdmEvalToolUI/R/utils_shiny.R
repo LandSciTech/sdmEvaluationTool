@@ -10,7 +10,9 @@
 validate_ids <- function(...) {
   expand_dots(...)
   nms <- names(list(...))
-  n <- purrr::map(nms, \(w) need(get(w), paste("Please select a", pretty(w))))
+  n <- purrr::map(nms, \(w) {
+    need(get(w), paste("Please select a", fmt_pretty(w)))
+  })
   validate(!!!n)
 }
 

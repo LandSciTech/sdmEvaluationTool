@@ -397,7 +397,7 @@ evals_details <- function(user_id, user_role) {
         "---",
         .data$model_name
       ),
-      component_name = pretty(.data$component_id),
+      component_name = fmt_pretty(.data$component_id),
       # To sort "Model" to the top, add space
       species_display = stringr::str_replace(
         .data$species_display,

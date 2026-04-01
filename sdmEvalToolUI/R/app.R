@@ -309,7 +309,7 @@ sdm_tool <- function(
     observe({
       req(user_id(), user_roles())
 
-      choices <- rlang::set_names(user_roles(), pretty(user_roles()))
+      choices <- rlang::set_names(user_roles(), fmt_pretty(user_roles()))
       if (length(choices) > 1) {
         choices <- c("", choices)
         names(choices)[1] <- glue::glue("Select a role")
