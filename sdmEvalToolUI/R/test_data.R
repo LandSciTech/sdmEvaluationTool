@@ -5,7 +5,7 @@
 #' @param model_id Model ID.
 #' @param species_id Species ID.
 #' @param types Question types.
-#' @param user_name User name.
+#' @param user_id User id.
 #'
 #' @examples
 #' test_questions()
@@ -16,45 +16,34 @@ test_questions <- function(
   model_id = "bam_v5_can71",
   species_id = "BBWO",
   types = c("spatial", "ordinal", "simple_text"),
-  user_name = "testuser"
+  user_id = "testuser"
 ) {
-  dplyr::tibble(
-    component = component,
-    type = c("spatial", "ordinal", "ordinal", "simple_text"),
-    order = c(1L, 1L, 2L, 3L),
-    part = c(0, 1, 0, 0),
-    label = paste0("label", 1:4),
-    french = rep("", 4),
-    values = list(
-      c("Very biased", "Moderately biased", "Accurate", "Unknown"),
-      c(
-        "Extremely",
-        "Very",
-        "Moderately",
-        "Slightly",
-        "Not at all",
-        "Uncertain"
-      ),
-      c(
-        "Extremely",
-        "Very",
-        "Moderately",
-        "Slightly",
-        "Not at all",
-        "Uncertain"
-      ),
-      ""
-    ),
-    evaluation_create_user = user_name,
-    evaluation_create_time = "2025-01-01 00:00:00",
-    last_modified = "2025-01-02 00:00:00"
-  ) |>
-    # fmt: skip
+  q <- sdmEvalToolCore::default_questions |>
+    # Renumber
     dplyr::mutate(
+      part = dplyr::row_number() - 1,
+      .by = c("component", "order")
+    ) |>
+    dplyr::rename("label" = "english") |>
+    dplyr::mutate(
+      deployment_id = .env$deployment_id,
+      model_id = .env$model_id,
+      species_id = .env$species_id,
+      evaluation_create_user = .env$user_id,
+      evaluation_create_time = "2025-01-01 00:00:00",
+      last_modified = "2025-01-02 00:00:00",
       material_id = glue::glue("{model_id}_{species_id}_{component}"),
       question_id = glue::glue("{deployment_id}_{material_id}_{order}_{part}")
-    ) |>
-    dplyr::filter(.data$type %in% .env$types)
+    )
+
+  if (!is.null(component)) {
+    q <- q[q$component == component, ]
+  }
+  if (!is.null(types)) {
+    q <- q[q$type %in% types, ]
+  }
+
+  q
 }
 
 #' Create dummy input values for evaluations

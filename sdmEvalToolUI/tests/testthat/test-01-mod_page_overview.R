@@ -102,101 +102,76 @@ test_that("evals_answered() counts only truthy responses", {
 # Test evals_details() ----------------------------------------------------
 
 test_that("evals_details() requires valid user_role", {
-  withr::with_options(
-    set_options(base = test_path("../../../misc/base")),
-    {
-      skip_if_not(dir.exists(sdmevaltool_options()$base))
+  skip_if_no_data()
 
-      expect_error(
-        evals_details("holden", "invalid_role"),
-        "Overview table only relevant for modelers and evaluators"
-      )
-    }
+  expect_error(
+    evals_details("holden", "invalid_role"),
+    "Overview table only relevant for modelers and evaluators"
   )
 })
 
 test_that("evals_details() returns data frame with expected columns", {
-  withr::with_options(
-    set_options(base = test_path("../../../misc/base")),
-    {
-      skip_if_not(dir.exists(sdmevaltool_options()$base))
+  skip_if_no_data()
 
-      expect_silent(e1 <- evals_details("testuser", "evaluator"))
-      #expect_silent(e2 <- evals_details("draper", "evaluator"))
+  expect_silent(e1 <- evals_details("testuser", "evaluator"))
+  #expect_silent(e2 <- evals_details("draper", "evaluator"))
 
-      expect_s3_class(e1, "data.frame")
-      #expect_s3_class(e2, "data.frame")
+  expect_s3_class(e1, "data.frame")
+  #expect_s3_class(e2, "data.frame")
 
-      # Modeler is not evaluator
-      #expect_true(!any(e1$evaluation_create_user_name == "James Holden"))
-      #expect_true(all(e2$evaluation_create_user_name == "Bobbie Draper"))
+  # Modeler is not evaluator
+  #expect_true(!any(e1$evaluation_create_user_name == "James Holden"))
+  #expect_true(all(e2$evaluation_create_user_name == "Bobbie Draper"))
 
-      expect_named(
-        e1,
-        c(
-          "abandoned",
-          "model_abandoned",
-          "deployment_model_name",
-          "evaluation_create_user_name",
-          "deployment_name",
-          "model_name",
-          "species_display",
-          "component_name",
-          "completed",
-          "started",
-          "n_q_display",
-          "n_q",
-          "n_q_complete",
-          "deployment_id",
-          "model_id",
-          "species_id"
-        ),
-        ignore.order = TRUE
-      )
-    }
+  expect_named(
+    e1,
+    c(
+      "abandoned",
+      "model_abandoned",
+      "deployment_model_name",
+      "evaluation_create_user_name",
+      "deployment_name",
+      "model_name",
+      "species_display",
+      "component_name",
+      "completed",
+      "started",
+      "n_q_display",
+      "n_q",
+      "n_q_complete",
+      "deployment_id",
+      "model_id",
+      "species_id"
+    ),
+    ignore.order = TRUE
   )
 })
 
 test_that("evals_details() handles no evaluations access", {
-  withr::with_options(
-    set_options(base = test_path("../../../misc/base")),
-    {
-      skip_if_not(dir.exists(sdmevaltool_options()$base))
+  skip_if_no_data()
 
-      expect_silent(e <- evals_details("holden", "evaluator"))
-      expect_s3_class(e, "data.frame")
-      expect_equal(nrow(e), 0)
-    }
-  )
+  expect_silent(e <- evals_details("holden", "evaluator"))
+  expect_s3_class(e, "data.frame")
+  expect_equal(nrow(e), 0)
 })
 
 
 # Test evals_table() ------------------------------------------------------
 
 test_that("evals_table() returns reactable", {
-  withr::with_options(
-    set_options(base = test_path("../../../misc/base")),
-    {
-      skip_if_not(dir.exists(sdmevaltool_options()$base))
+  skip_if_no_data()
 
-      e <- evals_details("testuser", "evaluator")
-      expect_silent(evals_table(e, "evaluator")) |>
-        expect_s3_class("reactable")
-    }
-  )
+  e <- evals_details("testuser", "evaluator")
+  expect_silent(evals_table(e, "evaluator")) |>
+    expect_s3_class("reactable")
 })
 
 test_that("evals_table() works for evaluator role", {
-  withr::with_options(
-    set_options(base = test_path("../../../misc/base")),
-    {
-      skip_if_not(dir.exists(sdmevaltool_options()$base))
+  skip_if_no_data()
 
-      e <- evals_details("testuser", "evaluator")
-      expect_silent(evals_table(e, "evaluator")) |>
-        expect_s3_class("reactable")
-    }
-  )
+  e <- evals_details("testuser", "evaluator")
+  expect_silent(evals_table(e, "evaluator")) |>
+    expect_s3_class("reactable")
 })
 
 test_that("evals_table() handles empty data", {
