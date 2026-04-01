@@ -17,7 +17,8 @@ add_selected_subunits(
 
 \item{subunits}{Spatial Data Frame. Subunits}
 
-\item{colour_by}{Vector. Column to fill by}
+\item{colour_by}{Vector. Column to fill by (must be a factor with levels to
+get the correct legend).}
 
 \item{opacity, fill_opacity}{Numeric. Opacity.}
 }

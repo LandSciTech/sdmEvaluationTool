@@ -141,7 +141,8 @@ add_subunits <- function(
 #'
 #' @param map Leaflet map object.
 #' @param subunits Spatial Data Frame. Subunits
-#' @param colour_by Vector. Column to fill by
+#' @param colour_by Vector. Column to fill by (must be a factor with levels to
+#'   get the correct legend).
 #' @param opacity,fill_opacity Numeric. Opacity.
 #'
 #' @export

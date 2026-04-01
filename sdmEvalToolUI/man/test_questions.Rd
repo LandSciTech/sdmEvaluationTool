@@ -10,7 +10,7 @@ test_questions(
   model_id = "bam_v5_can71",
   species_id = "BBWO",
   types = c("spatial", "ordinal", "simple_text"),
-  user_name = "testuser"
+  user_id = "testuser"
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ test_questions(
 
 \item{types}{Question types.}
 
-\item{user_name}{User name.}
+\item{user_id}{User id.}
 }
 \description{
 Create dummy questions for testing

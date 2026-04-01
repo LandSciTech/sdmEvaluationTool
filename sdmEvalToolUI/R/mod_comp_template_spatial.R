@@ -191,14 +191,7 @@ template_spatial_prep <- function(model_id, species_id) {
   # TEMPLATE: For this example, we'll use dummy data
   # Create example raster for northern Ontario
   # Extent roughly covering northern Ontario (longitude, latitude)
-  r <- terra::rast(
-    xmin = -95,
-    xmax = -74,
-    ymin = 46,
-    ymax = 56,
-    resolution = 0.1,
-    crs = "EPSG:4326"
-  )
+  r <- test_raster()
 
   # Create mean layer with some spatial pattern
   mean_layer <- r

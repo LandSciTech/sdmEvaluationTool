@@ -17,6 +17,6 @@ Test the Summary Component
 }
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
-test_comp_summary()
+test_comp_deployment_subunits()
 \dontshow{\}) # examplesIf}
 }

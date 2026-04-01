@@ -6,12 +6,11 @@
 #'
 #' @export
 #' @examplesIf have_data()
-#' test_comp_summary()
+#' test_comp_deployment_subunits()
 
 test_comp_deployment_subunits <- function(...) {
   test_comp(
     "mod_comp_deployment_subunits",
-    use = c("model_id", "species_id"),
     ...
   )
 }

@@ -202,3 +202,14 @@ test_points <- function() {
       crs = 4326
     )
 }
+
+test_raster <- function() {
+  terra::rast(
+    xmin = -95,
+    xmax = -74,
+    ymin = 46,
+    ymax = 56,
+    resolution = 0.1,
+    crs = "EPSG:4326"
+  )
+}

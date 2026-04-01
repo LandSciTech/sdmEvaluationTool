@@ -1,6 +1,24 @@
+#' Expand a list into objects in the environment
+#'
+#' @param l List of items to expand into objects
+#' @param env Environment in which objects should be placed
+#'
+#' @returns Nothing. Objects now in environment
+#'
+#' @noRd
+
 expand_list <- function(l, env = rlang::caller_env()) {
   rlang::env_bind(env, !!!l)
 }
+
+#' Expand a dots list into objects in the environment
+#'
+#' @param ... Dots list of items to expand into objects
+#' @param env Environment in which objects should be placed
+#'
+#' @returns Nothing. Objects now in environment
+#'
+#' @noRd
 
 expand_dots <- function(..., env = rlang::caller_env()) {
   rlang::env_bind(env, !!!list(...))
@@ -13,7 +31,7 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 #'
 #' @returns TRUE/FALSE
 #'
-#' @export
+#' @noRd
 #' @examples
 #' have_data()
 have_data <- function() {
