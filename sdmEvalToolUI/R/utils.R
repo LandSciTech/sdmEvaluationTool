@@ -27,25 +27,6 @@ have_data <- function() {
   dir.exists(sdmEvalToolCore::sdmevaltool_options()$base)
 }
 
-
-dummy_session <- list(ns = \(x) paste0("session-", x))
-
-#' Temporarily skip examples
-#'
-#' Examples using @examplesIf, will fail if there is nothing to run (i.e.
-#' becaues the example is commented out waiting for a working version).
-#'
-#' @returns Nothing
-#'
-#' @export
-#' @examples
-#' skip_eg()
-
-skip_eg <- function() {
-  invisible()
-}
-
-
 named_ids <- function(df_db, id = "id", name = "name", match = NULL) {
   if (is.null(match)) {
     pattern <- glue::glue("\\_{id}|\\_{name}")

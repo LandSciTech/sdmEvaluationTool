@@ -22,21 +22,6 @@ fmt_species <- function(df) {
     )
 }
 
-fmt_tbl <- function(tbl, tbl_models, tbl_species) {
-  # CLEANUP: Remove? - Get pretty column names
-  tbl |>
-    dplyr::left_join(
-      dplyr::select(tbl_species, "species_id", "species_display"),
-      by = "species_id"
-    ) |>
-    dplyr::left_join(
-      dplyr::select(tbl_models, "model_id", "model_name"),
-      by = "model_id"
-    ) |>
-    dplyr::select(-"model_id", "species_id") |>
-    dplyr::relocate("model_name", "species_display")
-}
-
 
 #' Format time nicely for humans
 #'

@@ -54,8 +54,7 @@ mod_comp_model_metadata_server <- function(
 #'
 #' @export
 #' @examplesIf have_data()
-#' skip_eg()
-#' # model_metadata_prep("bam_v5_can71") |> model_metadata_table()
+#' model_metadata_prep("bam_v5_can71") |> model_metadata_table()
 
 model_metadata_table <- function(model_metadata) {
   colnames(model_metadata) <- tools::toTitleCase(colnames(model_metadata))
@@ -70,8 +69,7 @@ model_metadata_table <- function(model_metadata) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' skip_eg()
-#' # model_metadata_prep("bam_v5_can71")
+#' model_metadata_prep("bam_v5_can71")
 
 model_metadata_prep <- function(model_id) {
   prep_materials("model_metadata", model_id = model_id)

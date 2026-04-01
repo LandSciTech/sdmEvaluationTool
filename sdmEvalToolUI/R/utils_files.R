@@ -1,21 +1,3 @@
-prep_data <- function() {
-  # CLEANUP: Still required?
-  if (is.null(sdmevaltool_options()$base)) {
-    sdmevaltool_options(base = "../misc/base")
-  }
-
-  con <- withr::local_db_connection(db_connect())
-  tbl_models <- db_read_models(con)
-  tbl_species <- db_read_species(con)
-  tbl_deployments <- dplyr::tbl(con, "deployments") |> dplyr::collect()
-
-  list(
-    "tbl_deployments" = tbl_deployments,
-    "tbl_models" = tbl_models,
-    "tbl_species" = tbl_species
-  )
-}
-
 #' Load material files
 #'
 #' @param component_id Character. Component ID
