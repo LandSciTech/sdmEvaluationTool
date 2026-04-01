@@ -1,3 +1,25 @@
+#' Prettify IDs as labels
+#'
+#' Underscores become spaces, 'id' is removed from the end, label is made title
+#' case.
+#'
+#' @param x Character. Id to make pretty
+#'
+#' @returns Pretty text
+#'
+#' @noRd
+#' @examples
+#' pretty("model_id")
+#' pretty("deployment_id")
+#' pretty("species_id")
+
+pretty <- function(x) {
+  x |>
+    stringr::str_replace_all("_", " ") |>
+    stringr::str_remove_all("\\b id\\b") |>
+    stringr::str_to_title()
+}
+
 #' Format species display names
 #'
 #' @param df Data frame to format. Must contain at least species name in French

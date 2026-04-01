@@ -7,13 +7,6 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 }
 
 
-pretty <- function(x) {
-  x |>
-    stringr::str_replace_all("_", " ") |>
-    stringr::str_remove_all("\\bid\\b") |>
-    stringr::str_to_title()
-}
-
 #' Have local data?
 #'
 #' Checks whether the user has local data available for this tool.
