@@ -189,6 +189,24 @@ add_selected_subunits <- function(
 }
 
 
+#' Add raster as image layer to leaflet map
+#'
+#' Note that raster layers are attached to a new map pane with a definied
+#' z-index. This is so we can be sure the raster is above the map tiles (z-index
+#' 200, see `base_map()`), and yet below the subunits (default z-index of 400).
+#'
+#' @param map Leaflet map
+#' @param raster Terra raster to add
+#' @param layer Layer in raster to add
+#' @param name Name of leaflet layer (for controls and ids)
+#' @param palette Character. Colour palette to use
+#' @param opacity Numeric. Opacity of raster layer
+#' @param add_legend Logical. Whether or not to add a legend.
+#' @param min_0 Logical. Whether to force the legend to start at zero.
+#'
+#' @returns
+#'
+#' @noRd
 add_raster <- function(
   map,
   raster,
@@ -220,11 +238,13 @@ add_raster <- function(
   )
 
   map <- map |>
+    leaflet::addMapPane(paste0(name, "-pane"), zIndex = 390) |>
     leaflet::addRasterImage(
       raster[[layer]],
       colors = pal,
       group = name,
-      opacity = opacity
+      opacity = opacity,
+      options = leaflet::pathOptions(pane = paste0(name, "-pane"))
     )
   if (add_legend) {
     map <- map |>
