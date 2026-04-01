@@ -169,7 +169,6 @@ test_that("prep_questions() uses default questions unlisted deployments", {
 })
 
 test_that("prep_questions() user evaluations", {
-  skip("until example data ready")
   skip_if_no_data()
 
   expect_silent(
@@ -193,22 +192,13 @@ test_that("prep_questions() user evaluations", {
 test_that("prep_questions() creates question_id", {
   skip_if_no_data()
 
-  comp <- "observations"
-  dep <- "deployment1"
-  mod <- "bam_v5_can71"
-  sp <- "BBWO"
-
-  q <- prep_questions(
-    component_id = comp,
-    deployment_id = dep,
-    model_id = mod,
-    species_id = sp
-  )
+  t <- test_inputs()
+  q <- do.call(prep_questions, t)
 
   expect_all_true(c("material_id", "question_id") %in% names(q))
   expect_all_true(stringr::str_detect(
     q$question_id,
-    paste(dep, mod, sp, comp, sep = "_")
+    paste(t$deployment_id, t$model_id, t$species_id, t$component, sep = "_")
   ))
 })
 
