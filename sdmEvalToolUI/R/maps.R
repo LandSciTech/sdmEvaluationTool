@@ -205,9 +205,10 @@ add_selected_subunits <- function(
 #' @param add_legend Logical. Whether or not to add a legend.
 #' @param min_0 Logical. Whether to force the legend to start at zero.
 #'
-#' @returns
+#' @returns Leaflet map
 #'
 #' @noRd
+
 add_raster <- function(
   map,
   raster,

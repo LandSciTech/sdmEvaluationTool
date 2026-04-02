@@ -28,10 +28,11 @@ expand_dots <- function(..., env = rlang::caller_env()) {
 #' Have local data?
 #'
 #' Checks whether the user has local data available for this tool.
+#' Used for examples (must be exported).
 #'
 #' @returns TRUE/FALSE
 #'
-#' @noRd
+#' @export
 #' @examples
 #' have_data()
 have_data <- function() {
