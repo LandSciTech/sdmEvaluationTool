@@ -61,6 +61,7 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
 #' prep_material_settings("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
 #' prep_material_settings("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
 #' prep_material_settings("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_material_settings("model_metadata", model_id = "bam_v5_can71")
 
 prep_material_settings <- function(component_id, model_id, species_id = NULL) {
   con <- withr::local_db_connection(db_connect())
@@ -83,7 +84,14 @@ prep_material_settings <- function(component_id, model_id, species_id = NULL) {
         )
     }
   }
-  jsonlite::fromJSON(mt$material_settings)
+
+  if (length(mt$material_settings)) {
+    r <- jsonlite::fromJSON(mt$material_settings)
+  } else {
+    r <- NULL
+  }
+
+  r
 }
 
 #' Get Material Settings
