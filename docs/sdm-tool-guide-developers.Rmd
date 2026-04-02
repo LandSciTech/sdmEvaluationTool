@@ -171,8 +171,11 @@ Further examples
 
 ### Shiny Tests
 - We've kept Shiny tests simple
-- If you get an error "Shiny server returned 404 for values", use `  shinytest2::record_test(app_to_test())` to get the error in the console terminal
+- If you get an error "Shiny server returned 404 for values", use `shinytest2::record_test(app_to_test())` to get the error in the console terminal
   which is much easier to understand. (See https://github.com/rstudio/shinytest2/issues/356)
+- Currently Shiny Tests only test that the app launches and expects data 
+- It uses JSON snapshot tests which will 'fail' if the local data example changes, 
+  so this might be a bit fragile.
 
 ### Pages/Components
 - Pages include `span(title, class = "sdm-species-lvl")` or `sdm-model-lvl` to define a page as model- or species-level information (mostly this just colours the tab names).

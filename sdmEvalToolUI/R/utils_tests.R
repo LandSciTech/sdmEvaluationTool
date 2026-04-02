@@ -67,6 +67,12 @@ test_comp <- function(
   spatial_ids = NULL,
   spatial_selection = list(show_clicked = NULL, show_spatial_ids = NULL)
 ) {
+  if (testthat::is_testing()) {
+    sdmevaltool_options(
+      base = testthat::test_path("../../../misc/base")
+    )
+  }
+
   ui <- get(paste0(module, "_ui"))()
 
   u <- list(

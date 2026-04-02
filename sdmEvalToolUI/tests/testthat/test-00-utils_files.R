@@ -10,7 +10,7 @@ test_that("prep_materials()", {
   for (c in components) {
     expect_silent(
       prep_materials(
-        component_id = !!c,
+        component_id = c,
         species_id = "BBWO",
         model_id = "bam_v5_can71"
       )
