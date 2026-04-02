@@ -4,6 +4,10 @@ output:
     variant: gfm
 ---
 
+```{r include = FALSE}
+devtools::load_all("../sdmEvalToolCore")
+```
+
 # SDM Model Evaluation Tool User Guide for Modelers
 
 > How to manage materials and deployments
@@ -132,6 +136,9 @@ users <- data.frame(
 db_write_table(con, "users", users)
 ```
 
+Add as many users as needed. You can make a CSV file following the column names.
+Read in the file with `read.csv()` to have the full `users` table.
+
 Predictor metadata:
 
 ```R
@@ -258,6 +265,32 @@ for (species_id in species$species_id) {
 }
 ```
 
+## Material settings
+
+Default material settings are defined in the YAML specification.
+To access these, you can use the following:
+
+```{r}
+component_id <- "predictor_metadata"
+str(get_comp_rule(component_id, "display")$material_settings)
+```
+
+This default is used when using the above `prep_<component_id>()` functions.
+Using the same structure, we can pass a new legend:
+
+```R
+prep_predictor_metadata(
+  x = x,
+  model_id = model_id,
+  user_id = user_id,
+  material_settings = list(en = "Table with predictor metadata.", fr = ""),
+  con = con,
+  update = TRUE
+)
+```
+
+Using `update = TRUE` we can update an existing material.
+
 ## Managing deployments
 
 Create 2 deployments, keeping the `deploylemt_settings` empty (`[]`) for now.
@@ -327,11 +360,14 @@ prep_deployment_questions(
 
 The file now can be edited as needed.
 
-If drilldown questions are needed, edit the `followup_level` field, like:
+If drilldown questions are needed, edit the `followup_level` field and
+apply the `combine_questions()` function like:
 
 ```R
 q <- sdmEvalToolCore::default_questions
 q$followup_level[5] <- 3
+q <- combine_questions(q)
+
 prep_deployment_questions(
   deployment_id = "deployment2",
   x = q
@@ -347,6 +383,20 @@ access <- data.frame(
   user_roles = "evaluator"
 )
 db_write_table(con, "access", access)
+```
+
+Add `"evaluator"` role to all users who need it (see `users` table). You can
+use a loop like this:
+
+```R
+for (user_id in users$user_id) {
+  access <- rbind(access, data.frame(
+    user_id = user_id,
+    deployment_id = deployments$deployment_id,
+    user_roles = "evaluator"
+  ))
+}
+db_write_table(con, "access", access, mode = "upsert")
 ```
 
 The deployment materials repeat the materials for each deployment.
@@ -379,23 +429,32 @@ db_write_table(
 ```
 
 Deployment subunits can be set up as a regular grid based on the extent
-of a raster template:
+of a reference raster (distribution maps) and the spatial points 
+(observations) object:
 
 ```R
 # raster template
 r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+# spatial points template
+xy <- read_file(file.path(path, "data", "observations_can71.csv"))
+xy <- xy[, c("lat", "lon")]
+xy <- sf::st_as_sf(xy, coords = c("lon", "lat"))
+sf::st_crs(xy) <- 4326
 
 prep_deployment_subunits(
   deployment_id = "deployment1",
   x = NULL,
-  reference = r,
+  reference_raster = r,
+  reference_points = xy,
   n = c(20, 20),
   square = TRUE
 )
 ```
 
 Alternatively, deployment subunits can be defined based on custom vector layers,
-e.g. ecoregions/ecoprovinces:
+e.g. ecoregions/ecoprovinces. In this case the subunit vector layer will be
+transformed to epsg:4326 and clipped to the bounding box of the reference
+layers:
 
 ```R
 # ecoprovinces
@@ -405,6 +464,95 @@ su$subunit_id <- su$ECOPROVINC
 prep_deployment_subunits(
   deployment_id = "deployment2",
   x = su,
-  reference = r
+  reference_raster = r,
+  reference_points = xy
 )
+```
+
+## Local deployment
+
+To share the deployment with evaluators, follow these steps.
+
+Compress the deployment materials and the fresh database:
+
+```R
+od <- setwd("misc")
+utils::zip(
+  "./sdm_evaluation_results.zip",
+  file.path(
+    "sdm_evaluation_results",
+    list.files("sdm_evaluation_results", recursive = TRUE)
+  )
+)
+setwd(od)
+```
+
+This will create the `misc/sdm_evaluation_results.zip` file.
+Send this file to the evaluators with the following setup instructions.
+
+### Prerequisites
+
+- [R](https://cran.r-project.org/)
+- [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
+- [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or a similar environment of you choosing
+
+Before installation, first create a new RStudio Project where you'll store the 
+data required for this tool. To do so, select _File_ > _New Project_. When prompted, select _New Directory_ and _New Project_. Under the field _Directory name_, type in _sdmEvaluationTool_, then, click on the *Browse* button and select a location you'll remember (e.g., `c:/users/user_name/work`).
+
+### Installation
+
+Use this script in R to install required packages and download/extract the example 
+data set (say 'yes' or select the 'All' option to update packages if asked):
+
+```R
+source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
+```
+
+### Adding the data set
+
+The evaluators will have to first remove the `sdm_evaluation_results.zip`
+and the `sdm_evaluation_results` folder with its contents.
+Then they will need to save and extract the archive containing the real deployment.
+Use a system tool or the following command to extract the files:
+
+```R
+unzip("./sdm_evaluation_results.zip")
+```
+
+### Running the app locally
+
+Provide the following script to the evaluators:
+
+- replace the `"<evaluator_user_name>"` with their user name
+- use the subset of `tabs` as needed, i.e. by excluding the `"model"` and `"model_metadata"` tabs.
+- change the order of the tabs as desired
+
+```R
+# load libraries
+library(sdmEvalToolCore)
+library(sdmEvalToolUI)
+
+# start the app
+sdm_tool(
+  user = "<evaluator_user_name>",
+  tabs = c(
+    "overview",
+    "predictions",
+    "observations",
+    "model",
+    "predictors",
+    "model_metadata",
+    "summary"
+  )
+)
+```
+
+A window should pop-up with the loaded app. Alternatively, you can visit the following link in your browser: <http://localhost:8080>.
+
+If you see an error message `Error: Could not connect to database`,
+try setting the right folder with `sdmevaltool_options()`:
+
+```R
+# use your path here to point to the right folder
+sdmevaltool_options(base = "./sdm_evaluation_results")
 ```

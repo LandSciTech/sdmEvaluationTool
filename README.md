@@ -45,7 +45,7 @@ library(sdmEvalToolCore)
 library(sdmEvalToolUI)
 
 # start the app
-sdm_tool()
+sdm_tool(user = "testuser")
 ```
 
 A window should pop-up with the loaded app. Alternatively, you can visit the following link in your browser: <http://localhost:8080>.

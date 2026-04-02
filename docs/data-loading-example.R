@@ -11,8 +11,8 @@ devtools::load_all("sdmEvalToolCore")
 
 path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
 conf <- yaml::read_yaml("spec/config.yml")
-DIR <- "./misc/test2"
-# DIR <- "./misc/sdm_evaluation_results"
+# DIR <- "./misc/test"
+DIR <- "./misc/sdm_evaluation_results"
 sdmevaltool_options(base = DIR) # use the misc folder
 
 unlink(DIR, recursive = TRUE)
@@ -181,7 +181,6 @@ prep_predictor_raster(
   con = con,
   update = FALSE
 )
-# FIXME: we might have to organize predictor summaries and rasters a bit better? Check names etc...
 
 # -------- observations -----------
 
@@ -304,6 +303,8 @@ prep_deployment_questions(
 # default questions - with drilldown
 q <- sdmEvalToolCore::default_questions
 q$followup_level[5] <- 3
+q <- combine_questions(q)
+
 prep_deployment_questions(
   deployment_id = "deployment2",
   x = q
@@ -346,11 +347,17 @@ db_write_table(
 
 # raster template
 r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+# spatial points template
+xy <- read_file(file.path(path, "data", "observations_can71.csv"))
+xy <- xy[, c("lat", "lon")]
+xy <- sf::st_as_sf(xy, coords = c("lon", "lat"))
+sf::st_crs(xy) <- 4326
 
 prep_deployment_subunits(
   deployment_id = "deployment1",
   x = NULL,
-  reference = r,
+  reference_raster = r,
+  reference_points = xy,
   n = c(20, 20),
   square = TRUE
 )
@@ -358,13 +365,12 @@ prep_deployment_subunits(
 # ecoprovinces
 su <- sf::st_read(file.path(path, "subunits", "ecoprovinces.shp"))
 su$subunit_id <- su$ECOPROVINC
-# note this does not compare observation locations to the template
-# points can sometimes fall outside of raster cells
 
 prep_deployment_subunits(
   deployment_id = "deployment2",
   x = su,
-  reference = r
+  reference_raster = r,
+  reference_points = xy
 )
 
 sort(unique(sdmEvalToolCore::fields$table))

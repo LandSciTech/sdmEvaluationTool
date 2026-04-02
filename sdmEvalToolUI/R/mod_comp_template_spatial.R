@@ -34,7 +34,8 @@ mod_comp_template_spatial_ui <- function(
     sdm_card(
       class = "p-0 sub-card",
       min_height = "60%",
-      sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+      sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
+      card_footer(shiny::textOutput(NS(id, "spatial_spatial_legend")))
     ),
     sdm_card(
       class = "p-0 sub-card",
@@ -75,6 +76,19 @@ mod_comp_template_spatial_server <- function(
   moduleServer(id, function(input, output, session) {
     # Setup -------------------------------------------------------------
     ns <- session$ns
+
+    # Legend -------------------------------------------------------
+    output$spatial_prediction_legend <- renderText({
+      # If the component exists in the materials table, this will work:
+      # prep_material_settings(
+      #   "template_spatial",
+      #   model_id(),
+      #   species_id()
+      # )$legend[[
+      #   "en"
+      # ]]
+      "Spatial template legend" # delete this line if for real
+    })
 
     # Map --------------------------------------------------------------------
     # EXAMPLE: Prepare units to be displayed on map

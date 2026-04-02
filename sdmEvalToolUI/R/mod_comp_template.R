@@ -27,7 +27,8 @@ mod_comp_template_ui <- function(id = "comp_template", header = NULL) {
   sdm_card(
     class = "p-0 sub-card",
     header,
-    reactable::reactableOutput(NS(id, "template"))
+    reactable::reactableOutput(NS(id, "template")),
+    card_footer(shiny::textOutput(NS(id, "template_legend")))
   )
 }
 
@@ -42,6 +43,9 @@ mod_comp_template_server <- function(
 
   moduleServer(id, function(input, output, session) {
     template <- reactive(template_prep(model_id(), species_id()))
+    output$template_legend <- renderText({
+      get_material_settings(template())$legend[["en"]]
+    })
     output$template <- reactable::renderReactable(template_table(template()))
   })
 }
@@ -89,5 +93,11 @@ template_prep <- function(model_id, species_id) {
   # prep_materials("model_fit", model_id = model_id, species_id = species_id)
 
   # TEMPLATE: For this example, we'll use dummy data
-  datasets::mtcars
+  out <- datasets::mtcars
+  # The output object returned by `prep_materials` contains an attribute
+  # "material_settings" that has the legend
+  attr(out, "material_settings") <- list(
+    legend = list(en = "MTCARS example", fr = "")
+  )
+  out
 }

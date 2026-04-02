@@ -186,7 +186,7 @@ fo <- make_target_path(rule$output$path, data = list(model_id = model_id))
 write_file(x, fo)
 
 drule <- get_comp_rule("predictor_metadata", "display")
-ms <- jsonlite::toJSON(drule$materials_settings)
+ms <- jsonlite::toJSON(drule$material_settings)
 materials <- materials_fun(materials, model_id, NA, "predictor_metadata", ms)
 
 # ------- predictor_raster RESAMPLED ------
@@ -219,7 +219,7 @@ SPP2 <- colnames(x)[colnames(x) %in% species$species_id]
 x$date <- as.POSIXct(x$date)
 
 drule <- get_comp_rule("observations", "display")
-ms <- jsonlite::toJSON(drule$materials_settings)
+ms <- jsonlite::toJSON(drule$material_settings)
 
 for (species_id in SPP2) {
   z <- x[, c("lat", "lon", "date", "method", species_id)]
@@ -257,7 +257,7 @@ for (species_id in SPP2) {
 
 rule <- get_comp_rule("spatial_prediction", "upload")
 drule <- get_comp_rule("spatial_prediction", "display")
-ms <- jsonlite::toJSON(drule$materials_settings)
+ms <- jsonlite::toJSON(drule$material_settings)
 for (species_id in SPP) {
   fi <- file.path(path, "predictions", paste0(species_id, "_can71_2020.tif"))
   x <- read_file(fi)
@@ -284,7 +284,7 @@ fi <- file.path(path, "predictors", "predictor_importance.csv")
 x <- read_file(fi)
 
 drule <- get_comp_rule("model_summary", "display")
-ms <- jsonlite::toJSON(drule$materials_settings)
+ms <- jsonlite::toJSON(drule$material_settings)
 
 for (species_id in SPP) {
   z <- x[x$spp == species_id, -(1:2)]
@@ -310,7 +310,7 @@ fi <- file.path(path, "reliability", "validation_can71.csv")
 x <- read_file(fi)
 
 drule <- get_comp_rule("model_fit", "display")
-ms <- jsonlite::toJSON(drule$materials_settings)
+ms <- jsonlite::toJSON(drule$material_settings)
 
 for (species_id in SPP) {
   z <- x[x$id == species_id, -(1:4)]

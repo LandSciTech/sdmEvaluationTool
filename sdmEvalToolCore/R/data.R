@@ -180,18 +180,18 @@ check_table <- function(x, table_name, dryrun = FALSE) {
 #'
 #' @export
 default_species_table_canada <- function() {
-    x <- utils::read.csv(system.file(
-        "species-canada.csv",
-        package = "sdmEvalToolCore"
-    ))
-    x <- x[, c("code", "name_latin", "name_english", "name_french")]
-    colnames(x) <- c(
-        "species_id",
-        "scientific_name",
-        "english_name",
-        "french_name"
-    )
-    x
+  x <- utils::read.csv(system.file(
+    "species-canada.csv",
+    package = "sdmEvalToolCore"
+  ))
+  x <- x[, c("code", "name_latin", "name_english", "name_french")]
+  colnames(x) <- c(
+    "species_id",
+    "scientific_name",
+    "english_name",
+    "french_name"
+  )
+  x
 }
 
 #' Make Material ID
@@ -199,20 +199,21 @@ default_species_table_canada <- function() {
 #' @param model_id Model ID.
 #' @param species_id Species ID.
 #' @param component_id Component ID.
+#' @param sep Character. Separator.
 #'
 #' @examples
 #' make_material_id("model1", NA, "predictor_metadata")
 #' make_material_id("model1", "CAWA", "predictor_raster")
 #'
 #' @export
-make_material_id <- function(model_id, species_id, component_id) {
-    paste0(
-        model_id,
-        "_",
-        ifelse(is.na(species_id), "ALL", as.character(species_id)),
-        "_",
-        component_id
-    )
+make_material_id <- function(model_id, species_id, component_id, sep = "_") {
+  paste0(
+    model_id,
+    sep,
+    ifelse(is.na(species_id), "ALL", as.character(species_id)),
+    sep,
+    component_id
+  )
 }
 
 #' Prepare Material Entry
@@ -228,25 +229,25 @@ make_material_id <- function(model_id, species_id, component_id) {
 #'
 #' @export
 prepare_material_entry <- function(
-    model_id,
-    species_id,
-    component_id,
-    user_id,
-    material_settings = "[]"
+  model_id,
+  species_id,
+  component_id,
+  user_id,
+  material_settings = "[]"
 ) {
-    data.frame(
-        material_id = make_material_id(
-            model_id,
-            species_id,
-            component_id
-        ),
-        model_id = model_id,
-        species_id = as.character(species_id),
-        component_id = component_id,
-        material_create_user = user_id,
-        material_create_time = timestamp_to(now()),
-        material_modify_user = NA_character_,
-        material_modify_time = NA_integer_,
-        material_settings = material_settings
-    )
+  data.frame(
+    material_id = make_material_id(
+      model_id,
+      species_id,
+      component_id
+    ),
+    model_id = model_id,
+    species_id = as.character(species_id),
+    component_id = component_id,
+    material_create_user = user_id,
+    material_create_time = timestamp_to(now()),
+    material_modify_user = NA_character_,
+    material_modify_time = NA_integer_,
+    material_settings = material_settings
+  )
 }

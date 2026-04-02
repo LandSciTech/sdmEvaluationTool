@@ -32,7 +32,8 @@ mod_comp_spatial_prediction_ui <- function(
       class = "p-0 sub-card",
       min_height = "60%",
       header,
-      sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+      sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
+      card_footer(shiny::textOutput(NS(id, "spatial_prediction_legend")))
     ),
     sdm_card(
       class = "p-0 sub-card",
@@ -59,6 +60,16 @@ mod_comp_spatial_prediction_server <- function(
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
+    # Legend -------------------------------------------------------
+    output$spatial_prediction_legend <- renderText({
+      prep_material_settings(
+        "spatial_prediction",
+        model_id(),
+        species_id()
+      )$legend[[
+        "en"
+      ]]
+    })
     # Map --------------------------------------------------------------------
     spatial_prediction <- reactive({
       spatial_prediction_prep(model_id(), species_id())
@@ -131,7 +142,7 @@ spatial_prediction_map <- function(
     ) |>
     add_raster(
       spatial_prediction,
-      layer = "cv",
+      layer = "standarderror",
       name = "Uncertainty",
       palette = "viridis",
       min_0 = TRUE

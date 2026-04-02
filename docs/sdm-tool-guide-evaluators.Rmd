@@ -8,27 +8,155 @@ output:
 
 > How to leave and edit evaluations
 
+## Prerequisites
+
+- [R](https://cran.r-project.org/)
+- [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
+- [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or a similar environment of you choosing
+
+Before installation, first create a new RStudio Project where you'll store the 
+data required for this tool. To do so, select _File_ > _New Project_. When prompted, select _New Directory_ and _New Project_. Under the field _Directory name_, type in _sdmEvaluationTool_, then, click on the *Browse* button and select a location you'll remember (e.g., `c:/users/user_name/work`).
+
 ## Installation
+
+Use this script in R to install required packages and download/extract the example 
+data set (say 'yes' or select the 'All' option to update packages if asked):
+
+```R
+source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
+```
+
+## Adding the data set
+
+Remove the `sdm_evaluation_results.zip` and the `sdm_evaluation_results` folder with its contents.
+Then save and extract the archive containing the real deployment sent to you
+via email or a shared drive link. Use a system tool or the following command
+to extract the deployment materials:
+
+```R
+unzip("./sdm_evaluation_results.zip")
+```
+
+### Running the app locally
+
+Start the app by running the following script in R
+(replace the `"testuser"` with your user name):
+
+```R
+# load libraries
+library(sdmEvalToolCore)
+library(sdmEvalToolUI)
+
+# start the app
+user_id <- "testuser"
+sdm_tool(
+  user = user_id,
+  tabs = c(
+    "overview",
+    "predictions",
+    "observations",
+    "model",
+    "predictors",
+    "summary"
+  )
+)
+```
+
+A window should pop-up with the loaded app. Alternatively, you can visit the 
+following link in your browser: <http://localhost:8080>.
+
+If you see an error message `Error: Could not connect to database`,
+try setting the right folder with `sdmevaltool_options()`:
+
+```R
+# use your path here to point to the right folder
+sdmevaltool_options(base = "./sdm_evaluation_results")
+```
 
 ## Navigation
 
-## Instructions
+The landing page shows an evaluator all the deployments.
+Each deployment lists the model related materials (orange buttons)
+and the species related materials (blue buttons).
+The percentages on the right show the overall progress.
+Clicking the chevrons left of the species names opens up a table
+showing the progress of the evaluation materials.
 
-## Overview
+The left side of the top navigation (1) lets you go through the tabs, each tab showing
+one or two deployment materials. Tabs with blue letters refer to materials
+for species, tabs with orange letters refer to model level results.
+You can change the user role (2) if you have any other roles.
+
+Select a deployment, model, and species from the dropdown menus at the right
+side of the top navigation (3). You can also click the orange/blue buttons
+to make a similar selection. These settings will apply to
+the materials being shown in the other tabs with respect to
+deployments, models, and species. Come back here any time or use the
+top navigation to make changes to these values.
+
+![](./images/tabs-01.png)
+
+Once a deployment is selected, you'll see a welcome message on the right.
+Hide this message by clicking the arrow in the top right corner.
+The message can be made visible again by clicking the arrow.
+
+Clicking the question mark icon in the bottom right corner of the page (4)
+opens the glossary.
+
+![](./images/tabs-02.png)
 
 ## Model materials
 
 ### Spatial predictions
 
+The main part of the tabs is the deployment material and the
+evaluation area on the right. The evaluations can be hidden to make the
+main area larger. Scroll up and down in the evaluations area.
+
+![](./images/tabs-03.png)
+
+Spatial predictions are shown as raster layers in the interactive map.
+Select the base layer, turn on the Distribution or or Uncertainty layers.
+There is also a Subunits layer that is used for spatial evaluations (see below).
+
+Click the Expand button (bottom right corner of the cards that contain the
+maps, tables, etc.) to pop the material into a full-screen mode.
+
 ### Observations
+
+The observations tab has a Charts and a Map component.
+Select the options for the charts (1) and the observations summaries (2)
+will change accordingly.
+
+![](./images/tabs-04.png)
+
+In the map, there are also dropdowns to filter the observations by (1).
+In the map (2), change the base layers, and turn on/off the Absences
+and Presences, also the Subunits.
+
+![](./images/tabs-05.png)
 
 ### Model fit and summary
 
+The model fit (1) and model summary (2) is shown in the same tab.
+
+![](./images/tabs-06.png)
+
 ### Predictors
 
-### Model (ODMAP) metadata
+The Predictors tab contains the Predictor Raster (1) map, use the dropdown
+to change the layer. The predictor metadata (2) table is at the bottom.
+Use the expand button to make them pop to full-screen.
+
+![Predictors](./images/tabs-07.png)
 
 ### Glossary
+
+Click the question mark icon in the bottom right corner of the page
+opens the glossary. Search for words by typing into the Search area.
+As a result, you'll see topics and descriptions in which the world appear.
+
+![Predictors](./images/tabs-09.png)
 
 ## Evaluations
 
@@ -38,8 +166,12 @@ output:
 
 ### Abandoning and resuming evaluations
 
-Models
+The `X` icon in the top right corner (3) is to "abandon" the review (see more on this below).
 
-Species
+![Summary](./images/tabs-10.png)
 
+
+### Summary
+
+![Summary](./images/tabs-08.png)
 
