@@ -45,9 +45,6 @@ file.edit(file.path(pkg, "DESCRIPTION"))
 # Add changes to NEWS
 file.edit(file.path(pkg, "NEWS.md"))
 
-# Rebuild README
-devtools::build_readme(pkg)
-
 ## Standard checks ------------------------------------------
 devtools::test(pkg) # Use Ctrl-Shift-T to test non-interactively in the package
 devtools::document(pkg)

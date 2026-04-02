@@ -1,13 +1,8 @@
-
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # sdmEvalToolUI
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/LandSciTech/sdmEvaluationTool/actions/workflows/check-ui.yml/badge.svg)](https://github.com/LandSciTech/sdmEvaluationTool/actions/workflows/check-ui.yml)
-[![Code Coverage:
-13%](https://img.shields.io/badge/code_coverage-13%25-green)](#code-coverage)
 <!-- badges: end -->
 
 The goal of sdmEvalToolUI is to implement Shiny functionality according
