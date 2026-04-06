@@ -1,6 +1,6 @@
-# Subunits are used by multiple components for a deployment
-
 #' Prepare Deployment Subunits
+#'
+#' Subunits are used by multiple mapping components for a deployment.
 #'
 #' @param deployment_id Character. Deployment ID
 #'

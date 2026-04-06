@@ -109,7 +109,8 @@ get_material_settings <- function(x) {
 #' Prepare Deployments
 #'
 #' @param deployment_id Character. Deployment ID
-#' @param deployment_type Character. Type of data to load ("deployment_questions" or "deployment_subunits")
+#' @param deployment_type Character. Type of data to load
+#' ("deployment_questions" or "deployment_subunits")
 #'
 #' @returns Data frame of deployments
 #'
@@ -147,6 +148,17 @@ prep_deployments <- function(deployment_id, deployment_type) {
 
   dep
 }
+
+#' Generic file prep
+#'
+#' @param path Character. File path to fetch.
+#' @param name Character. Name of data for messaging
+#' @param ... Named model, species, etc. values. See `data` from
+#' [sdmEvalToolCore::make_target_path()].
+#'
+#' @returns File contents depending on file type (see [sdmEvalToolCore::read_file()]
+#'
+#' @export
 
 prep_files <- function(path, name, ...) {
   path <- make_target_path(path, data = list(...))
@@ -287,6 +299,23 @@ prep_questions <- function(
   q
 }
 
+#' Low-level function to read in questions.
+#'
+#' If deployment doesn't exist, uses [sdmEvalToolCore::default_questions()].
+#'
+#' @param deployment_id Character. Deployment ID
+#' @param component_id Character. Component ID
+#'
+#' @returns Data frame of questions.
+#'
+#' @export
+#' @examples
+#' # Use default questions if deployment doesn't exist
+#' fetch_questions("No deployment", "observations")
+#'
+#' if(have_data()) {
+#'   fetch_questions("deployment1", "observations")
+#' }
 fetch_questions <- function(deployment_id, component_id) {
   # Do we have a valid set of deployment questions? If not use defaults
 

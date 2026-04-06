@@ -52,15 +52,16 @@ mod_comp_template_spatial_ui <- function(
 #' Template Spatial component Server
 #'
 #' @param id Module ID
-#' @param deployment_id Deployment ID
+#' @param deployment_id Deployment ID. Required for subunits.
 #' @param model_id Model ID
 #' @param species_id Species ID
-#' @param spatial_selection Spatial selection
-#' @param spatial_ids Spatial IDs
+#' @param spatial_selection Spatial selection. Required for spatial evaluations.
+#' @param spatial_ids Spatial IDs. Required for spatial evaluations.
 #'
 #' @returns Module server function
 #'
 #' @export
+
 mod_comp_template_spatial_server <- function(
   id = "comp_template_spatial",
   deployment_id, # Require deployment_id for subunits on maps

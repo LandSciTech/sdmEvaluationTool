@@ -1,6 +1,6 @@
 #' Copy verbatim output
 #'
-#' Adds a copy button to a verbatim text block..
+#' Adds a copy button to a verbatim text block.
 #'
 #' @param id An identifier for the output to copy.
 #'

@@ -10,7 +10,8 @@ mod_page_overview_server(id = "overview", ...)
 \item{id}{Shiny module ID}
 
 \item{...}{Additional arguments passed via expand_dots including
-deployment_id, model_id, species_id, and overview_inputs (reactiveVal)}
+\code{deployment_id}, \code{model_id}, \code{species_id}, \code{abandoned}, \code{unsaved}, \code{opts}
+list (see \code{\link[=sdm_tool]{sdm_tool()}} which programmatically calls all module pages.}
 }
 \value{
 Server function for Shiny module

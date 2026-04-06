@@ -59,6 +59,15 @@ mod_comp_predictor_raster_ui <- function(
   )
 }
 
+#' Predictor Raster component Server
+#'
+#' @param id Module ID
+#' @param deployment_id Deployment ID. Required for subunits.
+#' @param model_id Model ID
+#'
+#' @returns Module server function
+#'
+#' @export
 
 mod_comp_predictor_raster_server <- function(
   id = "comp_predictor_raster",
@@ -132,8 +141,8 @@ mod_comp_predictor_raster_server <- function(
 
 #' Create a Leaflet Map of Predictor Raster Data
 #'
-#' @param predictor_raster terra Raster. Predictor information.
-#' @param layers Layers.
+#' @param predictor_raster terra SpatRaster. Predictor information.
+#' @param layers Character vector. Layers in SpatRaster to plot.
 #' @param subunits Spatial Data frame. Deployment subunits.
 #'
 #' @returns A leaflet map object
@@ -142,7 +151,7 @@ mod_comp_predictor_raster_server <- function(
 #' @examplesIf have_data()
 #' predictor_raster_prep("bam_v5_can71") |>
 #'   predictor_raster_map(
-#'     layers = "year",
+#'     layers = "AHM_1km", # Must be a layer in prepared raster
 #'     subunits = deployment_subunits_prep("deployment1")
 #'   )
 
@@ -173,6 +182,21 @@ predictor_raster_map <- function(
   map
 }
 
+
+#' Add a Prediction Raster Layer to an existing map
+#'
+#' @param map Leaflet map.
+#' @param raster SpatRaster. Raster from which to get `layers` to plot.
+#' @param layers Character vector. Layers in SpatRaster to plot.
+#'
+#' @returns Leaflet map
+#'
+#' @export
+#'
+#' @examplesIf have_data()
+#' r <- predictor_raster_prep("bam_v5_can71")
+#' base_map() |>
+#'   predictor_raster_layer(r, "mean")
 
 predictor_raster_layer <- function(
   map,

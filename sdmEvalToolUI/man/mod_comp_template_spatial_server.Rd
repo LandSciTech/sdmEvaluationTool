@@ -16,15 +16,15 @@ mod_comp_template_spatial_server(
 \arguments{
 \item{id}{Module ID}
 
-\item{deployment_id}{Deployment ID}
+\item{deployment_id}{Deployment ID. Required for subunits.}
 
 \item{model_id}{Model ID}
 
 \item{species_id}{Species ID}
 
-\item{spatial_selection}{Spatial selection}
+\item{spatial_selection}{Spatial selection. Required for spatial evaluations.}
 
-\item{spatial_ids}{Spatial IDs}
+\item{spatial_ids}{Spatial IDs. Required for spatial evaluations.}
 }
 \value{
 Module server function

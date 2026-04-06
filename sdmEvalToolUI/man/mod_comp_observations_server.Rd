@@ -16,7 +16,7 @@ mod_comp_observations_server(
 \arguments{
 \item{id}{Module ID}
 
-\item{deployment_id}{Deployment ID}
+\item{deployment_id}{Deployment ID. Required for subunits.}
 
 \item{model_id}{Model ID}
 

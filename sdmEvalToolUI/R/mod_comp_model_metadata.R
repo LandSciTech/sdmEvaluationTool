@@ -22,6 +22,7 @@ test_comp_model_metadata <- function(...) {
 #' @export
 #' @examples
 #' mod_comp_model_metadata_ui()
+
 mod_comp_model_metadata_ui <- function(
   id = "comp_model_metadata",
   header = NULL
@@ -34,6 +35,14 @@ mod_comp_model_metadata_ui <- function(
   )
 }
 
+#' Model Metatdata component Server
+#'
+#' @param id Module ID
+#' @param model_id Model ID
+#'
+#' @returns Module server function
+#'
+#' @export
 
 mod_comp_model_metadata_server <- function(
   id = "comp_model_metadata",

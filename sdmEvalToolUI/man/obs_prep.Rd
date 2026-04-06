@@ -13,16 +13,27 @@ obs_prep(model_id, species_id, output_type = c("points", "raster"), ...)
 
 \item{output_type}{Character. Points or raster.}
 
-\item{...}{Other parameters.}
+\item{...}{Other parameters. Most importantly, \code{rast} argument if
+\code{output_type == "raster"}.}
 }
 \value{
-Spatial data frame
+Spatial data frame, sf if points, terra SpatRaster if raster.
 }
 \description{
-Prepare Observation Data
+Loads and generally prepares the observation data. Wrapper around \code{\link[=obs_prep_points]{obs_prep_points()}} and \code{\link[=obs_prep_raster]{obs_prep_raster()}}.
 }
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
+r0 <- prep_materials(
+  "spatial_prediction",
+  model_id = "bam_v5_can71",
+  species_id = "BBWO"
+)
+
+# Points Prep
 obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+
+# Raster Prep
+obs_prep(model_id = "bam_v5_can71", species_id = "BBWO", "raster", rast = r0)
 \dontshow{\}) # examplesIf}
 }

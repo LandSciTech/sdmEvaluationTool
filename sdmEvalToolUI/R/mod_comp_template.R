@@ -32,6 +32,15 @@ mod_comp_template_ui <- function(id = "comp_template", header = NULL) {
   )
 }
 
+#' Template component Server
+#'
+#' @param id Module ID
+#' @param model_id Model ID
+#' @param species_id Species ID
+#'
+#' @returns Module server function
+#'
+#' @export
 
 mod_comp_template_server <- function(
   id = "comp_template",

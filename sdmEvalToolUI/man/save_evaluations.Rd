@@ -20,13 +20,26 @@ Save evaluations
 }
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
-q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO", "testuser")
-a <- test_input_evals(q)
+q <- prep_questions(
+  "observations",
+  "deployment_test",
+  "bam_v5_can71",
+  "BBWO",
+  "testuser"
+)
+a <- test_input_evals(q) # Create example evaluations
 save_evaluations(q, a, user_id = "testuser")
+
 # Compare
-q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO", "testuser")
-e <- prep_evaluations("testuser", "deployment_test")
-q <- evals_list(q)
-# waldo::compare(a, q)
+# Fetch saved from database
+q <- prep_questions(
+  "observations",
+  "deployment_test",
+  "bam_v5_can71",
+  "BBWO",
+  "testuser"
+)
+q <- evals_list(q) # Convert to list to compare
+waldo::compare(a, q)
 \dontshow{\}) # examplesIf}
 }

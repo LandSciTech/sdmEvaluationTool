@@ -39,6 +39,29 @@ have_data <- function() {
   dir.exists(sdmEvalToolCore::sdmevaltool_options()$base)
 }
 
+#' Create named lists of ids for input selections
+#'
+#' Lists are c(named = id) to create a input selection with 'pretty' selections
+#' returning original ids.
+#'
+#' @param df_db Data frame or database where ID values can be found.
+#' @param id Character. Pattern matching 'id' in the column name.
+#' @param name Character. Pattern matching 'name' in the column name.
+#' @param match Character. ID/Name preface. Optional instead of `id`/`name`,
+#'   useful if there are more than one pair of id/name in the data frame.
+#'
+#' @returns Named character vector.
+#'
+#' @export
+#' @examplesIf have_data()
+#' df <- data.frame(
+#'   species_id = c("X11", "Y22"),
+#'   species_name = c("Pretty name", "Lovely name")
+#' )
+#'
+#' named_ids(df)
+#' named_ids(df, match = "species")
+
 named_ids <- function(df_db, id = "id", name = "name", match = NULL) {
   if (is.null(match)) {
     pattern <- glue::glue("\\_{id}|\\_{name}")
@@ -65,11 +88,14 @@ named_ids <- function(df_db, id = "id", name = "name", match = NULL) {
 
 #' Set sdmEvalTool options
 #'
+#' May not be necessary in the long run...
+#'
 #' @param ... Named list of options to set
 #'
 #' @returns list of options currently set
 #'
 #' @export
+
 set_options <- function(...) {
   # CLEANUP: Perhaps integrate with sdmEvalToolCore?
   opts <- getOption("sdmevaltool_options")
@@ -89,6 +115,19 @@ lang <- function() {
   sdmevaltool_options()$lang
 }
 
+
+#' Loosely test if identical
+#'
+#' Used in [mod_utils_evaluations_server()] to loosely determine if evaluations
+#' are identical between saved and inputs (to determine if the unsaved notice
+#' should be used).
+#'
+#' @param i1 Character
+#' @param i2 Character
+#'
+#' @returns Logical
+#'
+#' @export
 
 identical_loose <- function(i1, i2) {
   if (!isTruthy(i1)) {
@@ -110,7 +149,7 @@ identical_loose <- function(i1, i2) {
 #'
 #' @returns Character vector of affirmative answers
 #'
-#' @noRd
+#' @export
 #' @examples
 #' affirmative()
 #' affirmative("spatial")

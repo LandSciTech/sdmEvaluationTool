@@ -2,7 +2,7 @@
 % Please edit documentation in R/mod_utils_map_selections.R
 \name{mod_utils_map_selections_server}
 \alias{mod_utils_map_selections_server}
-\title{Show spatial selections on map}
+\title{Utility Module 'Map Selections' Server}
 \usage{
 mod_utils_map_selections_server(
   id,
@@ -32,6 +32,6 @@ list of spatial ids by category to highlight.}
 Shiny server
 }
 \description{
-Highlights spatial ids selected, either through user selection or through the
-'show' button from evaluations.
+Highlights spatial ids selected on the map, either through user selection or
+through the 'show' button from evaluations.
 }

@@ -9,7 +9,8 @@ prep_deployments(deployment_id, deployment_type)
 \arguments{
 \item{deployment_id}{Character. Deployment ID}
 
-\item{deployment_type}{Character. Type of data to load ("deployment_questions" or "deployment_subunits")}
+\item{deployment_type}{Character. Type of data to load
+("deployment_questions" or "deployment_subunits")}
 }
 \value{
 Data frame of deployments

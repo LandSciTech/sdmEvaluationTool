@@ -2,19 +2,20 @@
 % Please edit documentation in R/mod_utils_map_selections.R
 \name{mod_utils_map_selections_ui}
 \alias{mod_utils_map_selections_ui}
-\title{Map Selections UI}
+\title{Utility Module 'Map Selections' UI}
 \usage{
 mod_utils_map_selections_ui(id, spatial_type)
 }
 \arguments{
 \item{id}{Character. Shiny module ID.}
 
-\item{spatial_type}{Spatial type}
+\item{spatial_type}{Character. Only applicable for spatial selections. Either
+'points' (spatial points) or 'area' (spatial polygons/raster).}
 }
 \value{
 Shiny UI
 }
 \description{
 Highlights spatial ids selected, either through user selection or through the
-'show' button from evaluations.
+'show' button from evaluations.  Called by component-level modules.
 }

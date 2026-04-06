@@ -1,3 +1,16 @@
+#' Utility Module 'Evaluations' UI
+#'
+#' Called by page-level modules to create the Evaluations UI in the right-hand
+#' side bar.
+#'
+#' @param id Shiny module ID
+#' @param review_width Character. Starting width of the sidebar.
+#' @param level Character. Level of evaluations, "model" or "species".
+#'
+#' @returns Shiny UI
+#'
+#' @export
+
 mod_utils_evaluations_ui <- function(
   id = "evaluations",
   review_width = NULL,
@@ -24,6 +37,26 @@ mod_utils_evaluations_ui <- function(
   )
 }
 
+
+#' Utility Module 'Evaluations' Server
+#'
+#' @param id Shiny module ID
+#' @param spatial_type Character. Only applicable for spatial selections. Either
+#'   'points' (spatial points) or 'area' (spatial polygons/raster).
+#' @param component_id Character. Component ID
+#' @param deployment_id Character. Deployment ID
+#' @param model_id Character. Model ID
+#' @param species_id Character. Species ID
+#' @param spatial_ids Reactive Character vector. Spatial Ids to use when populating
+#'   spatial evaluation selectizes.
+#' @param opts List. Options list of reactives, originates from [sdm_tool()].
+#' @param abandoned ReactiveVal indicating whether the evaluation has been
+#'   abandoned.
+#' @param unsaved ReactiveVal indicating whether any questions are unsaved.
+#'
+#' @returns Server function for Shiny module
+#'
+#' @export
 
 mod_utils_evaluations_server <- function(
   id = "evaluations",
@@ -197,7 +230,7 @@ mod_utils_evaluations_server <- function(
     })
 
     show_btn_ids <- reactive({
-      dplyr::filter(questions_init(), type == "spatial") |>
+      dplyr::filter(questions_init(), .data$type == "spatial") |>
         dplyr::pull(.data$question_id) |>
         paste0("-show")
     })

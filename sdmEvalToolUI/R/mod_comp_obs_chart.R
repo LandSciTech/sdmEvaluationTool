@@ -80,6 +80,7 @@ mod_comp_obs_chart_ui <- function(id = "comp_obs_chart", header = NULL) {
 #' @returns Module server function
 #'
 #' @export
+
 mod_comp_obs_chart_server <- function(
   id = "comp_obs_chart",
   model_id,
@@ -142,7 +143,7 @@ mod_comp_obs_chart_server <- function(
     output$obs_chart_groups <- plotly::renderPlotly({
       if (input$fill == "none") {
         det <- obs() |>
-          dplyr::mutate(det = ifelse(status > 0, 1, 0)) |>
+          dplyr::mutate(det = ifelse(.data$status > 0, 1, 0)) |>
           dplyr::group_by(.data[[input$groups]]) |>
           dplyr::summarize(
             nobs = dplyr::n(),
@@ -157,7 +158,7 @@ mod_comp_obs_chart_server <- function(
       } else {
         if (input$groups == input$fill) {
           det <- obs() |>
-            dplyr::mutate(det = ifelse(status > 0, 1, 0)) |>
+            dplyr::mutate(det = ifelse(.data$status > 0, 1, 0)) |>
             dplyr::group_by(
               .data[[input$groups]]
             ) |>
@@ -175,7 +176,7 @@ mod_comp_obs_chart_server <- function(
             ggplot2::labs(fill = tools::toTitleCase(input$groups))
         } else {
           det <- obs() |>
-            dplyr::mutate(det = ifelse(status > 0, 1, 0)) |>
+            dplyr::mutate(det = ifelse(.data$status > 0, 1, 0)) |>
             dplyr::group_by(
               .data[[input$groups]],
               .data[[input$fill]]

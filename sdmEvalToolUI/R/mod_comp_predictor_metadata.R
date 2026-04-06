@@ -40,6 +40,14 @@ mod_comp_predictor_metadata_ui <- function(
   )
 }
 
+#' Predictor Metadata component Server
+#'
+#' @param id Module ID
+#' @param model_id Model ID
+#'
+#' @returns Module server function
+#'
+#' @export
 
 mod_comp_predictor_metadata_server <- function(
   id = "comp_predictor_metadata",

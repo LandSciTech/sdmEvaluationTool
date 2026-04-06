@@ -1,4 +1,4 @@
-#' Test the Summary Component
+#' Test the Deployment Subunits Component
 #'
 #' @param ... Arguments passed to other functions.
 #'
@@ -15,7 +15,7 @@ test_comp_deployment_subunits <- function(...) {
   )
 }
 
-#' Summary Component UI
+#' Deployment Subunits Component UI
 #'
 #' @param id Shiny module ID
 #' @param header Header

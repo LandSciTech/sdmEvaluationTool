@@ -7,18 +7,19 @@
 check_q_mismatch(q1, q2)
 }
 \arguments{
-\item{q1}{Vector of Integers, number of questions calculated from Question data.}
+\item{q1}{Vector of Integers. Number of questions calculated from Question
+data (total questions available).}
 
-\item{q2}{Vector of Integers, number of questions evaluated.}
+\item{q2}{Vector of Integers. Number of questions evaluated.}
 }
 \value{
 invisible or error if there is a mismatch.
 }
 \description{
 Compares the number of questions from those evaluated (\code{q2}) to those
-calculated from the question data (\code{q1}) Questions from evaluated (\code{q2}) may
+calculated from the question data (\code{q1}). Questions from evaluated (\code{q2}) may
 be \code{NA} if evaluations haven't been finished. Will error if values don't
-match (ignoring \code{NA}s)
+match (ignoring \code{NA}s).
 }
 \examples{
 check_q_mismatch(c(1, 1, 2, 10, 6), c(1, 1, 2, 10, 6))

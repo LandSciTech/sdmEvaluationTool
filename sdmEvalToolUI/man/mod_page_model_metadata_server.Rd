@@ -9,7 +9,9 @@ mod_page_model_metadata_server(id = "model_metadata", ...)
 \arguments{
 \item{id}{Shiny module ID}
 
-\item{...}{Additional arguments passed via expand_dots including model_id, species_id, tbl_models, tbl_species}
+\item{...}{Additional arguments passed via expand_dots including
+\code{deployment_id}, \code{model_id}, \code{species_id}, \code{abandoned}, \code{unsaved} (see
+\code{\link[=sdm_tool]{sdm_tool()}} which programmatically calls all module pages.}
 }
 \value{
 Server function for Shiny module

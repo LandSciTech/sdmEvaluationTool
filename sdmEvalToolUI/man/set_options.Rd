@@ -13,5 +13,5 @@ set_options(...)
 list of options currently set
 }
 \description{
-Set sdmEvalTool options
+May not be necessary in the long run...
 }

@@ -1,5 +1,7 @@
-#' Create input list for quick tests
+#' Create argument list for quick tests
 #'
+#' Can be used with [do.call()] to automatically fill in as arguments in a
+#' function, used in testing.
 #'
 #' @param component Character. Component ids to include
 #' @param deployment_id Character. Deployment ids to include
@@ -10,7 +12,7 @@
 #' @returns Named list
 #'
 #' @noRd
-#' @examples
+#' @examplesIf have_data()
 #' do.call(prep_questions, test_inputs())
 
 test_inputs <- function(
@@ -39,9 +41,11 @@ test_inputs <- function(
 #' @param types Question types.
 #' @param user_id User id.
 #'
+#' @export
+#'
 #' @examples
 #' test_questions()
-#' @export
+
 test_questions <- function(
   component = "observations",
   deployment_id = "deployment_test",
@@ -82,7 +86,8 @@ test_questions <- function(
 #'
 #' @param questions Data frame. Output of `.prep_questions()`
 #'
-#' @returns List of dummy input values. Mimics and `input` object from the Shiny app.
+#' @returns List of dummy input values. Mimics and `input` object from the Shiny
+#' app.
 #'
 #' @export
 #' @examples
@@ -188,12 +193,20 @@ test_evaluation_body <- function(component_id = "observations") {
 }
 
 
+#' Create dummy sf point data
+#'
+#' @returns sf data frame
+#'
+#' @export
+#' @examples
+#' test_points()
+
 test_points <- function() {
   data.frame(
     id = 1:5,
     popup = c("Toronto", "Ottawa", "Thunder Bay", "Sudbury", "Windsor"),
     type = factor(c("l1", "l1", "l2", "l2", "l3")),
-    layers = factor(c("present", "present", "absent", "absent", "absent")),
+    layers = factor(c("Presence", "Presence", "Absence", "Absence", "Absence")),
     longitude = c(-79.3832, -75.6972, -89.2477, -80.9930, -83.0366),
     latitude = c(43.6532, 45.4215, 48.3809, 46.4917, 42.3149)
   ) |>
@@ -202,6 +215,14 @@ test_points <- function() {
       crs = 4326
     )
 }
+
+#' Create dummy terra SpatRaster data
+#'
+#' @returns SpatRaster
+#'
+#' @export
+#' @examples
+#' test_raster()
 
 test_raster <- function() {
   terra::rast(

@@ -43,7 +43,9 @@ mod_page_model_metadata_ui <- function(
 #' Model Metadata Page Server
 #'
 #' @param id Shiny module ID
-#' @param ... Additional arguments passed via expand_dots including model_id, species_id, tbl_models, tbl_species
+#' @param ... Additional arguments passed via expand_dots including
+#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved` (see
+#' [sdm_tool()] which programmatically calls all module pages.
 #'
 #' @returns Server function for Shiny module
 #'

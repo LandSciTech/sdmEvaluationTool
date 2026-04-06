@@ -26,5 +26,6 @@ prep_material_settings("predictor_metadata", model_id = "bam_v5_can71")
 prep_material_settings("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
 prep_material_settings("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
 prep_material_settings("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
+prep_material_settings("model_metadata", model_id = "bam_v5_can71")
 \dontshow{\}) # examplesIf}
 }

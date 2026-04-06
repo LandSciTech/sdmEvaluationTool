@@ -70,8 +70,9 @@ pak::local_install_dev_deps()  # Package Deps
   - `zzz.R` files contain Startup messages, startup options, and any global variables which need to be declared to avoid check NOTES.
 
 ## Documentation and Examples
-- Document most functions, internal included. These are marked as `@noRd` to 
-  avoid showing up in documentation for users
+- Document most functions, internal included. Most functions are exported, even
+  if they would be normally marked as internal with `@noRd`. This allows cross
+  referencing documentation with [fun()].
 - Use `@examplesIf have_data()` for examples which require local data.
 - Use `@examplesIf interactive()` for examples which require an interactive session.
 

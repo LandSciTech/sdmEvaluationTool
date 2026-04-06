@@ -2,7 +2,7 @@
 % Please edit documentation in R/mod_comp_deployment_subunits.R
 \name{mod_comp_deployment_subunits_ui}
 \alias{mod_comp_deployment_subunits_ui}
-\title{Summary Component UI}
+\title{Deployment Subunits Component UI}
 \usage{
 mod_comp_deployment_subunits_ui(id = "comp_summary", header = NULL)
 }
@@ -15,7 +15,7 @@ mod_comp_deployment_subunits_ui(id = "comp_summary", header = NULL)
 Shiny UI
 }
 \description{
-Summary Component UI
+Deployment Subunits Component UI
 }
 \examples{
 mod_comp_deployment_subunits_ui()

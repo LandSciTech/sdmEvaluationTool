@@ -21,13 +21,7 @@ components, and their completion status.
 }
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
-#tbl <- evals_details("holden", "modeler")
-#evals_table(tbl, "modeler")
-#tbl <- evals_details("draper", "evaluator")
-#evals_table(tbl, "evaluator")
 tbl <- evals_details("testuser", "evaluator")
-evals_table(tbl, "evaluator")
-tbl <- evals_details("testuser", "modeler")
 evals_table(tbl, "evaluator")
 \dontshow{\}) # examplesIf}
 }

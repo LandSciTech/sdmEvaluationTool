@@ -13,7 +13,7 @@ deployment_subunits_prep(deployment_id)
 Subunits polygons
 }
 \description{
-Prepare Deployment Subunits
+Subunits are used by multiple mapping components for a deployment.
 }
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
