@@ -27,6 +27,6 @@ test_that("map_has_group()", {
 
   m <- base_map() |>
     add_markers(data = test_points())
-  expect_silent(g <- map_has_group(m, "present"))
+  expect_silent(g <- map_has_group(m, "Presence"))
   expect_true(g)
 })

@@ -1,0 +1,82 @@
+{
+  "input": {
+    "comp_model_fit-model_fit__reactable__page": 1,
+    "comp_model_fit-model_fit__reactable__pageSize": 7,
+    "comp_model_fit-model_fit__reactable__pages": 1,
+    "comp_model_fit-model_fit__reactable__selected": null,
+    "comp_model_fit-model_fit__reactable__sorted": null
+  },
+  "output": {
+    "comp_model_fit-model_fit": {
+      "x": {
+        "tag": {
+          "name": "Reactable",
+          "attribs": {
+            "data": {
+              "metric": [
+                "prevalence",
+                "AUC_init",
+                "AUC_final",
+                "pseudo_R2",
+                "occc",
+                "oprec",
+                "oaccu"
+              ],
+              "value": [
+                0.0102579407909524,
+                0.574209603589645,
+                0.605114538443927,
+                0.00294378294817931,
+                0.593391177710304,
+                0.616413003639479,
+                0.962651946352126
+              ]
+            },
+            "columns": [
+              {
+                "id": "metric",
+                "name": "metric",
+                "type": "character"
+              },
+              {
+                "id": "value",
+                "name": "value",
+                "type": "numeric",
+                "format": {
+                  "cell": {
+                    "digits": 3
+                  },
+                  "aggregated": {
+                    "digits": 3
+                  }
+                }
+              }
+            ],
+            "searchable": true,
+            "defaultPageSize": 7,
+            "minRows": 7,
+            "dataKey": "80d5951b877447b5512c7d0b4826d806",
+            "static": false
+          },
+          "children": [
+
+          ]
+        },
+        "class": "reactR_markup"
+      },
+      "evals": [
+
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+
+      ]
+    },
+    "comp_model_fit-model_fit_legend": "Model goodness-of-fit metrics."
+  },
+  "export": {
+
+  }
+}
