@@ -836,7 +836,7 @@ default_questions: # where values is missing, we use the values from question_ty
 - component: app
   type: yes_no
   order: 1
-  part: 1
+  part: 0
   body:
     en: Are you sure that you want to quit the evaluation? If you quit, you can still continue the evaluation later.
     fr: ""
@@ -845,7 +845,7 @@ default_questions: # where values is missing, we use the values from question_ty
 - component: app
   type: simple_text
   order: 1
-  part: 2
+  part: 1
   body:
     en: Describe the reason why you do not wish to continue the evaluation.
     fr: ""
@@ -924,7 +924,7 @@ default_questions: # where values is missing, we use the values from question_ty
 - component: observations
   type: ordinal
   order: 3
-  part: 1
+  part: 0
   body:
     en: How concerned are you about the distribution of counts?
     fr: ""
@@ -933,7 +933,7 @@ default_questions: # where values is missing, we use the values from question_ty
 - component: observations
   type: simple_text
   order: 3
-  part: 2
+  part: 1
   body:
     en: If so, explain. What is an appropriate truncation value (i.e. highest count)?
     fr: ""
@@ -942,7 +942,7 @@ default_questions: # where values is missing, we use the values from question_ty
 - component: observations
   type: ordinal
   order: 4
-  part: 1
+  part: 0
   body:
     en: How concerned are you about the temporal distribution of detections?
     fr: ""
@@ -951,7 +951,7 @@ default_questions: # where values is missing, we use the values from question_ty
 - component: observations
   type: simple_text
   order: 4
-  part: 2
+  part: 1
   body:
     en: If so, explain. What is an appropriate truncation value (i.e. minimum year)?
     fr: ""
@@ -1017,7 +1017,7 @@ default_questions: # where values is missing, we use the values from question_ty
 - component: predictor_raster
   type: ordinal
   order: 1
-  part: 1
+  part: 0
   body:
     en: How concerned are you about inaccuracy in the model predictors?
     fr: ""
@@ -1026,7 +1026,7 @@ default_questions: # where values is missing, we use the values from question_ty
 - component: predictor_raster
   type: simple_text
   order: 1
-  part: 2
+  part: 1
   body:
     en: If so, describe the predictor(s) and the areas of concern.
     fr: ""
