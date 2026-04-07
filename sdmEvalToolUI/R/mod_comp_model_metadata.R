@@ -22,6 +22,7 @@ test_comp_model_metadata <- function(...) {
 #' @export
 #' @examples
 #' mod_comp_model_metadata_ui()
+
 mod_comp_model_metadata_ui <- function(
   id = "comp_model_metadata",
   header = NULL
@@ -34,6 +35,14 @@ mod_comp_model_metadata_ui <- function(
   )
 }
 
+#' Model Metatdata component Server
+#'
+#' @param id Module ID
+#' @param model_id Model ID
+#'
+#' @returns Module server function
+#'
+#' @export
 
 mod_comp_model_metadata_server <- function(
   id = "comp_model_metadata",
@@ -58,8 +67,7 @@ mod_comp_model_metadata_server <- function(
 #'
 #' @export
 #' @examplesIf have_data()
-#' skip_eg()
-#' # model_metadata_prep("bam_v5_can71") |> model_metadata_table()
+#' model_metadata_prep("bam_v5_can71") |> model_metadata_table()
 
 model_metadata_table <- function(model_metadata) {
   colnames(model_metadata) <- tools::toTitleCase(colnames(model_metadata))
@@ -74,8 +82,7 @@ model_metadata_table <- function(model_metadata) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' skip_eg()
-#' # model_metadata_prep("bam_v5_can71")
+#' model_metadata_prep("bam_v5_can71")
 
 model_metadata_prep <- function(model_id) {
   out <- prep_materials("model_metadata", model_id = model_id)

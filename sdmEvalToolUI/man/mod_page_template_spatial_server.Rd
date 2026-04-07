@@ -10,7 +10,8 @@ mod_page_template_spatial_server(id = "template_spatial", ...)
 \item{id}{Shiny module ID}
 
 \item{...}{Additional arguments passed via expand_dots including
-\code{model_id}, \code{species_id}, \code{tbl_models}, \code{tbl_species}}
+\code{deployment_id}, \code{model_id}, \code{species_id}, \code{abandoned}, \code{unsaved}, \code{opts}
+list (see \code{\link[=sdm_tool]{sdm_tool()}} which programmatically calls all module pages.}
 }
 \value{
 Server function for Shiny module

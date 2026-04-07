@@ -13,7 +13,8 @@ evals_extract(json)
 Data frame with evaluation information
 }
 \description{
-Parses JSON-formatted evaluation body into a data frame.
+Parses JSON-formatted evaluation body into a data frame. Opposite of
+\code{\link[=response_to_json]{response_to_json()}}.
 }
 \examples{
 evals_extract(test_evaluation_body())

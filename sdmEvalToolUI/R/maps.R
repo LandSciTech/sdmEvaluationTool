@@ -2,9 +2,18 @@
 
 #' Base Map with Provider Tiles
 #'
+#' Create the base Leaflet map with standard tiles, selection draw toolbar and
+#' erase selection button. Also includes and custom Javascripts, here one for
+#' marking which layers are visible for use in selections filtering (see
+#' [mod_utils_map_selections_server()]).
+#'
 #' @param ns Namespace. Required for spatial selections.
 #'
 #' @export
+#'
+#' @examples
+#' base_map()
+
 base_map <- function(ns = identity) {
   # Track NS by hand for JS
   button_id <- ns("clear_selection")
@@ -109,6 +118,12 @@ base_map <- function(ns = identity) {
 #' @param opacity Numeric. Opacity.
 #'
 #' @export
+#'
+#' @examplesIf have_data()
+#' subunits <- deployment_subunits_prep("deployment1")
+#'
+#' base_map() |>
+#'   add_subunits(subunits)
 
 add_subunits <- function(
   map,
@@ -137,14 +152,28 @@ add_subunits <- function(
     )
 }
 
-#' Add subunits to Leaflet map
+#' Add selected subunits to Leaflet map
+#'
+#' Similar to [add_subunits()] but colours subunits by fill colour and selection
+#' type.
 #'
 #' @param map Leaflet map object.
 #' @param subunits Spatial Data Frame. Subunits
-#' @param colour_by Vector. Column to fill by
+#' @param colour_by Vector. Column to fill by (must be a factor with levels to
+#'   get the correct legend).
 #' @param opacity,fill_opacity Numeric. Opacity.
 #'
 #' @export
+#'
+#' @examplesIf have_data()
+#' subunits <- deployment_subunits_prep("deployment1") |>
+#'   dplyr::mutate(
+#'     type = c(rep("Very biased", 10), rep("Moderately biased", 10), rep(NA, 114)),
+#'     type = factor(type)
+#'   )
+#'
+#' base_map() |>
+#'   add_selected_subunits(subunits)
 
 add_selected_subunits <- function(
   map,
@@ -189,6 +218,30 @@ add_selected_subunits <- function(
 }
 
 
+#' Add raster as image layer to leaflet map
+#'
+#' Note that raster layers are attached to a new map pane with a defined
+#' z-index. This is so we can be sure the raster is above the map tiles (z-index
+#' 200, see `base_map()`), and yet below the subunits (default z-index of 400).
+#'
+#' @param map Leaflet map
+#' @param raster Terra raster to add
+#' @param layer Layer in raster to add
+#' @param name Name of leaflet layer (for controls and ids)
+#' @param palette Character. Colour palette to use
+#' @param opacity Numeric. Opacity of raster layer
+#' @param add_legend Logical. Whether or not to add a legend.
+#' @param min_0 Logical. Whether to force the legend to start at zero.
+#'
+#' @returns Leaflet map
+#'
+#' @export
+#'
+#' @examples
+#' r <- template_spatial_prep()
+#' base_map() |>
+#'   add_raster(r, layer = "mean", palette = "viridis", name = "Mean")
+
 add_raster <- function(
   map,
   raster,
@@ -220,11 +273,13 @@ add_raster <- function(
   )
 
   map <- map |>
+    leaflet::addMapPane(paste0(name, "-pane"), zIndex = 390) |>
     leaflet::addRasterImage(
       raster[[layer]],
       colors = pal,
       group = name,
-      opacity = opacity
+      opacity = opacity,
+      options = leaflet::pathOptions(pane = paste0(name, "-pane"))
     )
   if (add_legend) {
     map <- map |>
@@ -240,6 +295,32 @@ add_raster <- function(
 
   map
 }
+
+#' Add Layers control to map
+#'
+#' @param map Leaflet map
+#' @param groups Character vector. Layers or Group names to add to the control.
+#' Subunits are included by default. Only existing layers are included.
+#'
+#' @returns Leaflet map with layer control buttons
+#'
+#' @export
+#' @examples
+#' # No subunits
+#' r <- template_spatial_prep()
+#' base_map() |>
+#'   add_raster(r, layer = "mean", palette = "viridis", name = "Mean") |>
+#'   add_control(groups = "Mean")
+#'
+#' # With subunits
+#' if(have_data()) {
+#'   r <- template_spatial_prep()
+#'   s <- deployment_subunits_prep("deployment1")
+#'   base_map() |>
+#'     add_raster(r, layer = "mean", palette = "viridis", name = "Mean") |>
+#'     add_subunits(s) |>
+#'     add_control(groups = "Mean")
+#' }
 
 add_control <- function(map, groups = character(0)) {
   # Keep only groups present
@@ -260,6 +341,23 @@ add_control <- function(map, groups = character(0)) {
   #}
   map
 }
+
+#' Add point markers to Leaflet map
+#'
+#' @param map Leaflet map object.
+#' @param data Spatial data with markers to plot (defaults to data in the `map`
+#' object).
+#' @param colour_by Character. Column to use when colouring points.
+#' @param layer_by Character. Column to use to group points into layers (for
+#' [add_control()]).
+#'
+#' @returns Leaflet map.
+#'
+#' @export
+#' @examples
+#' base_map() |>
+#'   add_markers(data = test_points()) |>
+#'   add_control(groups = c("present", "absent")) # From 'layers' column
 
 add_markers <- function(
   map,
@@ -298,6 +396,23 @@ add_markers <- function(
 
   map
 }
+
+#' Add selected point markers to Leaflet map
+#'
+#' Very similar to [add_markers()] but colours according to `type` column which
+#' defines the selections and no option to add to controls.
+#'
+#' @param map Leaflet map object.
+#' @param data Spatial data with markers to plot (defaults to data in the `map`
+#' object).
+#' @param colour_by Character. Column to use when colouring points.
+#'
+#' @returns Leaflet map.
+#'
+#' @export
+#' @examples
+#' base_map() |>
+#'   add_selected_markers(data = test_points())
 
 add_selected_markers <- function(
   map,

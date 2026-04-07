@@ -48,7 +48,9 @@ mod_page_test_ui <- function(
 #' Test Page Server
 #'
 #' @param id Shiny module ID
-#' @param ... Additional arguments passed via expand_dots including deployment_id, model_id, species_id, tbl_models, tbl_species
+#' @param ... Additional arguments passed via expand_dots including
+#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved`, `opts`
+#' list (see [sdm_tool()] which programmatically calls all module pages.
 #'
 #' @returns Server function for Shiny module
 #'

@@ -11,6 +11,7 @@ TRUE/FALSE
 }
 \description{
 Checks whether the user has local data available for this tool.
+Used for examples (must be exported).
 }
 \examples{
 have_data()

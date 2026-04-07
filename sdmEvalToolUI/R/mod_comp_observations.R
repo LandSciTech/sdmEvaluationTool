@@ -52,7 +52,7 @@ mod_comp_observations_ui <- function(
 #' Observations component Server
 #'
 #' @param id Module ID
-#' @param deployment_id Deployment ID
+#' @param deployment_id Deployment ID. Required for subunits.
 #' @param model_id Model ID
 #' @param species_id Species ID
 #' @param spatial_selection Spatial selection
@@ -61,6 +61,7 @@ mod_comp_observations_ui <- function(
 #' @returns Module server function
 #'
 #' @export
+
 mod_comp_observations_server <- function(
   id = "comp_observations",
   deployment_id,
@@ -201,7 +202,10 @@ mod_comp_observations_server <- function(
 
 #' Create a Leaflet Map of Observation Data
 #'
-#' @param obs sf data frame. Observations
+#' Can use points or rasters to map the data.
+#'
+#' @param obs sf or Terra spatial data. Observations as points ([obs_prep()]) or
+#' raster data ([obs_prep_raster()]).
 #' @param subunits Subunits
 #' @param ns Namespace
 #' @param output_type Character. Points or raster.
@@ -213,7 +217,15 @@ mod_comp_observations_server <- function(
 #' @examplesIf have_data()
 #' o <- obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 #' s <- deployment_subunits_prep("deployment1")
-#' obs_map(o, s)
+#' r0 <- prep_materials(
+#'   "spatial_prediction",
+#'   model_id = "bam_v5_can71",
+#'   species_id = "BBWO"
+#' )
+#' r <- obs_prep_raster(o, r0)
+#'
+#' obs_map(o, s) # points
+#' obs_map(r, s, output_type = "raster") # raster
 
 obs_map <- function(
   obs,
@@ -240,6 +252,20 @@ obs_map <- function(
   )
 }
 
+#' Create a Leaflet Map of Observation Point Data
+#'
+#' @param obs sf data frame. Observations
+#' @param subunits Subunits
+#' @param ns Namespace
+#' @param ... Other parameters.
+#'
+#' @returns A leaflet map object
+#'
+#' @export
+#' @examples
+#' p <- test_points()
+#' obs_map_points(p)
+
 obs_map_points <- function(obs, subunits = NULL, ns = identity, ...) {
   base_map(ns = ns) |>
     # Subunits first because selecting by points
@@ -247,6 +273,27 @@ obs_map_points <- function(obs, subunits = NULL, ns = identity, ...) {
     add_markers(data = obs) |>
     add_control(groups = c("Absence", "Presence"))
 }
+
+#' Create a Leaflet Map of Observation Raster Data
+#'
+#' @param obs sf data frame. Observations
+#' @param subunits Subunits
+#' @param ns Namespace
+#' @param ... Other parameters.
+#'
+#' @returns A leaflet map object
+#'
+#' @export
+#' @examplesIf have_data()
+#' o <- obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+#' r <- prep_materials(
+#'   "spatial_prediction",
+#'   model_id = "bam_v5_can71",
+#'   species_id = "BBWO"
+#' )
+#' p <- obs_prep_raster(o, r)
+#'
+#' obs_map_raster(p)
 
 obs_map_raster <- function(
   obs,
@@ -277,16 +324,29 @@ obs_map_raster <- function(
 
 #' Prepare Observation Data
 #'
+#' Loads and generally prepares the observation data. Wrapper around [obs_prep_points()] and [obs_prep_raster()].
+#'
 #' @param model_id Character. Model ID
 #' @param species_id Character. Species ID
 #' @param output_type Character. Points or raster.
-#' @param ... Other parameters.
+#' @param ... Other parameters. Most importantly, `rast` argument if
+#' `output_type == "raster"`.
 #'
-#' @returns Spatial data frame
+#' @returns Spatial data frame, sf if points, terra SpatRaster if raster.
 #'
 #' @export
 #' @examplesIf have_data()
+#' r0 <- prep_materials(
+#'   "spatial_prediction",
+#'   model_id = "bam_v5_can71",
+#'   species_id = "BBWO"
+#' )
+#'
+#' # Points Prep
 #' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
+#'
+#' # Raster Prep
+#' obs_prep(model_id = "bam_v5_can71", species_id = "BBWO", "raster", rast = r0)
 
 obs_prep <- function(
   model_id,
@@ -313,11 +373,31 @@ obs_prep <- function(
   )
 }
 
+#' Prepare raster from Observation point data
+#'
+#' @param obs Observation materials
+#' @param rast Spatial predictions raster to get the extent etc.
+#' @param scale Raster scale.
+#' @param ... Unused.
+#'
+#' @returns SpatRaster
+#'
+#' @export
+#' @examplesIf have_data()
+#' o <- prep_materials(
+#'   "observations",
+#'   model_id = "bam_v5_can71",
+#'   species_id = "BBWO"
+#' )
+#' r <- prep_materials(
+#'   "spatial_prediction",
+#'   model_id = "bam_v5_can71",
+#'   species_id = "BBWO"
+#' )
+#' p <- obs_prep_raster(o, r)
+
 obs_prep_raster <- function(obs, rast, scale = 10, ...) {
-  obs <- obs |>
-    dplyr::mutate(
-      status = ifelse(status > 0, 1, 0)
-    )
+  obs <- dplyr::mutate(obs, status = ifelse(.data$status > 0, 1, 0))
   rast <- terra::resample(rast, scale)
 
   out0 <- terra::rasterize(
@@ -337,11 +417,27 @@ obs_prep_raster <- function(obs, rast, scale = 10, ...) {
   out
 }
 
+#' Prepare points from Observation point data
+#'
+#' @param obs Observation materials
+#' @param ... Unused.
+#'
+#' @returns Sf spatial data frame
+#'
+#' @export
+#' @examplesIf have_data()
+#' o <- prep_materials(
+#'   "observations",
+#'   model_id = "bam_v5_can71",
+#'   species_id = "BBWO"
+#' )
+#' p <- obs_prep_points(o)
+
 obs_prep_points <- function(obs, ...) {
   obs <- obs |>
     dplyr::mutate(
       year = as.numeric(stringr::str_extract(.data$time, "^\\d{4}")),
-      hours = round(hssr),
+      hours = round(.data$hssr),
       month = factor(month.abb[as.POSIXlt(obs$time)$mo + 1], month.abb),
       layers = dplyr::if_else(.data$status == 0, "Absence", "Presence"),
       layers = factor(layers),

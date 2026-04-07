@@ -46,10 +46,17 @@ file.edit(file.path(pkg, "DESCRIPTION"))
 file.edit(file.path(pkg, "NEWS.md"))
 
 ## Standard checks ------------------------------------------
+
+# It's important to run tests and examples here as they are skipped in the
+# local and CI package checks because of the data location.
+
 devtools::test(pkg) # Use Ctrl-Shift-T to test non-interactively in the package
-devtools::document(pkg)
-rcmdcheck::rcmdcheck(pkg)
 devtools::run_examples(pkg) # Will be skipped in package check because missing data
+devtools::document(pkg)
+
+# Package check
+rcmdcheck::rcmdcheck(pkg)
+
 
 # devtools::install(pkg, upgrade = "never")
 # remotes::install_github("LandSciTech/sdmEvaluationTool/sdmEvalToolUI")

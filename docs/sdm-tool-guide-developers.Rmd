@@ -70,8 +70,9 @@ pak::local_install_dev_deps()  # Package Deps
   - `zzz.R` files contain Startup messages, startup options, and any global variables which need to be declared to avoid check NOTES.
 
 ## Documentation and Examples
-- Document most functions, internal included. These are marked as `@noRd` to 
-  avoid showing up in documentation for users
+- Document most functions, internal included. Most functions are exported, even
+  if they would be normally marked as internal with `@noRd`. This allows cross
+  referencing documentation with [fun()].
 - Use `@examplesIf have_data()` for examples which require local data.
 - Use `@examplesIf interactive()` for examples which require an interactive session.
 
@@ -161,6 +162,21 @@ Further examples
 
 
 ## Fiddly Notes
+
+### Testing
+- test/testthat/setup.R defines where the data (if any) is located from the 
+  perspective of test/testthat.
+- If data cannot be found, `skip_if_no_data()` and `@examplesIf have_data()` 
+  prevent tests and data from running
+- A basic list of inputs is defined in setup.R as well and used in many tests (`test_inputs`)
+
+### Shiny Tests
+- We've kept Shiny tests simple
+- If you get an error "Shiny server returned 404 for values", use `shinytest2::record_test(app_to_test())` to get the error in the console terminal
+  which is much easier to understand. (See https://github.com/rstudio/shinytest2/issues/356)
+- Currently Shiny Tests only test that the app launches and expects data 
+- It uses JSON snapshot tests which will 'fail' if the local data example changes, 
+  so this might be a bit fragile.
 
 ### Pages/Components
 - Pages include `span(title, class = "sdm-species-lvl")` or `sdm-model-lvl` to define a page as model- or species-level information (mostly this just colours the tab names).

@@ -16,16 +16,18 @@ sdm_tool(
 \arguments{
 \item{lang}{Character. Language of app; either \code{english} or \code{french}.}
 
-\item{options}{List. Shiny app options.}
+\item{options}{List. Shiny app options (passed to \code{options} in
+\code{\link[shiny:shinyApp]{shiny::shinyApp()}}.}
 
-\item{tabs}{Character. List the tabs that the UI should have.}
+\item{tabs}{Character. List the tabs/pages that the UI should have.}
 
-\item{user}{Character. User id.}
+\item{user}{Character. User id. Placeholder for now, may be changed to use
+authentication later.}
 
 \item{...}{Other arguments passed to \code{\link[shiny:shinyApp]{shiny::shinyApp()}}.}
 }
 \value{
-A Shiny app object
+A Shiny app object. Launched in browser/viewer if interactive.
 }
 \description{
 Launch the SDM Evaluation Tool Shiny Application

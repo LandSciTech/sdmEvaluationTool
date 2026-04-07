@@ -1,83 +1,50 @@
-test_that("prep_materials()", {
-  withr::with_options(
-    list(
-      "sdmevaltool_options" = list(
-        base = testthat::test_path("../../../misc/base")
-      )
-    ),
-    {
-      skip_if_not(dir.exists(sdmevaltool_options()$base))
-      comp <- sdmEvalToolCore::components |>
-        dplyr::filter(.data$type == "material", .data$component != "app") |>
-        dplyr::pull(.data$component)
+test_that("expand_list()", {
+  expect_false(exists("test1"))
+  expect_false(exists("test2"))
 
-      for (c in comp) {
-        expect_silent(prep_materials(
-          c,
-          species_id = "BBWO",
-          model_id = "bam_v5_can71"
-        ))
-      }
-    }
-  )
+  expect_silent(expand_list(list("test1" = "test", "test2" = "test")))
+
+  expect_true(exists("test1"))
+  expect_true(exists("test2"))
 })
 
-test_that("prep_deployments()", {
-  withr::with_options(
-    list(
-      "sdmevaltool_options" = list(
-        base = testthat::test_path("../../../misc/base")
-      )
-    ),
-    {
-      skip_if_not(dir.exists(sdmevaltool_options()$base))
+test_that("expand_dots()", {
+  expect_false(exists("test1"))
+  expect_false(exists("test2"))
 
-      deps <- sdmEvalToolCore::components |>
-        dplyr::filter(.data$type == "deployment") |>
-        dplyr::pull(.data$component)
+  expect_silent(expand_dots("test1" = "test", "test2" = "test"))
 
-      for (d in deps) {
-        expect_silent(prep_deployments("deployment1", d))
-        expect_silent(prep_deployments("deployment2", d))
-      }
-    }
-  )
+  expect_true(exists("test1"))
+  expect_true(exists("test2"))
 })
 
-test_that("prep_questions()", {
-  withr::with_options(
-    list(
-      "sdmevaltool_options" = list(
-        base = testthat::test_path("../../../misc/base")
+test_that("lang()", {
+  l <- lang()
+  expect_type(l, "character")
+  expect_length(l, 1)
+  expect_true(l %in% c("english", "french"))
+})
+
+test_that
+
+test_that("affirmative()", {
+  # Standard type
+  standard <- affirmative()
+  expect_type(standard, "character")
+  expect_true(all(
+    standard %in% c("Extremely", "Very", "Moderately", "Slightly", "Yes")
+  ))
+
+  # Spatial type
+  spatial <- affirmative("spatial")
+  expect_type(spatial, "character")
+  expect_true(all(
+    spatial %in%
+      c(
+        "Very_biased",
+        "Moderately_biased",
+        "Very_undersampled",
+        "Moderately_undersampled"
       )
-    ),
-    {
-      skip_if_not(dir.exists(sdmevaltool_options()$base))
-
-      d <- "deployment1"
-      m <- "bam_v5_can71"
-      sp <- "BBWO"
-
-      # Return all questions
-      expect_silent(q1 <- prep_questions(NULL, d, m, sp))
-
-      # Return component specific questions
-      expect_silent(q2 <- prep_questions("observations", d, m, sp))
-      expect_silent(q3 <- prep_questions("model_fit", d, m))
-      expect_silent(q4 <- prep_questions("model_summary", d, m))
-      expect_silent(q5 <- prep_questions(c("model_summary", "model_fit"), d, m))
-      expect_silent(q6 <- prep_questions("predictor_raster", d, m))
-
-      # Return default questions
-      expect_silent(
-        q7 <- prep_questions("observations", "deployment_test", m, sp)
-      )
-
-      for (q in list(q2, q3, q4, q5, q6, q7)) {
-        expect_named(!!q, names(q1))
-        expect_type(!!q[["values"]], "list")
-        expect_type(!!q[["values"]][[1]], "character")
-      }
-    }
-  )
+  ))
 })

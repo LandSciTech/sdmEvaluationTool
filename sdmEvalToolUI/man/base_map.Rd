@@ -10,5 +10,11 @@ base_map(ns = identity)
 \item{ns}{Namespace. Required for spatial selections.}
 }
 \description{
-Base Map with Provider Tiles
+Create the base Leaflet map with standard tiles, selection draw toolbar and
+erase selection button. Also includes and custom Javascripts, here one for
+marking which layers are visible for use in selections filtering (see
+\code{\link[=mod_utils_map_selections_server]{mod_utils_map_selections_server()}}).
+}
+\examples{
+base_map()
 }

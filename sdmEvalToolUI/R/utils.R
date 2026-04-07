@@ -1,22 +1,34 @@
+#' Expand a list into objects in the environment
+#'
+#' @param l List of items to expand into objects
+#' @param env Environment in which objects should be placed
+#'
+#' @returns Nothing. Objects now in environment
+#'
+#' @noRd
+
 expand_list <- function(l, env = rlang::caller_env()) {
   rlang::env_bind(env, !!!l)
 }
+
+#' Expand a dots list into objects in the environment
+#'
+#' @param ... Dots list of items to expand into objects
+#' @param env Environment in which objects should be placed
+#'
+#' @returns Nothing. Objects now in environment
+#'
+#' @noRd
 
 expand_dots <- function(..., env = rlang::caller_env()) {
   rlang::env_bind(env, !!!list(...))
 }
 
 
-pretty <- function(x) {
-  x |>
-    stringr::str_replace_all("_", " ") |>
-    stringr::str_remove_all("\\bid\\b") |>
-    stringr::str_to_title()
-}
-
 #' Have local data?
 #'
 #' Checks whether the user has local data available for this tool.
+#' Used for examples (must be exported).
 #'
 #' @returns TRUE/FALSE
 #'
@@ -27,24 +39,28 @@ have_data <- function() {
   dir.exists(sdmEvalToolCore::sdmevaltool_options()$base)
 }
 
-
-dummy_session <- list(ns = \(x) paste0("session-", x))
-
-#' Temporarily skip examples
+#' Create named lists of ids for input selections
 #'
-#' Examples using @examplesIf, will fail if there is nothing to run (i.e.
-#' becaues the example is commented out waiting for a working version).
+#' Lists are c(named = id) to create a input selection with 'pretty' selections
+#' returning original ids.
 #'
-#' @returns Nothing
+#' @param df_db Data frame or database where ID values can be found.
+#' @param id Character. Pattern matching 'id' in the column name.
+#' @param name Character. Pattern matching 'name' in the column name.
+#' @param match Character. ID/Name preface. Optional instead of `id`/`name`,
+#'   useful if there are more than one pair of id/name in the data frame.
+#'
+#' @returns Named character vector.
 #'
 #' @export
-#' @examples
-#' skip_eg()
-
-skip_eg <- function() {
-  invisible()
-}
-
+#' @examplesIf have_data()
+#' df <- data.frame(
+#'   species_id = c("X11", "Y22"),
+#'   species_name = c("Pretty name", "Lovely name")
+#' )
+#'
+#' named_ids(df)
+#' named_ids(df, match = "species")
 
 named_ids <- function(df_db, id = "id", name = "name", match = NULL) {
   if (is.null(match)) {
@@ -72,11 +88,14 @@ named_ids <- function(df_db, id = "id", name = "name", match = NULL) {
 
 #' Set sdmEvalTool options
 #'
+#' May not be necessary in the long run...
+#'
 #' @param ... Named list of options to set
 #'
 #' @returns list of options currently set
 #'
 #' @export
+
 set_options <- function(...) {
   # CLEANUP: Perhaps integrate with sdmEvalToolCore?
   opts <- getOption("sdmevaltool_options")
@@ -96,6 +115,19 @@ lang <- function() {
   sdmevaltool_options()$lang
 }
 
+
+#' Loosely test if identical
+#'
+#' Used in [mod_utils_evaluations_server()] to loosely determine if evaluations
+#' are identical between saved and inputs (to determine if the unsaved notice
+#' should be used).
+#'
+#' @param i1 Character
+#' @param i2 Character
+#'
+#' @returns Logical
+#'
+#' @export
 
 identical_loose <- function(i1, i2) {
   if (!isTruthy(i1)) {
@@ -117,7 +149,7 @@ identical_loose <- function(i1, i2) {
 #'
 #' @returns Character vector of affirmative answers
 #'
-#' @noRd
+#' @export
 #' @examples
 #' affirmative()
 #' affirmative("spatial")

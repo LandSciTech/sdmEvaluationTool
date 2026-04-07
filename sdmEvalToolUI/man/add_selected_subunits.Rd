@@ -2,7 +2,7 @@
 % Please edit documentation in R/maps.R
 \name{add_selected_subunits}
 \alias{add_selected_subunits}
-\title{Add subunits to Leaflet map}
+\title{Add selected subunits to Leaflet map}
 \usage{
 add_selected_subunits(
   map,
@@ -17,10 +17,24 @@ add_selected_subunits(
 
 \item{subunits}{Spatial Data Frame. Subunits}
 
-\item{colour_by}{Vector. Column to fill by}
+\item{colour_by}{Vector. Column to fill by (must be a factor with levels to
+get the correct legend).}
 
 \item{opacity, fill_opacity}{Numeric. Opacity.}
 }
 \description{
-Add subunits to Leaflet map
+Similar to \code{\link[=add_subunits]{add_subunits()}} but colours subunits by fill colour and selection
+type.
+}
+\examples{
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
+subunits <- deployment_subunits_prep("deployment1") |>
+  dplyr::mutate(
+    type = c(rep("Very biased", 10), rep("Moderately biased", 10), rep(NA, 114)),
+    type = factor(type)
+  )
+
+base_map() |>
+  add_selected_subunits(subunits)
+\dontshow{\}) # examplesIf}
 }

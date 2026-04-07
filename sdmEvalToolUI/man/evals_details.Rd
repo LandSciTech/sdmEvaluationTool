@@ -33,8 +33,12 @@ role. For modelers, shows all evaluations across users for their deployments.
 For evaluators, shows only their own evaluations. Returns a data frame with
 deployment, model, species, component, and completion information.
 }
+\details{
+This is used by the 'overview'/'summary'/'index' page.
+}
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 evals_details("testuser", "evaluator")
+evals_details("testuser", "modeler")
 \dontshow{\}) # examplesIf}
 }

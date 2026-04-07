@@ -1,3 +1,19 @@
+#' Create Test App for Page Modules
+#'
+#' Not all arguments are used by all modules.
+#'
+#' @param module Character. Module Name.
+#' @param deployment_id Character. Example Deployment ID.
+#' @param model_id Character. Example Model ID.
+#' @param species_id Character. Example Species ID.
+#' @param user_id Character. Example User ID.
+#' @param user_role Character. Example User Role.
+#' @param user_admin Logical Example User Admin status.
+#'
+#' @returns Shiny App
+#'
+#' @export
+
 test_page <- function(
   module,
   deployment_id = "deployment1",
@@ -52,6 +68,22 @@ test_page <- function(
   shiny::shinyApp(ui, server, options = list(port = 8080))
 }
 
+#' Create Test App for Component Modules
+#'
+#' Not all arguments are used by all modules.
+#'
+#' @param module Character. Module Name.
+#' @param use Character vector. Objects to include
+#' @param deployment_id Character. Example Deployment ID.
+#' @param model_id Character. Example Model ID.
+#' @param species_id Character. Example Species ID.
+#' @param spatial_ids Character. Optional starting spatial ids.
+#' @param spatial_selection List. Optional starting spatial selection
+#' (`show_clicked` and `show_spatial_ids`).
+#'
+#' @returns Shiny App
+#'
+#' @export
 test_comp <- function(
   module,
   use = c(
@@ -67,6 +99,12 @@ test_comp <- function(
   spatial_ids = NULL,
   spatial_selection = list(show_clicked = NULL, show_spatial_ids = NULL)
 ) {
+  if (testthat::is_testing()) {
+    sdmevaltool_options(
+      base = testthat::test_path("../../../misc/base")
+    )
+  }
+
   ui <- get(paste0(module, "_ui"))()
 
   u <- list(
@@ -84,4 +122,22 @@ test_comp <- function(
   }
 
   shiny::shinyApp(ui, server, options = list(port = 8080))
+}
+
+
+#' Skip testthat tests if no data is detected
+#'
+#' @returns Logical
+#'
+#' @export
+
+skip_if_no_data <- function() {
+  if (!have_data()) {
+    testthat::skip(
+      paste0(
+        "No data available for testing: ",
+        normalizePath(sdmEvalToolCore::sdmevaltool_options()$base)
+      )
+    )
+  }
 }

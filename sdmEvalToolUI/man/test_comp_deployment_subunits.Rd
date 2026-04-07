@@ -2,7 +2,7 @@
 % Please edit documentation in R/mod_comp_deployment_subunits.R
 \name{test_comp_deployment_subunits}
 \alias{test_comp_deployment_subunits}
-\title{Test the Summary Component}
+\title{Test the Deployment Subunits Component}
 \usage{
 test_comp_deployment_subunits(...)
 }
@@ -13,10 +13,10 @@ test_comp_deployment_subunits(...)
 A Shiny app object
 }
 \description{
-Test the Summary Component
+Test the Deployment Subunits Component
 }
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
-test_comp_summary()
+test_comp_deployment_subunits()
 \dontshow{\}) # examplesIf}
 }

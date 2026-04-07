@@ -1,0 +1,266 @@
+{
+  "input": {
+    "comp_model_summary-model_summary__reactable__page": 1,
+    "comp_model_summary-model_summary__reactable__pageSize": 27,
+    "comp_model_summary-model_summary__reactable__pages": 1,
+    "comp_model_summary-model_summary__reactable__selected": null,
+    "comp_model_summary-model_summary__reactable__sorted": null
+  },
+  "output": {
+    "comp_model_summary-model_summary": {
+      "x": {
+        "tag": {
+          "name": "Reactable",
+          "attribs": {
+            "data": {
+              "species_id": [
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO",
+                "BBWO"
+              ],
+              "predictor": [
+                "PPTsm_1km",
+                "SCANFITamarack_5x5",
+                "StandardGreenup_1km",
+                "SCANFIJackPine_1km",
+                "VLCE_1km",
+                "SCANFIBalsamFir_1km",
+                "ERATavewt_1km",
+                "SCANFIheightcv_1km",
+                "MODISLCC_1km",
+                "LakeEdge_1km",
+                "ERATavesm_1km",
+                "SCANFIBalsamFir_5x5",
+                "StandardDormancy_1km",
+                "ERAPPTsmt_1km",
+                "ERAMAT_1km",
+                "SCANFIheight_5x5",
+                "Peatland_1km",
+                "ERAPPTwt_1km",
+                "SCANFITamarack_1km",
+                "SCANFIprcD_1km",
+                "SCANFIprcD_5x5",
+                "WetOccur_5x5",
+                "AHM_1km",
+                "DD18_1km",
+                "ERAMAP_1km",
+                "WetRecur_1km",
+                "Year"
+              ],
+              "mean_rel_inf": [
+                36.4567601934897,
+                16.874129107656,
+                6.07867420522427,
+                5.78080667015532,
+                5.29030535010958,
+                3.19702435488563,
+                2.83885808254557,
+                2.74347102516286,
+                2.37306770917143,
+                2.12785733393348,
+                2.0626778168246,
+                1.97895331518898,
+                1.52210335023304,
+                1.18883616834066,
+                1.1118399507589,
+                1.09924285377696,
+                1.09479176014692,
+                1.08249135335364,
+                0.87485381326752,
+                0.839971519489369,
+                0.756881192859737,
+                0.62876568938489,
+                0.540750107217679,
+                0.517764635997544,
+                0.392124206172402,
+                0.363438562494299,
+                0.183559672159036
+              ],
+              "sd_rel_inf": [
+                10.2893341826799,
+                5.11008564592499,
+                3.48452445184035,
+                3.20112310324113,
+                2.62087538721315,
+                3.01982180313901,
+                0.834879358298509,
+                2.14047194411749,
+                1.01770462297928,
+                1.44571213338855,
+                1.53650338416809,
+                0.762799265132163,
+                1.4825037110049,
+                0.909137519050707,
+                1.25847437302239,
+                0.852216097782747,
+                0.686296836645483,
+                0.761587198379778,
+                0.581161203502131,
+                0.496449723415274,
+                0.449282850057651,
+                0.409201120753764,
+                0.370427495489408,
+                0.464591019658733,
+                0.314169620278258,
+                0.563309479677145,
+                0.189312117309075
+              ],
+              "n_boots": [
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32,
+                32
+              ],
+              "predictor_class": [
+                "Climate Normals",
+                "Veg Species",
+                "Annual Climate",
+                "Veg Species",
+                "Landcover",
+                "Veg Species",
+                "Annual Climate",
+                "Veg Structure",
+                "Landcover",
+                "Wetland",
+                "Annual Climate",
+                "Veg Species",
+                "Annual Climate",
+                "Annual Climate",
+                "Annual Climate",
+                "Veg Structure",
+                "Wetland",
+                "Annual Climate",
+                "Veg Species",
+                "Veg Species",
+                "Veg Species",
+                "Wetland",
+                "Climate Normals",
+                "Climate Normals",
+                "Annual Climate",
+                "Wetland",
+                "Time"
+              ]
+            },
+            "columns": [
+              {
+                "id": "species_id",
+                "name": "species_id",
+                "type": "character"
+              },
+              {
+                "id": "predictor",
+                "name": "predictor",
+                "type": "character"
+              },
+              {
+                "id": "mean_rel_inf",
+                "name": "mean_rel_inf",
+                "type": "numeric",
+                "format": {
+                  "cell": {
+                    "digits": 3
+                  },
+                  "aggregated": {
+                    "digits": 3
+                  }
+                }
+              },
+              {
+                "id": "sd_rel_inf",
+                "name": "sd_rel_inf",
+                "type": "numeric",
+                "format": {
+                  "cell": {
+                    "digits": 3
+                  },
+                  "aggregated": {
+                    "digits": 3
+                  }
+                }
+              },
+              {
+                "id": "n_boots",
+                "name": "n_boots",
+                "type": "numeric"
+              },
+              {
+                "id": "predictor_class",
+                "name": "predictor_class",
+                "type": "character"
+              }
+            ],
+            "searchable": true,
+            "defaultPageSize": 27,
+            "minRows": 27,
+            "dataKey": "18c23c1b3d6a9ca898501bee687be140",
+            "static": false
+          },
+          "children": [
+
+          ]
+        },
+        "class": "reactR_markup"
+      },
+      "evals": [
+
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+
+      ]
+    },
+    "comp_model_summary-model_summary_legend": "Model summary."
+  },
+  "export": {
+
+  }
+}

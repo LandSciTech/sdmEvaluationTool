@@ -18,3 +18,11 @@ add_subunits(map, subunits = NULL, colour_by = "subunit_id", opacity = 0.8)
 \description{
 Add subunits to Leaflet map
 }
+\examples{
+\dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
+subunits <- deployment_subunits_prep("deployment1")
+
+base_map() |>
+  add_subunits(subunits)
+\dontshow{\}) # examplesIf}
+}

@@ -13,7 +13,8 @@ obs_map(
 )
 }
 \arguments{
-\item{obs}{sf data frame. Observations}
+\item{obs}{sf or Terra spatial data. Observations as points (\code{\link[=obs_prep]{obs_prep()}}) or
+raster data (\code{\link[=obs_prep_raster]{obs_prep_raster()}}).}
 
 \item{subunits}{Subunits}
 
@@ -27,12 +28,20 @@ obs_map(
 A leaflet map object
 }
 \description{
-Create a Leaflet Map of Observation Data
+Can use points or rasters to map the data.
 }
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 o <- obs_prep(model_id = "bam_v5_can71", species_id = "BBWO")
 s <- deployment_subunits_prep("deployment1")
-obs_map(o, s)
+r0 <- prep_materials(
+  "spatial_prediction",
+  model_id = "bam_v5_can71",
+  species_id = "BBWO"
+)
+r <- obs_prep_raster(o, r0)
+
+obs_map(o, s) # points
+obs_map(r, s, output_type = "raster") # raster
 \dontshow{\}) # examplesIf}
 }

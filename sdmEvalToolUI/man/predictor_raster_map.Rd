@@ -7,9 +7,9 @@
 predictor_raster_map(predictor_raster, layers = NULL, subunits = NULL)
 }
 \arguments{
-\item{predictor_raster}{terra Raster. Predictor information.}
+\item{predictor_raster}{terra SpatRaster. Predictor information.}
 
-\item{layers}{Layers.}
+\item{layers}{Character vector. Layers in SpatRaster to plot.}
 
 \item{subunits}{Spatial Data frame. Deployment subunits.}
 }
@@ -23,7 +23,7 @@ Create a Leaflet Map of Predictor Raster Data
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 predictor_raster_prep("bam_v5_can71") |>
   predictor_raster_map(
-    layers = "year",
+    layers = "AHM_1km", # Must be a layer in prepared raster
     subunits = deployment_subunits_prep("deployment1")
   )
 \dontshow{\}) # examplesIf}

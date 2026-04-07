@@ -1,3 +1,37 @@
+#' Create argument list for quick tests
+#'
+#' Can be used with [do.call()] to automatically fill in as arguments in a
+#' function, used in testing.
+#'
+#' @param component Character. Component ids to include
+#' @param deployment_id Character. Deployment ids to include
+#' @param model_id Character. Model ids to include
+#' @param species_id Character. Species ids to include
+#' @param user_id Character. User id to include
+#'
+#' @returns Named list
+#'
+#' @noRd
+#' @examplesIf have_data()
+#' do.call(prep_questions, test_inputs())
+
+test_inputs <- function(
+  component = "observations",
+  deployment_id = "deployment_test",
+  model_id = "bam_v5_can71",
+  species_id = "BBWO",
+  user_id = "test_user"
+) {
+  list(
+    component = component,
+    deployment_id = deployment_id,
+    model_id = model_id,
+    species_id = species_id,
+    user_id = user_id
+  )
+}
+
+
 #' Create dummy questions for testing
 #'
 #' @param component Component.
@@ -5,63 +39,55 @@
 #' @param model_id Model ID.
 #' @param species_id Species ID.
 #' @param types Question types.
-#' @param user_name User name.
+#' @param user_id User id.
+#'
+#' @export
 #'
 #' @examples
 #' test_questions()
-#' @export
+
 test_questions <- function(
   component = "observations",
   deployment_id = "deployment_test",
   model_id = "bam_v5_can71",
   species_id = "BBWO",
   types = c("spatial", "ordinal", "simple_text"),
-  user_name = "testuser"
+  user_id = "testuser"
 ) {
-  dplyr::tibble(
-    component = component,
-    type = c("spatial", "ordinal", "ordinal", "simple_text"),
-    order = c(1L, 1L, 2L, 3L),
-    part = c(0, 1, 0, 0),
-    label = paste0("label", 1:4),
-    french = rep("", 4),
-    values = list(
-      c("Very biased", "Moderately biased", "Accurate", "Unknown"),
-      c(
-        "Extremely",
-        "Very",
-        "Moderately",
-        "Slightly",
-        "Not at all",
-        "Uncertain"
-      ),
-      c(
-        "Extremely",
-        "Very",
-        "Moderately",
-        "Slightly",
-        "Not at all",
-        "Uncertain"
-      ),
-      ""
-    ),
-    evaluation_create_user = user_name,
-    evaluation_create_time = "2025-01-01 00:00:00",
-    last_modified = "2025-01-02 00:00:00"
-  ) |>
-    # fmt: skip
+  q <- sdmEvalToolCore::default_questions |>
+    # Renumber
     dplyr::mutate(
+      part = dplyr::row_number() - 1,
+      .by = c("component", "order")
+    ) |>
+    dplyr::rename("label" = "english") |>
+    dplyr::mutate(
+      deployment_id = .env$deployment_id,
+      model_id = .env$model_id,
+      species_id = .env$species_id,
+      evaluation_create_user = .env$user_id,
+      evaluation_create_time = "2025-01-01 00:00:00",
+      last_modified = "2025-01-02 00:00:00",
       material_id = glue::glue("{model_id}_{species_id}_{component}"),
       question_id = glue::glue("{deployment_id}_{material_id}_{order}_{part}")
-    ) |>
-    dplyr::filter(.data$type %in% .env$types)
+    )
+
+  if (!is.null(component)) {
+    q <- q[q$component == component, ]
+  }
+  if (!is.null(types)) {
+    q <- q[q$type %in% types, ]
+  }
+
+  q
 }
 
 #' Create dummy input values for evaluations
 #'
 #' @param questions Data frame. Output of `.prep_questions()`
 #'
-#' @returns List of dummy input values. Mimics and `input` object from the Shiny app.
+#' @returns List of dummy input values. Mimics and `input` object from the Shiny
+#' app.
 #'
 #' @export
 #' @examples
@@ -164,4 +190,47 @@ test_evaluation_body <- function(component_id = "observations") {
   }
 
   b
+}
+
+
+#' Create dummy sf point data
+#'
+#' @returns sf data frame
+#'
+#' @export
+#' @examples
+#' test_points()
+
+test_points <- function() {
+  data.frame(
+    id = 1:5,
+    popup = c("Toronto", "Ottawa", "Thunder Bay", "Sudbury", "Windsor"),
+    type = factor(c("l1", "l1", "l2", "l2", "l3")),
+    layers = factor(c("Presence", "Presence", "Absence", "Absence", "Absence")),
+    longitude = c(-79.3832, -75.6972, -89.2477, -80.9930, -83.0366),
+    latitude = c(43.6532, 45.4215, 48.3809, 46.4917, 42.3149)
+  ) |>
+    sf::st_as_sf(
+      coords = c("longitude", "latitude"),
+      crs = 4326
+    )
+}
+
+#' Create dummy terra SpatRaster data
+#'
+#' @returns SpatRaster
+#'
+#' @export
+#' @examples
+#' test_raster()
+
+test_raster <- function() {
+  terra::rast(
+    xmin = -95,
+    xmax = -74,
+    ymin = 46,
+    ymax = 56,
+    resolution = 0.1,
+    crs = "EPSG:4326"
+  )
 }

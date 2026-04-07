@@ -1,3 +1,12 @@
+#' Convert coordinates to polygon
+#'
+#' For use when drawing selections.
+#'
+#' @param geometry From drawing selections.
+#'
+#' @returns Sf polygon
+#'
+#' @export
 coords_to_poly <- function(geometry) {
   geometry$coordinates[[1]] |>
     unlist() |>
@@ -19,6 +28,23 @@ feature_ids <- function(features) {
     purrr::pluck("features") |>
     purrr::map_dbl(\(x) purrr::pluck(x, "properties", "_leaflet_id"))
 }
+
+#' Check if a group exists in map
+#'
+#' Note: this only works for Leaflet maps, NOT Leaflet Proxies.
+#' For example, this is why `mod_comp_predictor_raster` family of functions
+#' are a bit convoluted when it calls to adding layers and controls (because
+#' `add_controls()` only adds layers which are dected with this function).
+#'
+#' This may be slightly fragile if the list structure of the leaflet objects
+#' change.
+#'
+#' @param map Leaflet Map (not Leaflet Proxy).
+#' @param group Character Vector. Groups to check for.
+#'
+#' @returns Logical. True if detected, false otherwise.
+#'
+#' @export
 
 map_has_group <- function(map, group) {
   map$x$calls |>

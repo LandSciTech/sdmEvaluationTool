@@ -1,14 +1,16 @@
-#' Map Selections UI
+#' Utility Module 'Map Selections' UI
 #'
 #' Highlights spatial ids selected, either through user selection or through the
-#' 'show' button from evaluations.
+#' 'show' button from evaluations.  Called by component-level modules.
 #'
 #' @param id Character. Shiny module ID.
-#' @param spatial_type Spatial type
+#' @param spatial_type Character. Only applicable for spatial selections. Either
+#'   'points' (spatial points) or 'area' (spatial polygons/raster).
 #'
 #' @returns Shiny UI
 #'
 #' @export
+
 mod_utils_map_selections_ui <- function(id, spatial_type) {
   tagList(
     # From: https://github.com/trafficonese/leaflet.extras/issues/96
@@ -44,10 +46,10 @@ mod_utils_map_selections_ui <- function(id, spatial_type) {
   )
 }
 
-#' Show spatial selections on map
+#' Utility Module 'Map Selections' Server
 #'
-#' Highlights spatial ids selected, either through user selection or through the
-#' 'show' button from evaluations.
+#' Highlights spatial ids selected on the map, either through user selection or
+#' through the 'show' button from evaluations.
 #'
 #' @param id Character. Shiny module ID
 #' @param data Spatial Data frame. Data from which selections will be made.
@@ -113,7 +115,7 @@ mod_utils_map_selections_server <- function(
       if (nrow(select) > 0) {
         levels <- unique(select$type)
         d <- dplyr::right_join(data(), select, by = "id") |>
-          dplyr::mutate(type = factor(type, levels = levels))
+          dplyr::mutate(type = factor(.data$type, levels = levels))
 
         leaflet::leafletProxy("map", session = parent_session) |>
           remove_geo(layerId = unique(select$id)) |>
@@ -199,7 +201,7 @@ mod_utils_map_selections_server <- function(
 
       r <- data() |>
         dplyr::right_join(curr_selected(), by = "id") |>
-        dplyr::relocate(type) |>
+        dplyr::relocate("type") |>
         sf::st_drop_geometry() |>
         dplyr::select(-dplyr::any_of("popup")) |>
         dplyr::rename_with(stringr::str_to_title) |>

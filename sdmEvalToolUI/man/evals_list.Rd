@@ -14,13 +14,27 @@ evals_list(questions)
 List which imitates a Shiny input object
 }
 \description{
-Convert questions to input list structure
+For comparing questions to Shiny input answers, convert the questions to the
+same input list structure as returned in the Shiny app.
 }
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
-q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWA", "testuser")
+q <- prep_questions(
+  "observations",
+  "deployment1",
+  "bam_v5_can71",
+  "BBWA",
+  "testuser"
+)
 evals_list(q)
-q <- prep_questions("model_summary", "deployment1", "bam_v5_can71", "BBWA", "testuser")
+
+q <- prep_questions(
+  "model_summary",
+  "deployment1",
+  "bam_v5_can71",
+  "BBWA",
+  "testuser"
+)
 evals_list(q)
 \dontshow{\}) # examplesIf}
 }

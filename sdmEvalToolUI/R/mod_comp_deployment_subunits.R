@@ -1,4 +1,4 @@
-#' Test the Summary Component
+#' Test the Deployment Subunits Component
 #'
 #' @param ... Arguments passed to other functions.
 #'
@@ -6,17 +6,16 @@
 #'
 #' @export
 #' @examplesIf have_data()
-#' test_comp_summary()
+#' test_comp_deployment_subunits()
 
 test_comp_deployment_subunits <- function(...) {
   test_comp(
     "mod_comp_deployment_subunits",
-    use = c("model_id", "species_id"),
     ...
   )
 }
 
-#' Summary Component UI
+#' Deployment Subunits Component UI
 #'
 #' @param id Shiny module ID
 #' @param header Header

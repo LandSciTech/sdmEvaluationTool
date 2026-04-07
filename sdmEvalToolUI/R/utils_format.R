@@ -1,3 +1,27 @@
+#' Prettify IDs as labels
+#'
+#' Underscores become spaces, 'id' is removed from the end, label is made title
+#' case.
+#'
+#' @param x Character. Id to make pretty
+#'
+#' @returns Pretty text
+#'
+#' @noRd
+#' @examples
+#' fmt_pretty("model_id")
+#' fmt_pretty("deployment_id")
+#' fmt_pretty("species_id")
+#' fmt_pretty("observations")
+#' fmt_pretty("model_fit")
+
+fmt_pretty <- function(x) {
+  x |>
+    stringr::str_replace_all("_|-", " ") |>
+    stringr::str_remove_all("\\b ?id\\b") |>
+    stringr::str_to_title()
+}
+
 #' Format species display names
 #'
 #' @param df Data frame to format. Must contain at least species name in French
@@ -22,21 +46,6 @@ fmt_species <- function(df) {
     )
 }
 
-fmt_tbl <- function(tbl, tbl_models, tbl_species) {
-  # CLEANUP: Remove? - Get pretty column names
-  tbl |>
-    dplyr::left_join(
-      dplyr::select(tbl_species, "species_id", "species_display"),
-      by = "species_id"
-    ) |>
-    dplyr::left_join(
-      dplyr::select(tbl_models, "model_id", "model_name"),
-      by = "model_id"
-    ) |>
-    dplyr::select(-"model_id", "species_id") |>
-    dplyr::relocate("model_name", "species_display")
-}
-
 
 #' Format time nicely for humans
 #'
@@ -52,9 +61,4 @@ fmt_time <- function(time) {
   time |>
     format("%a, %b %d %Y<br>%I:%M %p") |>
     stringr::str_remove_all("(?<=(\\s|<br>))0")
-}
-
-
-fmt_pretty <- function(x) {
-  x |> stringr::str_replace_all("_|-", " ") |> stringr::str_to_title()
 }

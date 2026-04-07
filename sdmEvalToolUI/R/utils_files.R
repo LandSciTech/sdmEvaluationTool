@@ -1,21 +1,3 @@
-prep_data <- function() {
-  # CLEANUP: Still required?
-  if (is.null(sdmevaltool_options()$base)) {
-    sdmevaltool_options(base = "../misc/base")
-  }
-
-  con <- withr::local_db_connection(db_connect())
-  tbl_models <- db_read_models(con)
-  tbl_species <- db_read_species(con)
-  tbl_deployments <- dplyr::tbl(con, "deployments") |> dplyr::collect()
-
-  list(
-    "tbl_deployments" = tbl_deployments,
-    "tbl_models" = tbl_models,
-    "tbl_species" = tbl_species
-  )
-}
-
 #' Load material files
 #'
 #' @param component_id Character. Component ID
@@ -79,6 +61,7 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
 #' prep_material_settings("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
 #' prep_material_settings("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
 #' prep_material_settings("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
+#' prep_material_settings("model_metadata", model_id = "bam_v5_can71")
 
 prep_material_settings <- function(component_id, model_id, species_id = NULL) {
   con <- withr::local_db_connection(db_connect())
@@ -101,7 +84,14 @@ prep_material_settings <- function(component_id, model_id, species_id = NULL) {
         )
     }
   }
-  jsonlite::fromJSON(mt$material_settings)
+
+  if (length(mt$material_settings)) {
+    r <- jsonlite::fromJSON(mt$material_settings)
+  } else {
+    r <- NULL
+  }
+
+  r
 }
 
 #' Get Material Settings
@@ -119,7 +109,8 @@ get_material_settings <- function(x) {
 #' Prepare Deployments
 #'
 #' @param deployment_id Character. Deployment ID
-#' @param deployment_type Character. Type of data to load ("deployment_questions" or "deployment_subunits")
+#' @param deployment_type Character. Type of data to load
+#' ("deployment_questions" or "deployment_subunits")
 #'
 #' @returns Data frame of deployments
 #'
@@ -158,13 +149,24 @@ prep_deployments <- function(deployment_id, deployment_type) {
   dep
 }
 
+#' Generic file prep
+#'
+#' @param path Character. File path to fetch.
+#' @param name Character. Name of data for messaging
+#' @param ... Named model, species, etc. values. See `data` from
+#' [sdmEvalToolCore::make_target_path()].
+#'
+#' @returns File contents depending on file type (see [sdmEvalToolCore::read_file()]
+#'
+#' @export
+
 prep_files <- function(path, name, ...) {
   path <- make_target_path(path, data = list(...))
 
   validate(need(
     file.exists(path),
     paste0(
-      pretty(name),
+      fmt_pretty(name),
       " doesn't exist. Have you supplied the correct base path?\n",
       path
     )
@@ -297,6 +299,23 @@ prep_questions <- function(
   q
 }
 
+#' Low-level function to read in questions.
+#'
+#' If deployment doesn't exist, uses [sdmEvalToolCore::default_questions()].
+#'
+#' @param deployment_id Character. Deployment ID
+#' @param component_id Character. Component ID
+#'
+#' @returns Data frame of questions.
+#'
+#' @export
+#' @examples
+#' # Use default questions if deployment doesn't exist
+#' fetch_questions("No deployment", "observations")
+#'
+#' if(have_data()) {
+#'   fetch_questions("deployment1", "observations")
+#' }
 fetch_questions <- function(deployment_id, component_id) {
   # Do we have a valid set of deployment questions? If not use defaults
 

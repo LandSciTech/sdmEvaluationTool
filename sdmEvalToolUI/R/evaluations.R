@@ -7,10 +7,7 @@
 #'
 #' @export
 #' @examplesIf have_data()
-#' #prep_evaluations(c("draper", "okoye"))
-#' #prep_evaluations("holden")
-#' #prep_evaluations("okoye")
-#' prep_evaluations("testuser")
+#' prep_evaluations("testuser") # Returns 0 rows if no evaluations
 
 prep_evaluations <- function(user_id, deployment_id = NULL) {
   con <- withr::local_db_connection(db_connect())
@@ -64,21 +61,34 @@ prep_evaluations <- function(user_id, deployment_id = NULL) {
 #' Save evaluations
 #'
 #' @param questions Data frame. Data frame of questions; output of
-#' `prep_questions()`.
+#'   `prep_questions()`.
 #' @param input_list List. List of Shiny inputs; output of
-#' `reactiveValuesToList(input)`
+#'   `reactiveValuesToList(input)`
 #' @param user_id Character. User ID.
 #'
 #' @export
 #' @examplesIf have_data()
-#' q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO", "testuser")
-#' a <- test_input_evals(q)
+#' q <- prep_questions(
+#'   "observations",
+#'   "deployment_test",
+#'   "bam_v5_can71",
+#'   "BBWO",
+#'   "testuser"
+#' )
+#' a <- test_input_evals(q) # Create example evaluations
 #' save_evaluations(q, a, user_id = "testuser")
+#'
 #' # Compare
-#' q <- prep_questions("observations", "deployment_test", "bam_v5_can71", "BBWO", "testuser")
-#' e <- prep_evaluations("testuser", "deployment_test")
-#' q <- evals_list(q)
-#' # waldo::compare(a, q)
+#' # Fetch saved from database
+#' q <- prep_questions(
+#'   "observations",
+#'   "deployment_test",
+#'   "bam_v5_can71",
+#'   "BBWO",
+#'   "testuser"
+#' )
+#' q <- evals_list(q) # Convert to list to compare
+#' waldo::compare(a, q)
 
 save_evaluations <- function(questions, input_list, user_id) {
   con <- withr::local_db_connection(db_connect())
@@ -151,7 +161,14 @@ save_evaluations <- function(questions, input_list, user_id) {
 
 #' Create JSON evaluation body
 #'
-#' @noRd
+#' Takes component, questions data frame, and input list from Shiny app and
+#' converts responses (evaluations) to JSON body for saving to the data base.
+#'
+#' @param component_id Character. Component ID.
+#' @param questions Data frame. From [prep_questions()].
+#' @param input_list List of evaluation inputs.
+#'
+#' @export
 #' @examples
 #' q1 <- prep_questions("model_fit", "deployment2", "bam_v5_can71", "BBWO")
 #' q2 <- prep_questions("model_summary", "deployment2", "bam_v5_can71", "BBWO")
@@ -211,6 +228,8 @@ response_to_json <- function(component_id, questions, input_list) {
 #' For evaluators, shows only their own evaluations. Returns a data frame with
 #' deployment, model, species, component, and completion information.
 #'
+#' This is used by the 'overview'/'summary'/'index' page.
+#'
 #' @param user_id Character string. User identifier
 #' @param user_role Character string. User role ("modeler" or "evaluator")
 #'
@@ -230,6 +249,7 @@ response_to_json <- function(component_id, questions, input_list) {
 #' @export
 #' @examplesIf have_data()
 #' evals_details("testuser", "evaluator")
+#' evals_details("testuser", "modeler")
 
 evals_details <- function(user_id, user_role) {
   con <- withr::local_db_connection(db_connect())
@@ -397,7 +417,7 @@ evals_details <- function(user_id, user_role) {
         "---",
         .data$model_name
       ),
-      component_name = pretty(.data$component_id),
+      component_name = fmt_pretty(.data$component_id),
       # To sort "Model" to the top, add space
       species_display = stringr::str_replace(
         .data$species_display,
@@ -442,15 +462,16 @@ evals_details <- function(user_id, user_role) {
 
 #' Extract evaluations from JSON
 #'
-#' Parses JSON-formatted evaluation body into a data frame.
+#' Parses JSON-formatted evaluation body into a data frame. Opposite of
+#' [response_to_json()].
 #'
 #' @param json Character. JSON-formatted evaluation data
 #'
 #' @returns Data frame with evaluation information
+#' @export
 #'
 #' @examples
 #' evals_extract(test_evaluation_body())
-#' @export
 
 evals_extract <- function(json) {
   json <- stringr::str_replace_all(json, "value\\b", "values")
@@ -465,6 +486,13 @@ evals_extract <- function(json) {
     )
 }
 
+#' Convert to list
+#'
+#' Helper function to optionally convert to list. Useful for dealing with JSON
+#' values extracted which may or may not already be in a list form. This function
+#' converts to list, but avoids double nesting lists.
+#'
+#' @noRd
 listify <- function(x) {
   if (!is.list(x)) {
     x <- list(x)
@@ -476,9 +504,14 @@ listify <- function(x) {
 #'
 #' Summarizes evaluation data to count total questions and completed questions.
 #'
+#' This is used by the 'overview'/'summary'/'index' page.
+#'
 #' @param eval Data frame. Evaluation data with response column
 #'
-#' @returns Data frame with columns: n_q (total questions), n_q_complete (completed questions)
+#' @returns Data frame with columns: n_q (total questions), n_q_complete
+#' (completed questions)
+#'
+#' @export
 #'
 #' @examples
 #' eval_data <- evals_extract(test_evaluation_body())
@@ -489,7 +522,6 @@ listify <- function(x) {
 #'
 #' eval_data <- evals_extract(test_evaluation_body(component_id = "model_fit_b"))
 #' evals_answered(eval_data)
-#' @export
 
 evals_answered <- function(eval) {
   eval |>
@@ -522,12 +554,13 @@ evals_answered <- function(eval) {
 #' Compare number of questions
 #'
 #' Compares the number of questions from those evaluated (`q2`) to those
-#' calculated from the question data (`q1`) Questions from evaluated (`q2`) may
+#' calculated from the question data (`q1`). Questions from evaluated (`q2`) may
 #' be `NA` if evaluations haven't been finished. Will error if values don't
-#' match (ignoring `NA`s)
+#' match (ignoring `NA`s).
 #'
-#' @param q1 Vector of Integers, number of questions calculated from Question data.
-#' @param q2 Vector of Integers, number of questions evaluated.
+#' @param q1 Vector of Integers. Number of questions calculated from Question
+#' data (total questions available).
+#' @param q2 Vector of Integers. Number of questions evaluated.
 #'
 #' @returns invisible or error if there is a mismatch.
 #'
@@ -545,6 +578,9 @@ check_q_mismatch <- function(q1, q2) {
 
 #' Convert questions to input list structure
 #'
+#' For comparing questions to Shiny input answers, convert the questions to the
+#' same input list structure as returned in the Shiny app.
+#'
 #' @param questions Data frame. Data frame of questions; output of
 #' `prep_questions()`.
 #'
@@ -552,9 +588,22 @@ check_q_mismatch <- function(q1, q2) {
 #'
 #' @export
 #' @examplesIf have_data()
-#' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWA", "testuser")
+#' q <- prep_questions(
+#'   "observations",
+#'   "deployment1",
+#'   "bam_v5_can71",
+#'   "BBWA",
+#'   "testuser"
+#' )
 #' evals_list(q)
-#' q <- prep_questions("model_summary", "deployment1", "bam_v5_can71", "BBWA", "testuser")
+#'
+#' q <- prep_questions(
+#'   "model_summary",
+#'   "deployment1",
+#'   "bam_v5_can71",
+#'   "BBWA",
+#'   "testuser"
+#' )
 #' evals_list(q)
 
 evals_list <- function(questions) {
@@ -563,7 +612,7 @@ evals_list <- function(questions) {
       values = dplyr::if_else(
         !.data$type %in% "spatial",
         list(""),
-        values
+        .data$values
       ),
       response = purrr::map(.data$response, \(r) {
         r <- if ("subunits" %in% names(r)) r$subunits else r

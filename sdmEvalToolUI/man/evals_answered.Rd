@@ -10,10 +10,14 @@ evals_answered(eval)
 \item{eval}{Data frame. Evaluation data with response column}
 }
 \value{
-Data frame with columns: n_q (total questions), n_q_complete (completed questions)
+Data frame with columns: n_q (total questions), n_q_complete
+(completed questions)
 }
 \description{
 Summarizes evaluation data to count total questions and completed questions.
+}
+\details{
+This is used by the 'overview'/'summary'/'index' page.
 }
 \examples{
 eval_data <- evals_extract(test_evaluation_body())

@@ -1,12 +1,14 @@
 #' Launch the SDM Evaluation Tool Shiny Application
 #'
 #' @param lang Character. Language of app; either `english` or `french`.
-#' @param options List. Shiny app options.
-#' @param tabs Character. List the tabs that the UI should have.
-#' @param user Character. User id.
+#' @param options List. Shiny app options (passed to `options` in
+#' [shiny::shinyApp()].
+#' @param tabs Character. List the tabs/pages that the UI should have.
+#' @param user Character. User id. Placeholder for now, may be changed to use
+#' authentication later.
 #' @param ... Other arguments passed to [shiny::shinyApp()].
 #'
-#' @returns A Shiny app object
+#' @returns A Shiny app object. Launched in browser/viewer if interactive.
 #'
 #' @export
 #' @examplesIf have_data()
@@ -309,7 +311,7 @@ sdm_tool <- function(
     observe({
       req(user_id(), user_roles())
 
-      choices <- rlang::set_names(user_roles(), pretty(user_roles()))
+      choices <- rlang::set_names(user_roles(), fmt_pretty(user_roles()))
       if (length(choices) > 1) {
         choices <- c("", choices)
         names(choices)[1] <- glue::glue("Select a role")
@@ -503,6 +505,14 @@ sdm_tool <- function(
 
   shiny::shinyApp(ui, server, options = options, ...)
 }
+
+#' Theme for bslib
+#'
+#' @returns bslib theme
+#'
+#' @export
+#' @examples
+#' sdm_theme()
 
 sdm_theme <- function() {
   bs_theme(
@@ -736,6 +746,14 @@ sdm_inputs <- function(users) {
   )
 }
 
+#' Get Users details
+#'
+#' @returns Data frame of user details
+#'
+#' @export
+#' @examplesIf have_data()
+#' app_users()
+
 app_users <- function() {
   con <- withr::local_db_connection(db_connect())
   dplyr::tbl(con, "users") |>
@@ -748,6 +766,14 @@ app_users <- function() {
     tidyr::unnest("user_roles") |>
     dplyr::filter(.data$user_roles != "commenter")
 }
+
+#' Get all materials available
+#'
+#' @returns Data frame of all materials available
+#'
+#' @export
+#' @examplesIf have_data()
+#' app_materials()
 
 app_materials <- function() {
   con <- withr::local_db_connection(db_connect())

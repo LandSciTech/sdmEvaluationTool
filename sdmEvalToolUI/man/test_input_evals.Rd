@@ -10,7 +10,8 @@ test_input_evals(questions)
 \item{questions}{Data frame. Output of \code{.prep_questions()}}
 }
 \value{
-List of dummy input values. Mimics and \code{input} object from the Shiny app.
+List of dummy input values. Mimics and \code{input} object from the Shiny
+app.
 }
 \description{
 Create dummy input values for evaluations

@@ -19,9 +19,6 @@ Fetch and format submitted evaluations
 }
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
-#prep_evaluations(c("draper", "okoye"))
-#prep_evaluations("holden")
-#prep_evaluations("okoye")
-prep_evaluations("testuser")
+prep_evaluations("testuser") # Returns 0 rows if no evaluations
 \dontshow{\}) # examplesIf}
 }

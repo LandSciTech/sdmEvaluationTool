@@ -10,7 +10,9 @@
 validate_ids <- function(...) {
   expand_dots(...)
   nms <- names(list(...))
-  n <- purrr::map(nms, \(w) need(get(w), paste("Please select a", pretty(w))))
+  n <- purrr::map(nms, \(w) {
+    need(get(w), paste("Please select a", fmt_pretty(w)))
+  })
   validate(!!!n)
 }
 
@@ -39,6 +41,25 @@ is_ready <- function(r) {
     error = \(e) FALSE
   )
 }
+
+#' Create reactive vals and keep updated
+#'
+#' Tracks interactive inputs from map selections. Depending on the origin,
+#' namespaced if necessary.
+#'
+#' Used at the component-level for those using spatial selections.
+#'
+#' @param input Shiny input object.
+#' @param map Character. Map name.
+#' @param x Character vector. Names of interactive inputs which are namespaced
+#'   to the map, so must be namespaced here.
+#' @param js_x Character vector. Names of Javascript created interactive inputs
+#'   which do not need to be namespaced.
+#'
+#' @returns A reactiveValues() list, as well as having the side effect of creating
+#'   [observe()] for each value in the list to be independently updated.
+#'
+#' @export
 
 map_reactive_vals <- function(
   input,
@@ -73,7 +94,15 @@ map_reactive_vals <- function(
   rv
 }
 
-sdm_spinner <- function(ui_element, fill = TRUE) {
+#' Create spinner when loading UI elements
+#'
+#' @param ui_element Character. UI element name.
+#'
+#' @returns UI element with spinner.
+#'
+#' @export
+
+sdm_spinner <- function(ui_element) {
   as_fill_carrier(
     shinycssloaders::withSpinner(
       type = 8,
@@ -83,6 +112,30 @@ sdm_spinner <- function(ui_element, fill = TRUE) {
   )
 }
 
+#' SDM tool versions of bslib functions
+#'
+#' - `sdm_card()` - Wrapper for [bslib::card()], provides defaults for `class`,
+#'   `full_screen` and `min_height.`
+#' - `sdm_card_header()` - Wrapper for [bslib::card_header()], provides default
+#'   custom class (see [sdm_theme()]).
+#' - `sdm_nav_panel()` - Wrapper for [bslib::nav_panel()], provides default
+#'   custom class (see [sdm_theme()]).
+#' - `sdm_layout_sidebar()` - Wrapper for [bslib::layout_sidebar()], provides
+#'   defaults for `gap` and `border`.
+#'
+#' @param ... See bslib function
+#' @param class Character vector. HTML classes to add to the card.
+#' @param full_screen Logical. Option to make card full screen.
+#' @param min_height Numeric. Minimum card height.
+#' @param title Character. Nav panel title.
+#' @param gap Numeric. Veritical gap between sidebar elements.
+#' @param border Logical. Whether or not to add a border.
+#'
+#' @returns bslib function output
+#' @name bslib_wrapper
+
+#' @rdname bslib_wrapper
+#' @export
 sdm_card <- function(
   ...,
   class = "p-0",
@@ -97,14 +150,20 @@ sdm_card <- function(
   )
 }
 
+#' @rdname bslib_wrapper
+#' @export
 sdm_card_header <- function(..., class = "bg-sdm") {
   card_header(..., class = class)
 }
 
+#' @rdname bslib_wrapper
+#' @export
 sdm_nav_panel <- function(title, ..., class = "sdm-tab-pane") {
   nav_panel(title, class = class, ...)
 }
 
+#' @rdname bslib_wrapper
+#' @export
 sdm_layout_sidebar <- function(..., gap = 0, border = FALSE) {
   layout_sidebar(
     gap = gap,

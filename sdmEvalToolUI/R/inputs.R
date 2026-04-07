@@ -1,10 +1,22 @@
 # Single inputs -----------------------------------------------------------
 
+#' Text input for Shiny app
+#'
+#' Used programmatically by [ui_questions()] depending on the question type.
+#' See `get()` usage in `ui_questions()`.
+#'
+#' @noRd
 simple_text_input <- function(...) {
   expand_dots(...)
   textInput(input_id_ns, label, value = response, width = width)
 }
 
+#' Yes/No input for Shiny app
+#'
+#' Used programmatically by [ui_questions()] depending on the question type.
+#' See `get()` usage in `ui_questions()`.
+#'
+#' @noRd
 yes_no_input <- function(...) {
   expand_dots(...)
 
@@ -20,33 +32,20 @@ yes_no_input <- function(...) {
   )
 }
 
-# slider_input <- function(...) {
-#   expand_dots(...)
-#   sliderInput(inputId = input_id_ns, label = label, value = 0, min = 0, max = 10)
-# }
-
-# gold_standard_input <- function(...) {
-#   expand_dots(...)
-#   selectInput(
-#     inputId = input_id_ns,
-#     label = label,
-#     choices = c(
-#       "Choose one" = "",
-#       "Gold" = 5,
-#       "Silver" = 4,
-#       "Bronze" = 3,
-#       "Deficient" = 2,
-#       "Unknown" = 1
-#     )
-#   )
-# }
-
+#' Ordinal input for Shiny app
+#'
+#' Used programmatically by [ui_questions()] depending on the question type.
+#' See `get()` usage in `ui_questions()`.
+#'
+#' @noRd
 ordinal_input <- function(...) {
   expand_dots(...)
   selectInput(
     inputId = input_id_ns,
     label = label,
     choices = c(
+      # NOTE: If modifying these options, must also update `affirmative()`
+      # function to define what constitutes a 'positive'/'affirmative' response.
       "Choose one" = "",
       "Extremely",
       "Very",
@@ -59,6 +58,18 @@ ordinal_input <- function(...) {
   )
 }
 
+#' Spatial input collection for Shiny app
+#'
+#' Used programmatically by [ui_questions()] depending on the question type.
+#' See `get()` usage in `ui_questions()`.
+#'
+#' Creates a collection of selective inputs to definie spatial selections
+#' corresponding to different spatial values.
+#'
+#' NOTE: If changing the spatial value options, must also update [affirmative()],
+#' to ensure the 'positive'/'affirmative' values match.
+#'
+#' @noRd
 spatial_input <- function(
   ...,
   spatial_type = c("points", "subunits")
@@ -90,12 +101,14 @@ spatial_input <- function(
 #' Create dynamic question inputs
 #'
 #' Create dynamic question inputs in the server using the prepared questions
-#' data frame. This is programatically created in the server module and
-#' therefore requires the Shiny session object for namespacing.
+#' data frame.
 #'
-#' @param questions Data frame prepared by `prep_questions()`.
-#' @param spatial_ids Character vector. All possible Spatial ID options for
-#'   spatial inputs choices.
+#' @param questions Data frame prepared by `prep_questions()` for a specific
+#' `user_id`.
+#' @param spatial_ids Character vector. [NOT CURRENTLY USED, see
+#'   [ui_questions_update()]]. Only applies if using 'client-side selectize'.
+#'   All possible Spatial ID options for spatial inputs choices. Generally
+#'   passed in as ReactiveVal (see [mod_page_template_spatial_server()].
 #' @param spatial_type Character. Spatial type, either `points` or `areas`.
 #' @param width Numeric. Optional width of Shiny UI input.
 #'
@@ -103,9 +116,22 @@ spatial_input <- function(
 #'
 #' @export
 #' @examplesIf have_data()
-#' q <- prep_questions("test", "deployment1", "bam_v5_can71", "BBWO")
+#' q <- prep_questions(
+#'   "test",
+#'   "deployment1",
+#'   "bam_v5_can71",
+#'   "BBWO",
+#'   user_id = "testuser"
+#' )
 #' ui_questions(q, spatial_type = "points")
-#' q <- prep_questions("observations", "deployment1", "bam_v5_can71", "BBWO")
+#'
+#' q <- prep_questions(
+#'   "observations",
+#'   "deployment1",
+#'   "bam_v5_can71",
+#'   "BBWO",
+#'   user_id = "testuser"
+#' )
 #' ui_questions(q, spatial_type = "areas")
 #'
 #' # More than one component
@@ -124,6 +150,7 @@ ui_questions <- function(
   spatial_type = "points",
   width = NULL
 ) {
+  # Grab current namespacing
   ns <- getDefaultReactiveDomain()$ns %||% \(id) paste0("testing-", id)
 
   ui <- questions |>
@@ -197,7 +224,7 @@ ui_questions <- function(
     })
 
   if (length(ui) > 1) {
-    ui <- purrr::map2(ui, pretty(unique(questions$component)), \(u, c) {
+    ui <- purrr::map2(ui, fmt_pretty(unique(questions$component)), \(u, c) {
       list(h5(c), u)
     })
   }
@@ -214,6 +241,25 @@ ui_questions <- function(
 }
 
 
+#' Update existing Spatial Shiny inputs
+#'
+#' Because there many be many possible selections for Spatial inputs, we use
+#' Serve-side processing to speed things up. This means that we initialize the
+#' Spatial input, and then we have to update it with the spatial input options
+#' (i.e. the list of spatial ids in the drop down menu). This function performs
+#' that update when the ids are ready (see the use of [ui_questions_update()] in
+#' [mod_utils_evaluations_server()].
+#'
+#' @param questions Data frame prepared by `prep_questions()` for a specific
+#' `user_id`.
+#' @param spatial_ids Character vector. [NOT CURRENTLY USED, see
+#'   [ui_questions_update()]]. Only applies if using 'client-side selectize'.
+#'   All possible Spatial ID options for spatial inputs choices. Generally
+#'   passed in as ReactiveVal (see [mod_page_template_spatial_server()].
+#'
+#' @returns Nothing. Performs Javascript update (see [updateSelectizeInput()]).
+#'
+#' @export
 ui_questions_update <- function(questions, spatial_ids = NULL) {
   q <- questions |>
     dplyr::filter(.data$type == "spatial") |>
@@ -245,13 +291,47 @@ ui_questions_update <- function(questions, spatial_ids = NULL) {
   })
 }
 
+#' Helper function to format Question values as Shiny Input names
+#'
+#' @param v Character vector of Question values.
+#'
+#' @returns Character string of values formatted for Shiny Inputs
+#'
+#' @export
+#' @examples
+#' value_to_input("Strongly Agree")
+
 value_to_input <- function(v) {
   stringr::str_replace_all(v, " ", "_")
 }
 
+#' Helper function to format Shiny Input names as Question Values
+#'
+#' @param i Character vector of Input names
+#'
+#' @returns Character string of Shiny Inputs names formatted as Question values
+#'
+#' @export
+#' @examples
+#' input_to_value("Strongly_Agree")
+
 input_to_value <- function(i) {
   stringr::str_replace_all(i, "_", " ")
 }
+
+#' Create vector of values to use downstream
+#'
+#' Creates a vector of Spatial values to use downstream when referencing parent
+#' values in followup questions.
+#'
+#' @param v Character vector of Questions values.
+#'
+#' @returns Character vector of Question values formatted for Shiny Inputs,
+#' including only spatial values.
+#'
+#' @export
+#' @examples
+#' parent_vals(c("Slightly agree", "Very biased", "Moderately biased"))
 
 parent_vals <- \(v) {
   v <- value_to_input(unlist(v))

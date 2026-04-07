@@ -31,7 +31,15 @@ mod_comp_model_fit_ui <- function(id = "comp_model_fit", header = NULL) {
   )
 }
 
-
+#' Model Fit Component Server
+#'
+#' @param id Module ID
+#' @param model_id Model ID
+#' @param species_id Species ID
+#'
+#' @returns Module server function
+#'
+#' @export
 mod_comp_model_fit_server <- function(
   id = "comp_model_fit",
   model_id,

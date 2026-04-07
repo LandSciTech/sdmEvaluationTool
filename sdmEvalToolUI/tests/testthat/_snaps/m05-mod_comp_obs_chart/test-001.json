@@ -1,0 +1,793 @@
+{
+  "input": {
+    ".clientValue-default-plotlyCrosstalkOpts": {
+      "on": "plotly_click",
+      "persistent": false,
+      "dynamic": false,
+      "selectize": false,
+      "opacityDim": 0.2,
+      "selected": {
+        "opacity": 1
+      },
+      "debounce": 0,
+      "color": [
+
+      ]
+    },
+    "comp_obs_chart-fill": "none",
+    "comp_obs_chart-groups": "year",
+    "comp_obs_chart-summary": "nobs",
+    "plotly_afterplot-A": "\"comp_obs_chart-obs_chart_groups\"",
+    "plotly_relayout-A": "{\"width\":793.5,\"height\":400}"
+  },
+  "output": {
+    "comp_obs_chart-obs_chart_counts": {
+      "x": {
+        "data": [
+          {
+            "orientation": "v",
+            "width": [
+              0.90000000000000002,
+              0.89999999999999991,
+              0.90000000000000013
+            ],
+            "base": [
+              0,
+              0,
+              0
+            ],
+            "x": [
+              0,
+              1,
+              2
+            ],
+            "y": [
+              12657,
+              129,
+              5
+            ],
+            "text": [
+              "count: 12657<br />status: 0",
+              "count:   129<br />status: 1",
+              "count:     5<br />status: 2"
+            ],
+            "type": "bar",
+            "textposition": "none",
+            "marker": {
+              "autocolorscale": false,
+              "color": "rgba(89,89,89,1)",
+              "line": {
+                "width": 1.8897637795275593,
+                "color": "transparent"
+              }
+            },
+            "showlegend": false,
+            "xaxis": "x",
+            "yaxis": "y",
+            "hoverinfo": "text",
+            "frame": null
+          }
+        ],
+        "layout": {
+          "margin": {
+            "t": 23.305936073059364,
+            "r": 7.3059360730593621,
+            "b": 37.260273972602747,
+            "l": 54.794520547945211
+          },
+          "plot_bgcolor": "rgba(255,255,255,1)",
+          "paper_bgcolor": "rgba(255,255,255,1)",
+          "font": {
+            "color": "rgba(0,0,0,1)",
+            "family": "",
+            "size": 14.611872146118724
+          },
+          "xaxis": {
+            "domain": [
+              0,
+              1
+            ],
+            "automargin": true,
+            "type": "linear",
+            "autorange": false,
+            "range": [
+              -0.59499999999999997,
+              2.5950000000000002
+            ],
+            "tickmode": "array",
+            "ticktext": [
+              "0",
+              "1",
+              "2"
+            ],
+            "tickvals": [
+              0,
+              1,
+              1.9999999999999998
+            ],
+            "categoryorder": "array",
+            "categoryarray": [
+              "0",
+              "1",
+              "2"
+            ],
+            "nticks": null,
+            "ticks": "outside",
+            "tickcolor": "rgba(179,179,179,1)",
+            "ticklen": 3.6529680365296811,
+            "tickwidth": 0.33208800332088001,
+            "showticklabels": true,
+            "tickfont": {
+              "color": "rgba(77,77,77,1)",
+              "family": "",
+              "size": 11.68949771689498
+            },
+            "tickangle": 0,
+            "showline": false,
+            "linecolor": null,
+            "linewidth": 0,
+            "showgrid": true,
+            "gridcolor": "rgba(222,222,222,1)",
+            "gridwidth": 0.33208800332088001,
+            "zeroline": false,
+            "anchor": "y",
+            "title": {
+              "text": "Counts",
+              "font": {
+                "color": "rgba(0,0,0,1)",
+                "family": "",
+                "size": 14.611872146118724
+              }
+            },
+            "hoverformat": ".2f"
+          },
+          "yaxis": {
+            "domain": [
+              0,
+              1
+            ],
+            "automargin": true,
+            "type": "linear",
+            "autorange": false,
+            "range": [
+              -632.85000000000002,
+              13289.85
+            ],
+            "tickmode": "array",
+            "ticktext": [
+              "0",
+              "5000",
+              "10000"
+            ],
+            "tickvals": [
+              0,
+              5000,
+              10000
+            ],
+            "categoryorder": "array",
+            "categoryarray": [
+              "0",
+              "5000",
+              "10000"
+            ],
+            "nticks": null,
+            "ticks": "outside",
+            "tickcolor": "rgba(179,179,179,1)",
+            "ticklen": 3.6529680365296811,
+            "tickwidth": 0.33208800332088001,
+            "showticklabels": true,
+            "tickfont": {
+              "color": "rgba(77,77,77,1)",
+              "family": "",
+              "size": 11.68949771689498
+            },
+            "tickangle": 0,
+            "showline": false,
+            "linecolor": null,
+            "linewidth": 0,
+            "showgrid": true,
+            "gridcolor": "rgba(222,222,222,1)",
+            "gridwidth": 0.33208800332088001,
+            "zeroline": false,
+            "anchor": "x",
+            "title": {
+              "text": "Frequency",
+              "font": {
+                "color": "rgba(0,0,0,1)",
+                "family": "",
+                "size": 14.611872146118724
+              }
+            },
+            "hoverformat": ".2f"
+          },
+          "shapes": [
+            {
+              "type": "rect",
+              "fillcolor": "rgba(255,255,255,1)",
+              "line": {
+                "color": "rgba(179,179,179,1)",
+                "width": 0.66417600664176002,
+                "linetype": "solid"
+              },
+              "yref": "paper",
+              "xref": "paper",
+              "layer": "below",
+              "x0": 0,
+              "x1": 1,
+              "y0": 0,
+              "y1": 1
+            }
+          ],
+          "showlegend": false,
+          "legend": {
+            "bgcolor": "rgba(255,255,255,1)",
+            "bordercolor": "transparent",
+            "borderwidth": 1.8897637795275593,
+            "font": {
+              "color": "rgba(0,0,0,1)",
+              "family": "",
+              "size": 11.68949771689498
+            }
+          },
+          "hovermode": "closest",
+          "barmode": "relative"
+        },
+        "config": {
+          "doubleClick": "reset",
+          "modeBarButtonsToAdd": [
+            "hoverclosest",
+            "hovercompare"
+          ],
+          "showSendToCloud": false,
+          "displaylogo": false
+        },
+        "source": "A",
+        "highlight": {
+          "on": "plotly_click",
+          "persistent": false,
+          "dynamic": false,
+          "selectize": false,
+          "opacityDim": 0.20000000000000001,
+          "selected": {
+            "opacity": 1
+          },
+          "debounce": 0
+        },
+        "shinyEvents": [
+          "plotly_hover",
+          "plotly_click",
+          "plotly_selected",
+          "plotly_relayout",
+          "plotly_brushed",
+          "plotly_brushing",
+          "plotly_clickannotation",
+          "plotly_doubleclick",
+          "plotly_deselect",
+          "plotly_afterplot",
+          "plotly_sunburstclick"
+        ],
+        "base_url": "https://plot.ly"
+      },
+      "evals": [
+
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+        {
+          "name": "setprototypeof",
+          "version": "0.1",
+          "src": {
+            "href": "setprototypeof-0.1"
+          },
+          "meta": null,
+          "script": "setprototypeof.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "typedarray",
+          "version": "0.1",
+          "src": {
+            "href": "typedarray-0.1"
+          },
+          "meta": null,
+          "script": "typedarray.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "jquery",
+          "version": "3.5.1",
+          "src": {
+            "href": "jquery-3.5.1"
+          },
+          "meta": null,
+          "script": "jquery.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "crosstalk",
+          "version": "1.2.2",
+          "src": {
+            "href": "crosstalk-1.2.2"
+          },
+          "meta": null,
+          "script": "js/crosstalk.min.js",
+          "stylesheet": "css/crosstalk.min.css",
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "plotly-htmlwidgets-css",
+          "version": "2.25.2",
+          "src": {
+            "href": "plotly-htmlwidgets-css-2.25.2"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "plotly-htmlwidgets.css",
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "plotly-main",
+          "version": "2.25.2",
+          "src": {
+            "href": "plotly-main-2.25.2"
+          },
+          "meta": null,
+          "script": "plotly-latest.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        }
+      ]
+    },
+    "comp_obs_chart-obs_chart_groups": {
+      "x": {
+        "data": [
+          {
+            "orientation": "v",
+            "width": [
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095,
+              0.90000000000009095
+            ],
+            "base": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "x": [
+              2001,
+              2002,
+              2003,
+              2004,
+              2005,
+              2006,
+              2007,
+              2008,
+              2009,
+              2010,
+              2011,
+              2012,
+              2014,
+              2015,
+              2016,
+              2017,
+              2018,
+              2019,
+              2020,
+              2021,
+              2022
+            ],
+            "y": [
+              22,
+              311,
+              753,
+              1266,
+              389,
+              64,
+              50,
+              141,
+              62,
+              36,
+              655,
+              211,
+              92,
+              244,
+              68,
+              103,
+              109,
+              918,
+              3,
+              5375,
+              1919
+            ],
+            "text": [
+              "year: 2001<br />nobs:   22",
+              "year: 2002<br />nobs:  311",
+              "year: 2003<br />nobs:  753",
+              "year: 2004<br />nobs: 1266",
+              "year: 2005<br />nobs:  389",
+              "year: 2006<br />nobs:   64",
+              "year: 2007<br />nobs:   50",
+              "year: 2008<br />nobs:  141",
+              "year: 2009<br />nobs:   62",
+              "year: 2010<br />nobs:   36",
+              "year: 2011<br />nobs:  655",
+              "year: 2012<br />nobs:  211",
+              "year: 2014<br />nobs:   92",
+              "year: 2015<br />nobs:  244",
+              "year: 2016<br />nobs:   68",
+              "year: 2017<br />nobs:  103",
+              "year: 2018<br />nobs:  109",
+              "year: 2019<br />nobs:  918",
+              "year: 2020<br />nobs:    3",
+              "year: 2021<br />nobs: 5375",
+              "year: 2022<br />nobs: 1919"
+            ],
+            "type": "bar",
+            "textposition": "none",
+            "marker": {
+              "autocolorscale": false,
+              "color": "rgba(89,89,89,1)",
+              "line": {
+                "width": 1.8897637795275593,
+                "color": "transparent"
+              }
+            },
+            "showlegend": false,
+            "xaxis": "x",
+            "yaxis": "y",
+            "hoverinfo": "text",
+            "frame": null
+          }
+        ],
+        "layout": {
+          "margin": {
+            "t": 23.305936073059364,
+            "r": 7.3059360730593621,
+            "b": 37.260273972602747,
+            "l": 48.949771689497723
+          },
+          "plot_bgcolor": "rgba(255,255,255,1)",
+          "paper_bgcolor": "rgba(255,255,255,1)",
+          "font": {
+            "color": "rgba(0,0,0,1)",
+            "family": "",
+            "size": 14.611872146118724
+          },
+          "xaxis": {
+            "domain": [
+              0,
+              1
+            ],
+            "automargin": true,
+            "type": "linear",
+            "autorange": false,
+            "range": [
+              1999.4549999999999,
+              2023.5450000000001
+            ],
+            "tickmode": "array",
+            "ticktext": [
+              "2000",
+              "2005",
+              "2010",
+              "2015",
+              "2020"
+            ],
+            "tickvals": [
+              2000,
+              2005,
+              2010,
+              2015,
+              2020
+            ],
+            "categoryorder": "array",
+            "categoryarray": [
+              "2000",
+              "2005",
+              "2010",
+              "2015",
+              "2020"
+            ],
+            "nticks": null,
+            "ticks": "outside",
+            "tickcolor": "rgba(179,179,179,1)",
+            "ticklen": 3.6529680365296811,
+            "tickwidth": 0.33208800332088001,
+            "showticklabels": true,
+            "tickfont": {
+              "color": "rgba(77,77,77,1)",
+              "family": "",
+              "size": 11.68949771689498
+            },
+            "tickangle": 0,
+            "showline": false,
+            "linecolor": null,
+            "linewidth": 0,
+            "showgrid": true,
+            "gridcolor": "rgba(222,222,222,1)",
+            "gridwidth": 0.33208800332088001,
+            "zeroline": false,
+            "anchor": "y",
+            "title": {
+              "text": "Year",
+              "font": {
+                "color": "rgba(0,0,0,1)",
+                "family": "",
+                "size": 14.611872146118724
+              }
+            },
+            "hoverformat": ".2f"
+          },
+          "yaxis": {
+            "domain": [
+              0,
+              1
+            ],
+            "automargin": true,
+            "type": "linear",
+            "autorange": false,
+            "range": [
+              -268.75,
+              5643.75
+            ],
+            "tickmode": "array",
+            "ticktext": [
+              "0",
+              "2000",
+              "4000"
+            ],
+            "tickvals": [
+              0,
+              2000,
+              4000
+            ],
+            "categoryorder": "array",
+            "categoryarray": [
+              "0",
+              "2000",
+              "4000"
+            ],
+            "nticks": null,
+            "ticks": "outside",
+            "tickcolor": "rgba(179,179,179,1)",
+            "ticklen": 3.6529680365296811,
+            "tickwidth": 0.33208800332088001,
+            "showticklabels": true,
+            "tickfont": {
+              "color": "rgba(77,77,77,1)",
+              "family": "",
+              "size": 11.68949771689498
+            },
+            "tickangle": 0,
+            "showline": false,
+            "linecolor": null,
+            "linewidth": 0,
+            "showgrid": true,
+            "gridcolor": "rgba(222,222,222,1)",
+            "gridwidth": 0.33208800332088001,
+            "zeroline": false,
+            "anchor": "x",
+            "title": {
+              "text": "Nobs",
+              "font": {
+                "color": "rgba(0,0,0,1)",
+                "family": "",
+                "size": 14.611872146118724
+              }
+            },
+            "hoverformat": ".2f"
+          },
+          "shapes": [
+            {
+              "type": "rect",
+              "fillcolor": "rgba(255,255,255,1)",
+              "line": {
+                "color": "rgba(179,179,179,1)",
+                "width": 0.66417600664176002,
+                "linetype": "solid"
+              },
+              "yref": "paper",
+              "xref": "paper",
+              "layer": "below",
+              "x0": 0,
+              "x1": 1,
+              "y0": 0,
+              "y1": 1
+            }
+          ],
+          "showlegend": false,
+          "legend": {
+            "bgcolor": "rgba(255,255,255,1)",
+            "bordercolor": "transparent",
+            "borderwidth": 1.8897637795275593,
+            "font": {
+              "color": "rgba(0,0,0,1)",
+              "family": "",
+              "size": 11.68949771689498
+            }
+          },
+          "hovermode": "closest",
+          "barmode": "relative"
+        },
+        "config": {
+          "doubleClick": "reset",
+          "modeBarButtonsToAdd": [
+            "hoverclosest",
+            "hovercompare"
+          ],
+          "showSendToCloud": false,
+          "displaylogo": false
+        },
+        "source": "A",
+        "highlight": {
+          "on": "plotly_click",
+          "persistent": false,
+          "dynamic": false,
+          "selectize": false,
+          "opacityDim": 0.20000000000000001,
+          "selected": {
+            "opacity": 1
+          },
+          "debounce": 0
+        },
+        "shinyEvents": [
+          "plotly_hover",
+          "plotly_click",
+          "plotly_selected",
+          "plotly_relayout",
+          "plotly_brushed",
+          "plotly_brushing",
+          "plotly_clickannotation",
+          "plotly_doubleclick",
+          "plotly_deselect",
+          "plotly_afterplot",
+          "plotly_sunburstclick"
+        ],
+        "base_url": "https://plot.ly"
+      },
+      "evals": [
+
+      ],
+      "jsHooks": [
+
+      ],
+      "deps": [
+        {
+          "name": "setprototypeof",
+          "version": "0.1",
+          "src": {
+            "href": "setprototypeof-0.1"
+          },
+          "meta": null,
+          "script": "setprototypeof.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "typedarray",
+          "version": "0.1",
+          "src": {
+            "href": "typedarray-0.1"
+          },
+          "meta": null,
+          "script": "typedarray.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "jquery",
+          "version": "3.5.1",
+          "src": {
+            "href": "jquery-3.5.1"
+          },
+          "meta": null,
+          "script": "jquery.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "crosstalk",
+          "version": "1.2.2",
+          "src": {
+            "href": "crosstalk-1.2.2"
+          },
+          "meta": null,
+          "script": "js/crosstalk.min.js",
+          "stylesheet": "css/crosstalk.min.css",
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "plotly-htmlwidgets-css",
+          "version": "2.25.2",
+          "src": {
+            "href": "plotly-htmlwidgets-css-2.25.2"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "plotly-htmlwidgets.css",
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        },
+        {
+          "name": "plotly-main",
+          "version": "2.25.2",
+          "src": {
+            "href": "plotly-main-2.25.2"
+          },
+          "meta": null,
+          "script": "plotly-latest.min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": false
+        }
+      ]
+    },
+    "comp_obs_chart-obs_chart_legend": "Observations."
+  },
+  "export": {
+
+  }
+}
