@@ -43,14 +43,8 @@ mod_page_template_ui <- function(
         style = css(grid_template_columns = "1fr 3fr"),
 
         # EXAMPLE: Arrange component modules
-        mod_comp_template_ui(
-          NS(id, "template1"),
-          header = sdm_card_header("Template 1")
-        ),
-        mod_comp_template_ui(
-          NS(id, "template2"),
-          header = sdm_card_header("Template 2")
-        )
+        mod_comp_template_ui(NS(id, "template1"), header = "Template 1"),
+        mod_comp_template_ui(NS(id, "template2"), header = "Template 2")
         # mod_comp_...._ui(), etc.
       )
     )

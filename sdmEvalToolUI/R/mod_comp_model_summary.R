@@ -25,11 +25,11 @@ test_comp_model_summary <- function(...) {
 
 mod_comp_model_summary_ui <- function(
   id = "comp_model_summary",
-  header = NULL
+  header = "Model Summary"
 ) {
   sdm_card(
     class = "p-0 sub-card",
-    header,
+    sdm_card_header(header),
     reactable::reactableOutput(NS(id, "model_summary")),
     card_footer(shiny::textOutput(NS(id, "model_summary_legend")))
   )

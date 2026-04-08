@@ -23,10 +23,13 @@ test_comp_template <- function(...) {
 #' @examples
 #' mod_comp_template_ui()
 
-mod_comp_template_ui <- function(id = "comp_template", header = NULL) {
+mod_comp_template_ui <- function(
+  id = "comp_template",
+  header = "Template"
+) {
   sdm_card(
     class = "p-0 sub-card",
-    header,
+    sdm_card_header(header),
     reactable::reactableOutput(NS(id, "template")),
     card_footer(shiny::textOutput(NS(id, "template_legend")))
   )

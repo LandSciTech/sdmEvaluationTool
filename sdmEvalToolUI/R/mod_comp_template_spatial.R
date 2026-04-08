@@ -25,15 +25,15 @@ test_comp_template_spatial <- function(...) {
 
 mod_comp_template_spatial_ui <- function(
   id = "comp_template_spatial",
-  header = NULL
+  header = "Template Spatial"
 ) {
   # TEMPLATE: Arrange Map and Map selections output, require both if
   # making spatial selections
   tagList(
-    header,
     sdm_card(
       class = "p-0 sub-card",
       min_height = "60%",
+      sdm_card_header(header),
       sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
       card_footer(shiny::textOutput(NS(id, "spatial_spatial_legend")))
     ),

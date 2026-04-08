@@ -22,10 +22,13 @@ test_comp_model_fit <- function(...) {
 #' @examples
 #' mod_comp_model_fit_ui()
 
-mod_comp_model_fit_ui <- function(id = "comp_model_fit", header = NULL) {
+mod_comp_model_fit_ui <- function(
+  id = "comp_model_fit",
+  header = "Model Fit"
+) {
   sdm_card(
     class = "p-0 sub-card",
-    header,
+    sdm_card_header(header),
     reactable::reactableOutput(NS(id, "model_fit")),
     card_footer(shiny::textOutput(NS(id, "model_fit_legend")))
   )

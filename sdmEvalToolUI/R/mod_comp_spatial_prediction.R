@@ -25,13 +25,13 @@ test_comp_spatial_prediction <- function(...) {
 
 mod_comp_spatial_prediction_ui <- function(
   id = "comp_spatial_prediction",
-  header = NULL
+  header = "Predictions"
 ) {
   tagList(
     sdm_card(
       class = "p-0 sub-card",
       min_height = "60%",
-      header,
+      sdm_card_header(header),
       sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
       card_footer(shiny::textOutput(NS(id, "spatial_prediction_legend")))
     ),

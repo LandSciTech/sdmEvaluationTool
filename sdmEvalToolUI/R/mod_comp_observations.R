@@ -25,13 +25,13 @@ test_comp_observations <- function(...) {
 
 mod_comp_observations_ui <- function(
   id = "comp_observations",
-  header = NULL
+  header = "Map of Observations"
 ) {
   tagList(
     sdm_card(
       class = "p-0 sub-card",
       min_height = "60%",
-      header,
+      sdm_card_header(header),
       card_footer(shiny::textOutput(NS(id, "observations_legend"))),
       uiOutput(NS(id, "ui_selectors")),
       sdm_spinner(leaflet::leafletOutput(NS(id, "map")))

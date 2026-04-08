@@ -34,11 +34,7 @@ mod_page_summary_ui <- function(
 
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-
-      mod_comp_deployment_subunits_ui(
-        NS(id, "deployment_subunits"),
-        header = sdm_card_header("Comfort zones")
-      )
+      mod_comp_deployment_subunits_ui(NS(id, "deployment_subunits"))
     )
   )
 }

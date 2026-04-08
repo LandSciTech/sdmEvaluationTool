@@ -27,15 +27,13 @@ test_comp_predictor_metadata <- function(...) {
 mod_comp_predictor_metadata_ui <- function(
   id = "comp_predictor_metadata",
   height = "40%",
-  header = NULL
+  header = "Predictor Metadata"
 ) {
   sdm_card(
     min_height = height,
     class = "p-0 sub-card",
-    header,
-    card_body(
-      reactable::reactableOutput(NS(id, "predictor_metadata"))
-    ),
+    sdm_card_header(header),
+    card_body(reactable::reactableOutput(NS(id, "predictor_metadata"))),
     card_footer(shiny::textOutput(NS(id, "predictor_metadata_legend")))
   )
 }

@@ -32,15 +32,8 @@ mod_page_model_ui <- function(
     value = id,
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-
-      mod_comp_model_fit_ui(
-        NS(id, "model_fit"),
-        header = sdm_card_header("Model Fit")
-      ),
-      mod_comp_model_summary_ui(
-        NS(id, "model_summary"),
-        header = sdm_card_header("Model Summary")
-      )
+      mod_comp_model_fit_ui(NS(id, "model_fit")),
+      mod_comp_model_summary_ui(NS(id, "model_summary"))
     )
   )
 }

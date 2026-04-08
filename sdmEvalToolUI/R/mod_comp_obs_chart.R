@@ -23,9 +23,12 @@ test_comp_obs_chart <- function(...) {
 #' @examples
 #' mod_comp_obs_chart_ui()
 
-mod_comp_obs_chart_ui <- function(id = "comp_obs_chart", header = NULL) {
+mod_comp_obs_chart_ui <- function(
+  id = "comp_obs_chart",
+  header = "Observation Charts"
+) {
   sdm_card(
-    header,
+    sdm_card_header(header),
     card_footer(shiny::textOutput(NS(id, "obs_chart_legend"))),
     div(
       style = "display:grid; grid-template-columns: 200px 200px 200px; gap: 10px; padding-bottom:10px;",

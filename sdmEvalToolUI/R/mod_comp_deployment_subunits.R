@@ -28,13 +28,13 @@ test_comp_deployment_subunits <- function(...) {
 
 mod_comp_deployment_subunits_ui <- function(
   id = "comp_summary",
-  header = NULL
+  header = "Comfort zones"
 ) {
   tagList(
     sdm_card(
       class = "p-0 sub-card",
       min_height = "60%",
-      header,
+      sdm_card_header(header),
       sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
     ),
     sdm_card(

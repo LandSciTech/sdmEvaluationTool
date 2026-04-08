@@ -30,12 +30,12 @@ test_comp_predictor_raster <- function(...) {
 mod_comp_predictor_raster_ui <- function(
   id = "comp_predictor_raster",
   height = NULL,
-  header = NULL
+  header = "Predictor Raster"
 ) {
   sdm_card(
     min_height = height,
     class = "p-0 sub-card",
-    header,
+    sdm_card_header(header),
     card_body(
       min_height = 400,
       as_fill_carrier(
