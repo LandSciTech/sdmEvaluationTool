@@ -77,8 +77,9 @@ mod_page_overview_server <- function(id = "overview", ...) {
           actionButton(
             NS(id, "refresh"),
             label = NULL,
-            icon = icon("arrows-rotate"),
-            class = "btn-mini btn-rnd btn-outline-success"
+            icon = icon("arrows-rotate", a11y = "sem", title = "Refresh"),
+            title = "Refresh",
+            class = "btn-mini btn-rnd btn-refresh"
           )
         )
       }

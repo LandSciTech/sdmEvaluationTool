@@ -51,10 +51,7 @@ base_map <- function(ns = identity) {
     leaflet::addEasyButton(
       leaflet::easyButton(
         title = "Clear selection",
-        icon = span(
-          class = "star",
-          HTML("&starf;")
-        ),
+        icon = bsicons::bs_icon("star-fill", title = "Clear selection"),
         onClick = leaflet::JS(
           # Based on: https://stackoverflow.com/a/62184472
           # Just need to make a change that Shiny can detect and respond to
