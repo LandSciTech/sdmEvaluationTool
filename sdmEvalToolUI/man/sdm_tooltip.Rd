@@ -26,6 +26,6 @@ No tooltip if text NULL.
 sdm_tooltip("testing")
 sdm_tooltip(
   "testing",
-  tagList("Hi", bsicons::bs_icon("info-circle", title = "Details"))
+  shiny::tagList("Hi", bsicons::bs_icon("info-circle", title = "Details"))
 )
 }
