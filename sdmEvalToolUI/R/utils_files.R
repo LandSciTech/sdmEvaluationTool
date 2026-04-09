@@ -268,11 +268,6 @@ prep_questions <- function(
 
   q <- fetch_questions(deployment_id, component_id) |>
     dplyr::rename("label" = lang()) |>
-    # Re-number to include folloups
-    dplyr::mutate(
-      part = dplyr::row_number() - 1,
-      .by = c("component", "order")
-    ) |>
     dplyr::select(-"followup_level") |>
     dplyr::mutate(
       material_id = paste(
