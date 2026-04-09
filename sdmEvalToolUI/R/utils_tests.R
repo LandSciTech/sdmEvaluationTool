@@ -105,7 +105,7 @@ test_comp <- function(
     )
   }
 
-  ui <- get(paste0(module, "_ui"))()
+  ui <- bslib::page(theme = sdm_theme(), get(paste0(module, "_ui"))())
 
   u <- list(
     "deployment_id" = reactive(deployment_id),
