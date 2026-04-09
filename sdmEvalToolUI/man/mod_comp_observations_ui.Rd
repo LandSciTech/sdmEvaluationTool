@@ -4,7 +4,10 @@
 \alias{mod_comp_observations_ui}
 \title{Observations Component UI}
 \usage{
-mod_comp_observations_ui(id = "comp_observations", header = NULL)
+mod_comp_observations_ui(
+  id = "comp_observations",
+  header = "Map of Observations"
+)
 }
 \arguments{
 \item{id}{Character. Shiny module ID}

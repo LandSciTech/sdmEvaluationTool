@@ -4,7 +4,7 @@
 \alias{mod_comp_template_ui}
 \title{Template Component UI}
 \usage{
-mod_comp_template_ui(id = "comp_template", header = NULL)
+mod_comp_template_ui(id = "comp_template", header = "Template")
 }
 \arguments{
 \item{id}{Shiny module ID}

@@ -4,7 +4,10 @@
 \alias{mod_comp_template_spatial_ui}
 \title{Template Spatial Component UI}
 \usage{
-mod_comp_template_spatial_ui(id = "comp_template_spatial", header = NULL)
+mod_comp_template_spatial_ui(
+  id = "comp_template_spatial",
+  header = "Template Spatial"
+)
 }
 \arguments{
 \item{id}{Character. Shiny module ID}

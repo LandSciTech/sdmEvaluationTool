@@ -7,7 +7,7 @@
 mod_comp_predictor_metadata_ui(
   id = "comp_predictor_metadata",
   height = "40\%",
-  header = NULL
+  header = "Predictor Metadata"
 )
 }
 \arguments{
