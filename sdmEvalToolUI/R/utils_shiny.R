@@ -1,3 +1,29 @@
+validate_db <- function(dbname) {
+  validate(
+    need(
+      file.exists(dbname),
+      paste0("Data base cannot be found at ", dbname)
+    )
+  )
+}
+
+#' db connect with check
+#'
+#' Put the checks here rather than sdmEvalToolCore to avoid Shiny dependency
+#' in core package.
+#'
+#' @param dbname DB name.
+#' @param ... Arguments passed to [DBI::dbConnect()].
+#'
+#' @returns A database connection.
+#'
+#' @export
+db_connect_check <- function(dbname = NULL, ...) {
+  dbname <- dbname %||% db_path()
+  validate_db(dbname)
+  db_connect(dbname)
+}
+
 #' Validate input ids
 #'
 #' @param ... Named arguments containing id values to validate (e.g.,

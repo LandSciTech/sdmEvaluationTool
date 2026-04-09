@@ -64,7 +64,7 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
 #' prep_material_settings("model_metadata", model_id = "bam_v5_can71")
 
 prep_material_settings <- function(component_id, model_id, species_id = NULL) {
-  con <- withr::local_db_connection(db_connect())
+  con <- withr::local_db_connection(db_connect_check())
   mt <- dplyr::tbl(con, "materials") |>
     dplyr::filter(
       component_id == .env$component_id,

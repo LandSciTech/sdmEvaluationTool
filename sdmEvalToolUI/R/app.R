@@ -412,7 +412,7 @@ sdm_tool <- function(
     # Deployment details -------------------------------------------------------
     details <- reactive({
       validate_ids(deployment_id = input$deployment_id)
-      con <- withr::local_db_connection(db_connect())
+      con <- withr::local_db_connection(db_connect_check())
       d <- dplyr::tbl(con, "deployments") |>
         dplyr::collect() |>
         dplyr::filter(.data$deployment_id == input$deployment_id)
@@ -786,7 +786,7 @@ sdm_inputs <- function(users) {
 #' app_users()
 
 app_users <- function() {
-  con <- withr::local_db_connection(db_connect())
+  con <- withr::local_db_connection(db_connect_check())
   dplyr::tbl(con, "users") |>
     dplyr::select("user_id", "user_name") |>
     dplyr::left_join(dplyr::tbl(con, "access"), by = "user_id") |>
@@ -807,7 +807,7 @@ app_users <- function() {
 #' app_materials()
 
 app_materials <- function() {
-  con <- withr::local_db_connection(db_connect())
+  con <- withr::local_db_connection(db_connect_check())
   db_read_deployment_materials(con) |>
     dplyr::select(
       "deployment_id",
