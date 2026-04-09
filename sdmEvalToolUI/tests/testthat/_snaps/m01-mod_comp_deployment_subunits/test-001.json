@@ -2,10 +2,10 @@
   "input": {
     "comp_summary-layers_visible": "Subunits",
     "comp_summary-map_bounds": {
-      "north": 59.5343180010956,
-      "east": -50.31738281250001,
-      "south": 49.38237278700955,
-      "west": -120.76171875
+      "north": 60.23981116999893,
+      "east": -49.96582031250001,
+      "south": 48.45835188280866,
+      "west": -121.11328125
     },
     "comp_summary-map_center": {
       "lng": -85.53955078125001,
@@ -150,7 +150,7 @@
             "method": "addEasyButton",
             "args": [
               {
-                "icon": "<span class=\"star\">&starf;<\/span>",
+                "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" class=\"bi bi-star-fill \" style=\"height:1em;width:1em;fill:currentColor;vertical-align:-0.125em;\" aria-label=\"Clear selection\" role=\"img\" ><title>Clear selection<\/title><path d=\"M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z\"><\/path><\/svg>",
                 "title": "Clear selection",
                 "onClick": "function(btn, map){\n  Shiny.onInputChange('comp_summary-clear_selection', Math.random());\n}",
                 "position": "topleft"

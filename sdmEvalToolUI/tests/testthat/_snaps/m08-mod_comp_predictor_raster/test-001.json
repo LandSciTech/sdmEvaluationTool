@@ -2,9 +2,9 @@
   "input": {
     "comp_predictor_raster-map_bounds": {
       "north": 63.50937540117513,
-      "east": -14.23828125,
+      "east": -13.53515625,
       "south": 43.00464712779443,
-      "west": -155.126953125
+      "west": -155.830078125
     },
     "comp_predictor_raster-map_center": {
       "lng": -84.68261718750001,
@@ -151,7 +151,7 @@
             "method": "addEasyButton",
             "args": [
               {
-                "icon": "<span class=\"star\">&starf;<\/span>",
+                "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" class=\"bi bi-star-fill \" style=\"height:1em;width:1em;fill:currentColor;vertical-align:-0.125em;\" aria-label=\"Clear selection\" role=\"img\" ><title>Clear selection<\/title><path d=\"M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z\"><\/path><\/svg>",
                 "title": "Clear selection",
                 "onClick": "function(btn, map){\n  Shiny.onInputChange('clear_selection', Math.random());\n}",
                 "position": "topleft"
@@ -3700,7 +3700,59 @@
         }
       ]
     },
-    "comp_predictor_raster-predictor_raster_legend": "Predictor rasters.",
+    "comp_predictor_raster-tooltip": {
+      "html": "<bslib-tooltip placement=\"auto\" bsOptions=\"[]\" data-require-bs-version=\"5\" data-require-bs-caller=\"tooltip()\">\n  <template>Predictor rasters.<\/template>\n  <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" class=\"bi bi-info-circle \" style=\"height:1em;width:1em;fill:currentColor;vertical-align:-0.125em;\" aria-label=\"Details\" role=\"img\" ><title>Details<\/title><path d=\"M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z\"><\/path>\n<path d=\"m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z\"><\/path><\/svg>\n<\/bslib-tooltip>",
+      "deps": [
+        {
+          "name": "bslib-component-js",
+          "version": "0.10.0",
+          "src": {
+            "href": "bslib-component-js-0.10.0"
+          },
+          "meta": null,
+          "script": [
+            {
+              "src": "components.min.js"
+            },
+            {
+              "src": "web-components.min.js",
+              "type": "module"
+            }
+          ],
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "bslib-component-css",
+          "version": "0.10.0",
+          "src": {
+            "href": "bslib-component-css-0.10.0"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "bslib-component-css.min.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "bslib-tag-require",
+          "version": "0.10.0",
+          "src": {
+            "href": "bslib-tag-require-0.10.0"
+          },
+          "meta": null,
+          "script": "tag-require.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
     "comp_predictor_raster-ui_selectors": {
       "html": "<div class=\"form-group shiny-input-container\">\n  <label class=\"control-label\" id=\"comp_predictor_raster-predictor-label\" for=\"comp_predictor_raster-predictor\">Predictor<\/label>\n  <div>\n    <select id=\"comp_predictor_raster-predictor\" class=\"shiny-input-select\"><option value=\"AHM_1km\" selected>AHM_1km<\/option>\n<option value=\"CCNL_1km\">CCNL_1km<\/option>\n<option value=\"CanHF_1km\">CanHF_1km<\/option>\n<option value=\"CanHF_5x5\">CanHF_5x5<\/option>\n<option value=\"DD18_1km\">DD18_1km<\/option>\n<option value=\"ERAMAP_1km\">ERAMAP_1km<\/option>\n<option value=\"ERAMAT_1km\">ERAMAT_1km<\/option>\n<option value=\"ERAPPTsm_1km\">ERAPPTsm_1km<\/option>\n<option value=\"ERAPPTsmt_1km\">ERAPPTsmt_1km<\/option>\n<option value=\"ERAPPTwt_1km\">ERAPPTwt_1km<\/option>\n<option value=\"ERATavesm_1km\">ERATavesm_1km<\/option>\n<option value=\"ERATavesmt_1km\">ERATavesmt_1km<\/option>\n<option value=\"ERATavewt_1km\">ERATavewt_1km<\/option>\n<option value=\"LakeEdge_1km\">LakeEdge_1km<\/option>\n<option value=\"MODISLCC_1km\">MODISLCC_1km<\/option>\n<option value=\"MODISLCC_5x5\">MODISLCC_5x5<\/option>\n<option value=\"NFFD_1km\">NFFD_1km<\/option>\n<option value=\"PPTsm_1km\">PPTsm_1km<\/option>\n<option value=\"Peatland_1km\">Peatland_1km<\/option>\n<option value=\"RH_1km\">RH_1km<\/option>\n<option value=\"SCANFIBalsamFir_1km\">SCANFIBalsamFir_1km<\/option>\n<option value=\"SCANFIBalsamFir_5x5\">SCANFIBalsamFir_5x5<\/option>\n<option value=\"SCANFIBlackSpruce_1km\">SCANFIBlackSpruce_1km<\/option>\n<option value=\"SCANFIDouglasFir_1km\">SCANFIDouglasFir_1km<\/option>\n<option value=\"SCANFIDouglasFir_5x5\">SCANFIDouglasFir_5x5<\/option>\n<option value=\"SCANFIJackPine_1km\">SCANFIJackPine_1km<\/option>\n<option value=\"SCANFIJackPine_5x5\">SCANFIJackPine_5x5<\/option>\n<option value=\"SCANFILodgepolePine_1km\">SCANFILodgepolePine_1km<\/option>\n<option value=\"SCANFILodgepolePine_5x5\">SCANFILodgepolePine_5x5<\/option>\n<option value=\"SCANFIPonderosaPine_1km\">SCANFIPonderosaPine_1km<\/option>\n<option value=\"SCANFIPonderosaPine_5x5\">SCANFIPonderosaPine_5x5<\/option>\n<option value=\"SCANFITamarack_1km\">SCANFITamarack_1km<\/option>\n<option value=\"SCANFITamarack_5x5\">SCANFITamarack_5x5<\/option>\n<option value=\"SCANFIWhiteRedPine_1km\">SCANFIWhiteRedPine_1km<\/option>\n<option value=\"SCANFIWhiteRedPine_5x5\">SCANFIWhiteRedPine_5x5<\/option>\n<option value=\"SCANFI_1km\">SCANFI_1km<\/option>\n<option value=\"SCANFIheight_1km\">SCANFIheight_1km<\/option>\n<option value=\"SCANFIheight_5x5\">SCANFIheight_5x5<\/option>\n<option value=\"SCANFIheightcv_1km\">SCANFIheightcv_1km<\/option>\n<option value=\"SCANFIheightcv_5x5\">SCANFIheightcv_5x5<\/option>\n<option value=\"SCANFIprcC_1km\">SCANFIprcC_1km<\/option>\n<option value=\"SCANFIprcC_5x5\">SCANFIprcC_5x5<\/option>\n<option value=\"SCANFIprcD_1km\">SCANFIprcD_1km<\/option>\n<option value=\"SCANFIprcD_5x5\">SCANFIprcD_5x5<\/option>\n<option value=\"StandardDormancy_1km\">StandardDormancy_1km<\/option>\n<option value=\"StandardGreenup_1km\">StandardGreenup_1km<\/option>\n<option value=\"SurfaceWater_1km\">SurfaceWater_1km<\/option>\n<option value=\"TD_1km\">TD_1km<\/option>\n<option value=\"VLCE_1km\">VLCE_1km<\/option>\n<option value=\"WetOccur_5x5\">WetOccur_5x5<\/option>\n<option value=\"WetRecur_1km\">WetRecur_1km<\/option>\n<option value=\"WetSeason_1km\">WetSeason_1km<\/option>\n<option value=\"canroad_1km\">canroad_1km<\/option>\n<option value=\"canroad_5x5\">canroad_5x5<\/option>\n<option value=\"mTPI_1km\">mTPI_1km<\/option>\n<option value=\"roughness_1km\">roughness_1km<\/option><\/select>\n    <script type=\"application/json\" data-for=\"comp_predictor_raster-predictor\" data-nonempty=\"\">{\"plugins\":[\"selectize-plugin-a11y\"]}<\/script>\n  <\/div>\n<\/div>",
       "deps": [
@@ -3712,12 +3764,13 @@
           },
           "meta": null,
           "script": [
-            "js/selectize.min.js",
-            "accessibility/js/selectize-plugin-a11y.min.js"
+            "selectize.min.js",
+            "selectize-plugin-a11y.min.js"
           ],
-          "stylesheet": "css/selectize.bootstrap3.css",
+          "stylesheet": "selectize.css",
           "head": null,
           "attachment": null,
+          "package": null,
           "all_files": true
         }
       ]
