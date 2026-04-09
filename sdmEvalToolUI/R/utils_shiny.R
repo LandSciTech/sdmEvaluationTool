@@ -198,7 +198,7 @@ sdm_card_header <- function(..., class = "bg-sdm") {
 #' sdm_tooltip("testing")
 #' sdm_tooltip(
 #'   "testing",
-#'   tagList("Hi", bsicons::bs_icon("info-circle", title = "Details"))
+#'   shiny::tagList("Hi", bsicons::bs_icon("info-circle", title = "Details"))
 #' )
 
 sdm_tooltip <- function(
