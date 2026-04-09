@@ -28,8 +28,7 @@ mod_comp_obs_chart_ui <- function(
   header = "Observation Charts"
 ) {
   sdm_card(
-    sdm_card_header(header),
-    card_footer(shiny::textOutput(NS(id, "obs_chart_legend"))),
+    sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
     div(
       style = "display:grid; grid-template-columns: 200px 200px 200px; gap: 10px; padding-bottom:10px;",
       # style = "display:inline-block",
@@ -103,11 +102,10 @@ mod_comp_obs_chart_server <- function(
       obs
     })
 
-    # Legend
-    output$obs_chart_legend <- renderText({
-      prep_material_settings("observations", model_id(), species_id())$legend[[
-        "en"
-      ]]
+    # Tooltip -----------------------------------------
+    output$tooltip <- renderUI({
+      p <- prep_material_settings("observations", model_id(), species_id())
+      tt_material_settings(p)
     })
 
     # Chart -------------------------------------------

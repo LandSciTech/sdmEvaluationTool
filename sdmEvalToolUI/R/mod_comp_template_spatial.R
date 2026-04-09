@@ -33,9 +33,8 @@ mod_comp_template_spatial_ui <- function(
     sdm_card(
       class = "p-0 sub-card",
       min_height = "60%",
-      sdm_card_header(header),
-      sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
-      card_footer(shiny::textOutput(NS(id, "spatial_spatial_legend")))
+      sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
+      sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
     ),
     sdm_card(
       class = "p-0 sub-card",
@@ -78,16 +77,14 @@ mod_comp_template_spatial_server <- function(
     # Setup -------------------------------------------------------------
     ns <- session$ns
 
-    # Legend -------------------------------------------------------
-    output$spatial_prediction_legend <- renderText({
+    # Tooltip -------------------------------------------------------
+    output$tooltip <- renderUI({
       # If the component exists in the materials table, this will work:
-      # prep_material_settings(
-      #   "template_spatial",
-      #   model_id(),
-      #   species_id()
-      # )$legend[[
-      #   "en"
-      # ]]
+      # p <- prep_material_settings("template_spatial", model_id(), species_id())
+      # tt_material_settings(p)
+      # Otherwise if the material settings have already been attached to the
+      # materials reactive, use just:
+      # tt_material_settings(material())  #see `mod_comp_template_server()`
       "Spatial template legend" # delete this line if for real
     })
 

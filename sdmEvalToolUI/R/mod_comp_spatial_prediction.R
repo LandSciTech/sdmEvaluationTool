@@ -31,9 +31,8 @@ mod_comp_spatial_prediction_ui <- function(
     sdm_card(
       class = "p-0 sub-card",
       min_height = "60%",
-      sdm_card_header(header),
+      sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
       sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
-      card_footer(shiny::textOutput(NS(id, "spatial_prediction_legend")))
     ),
     sdm_card(
       class = "p-0 sub-card",
@@ -71,15 +70,14 @@ mod_comp_spatial_prediction_server <- function(
   stopifnot(is.reactive(species_id))
 
   moduleServer(id, function(input, output, session) {
-    # Legend -------------------------------------------------------
-    output$spatial_prediction_legend <- renderText({
-      prep_material_settings(
+    # Tooltip -------------------------------------------------------
+    output$tooltip <- renderUI({
+      p <- prep_material_settings(
         "spatial_prediction",
         model_id(),
         species_id()
-      )$legend[[
-        "en"
-      ]]
+      )
+      tt_material_settings(p)
     })
     # Map --------------------------------------------------------------------
     spatial_prediction <- reactive({

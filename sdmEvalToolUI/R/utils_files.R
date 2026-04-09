@@ -106,6 +106,29 @@ get_material_settings <- function(x) {
   attr(x, "material_settings")
 }
 
+#' Create tooltip from material settings
+#'
+#' @param material R Object depending on the type of material loaded. May have
+#'   attributes such as 'material_settings'.
+#'
+#' @returns bslib tooltip output from [sdm_tooltip()].
+#'
+#' @export
+
+tt_material_settings <- function(material) {
+  if (is_ready(material) && !is.null(material)) {
+    if ("material_settings" %in% names(attributes(material))) {
+      tt <- get_material_settings(material)$legend[["en"]]
+    } else {
+      tt <- material$legend[["en"]]
+    }
+    tt <- sdm_tooltip(tt)
+  } else {
+    tt <- NULL
+  }
+  tt
+}
+
 #' Prepare Deployments
 #'
 #' @param deployment_id Character. Deployment ID

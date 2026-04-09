@@ -156,6 +156,38 @@ sdm_card_header <- function(..., class = "bg-sdm") {
   card_header(..., class = class)
 }
 
+#' Generate tool tip
+#'
+#' No tooltip if text NULL.
+#'
+#' @param tooltip_text Character. Text to make into the tooltip
+#'   contents.
+#' @param trigger Code. Generally HTML tag lists to attach tooltip to.
+#'   Defaults to (i) icon.
+#'
+#' @returns bslib tooltip
+#'
+#' @export
+#' @examples
+#' sdm_tooltip("testing")
+#' sdm_tooltip(
+#'   "testing",
+#'   tagList("Hi", bsicons::bs_icon("info-circle", title = "Details"))
+#' )
+
+sdm_tooltip <- function(
+  tooltip_text,
+  trigger = bsicons::bs_icon("info-circle", title = "Details")
+) {
+  if (!is.null(tooltip_text)) {
+    t <- tooltip(trigger, tooltip_text)
+  } else {
+    t <- NULL
+  }
+
+  t
+}
+
 #' @rdname bslib_wrapper
 #' @export
 sdm_nav_panel <- function(title, ..., class = "sdm-tab-pane") {
