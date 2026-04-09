@@ -28,7 +28,7 @@ mod_comp_model_metadata_ui <- function(
   header = "Model Metadata"
 ) {
   sdm_card(
-    class = "p-0 sub-card",
+    class = "sub-card",
     sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
     reactable::reactableOutput(NS(id, "model_metadata"))
   )

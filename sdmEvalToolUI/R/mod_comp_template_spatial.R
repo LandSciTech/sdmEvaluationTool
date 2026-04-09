@@ -29,16 +29,20 @@ mod_comp_template_spatial_ui <- function(
 ) {
   # TEMPLATE: Arrange Map and Map selections output, require both if
   # making spatial selections
-  tagList(
+  layout_columns(
+    gap = 0, # No gap between top and bottom
+    col_widths = 12, # One column
+    row_heights = c("60%", "40%"), # More map than selection area
     sdm_card(
-      class = "p-0 sub-card",
-      min_height = "60%",
+      class = "sub-card",
       sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
-      sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+      card_body(
+        class = "p-0", # Good for maps where we want it to fill the card
+        sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+      )
     ),
     sdm_card(
-      class = "p-0 sub-card",
-      min_height = "40%",
+      class = "sub-card",
       mod_utils_map_selections_ui(
         NS(id, "select"),
         spatial_type = "areas" # "points" or "areas" depending on what is being selected

@@ -27,13 +27,16 @@ mod_page_overview_ui <- function(id, title) {
     title = title,
     value = id,
     sdm_card(
-      class = "p-0 sub-card",
+      class = "sub-card",
       sdm_card_header(
         "Current status of review",
         uiOutput(NS(id, "buttons"))
       ),
 
-      reactable::reactableOutput(NS(id, "tbl_overview"))
+      card_body(
+        class = "p-0", # Table to fill card
+        reactable::reactableOutput(NS(id, "tbl_overview"))
+      )
     )
   )
 }

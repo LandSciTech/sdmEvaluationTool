@@ -34,9 +34,10 @@ mod_comp_predictor_raster_ui <- function(
 ) {
   sdm_card(
     min_height = height,
-    class = "p-0 sub-card",
+    class = "sub-card",
     sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
     card_body(
+      class = "p-0",
       min_height = 400,
       as_fill_carrier(
         div(

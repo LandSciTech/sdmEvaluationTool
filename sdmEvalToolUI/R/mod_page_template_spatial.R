@@ -39,7 +39,7 @@ mod_page_template_spatial_ui <- function(
       # EXAMPLE: Layout for with two columns, 1:3 ratio widths
       layout_column_wrap(
         width = NULL,
-        gap = 0,
+        gap = "1%",
         style = css(grid_template_columns = "1fr 3fr"),
 
         # EXAMPLE: Arrange component modules

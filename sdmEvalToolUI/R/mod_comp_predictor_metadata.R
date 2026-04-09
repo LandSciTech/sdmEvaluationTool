@@ -31,7 +31,7 @@ mod_comp_predictor_metadata_ui <- function(
 ) {
   sdm_card(
     min_height = height,
-    class = "p-0 sub-card",
+    class = "sub-card",
     sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
     card_body(reactable::reactableOutput(NS(id, "predictor_metadata")))
   )

@@ -28,46 +28,50 @@ mod_comp_obs_chart_ui <- function(
   header = "Observation Charts"
 ) {
   sdm_card(
+    class = "sub-card",
     sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
-    div(
-      style = "display:grid; grid-template-columns: 200px 200px 200px; gap: 10px; padding-bottom:10px;",
-      # style = "display:inline-block",
-      selectInput(
-        NS(id, "summary"),
-        label = "Summarize",
-        choices = c(
-          "Observations" = "nobs",
-          "Detections" = "ndet"
+    card_body(
+      class = "p-0 gap-0",
+      div(
+        class = "sub-card-inputs",
+        style = "display:grid; grid-template-columns: 200px 200px 200px; gap: 10px;",
+        selectInput(
+          NS(id, "summary"),
+          label = "Summarize",
+          choices = c(
+            "Observations" = "nobs",
+            "Detections" = "ndet"
+          )
+        ),
+        selectInput(
+          NS(id, "groups"),
+          label = "Group by",
+          choices = c(
+            "Year" = "year",
+            "Month" = "month",
+            "Hours (after sunrise)" = "hours",
+            "Method" = "method"
+          )
+        ),
+        selectInput(
+          NS(id, "fill"),
+          label = "Color by",
+          choices = c(
+            "None" = "none",
+            # "Year" = "year",
+            "Month" = "month",
+            "Hours (after sunrise)" = "hours",
+            "Method" = "method"
+          )
         )
       ),
-      selectInput(
-        NS(id, "groups"),
-        label = "Group by",
-        choices = c(
-          "Year" = "year",
-          "Month" = "month",
-          "Hours (after sunrise)" = "hours",
-          "Method" = "method"
-        )
-      ),
-      selectInput(
-        NS(id, "fill"),
-        label = "Color by",
-        choices = c(
-          "None" = "none",
-          # "Year" = "year",
-          "Month" = "month",
-          "Hours (after sunrise)" = "hours",
-          "Method" = "method"
-        )
+      # Chart output
+      layout_column_wrap(
+        width = 1 / 2,
+        height = 400,
+        plotly::plotlyOutput(NS(id, "obs_chart_counts")),
+        plotly::plotlyOutput(NS(id, "obs_chart_groups"))
       )
-    ),
-    # Chart output
-    layout_column_wrap(
-      width = 1 / 2,
-      height = 400,
-      plotly::plotlyOutput(NS(id, "obs_chart_counts")),
-      plotly::plotlyOutput(NS(id, "obs_chart_groups"))
     )
   )
 }

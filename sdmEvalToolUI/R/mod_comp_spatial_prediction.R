@@ -27,19 +27,25 @@ mod_comp_spatial_prediction_ui <- function(
   id = "comp_spatial_prediction",
   header = "Predictions"
 ) {
-  tagList(
+  layout_columns(
+    gap = 0, # No gap between top and bottom
+    col_widths = 12, # One column
+    row_heights = c("60%", "40%"), # More map than selection area
     sdm_card(
-      class = "p-0 sub-card",
-      min_height = "60%",
+      class = "sub-card",
       sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
-      sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
+      card_body(
+        class = "p-0",
+        sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+      ),
     ),
     sdm_card(
-      class = "p-0 sub-card",
-      min_height = "40%",
-      mod_utils_map_selections_ui(
-        NS(id, "select"),
-        spatial_type = "areas"
+      class = "sub-card",
+      card_body(
+        mod_utils_map_selections_ui(
+          NS(id, "select"),
+          spatial_type = "areas"
+        )
       )
     )
   )

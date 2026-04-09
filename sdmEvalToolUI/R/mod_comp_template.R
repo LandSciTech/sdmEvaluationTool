@@ -27,8 +27,10 @@ mod_comp_template_ui <- function(
   id = "comp_template",
   header = "Template"
 ) {
+  # Compare to mod_comp_template_spatial_ui, don't set card_body(class = "p-0"...)
+  # because we want some padding around table contents.
   sdm_card(
-    class = "p-0 sub-card",
+    class = "sub-card",
     sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
     reactable::reactableOutput(NS(id, "template"))
   )

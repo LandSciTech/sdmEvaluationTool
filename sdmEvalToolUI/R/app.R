@@ -558,13 +558,6 @@ sdm_theme <- function() {
 
        
        /* Cards within Cards (e.g. spatial maps over selection tables) */
-       .sub-card > .card-body {
-         padding: 0 !important;
-       }
-       div:has(> .sub-card) {
-         gap: 0 !important;
-         padding: 0px !important;
-       }
        .card.sub-card {
          border: 0 !important;
        }
@@ -572,6 +565,11 @@ sdm_theme <- function() {
        /* Cards within Tabs (e.g., observations map) */
        .sdm-tab-pane .card {
          border: 0 !important;
+       }
+
+       .sub-card-inputs {
+         /* Padding around inputs in a subcard */
+         padding: 10px;
        }
 
        /* Remove gaps between cards and page */

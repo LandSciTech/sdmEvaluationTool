@@ -28,19 +28,18 @@ mod_utils_map_selections_ui <- function(id, spatial_type) {
         })
       "
     )),
-    card(
-      layout_columns(
-        col_widths = c(8, 4),
-        div(
-          h4(textOutput(NS(id, "tbl_title"))),
-          reactable::reactableOutput(NS(id, "tbl_selected"))
-        ),
-        div(
-          strong(glue::glue(
-            "Copy selected {stringr::str_remove(spatial_type, 's$')} IDs"
-          )),
-          copy_output(NS(id, "selected"))
-        )
+
+    layout_columns(
+      col_widths = c(8, 4),
+      div(
+        h4(textOutput(NS(id, "tbl_title"))),
+        reactable::reactableOutput(NS(id, "tbl_selected"))
+      ),
+      div(
+        strong(glue::glue(
+          "Copy selected {stringr::str_remove(spatial_type, 's$')} IDs"
+        )),
+        copy_output(NS(id, "selected"))
       )
     )
   )
