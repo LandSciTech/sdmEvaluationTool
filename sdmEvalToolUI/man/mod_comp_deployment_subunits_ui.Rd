@@ -4,7 +4,7 @@
 \alias{mod_comp_deployment_subunits_ui}
 \title{Deployment Subunits Component UI}
 \usage{
-mod_comp_deployment_subunits_ui(id = "comp_summary", header = NULL)
+mod_comp_deployment_subunits_ui(id = "comp_summary", header = "Comfort zones")
 }
 \arguments{
 \item{id}{Shiny module ID}

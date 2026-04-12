@@ -44,11 +44,17 @@ mod_page_observations_ui <- function(
       navset_card_tab(
         sdm_nav_panel(
           "Charts",
-          mod_comp_obs_chart_ui(NS(id, "comp_obs_chart"))
+          card_body(
+            class = "p-0",
+            mod_comp_obs_chart_ui(NS(id, "comp_obs_chart"))
+          )
         ),
         sdm_nav_panel(
           "Map",
-          mod_comp_observations_ui(NS(id, "comp_obs"))
+          card_body(
+            class = "p-0",
+            mod_comp_observations_ui(NS(id, "comp_obs"))
+          )
         )
       )
     )

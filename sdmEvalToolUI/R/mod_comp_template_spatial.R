@@ -25,21 +25,24 @@ test_comp_template_spatial <- function(...) {
 
 mod_comp_template_spatial_ui <- function(
   id = "comp_template_spatial",
-  header = NULL
+  header = "Template Spatial"
 ) {
   # TEMPLATE: Arrange Map and Map selections output, require both if
   # making spatial selections
-  tagList(
-    header,
+  layout_columns(
+    gap = 0, # No gap between top and bottom
+    col_widths = 12, # One column
+    row_heights = c("60%", "40%"), # More map than selection area
     sdm_card(
-      class = "p-0 sub-card",
-      min_height = "60%",
-      sdm_spinner(leaflet::leafletOutput(NS(id, "map"))),
-      card_footer(shiny::textOutput(NS(id, "spatial_spatial_legend")))
+      class = "sub-card",
+      sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
+      card_body(
+        class = "p-0", # Good for maps where we want it to fill the card
+        sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+      )
     ),
     sdm_card(
-      class = "p-0 sub-card",
-      min_height = "40%",
+      class = "sub-card",
       mod_utils_map_selections_ui(
         NS(id, "select"),
         spatial_type = "areas" # "points" or "areas" depending on what is being selected
@@ -78,16 +81,14 @@ mod_comp_template_spatial_server <- function(
     # Setup -------------------------------------------------------------
     ns <- session$ns
 
-    # Legend -------------------------------------------------------
-    output$spatial_prediction_legend <- renderText({
+    # Tooltip -------------------------------------------------------
+    output$tooltip <- renderUI({
       # If the component exists in the materials table, this will work:
-      # prep_material_settings(
-      #   "template_spatial",
-      #   model_id(),
-      #   species_id()
-      # )$legend[[
-      #   "en"
-      # ]]
+      # p <- prep_material_settings("template_spatial", model_id(), species_id())
+      # tt_material_settings(p)
+      # Otherwise if the material settings have already been attached to the
+      # materials reactive, use just:
+      # tt_material_settings(material())  #see `mod_comp_template_server()`
       "Spatial template legend" # delete this line if for real
     })
 

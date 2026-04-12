@@ -7,7 +7,7 @@
 mod_comp_predictor_raster_ui(
   id = "comp_predictor_raster",
   height = NULL,
-  header = NULL
+  header = "Predictor Raster"
 )
 }
 \arguments{

@@ -24,7 +24,7 @@ test_evaluation_body()
 
 \dontrun{
   # After created through app with 'testuser' and `deployment2` retrieved with:
-  db_read_evaluations(db_connect(), "deployment2", "testuser") |>
+  db_read_evaluations(db_connect_check(), "deployment2", "testuser") |>
     dplyr::filter(component_id == "model_fit") |>
     dplyr::slice(1) |>
     dplyr::pull(evaluation_body)

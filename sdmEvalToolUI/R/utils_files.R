@@ -64,7 +64,7 @@ prep_materials <- function(component_id, model_id, species_id = NULL) {
 #' prep_material_settings("model_metadata", model_id = "bam_v5_can71")
 
 prep_material_settings <- function(component_id, model_id, species_id = NULL) {
-  con <- withr::local_db_connection(db_connect())
+  con <- withr::local_db_connection(db_connect_check())
   mt <- dplyr::tbl(con, "materials") |>
     dplyr::filter(
       component_id == .env$component_id,
@@ -104,6 +104,29 @@ prep_material_settings <- function(component_id, model_id, species_id = NULL) {
 
 get_material_settings <- function(x) {
   attr(x, "material_settings")
+}
+
+#' Create tooltip from material settings
+#'
+#' @param material R Object depending on the type of material loaded. May have
+#'   attributes such as 'material_settings'.
+#'
+#' @returns bslib tooltip output from [sdm_tooltip()].
+#'
+#' @export
+
+tt_material_settings <- function(material) {
+  if (is_ready(material) && !is.null(material)) {
+    if ("material_settings" %in% names(attributes(material))) {
+      tt <- get_material_settings(material)$legend[["en"]]
+    } else {
+      tt <- material$legend[["en"]]
+    }
+    tt <- sdm_tooltip(tt)
+  } else {
+    tt <- NULL
+  }
+  tt
 }
 
 #' Prepare Deployments
@@ -245,11 +268,6 @@ prep_questions <- function(
 
   q <- fetch_questions(deployment_id, component_id) |>
     dplyr::rename("label" = lang()) |>
-    # Re-number to include folloups
-    dplyr::mutate(
-      part = dplyr::row_number() - 1,
-      .by = c("component", "order")
-    ) |>
     dplyr::select(-"followup_level") |>
     dplyr::mutate(
       material_id = paste(

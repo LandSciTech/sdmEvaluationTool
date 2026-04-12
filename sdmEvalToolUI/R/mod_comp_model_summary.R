@@ -25,13 +25,12 @@ test_comp_model_summary <- function(...) {
 
 mod_comp_model_summary_ui <- function(
   id = "comp_model_summary",
-  header = NULL
+  header = "Model Summary"
 ) {
   sdm_card(
-    class = "p-0 sub-card",
-    header,
-    reactable::reactableOutput(NS(id, "model_summary")),
-    card_footer(shiny::textOutput(NS(id, "model_summary_legend")))
+    class = "sub-card",
+    sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
+    reactable::reactableOutput(NS(id, "model_summary"))
   )
 }
 
@@ -52,9 +51,7 @@ mod_comp_model_summary_server <- function(
 ) {
   moduleServer(id, function(input, output, session) {
     model_summary <- reactive(model_summary_prep(model_id(), species_id()))
-    output$model_summary_legend <- renderText({
-      get_material_settings(model_summary())$legend[["en"]]
-    })
+    output$tooltip <- renderUI(tt_material_settings(model_summary()))
     output$model_summary <- reactable::renderReactable(model_summary_table(model_summary()))
   })
 }

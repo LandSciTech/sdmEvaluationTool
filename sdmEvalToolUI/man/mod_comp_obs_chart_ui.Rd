@@ -4,7 +4,7 @@
 \alias{mod_comp_obs_chart_ui}
 \title{Observations Chart Component UI}
 \usage{
-mod_comp_obs_chart_ui(id = "comp_obs_chart", header = NULL)
+mod_comp_obs_chart_ui(id = "comp_obs_chart", header = "Observation Charts")
 }
 \arguments{
 \item{id}{Character. Shiny module ID}

@@ -159,7 +159,7 @@ test_input_evals <- function(questions) {
 #'
 #' \dontrun{
 #'   # After created through app with 'testuser' and `deployment2` retrieved with:
-#'   db_read_evaluations(db_connect(), "deployment2", "testuser") |>
+#'   db_read_evaluations(db_connect_check(), "deployment2", "testuser") |>
 #'     dplyr::filter(component_id == "model_fit") |>
 #'     dplyr::slice(1) |>
 #'     dplyr::pull(evaluation_body)
@@ -171,7 +171,7 @@ test_evaluation_body <- function(component_id = "observations") {
   }
   if (component_id == "model_fit_a") {
     # After created through app, retrieved from:
-    # db_read_evaluations(db_connect(), "deployment2", "testuser") |>
+    # db_read_evaluations(db_connect_check(), "deployment2", "testuser") |>
     #   dplyr::filter(component_id == "model_fit") |>
     #   dplyr::slice(1) |>
     #   dplyr::pull(evaluation_body)
@@ -181,7 +181,7 @@ test_evaluation_body <- function(component_id = "observations") {
 
   if (component_id == "model_fit_b") {
     # After created through app, retrieved from:
-    # db_read_evaluations(db_connect(), "deployment2", "testuser") |>
+    # db_read_evaluations(db_connect_check(), "deployment2", "testuser") |>
     #   dplyr::filter(component_id == "model_fit") |>
     #   dplyr::slice(1) |>
     #   dplyr::pull(evaluation_body)

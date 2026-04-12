@@ -23,49 +23,55 @@ test_comp_obs_chart <- function(...) {
 #' @examples
 #' mod_comp_obs_chart_ui()
 
-mod_comp_obs_chart_ui <- function(id = "comp_obs_chart", header = NULL) {
+mod_comp_obs_chart_ui <- function(
+  id = "comp_obs_chart",
+  header = "Observation Charts"
+) {
   sdm_card(
-    header,
-    card_footer(shiny::textOutput(NS(id, "obs_chart_legend"))),
-    div(
-      style = "display:grid; grid-template-columns: 200px 200px 200px; gap: 10px; padding-bottom:10px;",
-      # style = "display:inline-block",
-      selectInput(
-        NS(id, "summary"),
-        label = "Summarize",
-        choices = c(
-          "Observations" = "nobs",
-          "Detections" = "ndet"
+    class = "sub-card",
+    sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
+    card_body(
+      class = "p-0 gap-0",
+      div(
+        class = "sub-card-inputs",
+        style = "display:grid; grid-template-columns: 200px 200px 200px; gap: 10px;",
+        selectInput(
+          NS(id, "summary"),
+          label = "Summarize",
+          choices = c(
+            "Observations" = "nobs",
+            "Detections" = "ndet"
+          )
+        ),
+        selectInput(
+          NS(id, "groups"),
+          label = "Group by",
+          choices = c(
+            "Year" = "year",
+            "Month" = "month",
+            "Hours (after sunrise)" = "hours",
+            "Method" = "method"
+          )
+        ),
+        selectInput(
+          NS(id, "fill"),
+          label = "Color by",
+          choices = c(
+            "None" = "none",
+            # "Year" = "year",
+            "Month" = "month",
+            "Hours (after sunrise)" = "hours",
+            "Method" = "method"
+          )
         )
       ),
-      selectInput(
-        NS(id, "groups"),
-        label = "Group by",
-        choices = c(
-          "Year" = "year",
-          "Month" = "month",
-          "Hours (after sunrise)" = "hours",
-          "Method" = "method"
-        )
-      ),
-      selectInput(
-        NS(id, "fill"),
-        label = "Color by",
-        choices = c(
-          "None" = "none",
-          # "Year" = "year",
-          "Month" = "month",
-          "Hours (after sunrise)" = "hours",
-          "Method" = "method"
-        )
+      # Chart output
+      layout_column_wrap(
+        width = 1 / 2,
+        height = 400,
+        plotly::plotlyOutput(NS(id, "obs_chart_counts")),
+        plotly::plotlyOutput(NS(id, "obs_chart_groups"))
       )
-    ),
-    # Chart output
-    layout_column_wrap(
-      width = 1 / 2,
-      height = 400,
-      plotly::plotlyOutput(NS(id, "obs_chart_counts")),
-      plotly::plotlyOutput(NS(id, "obs_chart_groups"))
     )
   )
 }
@@ -100,11 +106,10 @@ mod_comp_obs_chart_server <- function(
       obs
     })
 
-    # Legend
-    output$obs_chart_legend <- renderText({
-      prep_material_settings("observations", model_id(), species_id())$legend[[
-        "en"
-      ]]
+    # Tooltip -----------------------------------------
+    output$tooltip <- renderUI({
+      p <- prep_material_settings("observations", model_id(), species_id())
+      tt_material_settings(p)
     })
 
     # Chart -------------------------------------------

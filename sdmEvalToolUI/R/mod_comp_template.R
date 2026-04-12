@@ -23,12 +23,16 @@ test_comp_template <- function(...) {
 #' @examples
 #' mod_comp_template_ui()
 
-mod_comp_template_ui <- function(id = "comp_template", header = NULL) {
+mod_comp_template_ui <- function(
+  id = "comp_template",
+  header = "Template"
+) {
+  # Compare to mod_comp_template_spatial_ui, don't set card_body(class = "p-0"...)
+  # because we want some padding around table contents.
   sdm_card(
-    class = "p-0 sub-card",
-    header,
-    reactable::reactableOutput(NS(id, "template")),
-    card_footer(shiny::textOutput(NS(id, "template_legend")))
+    class = "sub-card",
+    sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
+    reactable::reactableOutput(NS(id, "template"))
   )
 }
 
@@ -52,9 +56,7 @@ mod_comp_template_server <- function(
 
   moduleServer(id, function(input, output, session) {
     template <- reactive(template_prep(model_id(), species_id()))
-    output$template_legend <- renderText({
-      get_material_settings(template())$legend[["en"]]
-    })
+    output$template_legend <- renderUI(tt_material_settings(template()))
     output$template <- reactable::renderReactable(template_table(template()))
   })
 }

@@ -1,3 +1,29 @@
+validate_db <- function(dbname) {
+  validate(
+    need(
+      file.exists(dbname),
+      paste0("Data base cannot be found at ", dbname)
+    )
+  )
+}
+
+#' db connect with check
+#'
+#' Put the checks here rather than sdmEvalToolCore to avoid Shiny dependency
+#' in core package.
+#'
+#' @param dbname DB name.
+#' @param ... Arguments passed to [DBI::dbConnect()].
+#'
+#' @returns A database connection.
+#'
+#' @export
+db_connect_check <- function(dbname = NULL, ...) {
+  dbname <- dbname %||% db_path()
+  validate_db(dbname)
+  db_connect(dbname)
+}
+
 #' Validate input ids
 #'
 #' @param ... Named arguments containing id values to validate (e.g.,
@@ -154,6 +180,38 @@ sdm_card <- function(
 #' @export
 sdm_card_header <- function(..., class = "bg-sdm") {
   card_header(..., class = class)
+}
+
+#' Generate tool tip
+#'
+#' No tooltip if text NULL.
+#'
+#' @param tooltip_text Character. Text to make into the tooltip
+#'   contents.
+#' @param trigger Code. Generally HTML tag lists to attach tooltip to.
+#'   Defaults to (i) icon.
+#'
+#' @returns bslib tooltip
+#'
+#' @export
+#' @examples
+#' sdm_tooltip("testing")
+#' sdm_tooltip(
+#'   "testing",
+#'   shiny::tagList("Hi", bsicons::bs_icon("info-circle", title = "Details"))
+#' )
+
+sdm_tooltip <- function(
+  tooltip_text,
+  trigger = bsicons::bs_icon("info-circle", title = "Details")
+) {
+  if (!is.null(tooltip_text)) {
+    t <- tooltip(trigger, tooltip_text)
+  } else {
+    t <- NULL
+  }
+
+  t
 }
 
 #' @rdname bslib_wrapper

@@ -22,12 +22,14 @@ test_comp_model_fit <- function(...) {
 #' @examples
 #' mod_comp_model_fit_ui()
 
-mod_comp_model_fit_ui <- function(id = "comp_model_fit", header = NULL) {
+mod_comp_model_fit_ui <- function(
+  id = "comp_model_fit",
+  header = "Model Fit"
+) {
   sdm_card(
-    class = "p-0 sub-card",
-    header,
-    reactable::reactableOutput(NS(id, "model_fit")),
-    card_footer(shiny::textOutput(NS(id, "model_fit_legend")))
+    class = "sub-card",
+    sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
+    reactable::reactableOutput(NS(id, "model_fit"))
   )
 }
 
@@ -47,9 +49,7 @@ mod_comp_model_fit_server <- function(
 ) {
   moduleServer(id, function(input, output, session) {
     model_fit <- reactive(model_fit_prep(model_id(), species_id()))
-    output$model_fit_legend <- renderText({
-      get_material_settings(model_fit())$legend[["en"]]
-    })
+    output$tooltip <- renderUI(tt_material_settings(model_fit()))
     output$model_fit <- reactable::renderReactable(model_fit_table(model_fit()))
   })
 }

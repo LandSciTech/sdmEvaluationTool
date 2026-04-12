@@ -27,16 +27,13 @@ test_comp_predictor_metadata <- function(...) {
 mod_comp_predictor_metadata_ui <- function(
   id = "comp_predictor_metadata",
   height = "40%",
-  header = NULL
+  header = "Predictor Metadata"
 ) {
   sdm_card(
     min_height = height,
-    class = "p-0 sub-card",
-    header,
-    card_body(
-      reactable::reactableOutput(NS(id, "predictor_metadata"))
-    ),
-    card_footer(shiny::textOutput(NS(id, "predictor_metadata_legend")))
+    class = "sub-card",
+    sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
+    card_body(reactable::reactableOutput(NS(id, "predictor_metadata")))
   )
 }
 
@@ -55,9 +52,7 @@ mod_comp_predictor_metadata_server <- function(
 ) {
   moduleServer(id, function(input, output, session) {
     predictor_metadata <- reactive(predictor_metadata_prep(model_id()))
-    output$predictor_metadata_legend <- renderText({
-      get_material_settings(predictor_metadata())$legend[["en"]]
-    })
+    output$tooltip <- renderUI(tt_material_settings(predictor_metadata()))
     output$predictor_metadata <- reactable::renderReactable({
       predictor_metadata() |>
         predictor_metadata_table()

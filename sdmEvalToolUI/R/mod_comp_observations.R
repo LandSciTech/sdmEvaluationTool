@@ -25,20 +25,23 @@ test_comp_observations <- function(...) {
 
 mod_comp_observations_ui <- function(
   id = "comp_observations",
-  header = NULL
+  header = "Map of Observations"
 ) {
-  tagList(
+  layout_columns(
+    gap = 0, # No gap between top and bottom
+    col_widths = 12, # One column
+    row_heights = c("60%", "40%"), # More map than selection area(
     sdm_card(
-      class = "p-0 sub-card",
-      min_height = "60%",
-      header,
-      card_footer(shiny::textOutput(NS(id, "observations_legend"))),
-      uiOutput(NS(id, "ui_selectors")),
-      sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+      class = "sub-card",
+      sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
+      card_body(
+        class = "p-0 gap-0",
+        div(class = "sub-card-inputs", uiOutput(NS(id, "ui_selectors"))),
+        sdm_spinner(leaflet::leafletOutput(NS(id, "map")))
+      )
     ),
     sdm_card(
-      class = "p-0 sub-card",
-      min_height = "40%",
+      class = "sub-card",
       mod_utils_map_selections_ui(
         NS(id, "select"),
         # spatial_type = "points"
@@ -78,11 +81,10 @@ mod_comp_observations_server <- function(
     # Setup -------------------------------------------------------------
     ns <- session$ns
 
-    # Legend
-    output$observations_legend <- renderText({
-      prep_material_settings("observations", model_id(), species_id())$legend[[
-        "en"
-      ]]
+    # Tooltip -----------------------------------------------------------
+    output$tooltip <- renderUI({
+      p <- prep_material_settings("observations", model_id(), species_id())
+      tt_material_settings(p)
     })
 
     # Map -------------------------------------------------------------------

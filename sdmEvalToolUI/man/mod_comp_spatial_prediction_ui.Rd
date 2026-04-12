@@ -4,7 +4,10 @@
 \alias{mod_comp_spatial_prediction_ui}
 \title{Spatial Prediction Component UI}
 \usage{
-mod_comp_spatial_prediction_ui(id = "comp_spatial_prediction", header = NULL)
+mod_comp_spatial_prediction_ui(
+  id = "comp_spatial_prediction",
+  header = "Predictions"
+)
 }
 \arguments{
 \item{id}{Shiny module ID}

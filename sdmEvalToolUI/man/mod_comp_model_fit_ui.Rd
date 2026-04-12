@@ -4,7 +4,7 @@
 \alias{mod_comp_model_fit_ui}
 \title{Model Fit Component UI}
 \usage{
-mod_comp_model_fit_ui(id = "comp_model_fit", header = NULL)
+mod_comp_model_fit_ui(id = "comp_model_fit", header = "Model Fit")
 }
 \arguments{
 \item{id}{Shiny module ID}

@@ -10,7 +10,7 @@
 #' prep_evaluations("testuser") # Returns 0 rows if no evaluations
 
 prep_evaluations <- function(user_id, deployment_id = NULL) {
-  con <- withr::local_db_connection(db_connect())
+  con <- withr::local_db_connection(db_connect_check())
 
   db_read_evaluations(
     con,
@@ -91,7 +91,7 @@ prep_evaluations <- function(user_id, deployment_id = NULL) {
 #' waldo::compare(a, q)
 
 save_evaluations <- function(questions, input_list, user_id) {
-  con <- withr::local_db_connection(db_connect())
+  con <- withr::local_db_connection(db_connect_check())
 
   evals <- questions |>
     dplyr::rename("component_id" = "component") |>
@@ -252,7 +252,7 @@ response_to_json <- function(component_id, questions, input_list) {
 #' evals_details("testuser", "modeler")
 
 evals_details <- function(user_id, user_role) {
-  con <- withr::local_db_connection(db_connect())
+  con <- withr::local_db_connection(db_connect_check())
   validate(need(
     user_role %in% c("modeler", "evaluator"),
     "Overview table only relevant for modelers and evaluators"

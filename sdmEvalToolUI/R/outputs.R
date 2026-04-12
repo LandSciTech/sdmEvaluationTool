@@ -37,8 +37,8 @@ copy_output <- function(id) {
       actionButton(
         id_copy,
         label = NULL,
-        icon = icon("copy"),
-        class = "btn-mini",
+        icon = icon("copy", a11y = "sem", title = "Copy selections"),
+        class = "btn-mini btn-copy",
         style = "top: 5px; right: 5px; position: absolute;"
       ),
       verbatimTextOutput(id, placeholder = TRUE) |>

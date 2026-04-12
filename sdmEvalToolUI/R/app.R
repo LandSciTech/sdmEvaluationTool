@@ -88,15 +88,20 @@ sdm_tool <- function(
       !!!sdm_inputs(users),
       nav_item(actionButton(
         "abandon",
+        title = "Abandon/Resume Review",
         label = NULL,
-        icon = icon("x"),
+        icon = bsicons::bs_icon(
+          "x-lg",
+          size = "1em",
+          title = "Abandon/Resume Review"
+        ),
         class = "btn-sm btn-abandon"
       ))
     ),
     nav_item(actionButton(
       "glossary",
       label = NULL,
-      icon = icon("circle-question", ),
+      icon = bsicons::bs_icon("question-circle", title = "Toggle Glossary"),
       class = "btn-mini btn-rnd btn-glossary"
     ))
   )
@@ -407,7 +412,7 @@ sdm_tool <- function(
     # Deployment details -------------------------------------------------------
     details <- reactive({
       validate_ids(deployment_id = input$deployment_id)
-      con <- withr::local_db_connection(db_connect())
+      con <- withr::local_db_connection(db_connect_check())
       d <- dplyr::tbl(con, "deployments") |>
         dplyr::collect() |>
         dplyr::filter(.data$deployment_id == input$deployment_id)
@@ -422,7 +427,13 @@ sdm_tool <- function(
       name <- users$user_name[users$user_id == user_id()] |> unique()
       greet <- tagList("Hi", strong(name))
       if (user_admin()) {
-        greet <- tagList(greet, tooltip(icon("crown"), "You are an Admin"))
+        greet <- tagList(
+          greet,
+          tooltip(
+            icon("crown", a11y = "sem", title = "You are an Admin"),
+            "You are an Admin"
+          )
+        )
       }
 
       if (!isTruthy(input$user_role)) {
@@ -547,13 +558,6 @@ sdm_theme <- function() {
 
        
        /* Cards within Cards (e.g. spatial maps over selection tables) */
-       .sub-card > .card-body {
-         padding: 0 !important;
-       }
-       div:has(> .sub-card) {
-         gap: 0 !important;
-         padding: 0px !important;
-       }
        .card.sub-card {
          border: 0 !important;
        }
@@ -561,6 +565,11 @@ sdm_theme <- function() {
        /* Cards within Tabs (e.g., observations map) */
        .sdm-tab-pane .card {
          border: 0 !important;
+       }
+
+       .sub-card-inputs {
+         /* Padding around inputs in a subcard */
+         padding: 10px;
        }
 
        /* Remove gaps between cards and page */
@@ -652,11 +661,22 @@ sdm_theme <- function() {
 
        /* Abandon Evaluation Button */
        .btn-abandon {
-         border-radius: 100px;         
+        border-radius: 100px;
+        /* trim space around button */
+        margin-left: -0.25rem !important;
+        margin-right: -0.5rem !important;
+        /* Match margin of form items */
+        margin-bottom: 1rem !important; 
        }
-       li:has(button.btn-abandon) {
-         margin-top: 3px !important;
+
+       .btn-abandon.btn-danger {
+         background-color: $danger;
+         color: white;
        }
+
+       .btn-abandon.btn-danger:hover {
+        background-color: $danger-border-subtle;
+      }
 
        /* Glossary Button */
         .btn-glossary {
@@ -671,14 +691,23 @@ sdm_theme <- function() {
           color: black;
           background-color: transparent;
         }
+        /* Copy Button */
+        .btn-copy {
+          padding: 2px 5px 2px 5px;
+        }
 
-       /* Mini Button (e.g. Copy) */
+       /* Mini Button */
        .btn-mini {
          background-color: transparent;
          border: 0;
-         padding: 2px 5px 2px 5px;
          margin: 0;
+         padding: 2px 10px 2px 10px;
        }      
+       .btn-refresh {
+        color: $success;
+        padding: 2px 8px 2px 8px;
+       }
+
        .btn-rnd {
         border-radius: 50%;         
        }"
@@ -755,7 +784,7 @@ sdm_inputs <- function(users) {
 #' app_users()
 
 app_users <- function() {
-  con <- withr::local_db_connection(db_connect())
+  con <- withr::local_db_connection(db_connect_check())
   dplyr::tbl(con, "users") |>
     dplyr::select("user_id", "user_name") |>
     dplyr::left_join(dplyr::tbl(con, "access"), by = "user_id") |>
@@ -776,7 +805,7 @@ app_users <- function() {
 #' app_materials()
 
 app_materials <- function() {
-  con <- withr::local_db_connection(db_connect())
+  con <- withr::local_db_connection(db_connect_check())
   db_read_deployment_materials(con) |>
     dplyr::select(
       "deployment_id",

@@ -4,7 +4,10 @@
 \alias{mod_comp_model_metadata_ui}
 \title{Model Metadata Component UI}
 \usage{
-mod_comp_model_metadata_ui(id = "comp_model_metadata", header = NULL)
+mod_comp_model_metadata_ui(
+  id = "comp_model_metadata",
+  header = "Model Metadata"
+)
 }
 \arguments{
 \item{id}{Shiny module ID}

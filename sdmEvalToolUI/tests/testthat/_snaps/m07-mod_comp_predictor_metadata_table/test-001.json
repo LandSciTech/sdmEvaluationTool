@@ -10239,7 +10239,59 @@
 
       ]
     },
-    "comp_predictor_metadata-predictor_metadata_legend": "Predictor metadata table."
+    "comp_predictor_metadata-tooltip": {
+      "html": "<bslib-tooltip placement=\"auto\" bsOptions=\"[]\" data-require-bs-version=\"5\" data-require-bs-caller=\"tooltip()\">\n  <template>Predictor metadata table.<\/template>\n  <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" class=\"bi bi-info-circle \" style=\"height:1em;width:1em;fill:currentColor;vertical-align:-0.125em;\" aria-label=\"Details\" role=\"img\" ><title>Details<\/title><path d=\"M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z\"><\/path>\n<path d=\"m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z\"><\/path><\/svg>\n<\/bslib-tooltip>",
+      "deps": [
+        {
+          "name": "bslib-component-js",
+          "version": "0.10.0",
+          "src": {
+            "href": "bslib-component-js-0.10.0"
+          },
+          "meta": null,
+          "script": [
+            {
+              "src": "components.min.js"
+            },
+            {
+              "src": "web-components.min.js",
+              "type": "module"
+            }
+          ],
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "bslib-component-css",
+          "version": "0.10.0",
+          "src": {
+            "href": "bslib-component-css-0.10.0"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "bslib-component-css.min.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "bslib-tag-require",
+          "version": "0.10.0",
+          "src": {
+            "href": "bslib-tag-require-0.10.0"
+          },
+          "meta": null,
+          "script": "tag-require.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    }
   },
   "export": {
 

@@ -21,6 +21,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Imports:
+    bsicons,
     bslib,
     dplyr (>= 1.1.4),
     ggplot2 (>= 4.0.0),

@@ -30,13 +30,14 @@ test_comp_predictor_raster <- function(...) {
 mod_comp_predictor_raster_ui <- function(
   id = "comp_predictor_raster",
   height = NULL,
-  header = NULL
+  header = "Predictor Raster"
 ) {
   sdm_card(
     min_height = height,
-    class = "p-0 sub-card",
-    header,
+    class = "sub-card",
+    sdm_card_header(header, uiOutput(NS(id, "tooltip"))),
     card_body(
+      class = "p-0",
       min_height = 400,
       as_fill_carrier(
         div(
@@ -54,8 +55,7 @@ mod_comp_predictor_raster_ui <- function(
           ),
         )
       )
-    ),
-    card_footer(shiny::textOutput(NS(id, "predictor_raster_legend")))
+    )
   )
 }
 
@@ -78,11 +78,10 @@ mod_comp_predictor_raster_server <- function(
   stopifnot(is.reactive(model_id))
 
   moduleServer(id, function(input, output, session) {
-    # Legend -------------------------------------------------------
-    output$predictor_raster_legend <- renderText({
-      prep_material_settings("predictor_raster", model_id())$legend[[
-        "en"
-      ]]
+    # Tooltip -------------------------------------------------------
+    output$tooltip <- renderUI({
+      p <- prep_material_settings("predictor_raster", model_id())
+      tt_material_settings(p)
     })
 
     # Setup -------------------------------------------------------------
