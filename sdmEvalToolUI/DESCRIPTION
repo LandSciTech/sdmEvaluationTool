@@ -29,7 +29,7 @@ Imports:
     htmlwidgets (>= 1.6.4),
     jsonlite (>= 2.0.0),
     leaflet,
-    leaflet.extras (>= 2.0.1),
+    leaflet.extras (>= 2.0.2),
     plotly (>= 4.11.0),
     purrr (>= 1.1.0),
     reactable,
@@ -50,8 +50,7 @@ Suggests:
     withr,
     waldo
 Remotes:
-    LandSciTech/sdmEvaluationTool/sdmEvalToolCore,
-    trafficonese/leaflet.extras
+    LandSciTech/sdmEvaluationTool/sdmEvalToolCore
 Config/testthat/edition: 3
 Depends: 
     R (>= 4.1)
