@@ -86,21 +86,20 @@ show_comps <- function(tn, ...) {
 }
 ```
 
-# SDM Model Evaluation Tool (MET)
+# Species Distribution Model Evaluation Tool (sdmEvaluationTool)
 
 What is in this folder:
 
 ```bash
 spec
 ├── config.yml     # centralized configuration
-├── glossary.yml   # terminology
 ├── README.md      # this file
 └── README.Rmd     # the source of the md file
 ```
 
 ## Objective
 
-MET that will enable NOBMWG members to:
+The sdmEvaluationTool that will enable NOBMWG members to:
 
 - evaluate bird SDMs;
 - develop methods for synthesizing expert evaluations with quantitative
@@ -108,26 +107,25 @@ MET that will enable NOBMWG members to:
 - to assess what more (if anything) is needed to improve the bird SDM evaluation
   process.
 
-MET attributes include:
+sdmEvaluationTool attributes include:
 
-1.  **Modular**: The MET consists of independent Modules, each
+1.  **Modular**: The sdmEvaluationTool consists of independent Modules, each
     handling specific functionality. This minimizes duplication of code within 
     and among Modules and links Modules into a usable tool.
-2.  **Flexible**: The MET code is stored and shared in a GitHub
+2.  **Flexible**: The sdmEvaluationTool code is stored and shared in a GitHub
     repository that allows ECCC and other Tool Maintainers in the NOBMWG
-    to add to or modify all components of the MET.
-3.  **Expandable**: The MET allows for the possibility of adding new
+    to add to or modify all components of the sdmEvaluationTool.
+3.  **Expandable**: The sdmEvaluationTool allows for the possibility of adding new
     Modules created by Tool Maintainers in future.
-4.  **Portable**: Tool Maintainers will be able to run the MET locally
+4.  **Portable**: Tool Maintainers will be able to run the sdmEvaluationTool locally
     on their computers with minimal changes, and will understand
     possible future server deployment options and procedures.
-5.  **Generalizable**: The MET allows for a variety of species, SDM
+5.  **Generalizable**: The sdmEvaluationTool allows for a variety of species, SDM
     model types, and geographies.
 6.  **Spatially explicit**: Users will be able to visualize, interact
     with, and provide feedback on multiple raster and vector layers
     (predictions, uncertainty, covariates, etc).
-7.  **Open source**: MET code will be released under a suitable open source 
-    software license that is compatible with the ODMAP v1 project dependency.
+7.  **Open source**: sdmEvaluationTool code is open source.
 8.  **Comparative**: Users will be able to view outputs from multiple
     models (e.g., predictions of multiple species), either side by side
     or by toggling among layers, to gain a deeper understanding of model

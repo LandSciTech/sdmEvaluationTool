@@ -82,9 +82,9 @@ tables:
   users:
     name: Users
     description: >
-      This table contains user names and admin roles, and IDs be used as foreign keys in 
-      other tables to track change history. This table needs to be updated 
-      regularly, requires **admin** access and writing directly to the database. 
+      This table contains user names and admin roles, and IDs be used as foreign keys in
+      other tables to track change history. This table needs to be updated
+      regularly, requires **admin** access and writing directly to the database.
       See the list of user roles for specific permissions.
       In the future, this table might be a 3rd party authorization tool.
     table_constraint:
@@ -118,8 +118,8 @@ tables:
   species:
     name: Species
     description: >
-      A table that lists all potential species, in our case, birds in Canada. 
-      This table is saved to the database once, changes to the `species` 
+      A table that lists all potential species, in our case, birds in Canada.
+      This table is saved to the database once, changes to the `species`
       table require **admin** access directly in the database.
     table_constraint:
     fields:
@@ -147,14 +147,14 @@ tables:
   components:
     name: Components
     description: >
-      Components are SDM results that can be uploaded and evaluated. 
-      Each component will have its Shiny module implementing the expected 
-      behavior for upload, display, and evaluation. e.g. a component can have 
-      corresponding `mod_<component_id>_ui` and `mod_<component_id>_server` 
-      module functions. Mandatory components are prerequisites for starting 
+      Components are SDM results that can be uploaded and evaluated.
+      Each component will have its Shiny module implementing the expected
+      behavior for upload, display, and evaluation. e.g. a component can have
+      corresponding `mod_<component_id>_ui` and `mod_<component_id>_server`
+      module functions. Mandatory components are prerequisites for starting
       evaluations. Updates are done via parsing the `components` section of the
-      `config.yaml` file by **admins** and **tool developers**. 
-      After initial development, versioning and backward compatibility should 
+      `config.yaml` file by **admins** and **tool developers**.
+      After initial development, versioning and backward compatibility should
       be a concern so that previous entries will not break.
     table_constraint:
     fields:
@@ -177,10 +177,10 @@ tables:
   models:
     name: Models
     description: >
-      A table listing models. The model name and ID acts as an abbreviation of 
-      the model approach/extent/etc. and also acts as a version identifier, 
-      e.g. `can_glm_v1.1` would mean that GLM models were used for models with 
-      Canadian extent and this is version 1.1. Updates are done 
+      A table listing models. The model name and ID acts as an abbreviation of
+      the model approach/extent/etc. and also acts as a version identifier,
+      e.g. `can_glm_v1.1` would mean that GLM models were used for models with
+      Canadian extent and this is version 1.1. Updates are done
       by **modelers** via uploading or creating a method metadata file.
     table_constraint:
     fields:
@@ -208,8 +208,8 @@ tables:
   materials:
     name: Materials
     description: >
-      Upload materials are used to be displayed and evaluated. 
-      Updates to the file system and the database will be regular as 
+      Upload materials are used to be displayed and evaluated.
+      Updates to the file system and the database will be regular as
       **modelers** upload new materials.
     table_constraint:
     fields:
@@ -327,10 +327,10 @@ tables:
     name: Evaluations
     description: >
       Evaluations are the basic feedback on the materials within the context of
-      a deployment. There is no explicitly defined primary key, sort and filter 
-      to find entries to display. The body has to conform with component display 
-      rules which is not checked by the database and is the job for the UI to 
-      enforce. Updates to evaluations will be frequent as 
+      a deployment. There is no explicitly defined primary key, sort and filter
+      to find entries to display. The body has to conform with component display
+      rules which is not checked by the database and is the job for the UI to
+      enforce. Updates to evaluations will be frequent as
       **evaluators** provide more data feedback. Notes can be provided for
       evaluations, these function like flags marking feedback that needs
       to be addressed later (i.e. such notes can be identified later when
@@ -406,9 +406,9 @@ tables:
   comments:
     name: Comments
     description: >
-      Comments are chat-like exchanges of ideas tied to a model-species 
+      Comments are chat-like exchanges of ideas tied to a model-species
       combination, visible to users with discussion roles.
-      Display rule for comments are simpler than for evaluations, 
+      Display rule for comments are simpler than for evaluations,
       we consider text comments. Users with **commenter**
       privileges can leave comments (like discussions back and forth) if
       comments are enabled for the deployment.
@@ -514,7 +514,7 @@ components:
           the observations should be named using Species IDs, i.e. 4-letter codes
           (e.g. OVEN, TEWA, etc.) consistent with the species list being used.
           The cell values in the species columns should be non-negative integers
-          (i.e. 0, 1, 2, ... or 0/1) indicating the detections (>0) and 
+          (i.e. 0, 1, 2, ... or 0/1) indicating the detections (>0) and
           non-detections of the species during the survey events.
           The single-species and multi-species data format are identical except
           for the number of species whose data is in the table.
@@ -615,7 +615,7 @@ components:
       input:
         description: >
           A spatial raster file in tif format where bands are different spatial
-          predictors. Names of the layers should match the predictor column in 
+          predictors. Names of the layers should match the predictor column in
           the predictor metadata.
         file_ext: [tif]
         columns: []
@@ -780,7 +780,7 @@ components:
       type: polygons
       input:
         description: >
-          A spatial polygons file with geometries and a key called 
+          A spatial polygons file with geometries and a key called
           `subunit_id`. Each deployment can have its own subunits.
           Subunits can be used to make evaluations more specific.
         file_ext: [gpkg]
@@ -860,7 +860,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Identify the areas on the map where predictions are inaccurate.
     fr: ""
   values: ["Severe over", "Moderate over", "Accurate", "Moderate under", "Severe under", "Unknown"]
-  followup_level: 0
+  followup_level: 6
   odmap_id: ~
 - component: spatial_prediction
   type: spatial
@@ -869,8 +869,8 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Identify areas on the map where uncertainty does not align with your understanding of data limitations, known habitat complexities, or other sources of uncertainty.
     fr: ""
-  values: ["Too high", "Accurate", "Unknown"]
-  followup_level: 0
+  values: ["Too high", "Accurate", "Too low", "Unknown"]
+  followup_level: 6
   odmap_id: ~
 ## ------------ model fit ------------
 - component: model_fit
@@ -884,8 +884,8 @@ default_questions: # where values is missing, we use the values from question_ty
   odmap_id: [m_estim_1, m_estim_2, m_estim_3]
 - component: model_fit
   type: simple_text
-  order: 2
-  part: 0
+  order: 1
+  part: 1
   body:
     en: What are the metrics that should be used and why?
     fr: ""
@@ -893,7 +893,7 @@ default_questions: # where values is missing, we use the values from question_ty
   odmap_id: ~
 - component: model_fit
   type: simple_text
-  order: 3
+  order: 2
   part: 0
   body:
     en: What other concerns do you have about model performance?
@@ -906,20 +906,20 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 1
   part: 0
   body:
-    en: Are there areas where you are concerned about potential inaccuracies in the data? Identify areas with potential inaccuracies in the data.
+    en: Identify areas on the map where you are concerned about potential inaccuracies in the data.
     fr: ""
   values: ["Very inaccuracies", "Moderately inaccuracies", "Accurate", "Unknown"]
-  followup_level: 0
+  followup_level: 6
   odmap_id: ~
 - component: observations
   type: spatial
   order: 2
   part: 0
   body:
-    en: Are there areas where this species is not sufficiently sampled? Identify areas that are not sufficiently sampled.
+    en: Identify areas on the map where the modeled species is not sufficiently sampled.
     fr: ""
   values: ["Very undersampled", "Moderately undersampled", "Accurate", "Unknown"]
-  followup_level: 0
+  followup_level: 6
   odmap_id: ~
 - component: observations
   type: ordinal
@@ -935,7 +935,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 3
   part: 1
   body:
-    en: If so, explain. What is an appropriate truncation value (i.e. highest count)?
+    en: Explain. What is an appropriate truncation value (i.e. highest count)?
     fr: ""
   followup_level: 0
   odmap_id: ~
@@ -953,7 +953,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 4
   part: 1
   body:
-    en: If so, explain. What is an appropriate truncation value (i.e. minimum year)?
+    en: Explain. What is an appropriate truncation value (i.e. minimum year)?
     fr: ""
   followup_level: 0
   odmap_id: ~
@@ -964,7 +964,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?
     fr: ""
-  followup_level: 0
+  followup_level: 6
   odmap_id: [d_bio_10]
 # ------------ model metadata -----------
 - component: model_metadata
@@ -972,9 +972,9 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 1
   part: 0
   body:
-    en: Are you concerned about the description and treatment of predictor data, as described in the model metadata.
+    en: How concerned are you about the description and treatment of predictor data, as described in the model metadata?
     fr: ""
-  followup_level: 0
+  followup_level: 6
   odmap_id: [d_pred_2, m_multicol_1, m_preselect_1, m_estim_3]
 # ------------ predictor metadata -----------
 - component: predictor_metadata
@@ -988,8 +988,8 @@ default_questions: # where values is missing, we use the values from question_ty
   odmap_id: [d_pred_2, m_multicol_1, m_estim_3]
 - component: predictor_metadata
   type: simple_text
-  order: 2
-  part: 0
+  order: 1
+  part: 1
   body:
     en: What predictors are missing and why?
     fr: ""
@@ -997,7 +997,7 @@ default_questions: # where values is missing, we use the values from question_ty
   odmap_id: [d_pred_2]
 - component: predictor_metadata
   type: ordinal
-  order: 3
+  order: 2
   part: 0
   body:
     en: How concerned are you about superfluous or inappropriate predictors?
@@ -1006,8 +1006,8 @@ default_questions: # where values is missing, we use the values from question_ty
   odmap_id: [d_pred_2, m_estim_3]
 - component: predictor_metadata
   type: simple_text
-  order: 4
-  part: 0
+  order: 2
+  part: 1
   body:
     en: Which predictors should be removed and why?
     fr: ""
@@ -1028,9 +1028,9 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 1
   part: 1
   body:
-    en: If so, describe the predictor(s) and the areas of concern.
+    en: Describe the predictor(s) and the areas of concern.
     fr: ""
-  followup_level: 0
+  followup_level: 6
   odmap_id: [d_pred_2]
 - component: predictor_raster
   type: ordinal
@@ -1039,7 +1039,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the spatial resolution of the predictor variables?
     fr: ""
-  followup_level: 0
+  followup_level: 6
   odmap_id: [d_pred_2, m_preselect_1]
 ## ------------ model summary ------------
 - component: model_summary
@@ -1053,8 +1053,8 @@ default_questions: # where values is missing, we use the values from question_ty
   odmap_id: [d_pred_2, m_preselect_1]
 - component: model_summary
   type: simple_text
-  order: 2
-  part: 0
+  order: 1
+  part: 1
   body:
     en: What interactions or nonlinear relationships are missing?
     fr: ""
@@ -1062,7 +1062,7 @@ default_questions: # where values is missing, we use the values from question_ty
   odmap_id: [d_pred_2, m_preselect_1]
 - component: model_summary
   type: ordinal
-  order: 3
+  order: 2
   part: 0
   body:
     en: How concerned are your about the reported relative importance of predictors?
@@ -1071,8 +1071,8 @@ default_questions: # where values is missing, we use the values from question_ty
   odmap_id: [m_estim_2]
 - component: model_summary
   type: simple_text
-  order: 4
-  part: 0
+  order: 2
+  part: 1
   body:
     en: Which predictors would you expect to be more or less important and why?
     fr: ""
@@ -1080,34 +1080,34 @@ default_questions: # where values is missing, we use the values from question_ty
   odmap_id: [m_estim_2]
 - component: model_summary
   type: ordinal
-  order: 5
+  order: 3
   part: 0
   body:
     en: How concerned are you about the appropriateness of the modeling algorithm for the model objectives and application?
     fr: ""
-  followup_level: 0
+  followup_level: 6
   odmap_id: [o_algorithms_1, o_algorithms_2]
 - component: model_summary
   type: ordinal
-  order: 6
+  order: 4
   part: 0
   body:
     en: How concerned are you about how well the modelling framework addresses important statistical assumptions?
     fr: ""
-  followup_level: 0
+  followup_level: 6
   odmap_id: [o_algorithms_2, o_workflow_1, o_objective_2, m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, o_workflow_2, m_selection_3, m_selection_4]
 - component: model_summary
   type: ordinal
-  order: 7
+  order: 5
   part: 0
   body:
     en: How concerned are you about how well important biological assumptions are explained and justified?
     fr: ""
-  followup_level: 0
+  followup_level: 6
   odmap_id: [o_objective_1, o_objective_2, o_concept_1, o_assumptions_1]
 - component: model_summary
   type: simple_text
-  order: 8
+  order: 6
   part: 0
   body:
     en: What other concerns or comments do you have about model complexity?
@@ -1131,7 +1131,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about how well suited the model is for the intended application of the model?
     fr: ""
-  followup_level: 0
+  followup_level: 6
   odmap_id: [o_objective_1, o_utility_2]
 - component: deployment_settings
   type: simple_text
@@ -1157,7 +1157,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 2
   part: 0
   body:
-    en: Identify the areas on the map where you have hight confidence about your knowledge of the species.
+    en: Identify the areas on the map where you have high confidence about your knowledge of the species.
     fr: ""
   values: ["Confident"]
   followup_level: 0
