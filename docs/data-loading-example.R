@@ -142,6 +142,7 @@ db_write_table(con, "models", models)
 rule <- get_comp_rule("predictor_metadata", "upload")
 fi <- file.path(path, "predictors", "predictor_metadata.csv")
 x <- read_file(fi)
+names(x)[names(x)=="variable"]="predictor"
 x <- x[, rule$output$columns]
 
 prep_predictor_metadata(
@@ -294,15 +295,16 @@ for (j in 1:nrow(deployments)) {
 
 # --------- deployment questions -----------
 
-# default questions - no drilldown
+# default questions - with drilldown
 prep_deployment_questions(
   deployment_id = "deployment1",
   x = NULL
 )
 
-# default questions - with drilldown
+# default questions - without drilldowns
 q <- sdmEvalToolCore::default_questions
-q$followup_level[5] <- 3
+q$followup_level <- 0
+#q$followup_level[5] <- 3
 q <- combine_questions(q)
 
 prep_deployment_questions(
