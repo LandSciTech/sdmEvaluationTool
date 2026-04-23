@@ -30,7 +30,7 @@ type.
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 subunits <- deployment_subunits_prep("deployment1") |>
   dplyr::mutate(
-    type = c(rep("Very biased", 10), rep("Moderately biased", 10), rep(NA, 114)),
+    type = c(rep("Very biased", 10), rep("Moderately biased", 10), rep(NA, 115)),
     type = factor(type)
   )
 

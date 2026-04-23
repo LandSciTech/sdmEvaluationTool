@@ -1,4 +1,4 @@
-# SDM Model Evaluation Tool (MET)
+# Species Distribution Model Evaluation Tool (MET)
 
 What is in this folder:
 
