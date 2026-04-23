@@ -1021,7 +1021,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about inaccuracy in the model predictors?
     fr: ""
-  followup_level: 6
+  followup_level: 0
   odmap_id: [d_pred_2, p_uncertainty_1, p_uncertainty_2, p_uncertainty_3, p_uncertainty_4]
 - component: predictor_raster
   type: simple_text
