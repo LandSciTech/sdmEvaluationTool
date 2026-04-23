@@ -31,8 +31,10 @@ rcmdcheck::rcmdcheck(pkg)
 
 devtools::load_all(pkg)
 
+dir.create("_tmp", showWarnings = FALSE)
 q <- default_questions
 q$values <- sapply(q$values, \(x) paste0(unlist(x), collapse = ","))
+q$odmap_id <- sapply(q$odmap_id, \(x) paste0(unlist(x), collapse = ","))
 write.csv(q, row.names = FALSE, file = "_tmp/default_questions.csv")
 
 # --- UI -----------------------------
@@ -56,7 +58,6 @@ devtools::document(pkg)
 
 # Package check
 rcmdcheck::rcmdcheck(pkg)
-
 
 # devtools::install(pkg, upgrade = "never")
 # remotes::install_github("LandSciTech/sdmEvaluationTool/sdmEvalToolUI")

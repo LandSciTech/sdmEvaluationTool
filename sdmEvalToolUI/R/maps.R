@@ -71,16 +71,16 @@ base_map <- function(ns = identity) {
         "
     function(el, x) {
       var map = this;
-      
+
       // Track visible layers
       var visibleLayers = [];
-      
+
       // When layer is added
       map.on('overlayadd', function(e) {
         visibleLayers.push(e.name);
         Shiny.setInputValue('{{layers_id}}', visibleLayers);
       });
-      
+
       // When layer is removed
       map.on('overlayremove', function(e) {
         var index = visibleLayers.indexOf(e.name);
@@ -89,7 +89,7 @@ base_map <- function(ns = identity) {
         }
         Shiny.setInputValue('{{layers_id}}', visibleLayers);
       });
-      
+
       // Initialize with currently visible layers
       setTimeout(function() {
         map.eachLayer(function(layer) {
@@ -165,7 +165,7 @@ add_subunits <- function(
 #' @examplesIf have_data()
 #' subunits <- deployment_subunits_prep("deployment1") |>
 #'   dplyr::mutate(
-#'     type = c(rep("Very biased", 10), rep("Moderately biased", 10), rep(NA, 114)),
+#'     type = c(rep("Very biased", 10), rep("Moderately biased", 10), rep(NA, 115)),
 #'     type = factor(type)
 #'   )
 #'
