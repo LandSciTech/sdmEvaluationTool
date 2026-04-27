@@ -1,14 +1,17 @@
 # usage:
-# source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
+# source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/word-refinement/setup_JH.R")
 
 message("=========================================")
 message("   Installing the SDM Evaluation Tool")
 message("=========================================")
 message("------ Downloading results --------------")
-download.file(
-  "https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link",
-  "./sdm_evaluation_results.zip",
-  method = "libcurl"
+if (!requireNamespace("googledrive")) {
+  install.packages("googledrive")
+}
+googledrive::drive_download(
+  as_id("12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t"),
+  path = "./sdm_evaluation_results.zip",
+  overwrite = TRUE
 )
 message("------ Unzipping contents ---------------")
 unzip("./sdm_evaluation_results.zip")

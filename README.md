@@ -34,7 +34,7 @@ Use this script in R to install required packages and download/extract the examp
 data set (say 'yes' or select the 'All' option to update packages if asked):
 
 ```R
-source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
+source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/word-refinement/setup_JH.R")
 ```
 
 You can now run the following script:
