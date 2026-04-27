@@ -8,8 +8,8 @@ message("------ Downloading results --------------")
 if (!requireNamespace("googledrive")) {
   install.packages("googledrive")
 }
-if(file_exists("./sdm_evaluation_results")){
-  if(file_exists("./sdm_evaluation_results_old")){
+if(file.exists("./sdm_evaluation_results")){
+  if(file.exists("./sdm_evaluation_results_old")){
     stop("You already have old results in your sdm_evaluation_results_old folder.
          To proceed, delete or remove sdm_evaluation_results_old then rerun this script.")
   }
