@@ -30,6 +30,7 @@ Prerequisites:
 Before installation, first create a new RStudio Project where you'll store the 
 data required for this tool. To do so, select _File_ > _New Project_. When prompted, select _New Directory_ and _New Project_. Under the field _Directory name_, type in _sdmEvaluationTool_, then, click on the *Browse* button and select a location you'll remember (e.g., `c:/users/user_name/work`).
 
+Note that if you have a previous deployment of the tool installed, this setup process will move your old results to an "sdm_evaluation_results_old" folder.
 Use this script in R to install required packages and download/extract the example 
 data set (say 'yes' or select the 'All' option to update packages if asked):
 

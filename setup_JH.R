@@ -8,10 +8,17 @@ message("------ Downloading results --------------")
 if (!requireNamespace("googledrive")) {
   install.packages("googledrive")
 }
+if(file_exists("./sdm_evaluation_results")){
+  if(file_exists("./sdm_evaluation_results_old")){
+    stop("You already have old results in your sdm_evaluation_results_old folder.
+         To proceed, delete or remove sdm_evaluation_results_old then rerun this script.")
+  }
+  file.rename("./sdm_evaluation_results","./sdm_evaluation_results_old")
+}
 googledrive::drive_download(
-  as_id("12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t"),
+  "https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link",
   path = "./sdm_evaluation_results.zip",
-  overwrite = TRUE
+  overwrite=T
 )
 message("------ Unzipping contents ---------------")
 unzip("./sdm_evaluation_results.zip")
