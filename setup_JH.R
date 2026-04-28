@@ -20,6 +20,10 @@ if(file.exists("./sdm_evaluation_results")){
   file.rename("./sdm_evaluation_results","./sdm_evaluation_results_old")
 }
 
+if(!file.exists("./sdm_evaluation_results.zip")){
+  stop("Missing sdm_evaluation_results.zip. Download from https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link to your project file.")
+}
+
 message("------ Unzipping contents ---------------")
 unzip("./sdm_evaluation_results.zip")
 message("------ Installing R packages ------------")

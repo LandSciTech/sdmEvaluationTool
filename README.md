@@ -31,8 +31,7 @@ Before installation, first create a new RStudio Project where you'll store the
 data required for this tool. To do so, select _File_ > _New Project_. When prompted, select _New Directory_ and _New Project_. Under the field _Directory name_, type in _sdmEvaluationTool_, then, click on the *Browse* button and select a location you'll remember (e.g., `c:/users/user_name/work`).
 
 Now download the [sdv_evaluation_results.zip](https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link) to your _sdmEvaluationTool_ project folder.
-
-Note that if you have a previous deployment of the tool installed, this setup process will move your old results to an "sdm_evaluation_results_old" folder.
+If you have an older version of _sdv_evaluation_results.zip_ in your project folder, replace it with the new version.
 
 Use this script in R to install required packages and download/extract the example 
 data set (say 'yes' or select the 'All' option to update packages if asked):
@@ -40,6 +39,7 @@ data set (say 'yes' or select the 'All' option to update packages if asked):
 ```R
 source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/word-refinement/setup_JH.R")
 ```
+Note that if you have a previous deployment of the tool installed, this setup script will move your old results to an _sdm_evaluation_results_old_ folder.
 
 You can now run the following script:
 
