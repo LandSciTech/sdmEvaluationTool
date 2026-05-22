@@ -900,11 +900,54 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 4
   part: 0
   body:
-    en: Identify areas on the map where uncertainty does not align with your understanding of data limitations, known habitat complexities, or other sources of uncertainty.
+    en: Considering what you know about the data, surveys, bird habitat associations, and other sources of uncertainty, identify areas where the uncertainty shown is either greater or less than what you think it should be.
     fr: ""
-  values: ["Too high", "Accurate", "Too low", "Unknown"]
-  followup_level: 5
+  values: ["greater than expected", "less than expected"]
+  followup_level: 0
   odmap_id: ~
+
+- component: spatial_prediction
+  type: simple_text
+  order: 4
+  part: 1
+  body:
+    en: Provide ideas or comments about why the uncertainty shown is not what you would expect.
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+#TO DO Details: For example: sampling effort, detectability, species identification, habitat associations.
+
+- component: spatial_prediction
+  type: spatial
+  order: 5
+  part: 0
+  body:
+    en: If you have any additional comments about particular areas, please identify those areas here.
+    fr: ""
+  values: ["comment"]
+  followup_level: 0
+  odmap_id: ~
+
+- component: spatial_prediction
+  type: simple_text
+  order: 5
+  part: 1
+  body:
+    en: What would you like to say about the identified comment areas?
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+
+- component: spatial_prediction
+  type: simple_text
+  order: 6
+  part: 0
+  body:
+    en: Provide any additional comments or views you would like to submit concerning these Prediction topics.
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+
 ## ------------ model fit ------------
 - component: model_fit
   type: ordinal
@@ -1243,6 +1286,7 @@ followup_questions: # used for drill-down
     en: If the problem is not addressed, do you think this model can be used for the intended purpose?
     fr: ""
   values: ["Yes", "No"]
+#TO DO Details: Reminder reviewer where to go to refresh on explanation of the intended purpose.
 - followup_level: 5
   type: simple_text
   body:
