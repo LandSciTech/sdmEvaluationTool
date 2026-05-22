@@ -164,7 +164,9 @@ affirmative <- function(type = "standard") {
       "Very_biased",
       "Moderately_biased",
       "Very_undersampled",
-      "Moderately_undersampled"
+      "Moderately_undersampled",
+      "over_prediction",
+      "under_prediction"
     )
   }
   a

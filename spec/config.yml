@@ -857,20 +857,53 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 1
   part: 0
   body:
-    en: Identify the areas on the map where predictions are inaccurate.
+    en: Identify area on the map where your experience prohibits your ability to provide an opinion about the accuracy of predictions.
     fr: ""
-  values: ["Severe over", "Moderate over", "Accurate", "Moderate under", "Severe under", "Unknown"]
-  followup_level: 6
+  values: ["no opinion"]
+  followup_level: 0
   odmap_id: ~
+
 - component: spatial_prediction
   type: spatial
   order: 2
   part: 0
   body:
+    en: Identify areas on the map where your experience is limited but where the predictions seem inaccurate.
+    fr: ""
+  values: ["inaccurate seeming"]
+  followup_level: 0
+  odmap_id: ~
+
+- component: spatial_prediction
+  type: spatial
+  order: 3
+  part: 0
+  body:
+    en: For areas on the map where you have strong experience, identify inaccuracies.
+    fr: ""
+  values: ["over prediction", "under prediction"]
+  followup_level: 0
+  odmap_id: ~
+
+- component: spatial_prediction
+  type: simple_text
+  order: 3
+  part: 1
+  body:
+    en: For those areas of over or under prediction, please explain why the prediction inaccuracies are a problem.
+    fr: ""
+  followup_level: 5
+  odmap_id: ~
+
+- component: spatial_prediction
+  type: spatial
+  order: 4
+  part: 0
+  body:
     en: Identify areas on the map where uncertainty does not align with your understanding of data limitations, known habitat complexities, or other sources of uncertainty.
     fr: ""
   values: ["Too high", "Accurate", "Too low", "Unknown"]
-  followup_level: 6
+  followup_level: 5
   odmap_id: ~
 ## ------------ model fit ------------
 - component: model_fit
@@ -909,7 +942,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Identify areas on the map where you are concerned about potential inaccuracies in the data.
     fr: ""
   values: ["Very inaccuracies", "Moderately inaccuracies", "Accurate", "Unknown"]
-  followup_level: 6
+  followup_level: 5
   odmap_id: ~
 - component: observations
   type: spatial
@@ -919,7 +952,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Identify areas on the map where the modeled species is not sufficiently sampled.
     fr: ""
   values: ["Very undersampled", "Moderately undersampled", "Accurate", "Unknown"]
-  followup_level: 6
+  followup_level: 5
   odmap_id: ~
 - component: observations
   type: ordinal
@@ -964,7 +997,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?
     fr: ""
-  followup_level: 6
+  followup_level: 5
   odmap_id: [d_bio_10]
 # ------------ model metadata -----------
 - component: model_metadata
@@ -974,7 +1007,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the description and treatment of predictor data, as described in the model metadata?
     fr: ""
-  followup_level: 6
+  followup_level: 5
   odmap_id: [d_pred_2, m_multicol_1, m_preselect_1, m_estim_3]
 # ------------ predictor metadata -----------
 - component: predictor_metadata
@@ -1039,7 +1072,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the spatial resolution of the predictor variables?
     fr: ""
-  followup_level: 6
+  followup_level: 5
   odmap_id: [d_pred_2, m_preselect_1]
 ## ------------ model summary ------------
 - component: model_summary
@@ -1085,7 +1118,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the appropriateness of the modeling algorithm for the model objectives and application?
     fr: ""
-  followup_level: 6
+  followup_level: 5
   odmap_id: [o_algorithms_1, o_algorithms_2]
 - component: model_summary
   type: ordinal
@@ -1094,7 +1127,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about how well the modelling framework addresses important statistical assumptions?
     fr: ""
-  followup_level: 6
+  followup_level: 5
   odmap_id: [o_algorithms_2, o_workflow_1, o_objective_2, m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, o_workflow_2, m_selection_3, m_selection_4]
 - component: model_summary
   type: ordinal
@@ -1103,7 +1136,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about how well important biological assumptions are explained and justified?
     fr: ""
-  followup_level: 6
+  followup_level: 5
   odmap_id: [o_objective_1, o_objective_2, o_concept_1, o_assumptions_1]
 - component: model_summary
   type: simple_text
@@ -1131,7 +1164,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about how well suited the model is for the intended application of the model?
     fr: ""
-  followup_level: 6
+  followup_level: 5
   odmap_id: [o_objective_1, o_utility_2]
 - component: deployment_settings
   type: simple_text
@@ -1188,37 +1221,32 @@ question_types:
 
 followup_questions: # used for drill-down
 - followup_level: 1
-  type: simple_text
+  type: ordinal
   body:
-    en: Why is it a problem?
+    en: How important is it to address this problem?
     fr: ""
+  values: ["Very important", "Moderately important", "Not important"]
 - followup_level: 2
   type: ordinal
   body:
-    en: How important is it to fix the problem?
-    fr: ""
-  values: ["Very important", "Moderately important", "Not important"]
-- followup_level: 3
-  type: ordinal
-  body:
-    en: How difficult is it to fix the problem?
+    en: How difficult do you think it would be to address the problem?
     fr: ""
   values: ["Very difficult", "Moderately difficult", "Easy"]
-- followup_level: 4
+- followup_level: 3
   type: simple_text
   body:
-    en: Please suggest options for addressing the problem. To what degree would the suggested fixes address the problem?
+    en: What suggestions can you think of to address the problem?
     fr: ""
-- followup_level: 5
+- followup_level: 4
   type: ordinal
   body:
-    en: If the problem is not fixed, can this model be used for the intended application?
+    en: If the problem is not addressed, do you think this model can be used for the intended purpose?
     fr: ""
   values: ["Yes", "No"]
-- followup_level: 6
+- followup_level: 5
   type: simple_text
   body:
-    en: If the problem is not fixed, what caveats or guidance should be provided to users?
+    en: If the problem is not addressed, what cautions or guidance should be offered to users of these predictions?
     fr: ""
 
 

@@ -12,6 +12,7 @@ devtools::load_all("sdmEvalToolCore")
 #path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
 path <- "C:/Users/HughesJo/Documents/InitialWork/NOBMWG/MET (Model Evaluation Tool) Google Drive Copy/Materials/Model Upload/BAM"
 conf <- yaml::read_yaml("spec/config.yml")
+conf$default_questions[[5]]
 # DIR <- "./misc/test"
 DIR <- "./misc/sdm_evaluation_results"
 sdmevaltool_options(base = DIR) # use the misc folder
@@ -125,6 +126,7 @@ species <- structure(
   row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
   class = "data.frame"
 )
+species <- species[1:2,]
 db_write_table(con, "species", species)
 
 # ------- models table ----------
@@ -300,7 +302,7 @@ for (j in 1:nrow(deployments)) {
 
 # default questions - with drilldown
 prep_deployment_questions(
-  deployment_id = "deployment2",
+  deployment_id = "deployment1",
   x = NULL
 )
 
@@ -311,7 +313,7 @@ q$followup_level[3] <- 6
 q <- combine_questions(q)
 
 prep_deployment_questions(
-  deployment_id = "deployment1",
+  deployment_id = "deployment2",
   x = q
 )
 

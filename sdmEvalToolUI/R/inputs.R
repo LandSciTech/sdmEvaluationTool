@@ -79,7 +79,7 @@ spatial_input <- function(
   id_inputs <- purrr::map(values, \(v) {
     selectizeInput(
       inputId = glue::glue("{input_id_ns}-{value_to_input(v)}"),
-      label = HTML(glue::glue("Identify any {strong(v)} {spatial_type}")),
+      label = HTML(glue::glue("Identify {strong(v)} {spatial_type}")),
       choices = c("Add selected IDs" = ""),
       multiple = TRUE,
       options = list(delimiter = ",", create = TRUE, persist = FALSE)
