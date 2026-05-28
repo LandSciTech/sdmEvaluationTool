@@ -16,7 +16,7 @@
 
 sdm_tool <- function(
   lang = "english",
-  options = list(host = "0.0.0.0", port = 8080),
+  options = list(host = "0.0.0.0", port = 7405),
   tabs = c(
     "overview",
     "predictions",
