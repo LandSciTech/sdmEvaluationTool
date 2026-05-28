@@ -857,7 +857,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 1
   part: 0
   body:
-    en: Identify area on the map where your experience prohibits your ability to provide an opinion about the accuracy of predictions.
+    en: Identify areas on the map where your experience prohibits your ability to provide an opinion about the accuracy of predictions.
     fr: ""
   values: ["no opinion"]
   followup_level: 0
@@ -881,7 +881,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: For areas on the map where you have strong experience, identify inaccuracies.
     fr: ""
-  values: ["over prediction", "under prediction"]
+  values: ["over* prediction", "under* prediction"]
   followup_level: 0
   odmap_id: ~
 
@@ -890,7 +890,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 3
   part: 1
   body:
-    en: For those areas of over or under prediction, please explain why the prediction inaccuracies are a problem.
+    en: For those areas of over* or under* prediction, please explain why the prediction inaccuracies are a problem.
     fr: ""
   followup_level: 5
   odmap_id: ~
@@ -948,6 +948,174 @@ default_questions: # where values is missing, we use the values from question_ty
   followup_level: 0
   odmap_id: ~
 
+
+# ---------- observations ------------
+- component: observations
+  type: spatial
+  order: 1
+  part: 0
+  body:
+    en: Identify areas on the map where your experience prohibits your ability to provide an opinion about the accuracy of the observation data.
+    fr: ""
+  values: ["no opinion"]
+  followup_level: 0
+  odmap_id: ~
+
+- component: observations
+  type: spatial
+  order: 2
+  part: 0
+  body:
+    en: Identify areas where you have doubts about the data, distinguishing between areas where your experience is limited and areas where your experience is strong.
+    fr: ""
+  values: ["limited experience and doubts","strong experience and doubts"]
+  followup_level: 0
+  odmap_id: ~
+
+- component: observations
+  type: simple_text
+  order: 2
+  part: 1
+  body:
+    en: Provide views about the causes of your doubts about the data.
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+
+- component: observations
+  type: ordinal
+  order: 3
+  part: 0
+  body:
+    en: With Observations selected, please examine the charts grouped by Year, Month, Hours (since sunrise), and Method. When you consider the patterns of zero* and non-zero counts, are you concerned?
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+- component: observations
+  type: simple_text
+  order: 3
+  part: 1
+  body:
+    en: Please explain your concerns.
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+- component: observations
+  type: ordinal
+  order: 4
+  part: 0
+  body:
+    en: With Detections* selected, please examine the charts grouped by Year, Month, Hours (since sunrise), and Method. When you consider the patterns of zero* and non-zero counts, are you concerned?
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+- component: observations
+  type: simple_text
+  order: 4
+  part: 1
+  body:
+    en: Please explain your concerns.
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+- component: observations
+  type: ordinal
+  order: 5
+  part: 0
+  body:
+    en: How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?
+    fr: ""
+  followup_level: 5
+  odmap_id: [d_bio_10]
+
+- component: observations
+  type: spatial
+  order: 6
+  part: 0
+  body:
+    en: If you have any additional comments about particular areas, please identify those areas here.
+    fr: ""
+  values: ["comment"]
+  followup_level: 0
+  odmap_id: ~
+
+- component: observations
+  type: simple_text
+  order: 6
+  part: 1
+  body:
+    en: What would you like to say about the identified comment areas?
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+
+- component: observations
+  type: simple_text
+  order: 7
+  part: 0
+  body:
+    en: Provide any additional comments or views you would like to submit concerning these Observation topics.
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+
+# ------------ predictor metadata -----------
+- component: predictor_metadata
+  type: yes_no
+  order: 1
+  part: 0
+  body:
+    en: For each of the Predictors* in the drop-down list above the map, please consider the map and the metadata in the table. Are you aware of Predictor* data that is not listed that could be helpful in modeling?
+    fr: ""
+  followup_level: 0
+  odmap_id: [d_pred_2, m_multicol_1, m_estim_3]
+- component: predictor_metadata
+  type: simple_text
+  order: 1
+  part: 1
+  body:
+    en: Please descibe the additional data sources, explain why they could be helpful, and suggest contacts or resources to obtain the data.
+    fr: ""
+  followup_level: 0
+  odmap_id: [d_pred_2]
+- component: predictor_metadata
+  type: yes_no
+  order: 2
+  part: 0
+  body:
+    en: Do you see Predictors* that you believe are not relevant for modeling?
+    fr: ""
+  followup_level: 0
+  odmap_id: [d_pred_2, m_estim_3]
+- component: predictor_metadata
+  type: simple_text
+  order: 2
+  part: 1
+  body:
+    en: Please indicate which Predictors* you believe are not relevant and explain.
+    fr: ""
+  followup_level: 0
+  odmap_id: ~
+- component: predictor_metadata
+  type: ordinal
+  order: 3
+  part: 0
+  body:
+    en: Are you concerned about the quality* of any of the  Predictors* listed?
+    fr: ""
+  followup_level: 0
+  odmap_id: [d_pred_2,m_preselect_1]
+#TO DO Details:  Quality can relate to characteristics such as the fineness or coarseness of the spatial resolution, or the accuracy of the data values.
+- component: predictor_metadata
+  type: simple_text
+  order: 3
+  part: 1
+  body:
+    en: Please explain your concerns about Predictor quality.
+    fr: ""
+  followup_level: 5
+  odmap_id: ~
+
 ## ------------ model fit ------------
 - component: model_fit
   type: ordinal
@@ -976,72 +1144,7 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   followup_level: 0
   odmap_id: [m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3, m_selection_4]
-# ---------- observations ------------
-- component: observations
-  type: spatial
-  order: 1
-  part: 0
-  body:
-    en: Identify areas on the map where you are concerned about potential inaccuracies in the data.
-    fr: ""
-  values: ["Very inaccuracies", "Moderately inaccuracies", "Accurate", "Unknown"]
-  followup_level: 5
-  odmap_id: ~
-- component: observations
-  type: spatial
-  order: 2
-  part: 0
-  body:
-    en: Identify areas on the map where the modeled species is not sufficiently sampled.
-    fr: ""
-  values: ["Very undersampled", "Moderately undersampled", "Accurate", "Unknown"]
-  followup_level: 5
-  odmap_id: ~
-- component: observations
-  type: ordinal
-  order: 3
-  part: 0
-  body:
-    en: How concerned are you about the distribution of counts?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: observations
-  type: simple_text
-  order: 3
-  part: 1
-  body:
-    en: Explain. What is an appropriate truncation value (i.e. highest count)?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: observations
-  type: ordinal
-  order: 4
-  part: 0
-  body:
-    en: How concerned are you about the temporal distribution of detections?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: observations
-  type: simple_text
-  order: 4
-  part: 1
-  body:
-    en: Explain. What is an appropriate truncation value (i.e. minimum year)?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: observations
-  type: ordinal
-  order: 5
-  part: 0
-  body:
-    en: How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?
-    fr: ""
-  followup_level: 5
-  odmap_id: [d_bio_10]
+
 # ------------ model metadata -----------
 - component: model_metadata
   type: ordinal
@@ -1052,71 +1155,7 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   followup_level: 5
   odmap_id: [d_pred_2, m_multicol_1, m_preselect_1, m_estim_3]
-# ------------ predictor metadata -----------
-- component: predictor_metadata
-  type: ordinal
-  order: 1
-  part: 0
-  body:
-    en: How concerned are you about missing predictors?
-    fr: ""
-  followup_level: 0
-  odmap_id: [d_pred_2, m_multicol_1, m_estim_3]
-- component: predictor_metadata
-  type: simple_text
-  order: 1
-  part: 1
-  body:
-    en: What predictors are missing and why?
-    fr: ""
-  followup_level: 0
-  odmap_id: [d_pred_2]
-- component: predictor_metadata
-  type: ordinal
-  order: 2
-  part: 0
-  body:
-    en: How concerned are you about superfluous or inappropriate predictors?
-    fr: ""
-  followup_level: 0
-  odmap_id: [d_pred_2, m_estim_3]
-- component: predictor_metadata
-  type: simple_text
-  order: 2
-  part: 1
-  body:
-    en: Which predictors should be removed and why?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-# ------------ predictor raster -----------
-- component: predictor_raster
-  type: ordinal
-  order: 1
-  part: 0
-  body:
-    en: How concerned are you about inaccuracy in the model predictors?
-    fr: ""
-  followup_level: 0
-  odmap_id: [d_pred_2, p_uncertainty_1, p_uncertainty_2, p_uncertainty_3, p_uncertainty_4]
-- component: predictor_raster
-  type: simple_text
-  order: 1
-  part: 1
-  body:
-    en: Describe the predictor(s) and the areas of concern.
-    fr: ""
-  followup_level: 0
-  odmap_id: [d_pred_2]
-- component: predictor_raster
-  type: ordinal
-  order: 2
-  part: 0
-  body:
-    en: How concerned are you about the spatial resolution of the predictor variables?
-    fr: ""
-  followup_level: 5
-  odmap_id: [d_pred_2, m_preselect_1]
+
 ## ------------ model summary ------------
 - component: model_summary
   type: ordinal
@@ -1290,7 +1329,7 @@ followup_questions: # used for drill-down
 - followup_level: 5
   type: simple_text
   body:
-    en: If the problem is not addressed, what cautions or guidance should be offered to users of these predictions?
+    en: If the problem is not addressed, what cautions or guidance should be offered to users of model predictions?
     fr: ""
 
 

@@ -43,17 +43,17 @@ mod_page_observations_ui <- function(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
       navset_card_tab(
         sdm_nav_panel(
-          "Charts",
-          card_body(
-            class = "p-0",
-            mod_comp_obs_chart_ui(NS(id, "comp_obs_chart"))
-          )
-        ),
-        sdm_nav_panel(
           "Map",
           card_body(
             class = "p-0",
             mod_comp_observations_ui(NS(id, "comp_obs"))
+          )
+        ),
+        sdm_nav_panel(
+          "Charts",
+          card_body(
+            class = "p-0",
+            mod_comp_obs_chart_ui(NS(id, "comp_obs_chart"))
           )
         )
       )

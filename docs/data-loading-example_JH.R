@@ -410,8 +410,9 @@ if(F){
       "overview",
       "predictions",
       "observations",
-      "model",
       "predictors",
+      "model",
+      "model_metadata",
       "summary"
     )
   )
