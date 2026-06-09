@@ -448,3 +448,19 @@ add_selected_markers <- function(
 
   map
 }
+
+
+set_view <- function(map, map_views, tab) {
+  set_by <- map_views$set_by()
+  if (!is.null(set_by) && set_by != tab) {
+    current_view <- map_views[[set_by]]()
+
+    map <- leaflet::setView(
+      map,
+      lng = current_view[[2]]$lng,
+      lat = current_view[[2]]$lat,
+      zoom = current_view[[1]]
+    )
+  }
+  map
+}

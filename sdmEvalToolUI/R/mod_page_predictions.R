@@ -56,6 +56,7 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
   stopifnot(is.reactive(abandoned)) # reactiveVal
   stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
+  purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
 
   moduleServer(id, function(input, output, session) {
     # Placeholder reactiveVal until map created
@@ -77,11 +78,13 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
 
     mod_comp_spatial_prediction_server(
       "spatial_prediction",
+      parent_id = id,
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id,
       spatial_selection = spatial_selection,
-      spatial_ids = spatial_ids #reactiveVal to update in module
+      spatial_ids = spatial_ids, #reactiveVal to update in module
+      map_views = map_views
     )
   })
 }

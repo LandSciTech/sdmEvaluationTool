@@ -67,11 +67,13 @@ mod_comp_observations_ui <- function(
 
 mod_comp_observations_server <- function(
   id = "comp_observations",
+  parent_id,
   deployment_id,
   model_id,
   species_id,
   spatial_selection,
-  spatial_ids # ReactiveVal to be update
+  spatial_ids, # ReactiveVal to be update
+  map_views
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))

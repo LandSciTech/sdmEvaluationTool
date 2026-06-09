@@ -60,3 +60,10 @@ map_has_group <- function(map, group) {
     }) |>
     any()
 }
+
+view_match <- function(v1, v2, tolerance = 0.01) {
+  v1 <- unlist(v1)
+  v2 <- unlist(v2)
+
+  !is.null(v1) && !is.null(v2) && all(abs(v1 - v2) <= tolerance)
+}

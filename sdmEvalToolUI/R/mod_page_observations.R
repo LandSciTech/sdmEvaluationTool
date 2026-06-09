@@ -80,6 +80,7 @@ mod_page_observations_server <- function(id = "observations", ...) {
   stopifnot(is.reactive(abandoned)) # reactiveVal
   stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
+  purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
 
   moduleServer(id, function(input, output, session) {
     # Placeholder reactiveVal until map created
@@ -109,11 +110,13 @@ mod_page_observations_server <- function(id = "observations", ...) {
     # Create the map and return all spatial ids available
     mod_comp_observations_server(
       "comp_obs",
+      parent_id = id,
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id,
       spatial_selection = spatial_selection,
-      spatial_ids = spatial_ids #reactiveVal to update in module
+      spatial_ids = spatial_ids, #reactiveVal to update in module
+      map_views = map_views
     )
   })
 }

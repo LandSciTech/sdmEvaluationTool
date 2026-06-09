@@ -120,6 +120,14 @@ map_reactive_vals <- function(
   rv
 }
 
+map_view <- function(input, map) {
+  reactive(list(
+    input[[paste0(map, "_zoom")]],
+    input[[paste0(map, "_center")]]
+  )) |>
+    debounce(1000)
+}
+
 #' Create spinner when loading UI elements
 #'
 #' @param ui_element Character. UI element name.

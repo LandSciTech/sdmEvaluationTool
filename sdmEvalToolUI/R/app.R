@@ -109,6 +109,17 @@ sdm_tool <- function(
   server <- function(input, output, session) {
     # Setup ---------------------------------------------
 
+    ## Reactive Vals for passing among modules ----------------------
+
+    # List of reactive Map Views, named by tab plus 'active_tab' and 'set_by'
+    map_views <- purrr::map(c("", "", tabs), \(t) reactiveVal(NULL)) |>
+      rlang::set_names(c("active_tab", "set_by", tabs))
+
+    abandoned <- reactiveVal(FALSE) # Tracks abandoned evaluations (species or model)
+    unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE)) # List of page ids with with TRUE/FALSE for unsaved answers
+    tab_active <- reactive(input$sdm)
+
+    ## Reactive Vals for the overview/app as a whole ------------
     # Placeholder reactiveVals until overview created
     # Will be updated by overview module when button clicked to select evaluation
     overview_inputs <- reactiveVal(NULL)
@@ -116,12 +127,6 @@ sdm_tool <- function(
 
     # Holds inputs to be updated by sdm_update_selector()
     update_inputs <- reactiveVal(NULL)
-
-    # Marker to note if evaluation has been abandoned (species or model)
-    abandoned <- reactiveVal(FALSE)
-
-    # Holds ids of pages with TRUE/FALSE for unsaved answers
-    unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE))
 
     # Updates Deployment/Model/Species selectors
     #  created locally in order to have access to input & session directly
@@ -221,6 +226,20 @@ sdm_tool <- function(
       ))
     }) |>
       bindEvent(input$glossary)
+
+    # Track Map View  ---------------------------------
+    observe(map_views$active_tab(input$sdm))
+
+    # Create an observer for each tab
+    purrr::map(tabs, \(t) {
+      observe({
+        v <- map_views[[t]]()
+        # If map view exists and we're on this tab ...
+        if (!is.null(v) && isolate(input$sdm) == t) {
+          map_views$set_by(t) # Mark this tab as the one to follow
+        }
+      })
+    })
 
     # Abandon Review -----------------------------------
     # CLEANUP: Similar to mod_utils_evaluations_server... could be merged?
@@ -508,6 +527,8 @@ sdm_tool <- function(
         model_id = reactive(input$model_id),
         species_id = reactive(input$species_id),
         opts = opts,
+        tab_active = tab_active,
+        map_views = map_views,
         abandoned = abandoned,
         unsaved = unsaved
       )
