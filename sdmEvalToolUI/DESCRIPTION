@@ -19,7 +19,6 @@ Description: The goal of sdmEvalToolUI is to implement Shiny functionality
 License: Apache License 2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports:
     bsicons,
     bslib,
@@ -54,3 +53,4 @@ Remotes:
 Config/testthat/edition: 3
 Depends: 
     R (>= 4.1)
+Config/roxygen2/version: 8.0.0

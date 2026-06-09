@@ -13,6 +13,7 @@ The goal of sdmEvalToolUI is to implement Shiny functionality according to the S
 
 Authors:
 \itemize{
+  \item Peter Solymos \email{psolymos@gmail.com} (\href{https://orcid.org/0000-0001-7337-1740}{ORCID})
   \item Steffi LaZerte \email{sel@steffilazerte.ca} (\href{https://orcid.org/0000-0002-7690-8360}{ORCID})
 }
 
