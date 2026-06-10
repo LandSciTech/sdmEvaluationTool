@@ -25,7 +25,7 @@ which do not need to be namespaced.}
 }
 \value{
 A reactiveValues() list, as well as having the side effect of creating
-\code{\link[shiny:observe]{observe()}} for each value in the list to be independently updated.
+\code{\link[shiny:observe]{shiny::observe()}} for each value in the list to be independently updated.
 }
 \description{
 Tracks interactive inputs from map selections. Depending on the origin,
