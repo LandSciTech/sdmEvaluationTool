@@ -62,9 +62,8 @@ mod_comp_deployment_subunits_ui <- function(
 #' @param species_id Species ID
 #' @param spatial_selection Spatial selection
 #' @param spatial_ids Spatial IDs
-#' @param map_views List of maps views (zoom level and center lat/lon of the
-#' view port) for each page, as well as the active tab ("active_tab") and the
-#' tab maps should be setting views to ("set_by").
+#' @param map_views List. List of reactiveVals `active_tab`, `set_by` and
+#'   `view` (list with zoom and lat/lon).
 #'
 #' @returns Module server function
 #'

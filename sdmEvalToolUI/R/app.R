@@ -111,9 +111,12 @@ sdm_tool <- function(
 
     ## Reactive Vals for passing among modules ----------------------
 
-    # List of reactive Map Views, named by tab plus 'active_tab' and 'set_by'
-    map_views <- purrr::map(c("", "", tabs), \(t) reactiveVal(NULL)) |>
-      rlang::set_names(c("active_tab", "set_by", tabs))
+    # List of reactiveVals tracking values for map synchronization active page/tab, , and  Map Views, named by tab plus 'active_tab' and 'set_by'
+    map_views <- list(
+      "active_tab" = reactiveVal(NULL), # Currently active page/tab
+      "set_by" = reactiveVal(NULL), # Current page/tab with the map view we are tracking
+      "view" = reactiveVal(NULL) # The actual map view we are tracking (list with zoom, and lat/lon).
+    )
 
     abandoned <- reactiveVal(FALSE) # Tracks abandoned evaluations (species or model)
     unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE)) # List of page ids with with TRUE/FALSE for unsaved answers
@@ -229,17 +232,6 @@ sdm_tool <- function(
 
     # Track Map View  ---------------------------------
     observe(map_views$active_tab(input$sdm))
-
-    # Create an observer for each tab
-    purrr::map(tabs, \(t) {
-      observe({
-        v <- map_views[[t]]()
-        # If map view exists and we're on this tab ...
-        if (!is.null(v) && isolate(input$sdm) == t) {
-          map_views$set_by(t) # Mark this tab as the one to follow
-        }
-      })
-    })
 
     # Abandon Review -----------------------------------
     # CLEANUP: Similar to mod_utils_evaluations_server... could be merged?

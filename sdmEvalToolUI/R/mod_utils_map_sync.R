@@ -22,7 +22,8 @@ mod_utils_map_sync_server <- function(
     observe({
       req(map_views$active_tab() == parent_id)
       req(this_view())
-      map_views[[parent_id]](this_view())
+      map_views$view(this_view())
+      map_views$set_by(parent_id)
     }) |>
       bindEvent(this_view())
 
@@ -34,7 +35,7 @@ mod_utils_map_sync_server <- function(
     observe({
       req(map_views$set_by() != parent_id)
       req(map_views$active_tab() == parent_id)
-      req(!view_match(map_views[[map_views$set_by()]](), this_view()))
+      req(!view_match(map_views$view(), this_view()))
 
       set_view(
         leaflet::leafletProxy("map", session = parent_session),
