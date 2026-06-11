@@ -6,16 +6,22 @@
 \usage{
 mod_comp_predictor_raster_server(
   id = "comp_predictor_raster",
+  parent_id,
+  deployment_id,
   model_id,
-  deployment_id
+  map_views
 )
 }
 \arguments{
 \item{id}{Module ID}
 
+\item{deployment_id}{Deployment ID. Required for subunits.}
+
 \item{model_id}{Model ID}
 
-\item{deployment_id}{Deployment ID. Required for subunits.}
+\item{map_views}{List of maps views (zoom level and center lat/lon of the
+view port) for each page, as well as the active tab ("active_tab") and the
+tab maps should be setting views to ("set_by").}
 }
 \value{
 Module server function

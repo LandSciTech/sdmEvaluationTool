@@ -6,11 +6,13 @@
 \usage{
 mod_comp_observations_server(
   id = "comp_observations",
+  parent_id,
   deployment_id,
   model_id,
   species_id,
   spatial_selection,
-  spatial_ids
+  spatial_ids,
+  map_views
 )
 }
 \arguments{
@@ -25,6 +27,10 @@ mod_comp_observations_server(
 \item{spatial_selection}{Spatial selection}
 
 \item{spatial_ids}{Spatial IDs}
+
+\item{map_views}{List of maps views (zoom level and center lat/lon of the
+view port) for each page, as well as the active tab ("active_tab") and the
+tab maps should be setting views to ("set_by").}
 }
 \value{
 Module server function
