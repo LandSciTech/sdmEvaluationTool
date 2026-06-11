@@ -450,9 +450,9 @@ add_selected_markers <- function(
 }
 
 
-set_view <- function(map, map_views, tab) {
+set_view <- function(map, map_views, tab = NULL) {
   set_by <- map_views$set_by()
-  if (!is.null(set_by) && set_by != tab) {
+  if (!is.null(set_by) && (is.null(tab) || set_by != tab)) {
     current_view <- map_views[[set_by]]()
 
     map <- leaflet::setView(

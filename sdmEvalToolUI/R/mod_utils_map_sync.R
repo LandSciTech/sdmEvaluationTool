@@ -38,8 +38,7 @@ mod_utils_map_sync_server <- function(
 
       set_view(
         leaflet::leafletProxy("map", session = parent_session),
-        map_views,
-        tab = parent_id
+        map_views
       )
     })
   })
