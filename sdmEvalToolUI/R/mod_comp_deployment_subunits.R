@@ -62,19 +62,29 @@ mod_comp_deployment_subunits_ui <- function(
 #' @param species_id Species ID
 #' @param spatial_selection Spatial selection
 #' @param spatial_ids Spatial IDs
+#' @param map_views List of maps views (zoom level and center lat/lon of the
+#' view port) for each page, as well as the active tab ("active_tab") and the
+#' tab maps should be setting views to ("set_by").
 #'
 #' @returns Module server function
 #'
 #' @export
 mod_comp_deployment_subunits_server <- function(
   id = "comp_summary",
+  parent_id,
   deployment_id,
   model_id,
   species_id,
   spatial_selection,
-  spatial_ids
+  spatial_ids,
+  map_views
 ) {
   moduleServer(id, function(input, output, session) {
+    stopifnot(is.reactive(deployment_id))
+    stopifnot(is.reactive(model_id))
+    stopifnot(is.reactive(species_id))
+    purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
+
     # Setup -------------------------------------------------------------
     ns <- session$ns
 
@@ -97,8 +107,19 @@ mod_comp_deployment_subunits_server <- function(
       deployment_subunits_map(
         subunits(),
         ns = session$ns
-      )
-    })
+      ) |>
+        set_view(map_views, tab = parent_id)
+    }) |>
+      bindEvent(subunits())
+
+    # Synchronize map views ------------------------------------------------
+    mod_utils_map_sync_server(
+      "sync",
+      parent_id,
+      this_view = map_view(input, "map"),
+      map_views,
+      parent_session = session
+    )
 
     # Process and show map selections ---------------------------------------
     # TEMPLATE: This will be the same for each spatial component

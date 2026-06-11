@@ -41,8 +41,8 @@ mod_page_predictions_ui <- function(
 #'
 #' @param id Shiny module ID
 #' @param ... Additional arguments passed via expand_dots including
-#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved`, `opts`
-#' list (see [sdm_tool()] which programmatically calls all module pages.
+#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved`, `opts`,
+#' `map_views`. See [sdm_tool()] which programmatically calls all module pages.
 #'
 #' @returns Server function for Shiny module
 #'

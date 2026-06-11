@@ -60,6 +60,9 @@ mod_comp_template_spatial_ui <- function(
 #' @param species_id Species ID
 #' @param spatial_selection Spatial selection. Required for spatial evaluations.
 #' @param spatial_ids Spatial IDs. Required for spatial evaluations.
+#' @param map_views List of maps views (zoom level and center lat/lon of the
+#' view port) for each page, as well as the active tab ("active_tab") and the
+#' tab maps should be setting views to ("set_by").
 #'
 #' @returns Module server function
 #'
@@ -71,11 +74,13 @@ mod_comp_template_spatial_server <- function(
   model_id,
   species_id,
   spatial_selection,
-  spatial_ids # ReactiveVal to be update
+  spatial_ids, # ReactiveVal to be update
+  map_views
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
 
   moduleServer(id, function(input, output, session) {
     # Setup -------------------------------------------------------------
@@ -116,8 +121,19 @@ mod_comp_template_spatial_server <- function(
         map_units(),
         subunits(),
         ns = session$ns
-      )
-    })
+      ) |>
+        set_view(map_views, tab = parent_id) # Match any existing view
+    }) |>
+      bindEvent(map_units()) # Ensure this initial map doesn't reset for view updates (see `mod_utils_map_sync_server()`)
+
+    # Synchronize map views ------------------------------------------------
+    mod_utils_map_sync_server(
+      "sync",
+      parent_id,
+      this_view = map_view(input, "map"),
+      map_views,
+      parent_session = session
+    )
 
     # Process and show map selections ---------------------------------------
     # TEMPLATE: This will be the same for each spatial component

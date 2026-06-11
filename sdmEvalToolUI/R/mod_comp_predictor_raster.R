@@ -64,6 +64,9 @@ mod_comp_predictor_raster_ui <- function(
 #' @param id Module ID
 #' @param deployment_id Deployment ID. Required for subunits.
 #' @param model_id Model ID
+#' @param map_views List of maps views (zoom level and center lat/lon of the
+#' view port) for each page, as well as the active tab ("active_tab") and the
+#' tab maps should be setting views to ("set_by").
 #'
 #' @returns Module server function
 #'
@@ -71,11 +74,14 @@ mod_comp_predictor_raster_ui <- function(
 
 mod_comp_predictor_raster_server <- function(
   id = "comp_predictor_raster",
+  parent_id,
+  deployment_id,
   model_id,
-  deployment_id
+  map_views
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
+  purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
 
   moduleServer(id, function(input, output, session) {
     # Tooltip -------------------------------------------------------
@@ -123,8 +129,10 @@ mod_comp_predictor_raster_server <- function(
     })
 
     output$map <- leaflet::renderLeaflet({
-      map()
-    })
+      map() |>
+        set_view(map_views, tab = parent_id)
+    }) |>
+      bindEvent(map())
 
     observe({
       leaflet::leafletProxy("map", session = session) |>
@@ -134,6 +142,15 @@ mod_comp_predictor_raster_server <- function(
           layers = input$predictor
         )
     })
+
+    # Synchronize map views ------------------------------------------------
+    mod_utils_map_sync_server(
+      "sync",
+      parent_id,
+      this_view = map_view(input, "map"),
+      map_views,
+      parent_session = session
+    )
   })
 }
 
