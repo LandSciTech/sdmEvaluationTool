@@ -33,7 +33,7 @@ mod_comp_deployment_subunits_ui <- function(
   layout_columns(
     gap = 0, # No gap between top and bottom
     col_widths = 12, # One column
-    row_heights = c("60%", "40%"), # More map than selection area(
+    row_heights = c("60%", "40%"), # More map than selection area
     sdm_card(
       class = "sub-card",
       sdm_card_header(header),

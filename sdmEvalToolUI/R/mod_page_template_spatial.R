@@ -101,7 +101,7 @@ mod_page_template_spatial_server <- function(id = "template_spatial", ...) {
       abandoned = abandoned,
       unsaved = unsaved,
       # TEMPLATE: These are required for pages with spatial components
-      spatial_type = "area", # "points" or "area"
+      spatial_type = "areas", # "points" or "areas"
       spatial_ids = spatial_ids
     )
 
