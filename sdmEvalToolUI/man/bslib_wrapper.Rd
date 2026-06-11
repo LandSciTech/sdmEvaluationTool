@@ -27,7 +27,7 @@ sdm_layout_sidebar(..., gap = 0, border = FALSE)
 
 \item{title}{Character. Nav panel title.}
 
-\item{gap}{Numeric. Veritical gap between sidebar elements.}
+\item{gap}{Numeric. Vertical gap between sidebar elements.}
 
 \item{border}{Logical. Whether or not to add a border.}
 }

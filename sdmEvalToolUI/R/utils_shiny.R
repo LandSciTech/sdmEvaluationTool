@@ -162,7 +162,7 @@ sdm_spinner <- function(ui_element) {
 #' @param full_screen Logical. Option to make card full screen.
 #' @param min_height Numeric. Minimum card height.
 #' @param title Character. Nav panel title.
-#' @param gap Numeric. Veritical gap between sidebar elements.
+#' @param gap Numeric. Vertical gap between sidebar elements.
 #' @param border Logical. Whether or not to add a border.
 #'
 #' @returns bslib function output

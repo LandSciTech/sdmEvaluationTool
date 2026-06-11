@@ -27,9 +27,8 @@ mod_comp_template_spatial_server(
 
 \item{spatial_ids}{Spatial IDs. Required for spatial evaluations.}
 
-\item{map_views}{List of maps views (zoom level and center lat/lon of the
-view port) for each page, as well as the active tab ("active_tab") and the
-tab maps should be setting views to ("set_by").}
+\item{map_views}{List. List of reactiveVals \code{active_tab}, \code{set_by} and
+\code{view} (list with zoom and lat/lon).}
 }
 \value{
 Module server function

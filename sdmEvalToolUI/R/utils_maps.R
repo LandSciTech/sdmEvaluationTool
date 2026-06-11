@@ -34,7 +34,7 @@ feature_ids <- function(features) {
 #' Note: this only works for Leaflet maps, NOT Leaflet Proxies.
 #' For example, this is why `mod_comp_predictor_raster` family of functions
 #' are a bit convoluted when it calls to adding layers and controls (because
-#' `add_controls()` only adds layers which are dected with this function).
+#' `add_controls()` only adds layers which are detected with this function).
 #'
 #' This may be slightly fragile if the list structure of the leaflet objects
 #' change.
