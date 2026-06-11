@@ -4,8 +4,9 @@
 #' @param options List. Shiny app options (passed to `options` in
 #' [shiny::shinyApp()].
 #' @param tabs Character. List the tabs/pages that the UI should have.
-#' @param user Character. User id. Placeholder for now, may be changed to use
-#' authentication later.
+#' @param user Character. User id. Placeholder for now, used for testing.
+#' @param user_db A data frame with credentials data or path to SQLite
+#' database created with [shinymanager::create_db()].
 #' @param ... Other arguments passed to [shiny::shinyApp()].
 #'
 #' @returns A Shiny app object. Launched in browser/viewer if interactive.
@@ -16,7 +17,7 @@
 
 sdm_tool <- function(
   lang = "english",
-  options = list(host = "0.0.0.0", port = 8080),
+  options = list(host = "0.0.0.0", port = 7405),
   tabs = c(
     "overview",
     "predictions",
@@ -27,6 +28,7 @@ sdm_tool <- function(
     "summary"
   ),
   user = NULL,
+  user_db = NULL,
   ...
 ) {
   # Pages - Names become pretty Tab names, values are ids used for navigation (input$sdm)
@@ -106,7 +108,17 @@ sdm_tool <- function(
     ))
   )
 
+  if (!is.null(user_db)) {
+    ui <- shinymanager::secure_app(ui)
+  }
+
   server <- function(input, output, session) {
+    if (!is.null(user_db)) {
+      res_auth <- shinymanager::secure_server(
+        check_credentials = shinymanager::check_credentials(user_db)
+      )
+    }
+
     # Setup ---------------------------------------------
 
     ## Reactive Vals for passing among modules ----------------------
@@ -175,7 +187,11 @@ sdm_tool <- function(
     user_id <- reactive({
       # TODO: Currently this uses the user_id argument of sdm_tool()
       #   In future may get user_id from somewhere else
-      user
+      if (is.null(user_db)) {
+        user
+      } else {
+        res_auth$user
+      }
     })
 
     user_roles <- reactive({

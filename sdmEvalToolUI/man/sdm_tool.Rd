@@ -6,10 +6,11 @@
 \usage{
 sdm_tool(
   lang = "english",
-  options = list(host = "0.0.0.0", port = 8080),
+  options = list(host = "0.0.0.0", port = 7405),
   tabs = c("overview", "predictions", "observations", "model", "predictors",
     "model_metadata", "summary"),
-  user = "testuser",
+  user = NULL,
+  user_db = NULL,
   ...
 )
 }
@@ -21,8 +22,10 @@ sdm_tool(
 
 \item{tabs}{Character. List the tabs/pages that the UI should have.}
 
-\item{user}{Character. User id. Placeholder for now, may be changed to use
-authentication later.}
+\item{user}{Character. User id. Placeholder for now, used for testing.}
+
+\item{user_db}{A data frame with credentials data or path to SQLite
+database created with \code{\link[shinymanager:create_db]{shinymanager::create_db()}}.}
 
 \item{...}{Other arguments passed to \code{\link[shiny:shinyApp]{shiny::shinyApp()}}.}
 }

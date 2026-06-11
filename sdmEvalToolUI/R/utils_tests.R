@@ -65,7 +65,7 @@ test_page <- function(
     }
   }
 
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+  shiny::shinyApp(ui, server, options = list(port = 7405))
 }
 
 #' Create Test App for Component Modules
@@ -121,7 +121,7 @@ test_comp <- function(
     do.call(get(paste0(module, "_server")), u)
   }
 
-  shiny::shinyApp(ui, server, options = list(port = 8080))
+  shiny::shinyApp(ui, server, options = list(port = 7405))
 }
 
 
