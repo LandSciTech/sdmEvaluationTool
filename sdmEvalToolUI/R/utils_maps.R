@@ -61,6 +61,22 @@ map_has_group <- function(map, group) {
     any()
 }
 
+#' Compare map views against a tolerance
+#'
+#' Compares map views within a defined tolerance. If the views are close enough,
+#' returns `TRUE` otherwise `FALSE`.
+#'
+#' @param v1 List. First map view to compare. List with zoom and list of lat,
+#' and lon.
+#' @param v2 List. Second map view to compare. List with zoom and list of lat,
+#' and lon.
+#' @param tolerance Numeric. Amount of difference in coordinates tolerated.
+#'
+#' @returns Logical TRUE if the views match within `tolerance` for the coordinates.
+#'  FALSE if the views do not match.
+#'
+#' @noRd
+
 view_match <- function(v1, v2, tolerance = 0.01) {
   v1 <- unlist(v1)
   v2 <- unlist(v2)

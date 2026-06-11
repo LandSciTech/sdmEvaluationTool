@@ -450,6 +450,20 @@ add_selected_markers <- function(
 }
 
 
+#' Set the view on a map
+#'
+#' @param map Leaflet map (or LeafletProxy) to change the view on.
+#' @param map_views List. List of reactiveVals `active_tab`, `set_by` and
+#'   `view` (list with zoom and lat/lon).
+#' @param tab Character. Optionally provide page/tab id to check that we're not
+#'   on the page the view is tracking (i.e. `set_by`). If NULL, ignored. (This
+#'   is only required when leaflet maps are first created, otherwise
+#'   `mod_utils_map_sync_server()` already performs the check.
+#'
+#' @returns A leaflet map object
+#'
+#' @noRd
+
 set_view <- function(map, map_views, tab = NULL) {
   set_by <- map_views$set_by()
   if (!is.null(set_by) && (is.null(tab) || set_by != tab)) {
