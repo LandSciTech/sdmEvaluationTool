@@ -62,7 +62,8 @@ users <- data.frame(
   user_email = "x@y.z",
   user_affiliation = "XYZ",
   admin = FALSE,
-  password = generate_password()
+  password = "pass1234"
+  # password = generate_password() # use this for random password
 )
 db_write_table(con, "users", users)
 

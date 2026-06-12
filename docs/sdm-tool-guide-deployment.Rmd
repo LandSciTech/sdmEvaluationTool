@@ -62,12 +62,7 @@ Create a file inside the `app` folder named `app/app.R` and copy the contents of
 library(sdmEvalToolCore)
 library(sdmEvalToolUI)
 
-con <- withr::local_db_connection(sdmEvalToolUI::db_connect_check())
-users <- sdmEvalToolCore::db_read_table(con, "users")
-users$user <- users$user_id
-users$password <- "pass1234"
-
-sdm_tool(user_db = users)
+sdm_tool(user_db = make_user_db())
 ```
 
 The authentication functionality of the SDM Model Evaluation Tool relies on the 
