@@ -62,6 +62,7 @@ mod_comp_predictor_raster_ui <- function(
 #' Predictor Raster component Server
 #'
 #' @param id Module ID
+#' @param parent_id Parent tab ID (used to identify which tab is active)
 #' @param deployment_id Deployment ID. Required for subunits.
 #' @param model_id Model ID
 #' @param map_views List. List of reactiveVals `active_tab`, `set_by` and

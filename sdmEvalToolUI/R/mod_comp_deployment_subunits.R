@@ -57,6 +57,7 @@ mod_comp_deployment_subunits_ui <- function(
 #' Deployment Subunits component Server
 #'
 #' @param id Module ID
+#' @param parent_id Parent tab ID (used to identify which tab is active)
 #' @param deployment_id Deployment ID
 #' @param model_id Model ID
 #' @param species_id Species ID

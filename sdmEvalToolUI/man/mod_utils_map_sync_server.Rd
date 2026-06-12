@@ -14,6 +14,14 @@ mod_utils_map_sync_server(
 }
 \arguments{
 \item{id}{Character. Shiny module ID}
+
+\item{parent_id}{Character. Parent tab ID (used to identify which tab is active)}
+
+\item{this_view}{Reactive. Reactive that returns the current map view (list with zoom and lat/lon)}
+
+\item{map_views}{List. List of reactiveVals \code{active_tab}, \code{set_by} and \code{view} (list with zoom and lat/lon).}
+
+\item{parent_session}{Shiny session. Parent session (used for leafletProxy)}
 }
 \value{
 Shiny server

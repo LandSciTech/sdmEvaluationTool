@@ -12,7 +12,7 @@ utils::globalVariables(c(
   "layers", "part", "show_clicked", "response", "width", 
   "show_spatial_ids", 
   
-  "values" # Spatial inputs
+  "values", "map_views", "parent_id" # Spatial inputs
 ))
 
 .onAttach <- function(libname, pkgname) {

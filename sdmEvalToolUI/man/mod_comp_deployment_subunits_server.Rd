@@ -18,6 +18,8 @@ mod_comp_deployment_subunits_server(
 \arguments{
 \item{id}{Module ID}
 
+\item{parent_id}{Parent tab ID (used to identify which tab is active)}
+
 \item{deployment_id}{Deployment ID}
 
 \item{model_id}{Model ID}

@@ -10,7 +10,7 @@ mod_utils_map_selections_ui(id, spatial_type)
 \item{id}{Character. Shiny module ID.}
 
 \item{spatial_type}{Character. Only applicable for spatial selections. Either
-'points' (spatial points) or 'area' (spatial polygons/raster).}
+'points' (spatial points) or 'areas' (spatial polygons/raster).}
 }
 \value{
 Shiny UI

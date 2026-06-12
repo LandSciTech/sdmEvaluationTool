@@ -54,6 +54,7 @@ mod_comp_spatial_prediction_ui <- function(
 #' Spatial Prediction component Server
 #'
 #' @param id Module ID
+#' @param parent_id Parent tab ID (used to identify which tab is active)
 #' @param deployment_id Deployment ID. Required for subunits.
 #' @param model_id Model ID
 #' @param species_id Species ID

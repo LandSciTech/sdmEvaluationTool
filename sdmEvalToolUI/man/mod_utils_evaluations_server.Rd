@@ -21,7 +21,7 @@ mod_utils_evaluations_server(
 \item{id}{Shiny module ID}
 
 \item{spatial_type}{Character. Only applicable for spatial selections. Either
-'points' (spatial points) or 'area' (spatial polygons/raster).}
+'points' (spatial points) or 'areas' (spatial polygons/raster).}
 
 \item{component_id}{Character. Component ID}
 

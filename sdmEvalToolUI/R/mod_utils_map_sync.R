@@ -3,6 +3,10 @@
 #' Synchronizes the map view port among tabs
 #'
 #' @param id Character. Shiny module ID
+#' @param parent_id Character. Parent tab ID (used to identify which tab is active)
+#' @param this_view Reactive. Reactive that returns the current map view (list with zoom and lat/lon)
+#' @param map_views List. List of reactiveVals `active_tab`, `set_by` and `view` (list with zoom and lat/lon).
+#' @param parent_session Shiny session. Parent session (used for leafletProxy)
 #'
 #' @returns Shiny server
 #'
