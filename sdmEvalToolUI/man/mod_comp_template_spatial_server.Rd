@@ -6,6 +6,7 @@
 \usage{
 mod_comp_template_spatial_server(
   id = "comp_template_spatial",
+  parent_id,
   deployment_id,
   model_id,
   species_id,
@@ -16,6 +17,8 @@ mod_comp_template_spatial_server(
 }
 \arguments{
 \item{id}{Module ID}
+
+\item{parent_id}{ID of the parent module, corresponds to the tab.}
 
 \item{deployment_id}{Deployment ID. Required for subunits.}
 

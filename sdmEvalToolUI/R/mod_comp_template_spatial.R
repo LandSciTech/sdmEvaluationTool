@@ -55,6 +55,7 @@ mod_comp_template_spatial_ui <- function(
 #' Template Spatial component Server
 #'
 #' @param id Module ID
+#' @param parent_id ID of the parent module, corresponds to the tab.
 #' @param deployment_id Deployment ID. Required for subunits.
 #' @param model_id Model ID
 #' @param species_id Species ID
@@ -69,6 +70,7 @@ mod_comp_template_spatial_ui <- function(
 
 mod_comp_template_spatial_server <- function(
   id = "comp_template_spatial",
+  parent_id,
   deployment_id, # Require deployment_id for subunits on maps
   model_id,
   species_id,
