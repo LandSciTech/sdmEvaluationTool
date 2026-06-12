@@ -33,6 +33,9 @@ Create a folder for the app, e.g. `app`.
 
 Move the deployment materials into the `app/sdm_evaluation_results` folder.
 
+If using a folder name other than `sdm_evaluation_results`, make sure to
+set the base path option: `sdmevaltool_options(base = "some_other_path")`.
+
 ### Step 3: Add the app code and users
 
 Make sure that the sdmEvalToolCore and sdmEvalToolUI packages are installed via 
