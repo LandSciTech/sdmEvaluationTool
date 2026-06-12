@@ -6,12 +6,14 @@
 \usage{
 test_comp(
   module,
-  use = c("deployment_id", "model_id", "species_id", "spatial_ids", "spatial_selection"),
+  use = c("parent_id", "deployment_id", "model_id", "species_id", "spatial_ids",
+    "spatial_selection", "map_views"),
   deployment_id = "deployment1",
   model_id = "bam_v5_can71",
   species_id = "BBWO",
   spatial_ids = NULL,
-  spatial_selection = list(show_clicked = NULL, show_spatial_ids = NULL)
+  spatial_selection = list(show_clicked = NULL, show_spatial_ids = NULL),
+  map_views = list(active_tab = NULL, set_by = NULL, view = NULL)
 )
 }
 \arguments{
@@ -29,6 +31,8 @@ test_comp(
 
 \item{spatial_selection}{List. Optional starting spatial selection
 (\code{show_clicked} and \code{show_spatial_ids}).}
+
+\item{map_views}{List. Optional set map views for map synchronization.}
 }
 \value{
 Shiny App
