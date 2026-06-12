@@ -946,8 +946,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Provide any additional comments or views you would like to submit concerning these Prediction topics.
     fr: ""
   followup_level: 0
-  odmap_id: ~
-
+  odmap_id: [o_objective_3,o_utility_2,o_utility_3]
 
 # ---------- observations ------------
 - component: observations
@@ -1025,9 +1024,17 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?
     fr: ""
+  followup_level: 0
+  odmap_id: [d_bio_12]
+- component: observations
+  type: simple_text
+  order: 5
+  part: 1
+  body:
+    en: Please explain your concerns.
+    fr: ""
   followup_level: 5
-  odmap_id: [d_bio_10]
-
+  odmap_id: ~
 - component: observations
   type: spatial
   order: 6
@@ -1057,7 +1064,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Provide any additional comments or views you would like to submit concerning these Observation topics.
     fr: ""
   followup_level: 0
-  odmap_id: ~
+  odmap_id: [o_objective_3,o_utility_2,o_utility_3]
 
 # ------------ predictor metadata -----------
 - component: predictor_metadata
@@ -1068,7 +1075,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: For each of the Predictors* in the drop-down list above the map, please consider the map and the metadata in the table. Are you aware of Predictor* data that is not listed that could be helpful in modeling?
     fr: ""
   followup_level: 0
-  odmap_id: [d_pred_2, m_multicol_1, m_estim_3]
+  odmap_id: [0_concept_1,d_pred_2, m_multicol_1, m_estim_3]
 - component: predictor_metadata
   type: simple_text
   order: 1
@@ -1086,7 +1093,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Do you see Predictors* that you believe are not relevant for modeling?
     fr: ""
   followup_level: 0
-  odmap_id: [d_pred_2, m_estim_3]
+  odmap_id: [d_pred_2, m_multicol_1, m_estim_3]
 - component: predictor_metadata
   type: simple_text
   order: 2
@@ -1104,7 +1111,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Are you concerned about the quality* of any of the  Predictors* listed?
     fr: ""
   followup_level: 0
-  odmap_id: [d_pred_2,m_preselect_1]
+  odmap_id: [d_pred_2,d_pred_9, m_preselect_1]
 #TO DO Details:  Quality can relate to characteristics such as the fineness or coarseness of the spatial resolution, or the accuracy of the data values.
 - component: predictor_metadata
   type: simple_text
@@ -1112,6 +1119,25 @@ default_questions: # where values is missing, we use the values from question_ty
   part: 1
   body:
     en: Please explain your concerns about Predictor quality.
+    fr: ""
+  followup_level: 5
+  odmap_id: ~
+
+- component: predictor_metadata
+  type: yes_no
+  order: 4
+  part: 0
+  body:
+    en: Do you have other concerns about the description and treatment of the predictor data?
+    fr: ""
+  followup_level: 0
+  odmap_id: [o_objective_3,o_utility_2,o_utility_3,o_concept_1,d_pred_9,d_pred_2, m_multicol_1, m_preselect_1, m_estim_3]
+- component: predictor_metadata
+  type: simple_text
+  order: 4
+  part: 1
+  body:
+    en: Please explain your other concerns.
     fr: ""
   followup_level: 5
   odmap_id: ~
@@ -1125,7 +1151,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about the adequacy or appropriateness of the validation metrics?
     fr: ""
   followup_level: 0
-  odmap_id: [m_estim_1, m_estim_2, m_estim_3]
+  odmap_id: [a_metrics_1]
 - component: model_fit
   type: simple_text
   order: 1
@@ -1143,18 +1169,8 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What other concerns do you have about model performance?
     fr: ""
   followup_level: 0
-  odmap_id: [m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3, m_selection_4]
+  odmap_id: [o_objective_3,o_utility_2,o_utility_3,m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3,p_part_1,d_part_3]
 
-# ------------ model metadata -----------
-- component: model_metadata
-  type: ordinal
-  order: 1
-  part: 0
-  body:
-    en: How concerned are you about the description and treatment of predictor data, as described in the model metadata?
-    fr: ""
-  followup_level: 5
-  odmap_id: [d_pred_2, m_multicol_1, m_preselect_1, m_estim_3]
 
 ## ------------ model summary ------------
 - component: model_summary
@@ -1165,7 +1181,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about missing predictor interactions or nonlinear relationships?
     fr: ""
   followup_level: 0
-  odmap_id: [d_pred_2, m_preselect_1]
+  odmap_id: [o_concept_1,o_algorithms_2,d_pred_2, m_estim_1,m_estim_2,m_estim_3,p_uncertainty_2,p_uncertainty_3]
 - component: model_summary
   type: simple_text
   order: 1
@@ -1174,7 +1190,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What interactions or nonlinear relationships are missing?
     fr: ""
   followup_level: 0
-  odmap_id: [d_pred_2, m_preselect_1]
+  odmap_id: ~
 - component: model_summary
   type: ordinal
   order: 2
@@ -1183,7 +1199,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are your about the reported relative importance of predictors?
     fr: ""
   followup_level: 0
-  odmap_id: [m_estim_2]
+  odmap_id: [m_estim_2,m_estim_3]
 - component: model_summary
   type: simple_text
   order: 2
@@ -1192,7 +1208,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Which predictors would you expect to be more or less important and why?
     fr: ""
   followup_level: 0
-  odmap_id: [m_estim_2]
+  odmap_id: ~
 - component: model_summary
   type: ordinal
   order: 3
@@ -1201,7 +1217,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about the appropriateness of the modeling algorithm for the model objectives and application?
     fr: ""
   followup_level: 5
-  odmap_id: [o_algorithms_1, o_algorithms_2]
+  odmap_id: [o_objective_3,o_utility_2,o_utility_3,o_assumptions_1,o_workflow_1,o_workflow_2,o_algorithms_1, o_algorithms_2]
 - component: model_summary
   type: ordinal
   order: 4
@@ -1210,7 +1226,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about how well the modelling framework addresses important statistical assumptions?
     fr: ""
   followup_level: 5
-  odmap_id: [o_algorithms_2, o_workflow_1, o_objective_2, m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, o_workflow_2, m_selection_3, m_selection_4]
+  odmap_id: [o_concept_1, o_assumptions_1, o_workflow_1,o_workflow_2, o_objective_3, m_multicol_1, m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3, m_depend_1,m_depend_2,m_depend_3,m_threshold_1,p_output_2,p_uncertainty_5,p_uncertainty_1,p_uncertainty_2,p_uncertainty_3,p_uncertainty_4]
 - component: model_summary
   type: ordinal
   order: 5
@@ -1219,7 +1235,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about how well important biological assumptions are explained and justified?
     fr: ""
   followup_level: 5
-  odmap_id: [o_objective_1, o_objective_2, o_concept_1, o_assumptions_1]
+  odmap_id: [o_objective_3, o_utility_2,o_utility_3, o_concept_1, o_assumptions_1]
 - component: model_summary
   type: simple_text
   order: 6
@@ -1228,7 +1244,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What other concerns or comments do you have about model complexity?
     fr: ""
   followup_level: 0
-  odmap_id: [m_settings_1, o_algorithms_2]
+  odmap_id: ~
 # ---------- deployment settings --------
 - component: deployment_settings
   type: simple_text
@@ -1238,7 +1254,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Are there any non-target applications that you think this model is unsuitable for? Please explain.
     fr: ""
   followup_level: 0
-  odmap_id: [o_objective_1, o_objective_2, o_utility_2, o_utility_3]
+  odmap_id: [o_objective_3, o_utility_2,o_utility_3]
 - component: deployment_settings
   type: ordinal
   order: 2
@@ -1247,7 +1263,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about how well suited the model is for the intended application of the model?
     fr: ""
   followup_level: 5
-  odmap_id: [o_objective_1, o_utility_2]
+  odmap_id: [o_objective_3, o_utility_2]
 - component: deployment_settings
   type: simple_text
   order: 3
@@ -1256,7 +1272,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What other concerns or comments do you have about using the model for the intended model applications?
     fr: ""
   followup_level: 0
-  odmap_id: [o_objective_1, o_utility_2]
+  odmap_id: [o_objective_3, o_utility_2]
 # --------- deployment_subunits ------------
 - component: deployment_subunits
   type: simple_text
@@ -1287,10 +1303,6 @@ question_types:
     name: Yes/No Question
     description: A Yes or No question. Follow up questions are conditional on Yes.
     values: ["Yes", "No"]
-  # gold_standard:
-  #   name: Gold Standard
-  #   description: A 1-5 scale (Unk - Gold) ordinal response presented as a dropdown.
-  #   values: ["Gold", "Silver", "Bronze", "Deficient", "Unknown"]
   ordinal:
     name: Ordinal
     description: "Ordinal for importance or difficulty (-2 -- +2) to answer questions such as: To what degree ..."
@@ -1299,7 +1311,6 @@ question_types:
     name: Spatial
     description: A list of subunit IDs saved for each of the values.
     values: []
-# severe overprediction, moderate overprediction, accurate, moderate underprediction, severe underprediction, unknown
 
 followup_questions: # used for drill-down
 - followup_level: 1
