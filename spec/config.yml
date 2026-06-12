@@ -114,6 +114,11 @@ tables:
         description: Boolean flag for admin users.
         type: boolean
         constraint: NOT NULL
+      password:
+        name: Password
+        description: The user's password.
+        type: text
+        constraint: NOT NULL
 
   species:
     name: Species
