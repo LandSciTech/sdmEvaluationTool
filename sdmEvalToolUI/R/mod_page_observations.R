@@ -90,7 +90,7 @@ mod_page_observations_server <- function(id = "observations", ...) {
     spatial_selection <- mod_utils_evaluations_server(
       "eval",
       component_id = "observations",
-      spatial_type = "area",
+      spatial_type = "areas",
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id,
