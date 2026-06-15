@@ -6,15 +6,19 @@
 \usage{
 mod_comp_deployment_subunits_server(
   id = "comp_summary",
+  parent_id,
   deployment_id,
   model_id,
   species_id,
   spatial_selection,
-  spatial_ids
+  spatial_ids,
+  map_views
 )
 }
 \arguments{
 \item{id}{Module ID}
+
+\item{parent_id}{Parent tab ID (used to identify which tab is active)}
 
 \item{deployment_id}{Deployment ID}
 
@@ -25,6 +29,9 @@ mod_comp_deployment_subunits_server(
 \item{spatial_selection}{Spatial selection}
 
 \item{spatial_ids}{Spatial IDs}
+
+\item{map_views}{List. List of reactiveVals \code{active_tab}, \code{set_by} and
+\code{view} (list with zoom and lat/lon).}
 }
 \value{
 Module server function

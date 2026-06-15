@@ -7,11 +7,12 @@
 mod_page_template_spatial_server(id = "template_spatial", ...)
 }
 \arguments{
-\item{id}{Shiny module ID}
+\item{id}{Shiny module ID. NOTE for pages this should match a value in the
+tabs argument of sdm_tool().f}
 
 \item{...}{Additional arguments passed via expand_dots including
-\code{deployment_id}, \code{model_id}, \code{species_id}, \code{abandoned}, \code{unsaved}, \code{opts}
-list (see \code{\link[=sdm_tool]{sdm_tool()}} which programmatically calls all module pages.}
+\code{deployment_id}, \code{model_id}, \code{species_id}, \code{abandoned}, \code{unsaved}, \code{opts},
+\code{map_views}. See \code{\link[=sdm_tool]{sdm_tool()}} which programmatically calls all module pages.}
 }
 \value{
 Server function for Shiny module

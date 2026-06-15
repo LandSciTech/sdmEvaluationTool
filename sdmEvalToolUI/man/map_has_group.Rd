@@ -18,7 +18,7 @@ Logical. True if detected, false otherwise.
 Note: this only works for Leaflet maps, NOT Leaflet Proxies.
 For example, this is why \code{mod_comp_predictor_raster} family of functions
 are a bit convoluted when it calls to adding layers and controls (because
-\code{add_controls()} only adds layers which are dected with this function).
+\code{add_controls()} only adds layers which are detected with this function).
 }
 \details{
 This may be slightly fragile if the list structure of the leaflet objects

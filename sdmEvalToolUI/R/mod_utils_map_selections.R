@@ -5,7 +5,7 @@
 #'
 #' @param id Character. Shiny module ID.
 #' @param spatial_type Character. Only applicable for spatial selections. Either
-#'   'points' (spatial points) or 'area' (spatial polygons/raster).
+#'   'points' (spatial points) or 'areas' (spatial polygons/raster).
 #'
 #' @returns Shiny UI
 #'

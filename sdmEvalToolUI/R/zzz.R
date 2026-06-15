@@ -1,7 +1,11 @@
 #fmt: skip
 utils::globalVariables(c(
   # To avoid CRAN NOTES
-  # Required as they are passed to modules as `...`
+  # Generally, use .data$VAR or "VAR" in NSE tidyverse functions to avoid notes
+  # Only define things here if they cannot be defined otherwise, including:
+  # 
+  # - variables passed to modules as `...` 
+  # - lists which are expanded into variables cannot be otherwise defined
 
   # Inputs
   "model_id", "species_id", "deployment_id",
@@ -10,7 +14,7 @@ utils::globalVariables(c(
   "opts", "abandoned", "overview_update", "overview_inputs", "unsaved",
   "completed", "id", "id_spatial", "label", "input_id_ns",
   "layers", "part", "show_clicked", "response", "width", 
-  "show_spatial_ids", 
+  "show_spatial_ids", "map_views",
   
   "values" # Spatial inputs
 ))
