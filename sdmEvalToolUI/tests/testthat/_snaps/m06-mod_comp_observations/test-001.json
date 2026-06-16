@@ -3,14 +3,14 @@
     "comp_observations-hours": null,
     "comp_observations-layers_visible": "Subunits",
     "comp_observations-map_bounds": {
-      "north": 59.44507509904717,
+      "north": 59.46740794183739,
       "east": -48.77929687500001,
-      "south": 48.60385760823255,
+      "south": 48.57478991092886,
       "west": -119.9267578125
     },
     "comp_observations-map_center": {
-      "lng": -84.35302734375001,
-      "lat": 54.38055736863065
+      "lng": -84.34954403174426,
+      "lat": 54.37432179268289
     },
     "comp_observations-map_groups": [
       "CartoDB",
@@ -3634,16 +3634,15 @@
         },
         {
           "name": "leaflet-providers",
-          "version": "2.0.0",
+          "version": "3.0.0",
           "src": {
-            "href": "leaflet-providers-2.0.0"
+            "href": "leaflet-providers-3.0.0"
           },
           "meta": null,
-          "script": "leaflet-providers_2.0.0.js",
+          "script": "leaflet-providers.js",
           "stylesheet": null,
           "head": null,
           "attachment": null,
-          "package": null,
           "all_files": false
         },
         {
@@ -3730,9 +3729,9 @@
       "deps": [
         {
           "name": "bslib-component-js",
-          "version": "0.10.0",
+          "version": "0.11.0",
           "src": {
-            "href": "bslib-component-js-0.10.0"
+            "href": "bslib-component-js-0.11.0"
           },
           "meta": null,
           "script": [
@@ -3751,9 +3750,9 @@
         },
         {
           "name": "bslib-component-css",
-          "version": "0.10.0",
+          "version": "0.11.0",
           "src": {
-            "href": "bslib-component-css-0.10.0"
+            "href": "bslib-component-css-0.11.0"
           },
           "meta": null,
           "script": null,
@@ -3765,9 +3764,9 @@
         },
         {
           "name": "bslib-tag-require",
-          "version": "0.10.0",
+          "version": "0.11.0",
           "src": {
-            "href": "bslib-tag-require-0.10.0"
+            "href": "bslib-tag-require-0.11.0"
           },
           "meta": null,
           "script": "tag-require.js",

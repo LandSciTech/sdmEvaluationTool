@@ -3626,16 +3626,15 @@
         },
         {
           "name": "leaflet-providers",
-          "version": "2.0.0",
+          "version": "3.0.0",
           "src": {
-            "href": "leaflet-providers-2.0.0"
+            "href": "leaflet-providers-3.0.0"
           },
           "meta": null,
-          "script": "leaflet-providers_2.0.0.js",
+          "script": "leaflet-providers.js",
           "stylesheet": null,
           "head": null,
           "attachment": null,
-          "package": null,
           "all_files": false
         },
         {
@@ -3705,9 +3704,9 @@
       "deps": [
         {
           "name": "bslib-component-js",
-          "version": "0.10.0",
+          "version": "0.11.0",
           "src": {
-            "href": "bslib-component-js-0.10.0"
+            "href": "bslib-component-js-0.11.0"
           },
           "meta": null,
           "script": [
@@ -3726,9 +3725,9 @@
         },
         {
           "name": "bslib-component-css",
-          "version": "0.10.0",
+          "version": "0.11.0",
           "src": {
-            "href": "bslib-component-css-0.10.0"
+            "href": "bslib-component-css-0.11.0"
           },
           "meta": null,
           "script": null,
@@ -3740,9 +3739,9 @@
         },
         {
           "name": "bslib-tag-require",
-          "version": "0.10.0",
+          "version": "0.11.0",
           "src": {
-            "href": "bslib-tag-require-0.10.0"
+            "href": "bslib-tag-require-0.11.0"
           },
           "meta": null,
           "script": "tag-require.js",
