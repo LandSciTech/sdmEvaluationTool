@@ -74,7 +74,6 @@ mod_page_summary_server <- function(id = "summary", ...) {
       opts = opts,
       abandoned = abandoned,
       unsaved = unsaved,
-      spatial_type = "areas", # "points" or "areas"
       spatial_ids = spatial_ids
     )
 

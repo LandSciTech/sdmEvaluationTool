@@ -41,8 +41,6 @@ mod_utils_evaluations_ui <- function(
 #' Utility Module 'Evaluations' Server
 #'
 #' @param id Shiny module ID
-#' @param spatial_type Character. Only applicable for spatial selections. Either
-#'   'points' (spatial points) or 'areas' (spatial polygons/raster).
 #' @param component_id Character. Component ID
 #' @param deployment_id Character. Deployment ID
 #' @param model_id Character. Model ID
@@ -60,7 +58,6 @@ mod_utils_evaluations_ui <- function(
 
 mod_utils_evaluations_server <- function(
   id = "evaluations",
-  spatial_type = "points",
   component_id,
   deployment_id,
   model_id,
@@ -154,10 +151,7 @@ mod_utils_evaluations_server <- function(
           "Modified (unsaved) response",
           style = "font-size: 90%"
         ),
-        ui_questions(
-          questions_init(),
-          spatial_type = spatial_type
-        ),
+        ui_questions(questions_init()),
         layout_column_wrap(
           actionButton(inputId = ns("save"), label = "Save Responses"),
           actionButton(inputId = ns("reset"), label = "Reset Responses")

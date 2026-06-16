@@ -70,16 +70,13 @@ ordinal_input <- function(...) {
 #' to ensure the 'positive'/'affirmative' values match.
 #'
 #' @noRd
-spatial_input <- function(
-  ...,
-  spatial_type = c("points", "subunits")
-) {
+spatial_input <- function(...) {
   expand_dots(...)
 
   id_inputs <- purrr::map(values, \(v) {
     selectizeInput(
       inputId = glue::glue("{input_id_ns}-{value_to_input(v)}"),
-      label = HTML(glue::glue("Identify any {strong(v)} {spatial_type}")),
+      label = HTML(glue::glue("Identify any {strong(v)} areas")),
       choices = c("Add selected IDs" = ""),
       multiple = TRUE,
       options = list(delimiter = ",", create = TRUE, persist = FALSE)
@@ -91,7 +88,7 @@ spatial_input <- function(
     div(class = "sub-question", !!!id_inputs),
     actionButton(
       inputId = glue::glue("{input_id_ns}-show"),
-      label = glue::glue("Show identified {spatial_type}")
+      label = glue::glue("Show identified areas")
     )
   )
 }
@@ -109,7 +106,6 @@ spatial_input <- function(
 #'   [ui_questions_update()]]. Only applies if using 'client-side selectize'.
 #'   All possible Spatial ID options for spatial inputs choices. Generally
 #'   passed in as ReactiveVal (see [mod_page_template_spatial_server()].
-#' @param spatial_type Character. Spatial type, either `points` or `areas`.
 #' @param width Numeric. Optional width of Shiny UI input.
 #'
 #' @returns Shiny tagList of UI elements
@@ -117,22 +113,13 @@ spatial_input <- function(
 #' @export
 #' @examplesIf have_data()
 #' q <- prep_questions(
-#'   "test",
-#'   "deployment1",
-#'   "bam_v5_can71",
-#'   "BBWO",
-#'   user_id = "testuser"
-#' )
-#' ui_questions(q, spatial_type = "points")
-#'
-#' q <- prep_questions(
 #'   "observations",
 #'   "deployment1",
 #'   "bam_v5_can71",
 #'   "BBWO",
 #'   user_id = "testuser"
 #' )
-#' ui_questions(q, spatial_type = "areas")
+#' ui_questions(q)
 #'
 #' # More than one component
 #' q <- prep_questions(
@@ -142,12 +129,11 @@ spatial_input <- function(
 #'   "BBWO",
 #'   user_id = "testuser"
 #' )
-#' u <- ui_questions(q, spatial_type = "areas")
+#' u <- ui_questions(q)
 
 ui_questions <- function(
   questions,
   spatial_ids = NULL,
-  spatial_type = "points",
   width = NULL
 ) {
   # Grab current namespacing
@@ -189,7 +175,6 @@ ui_questions <- function(
             label = label,
             values = unlist(values),
             spatial_ids = spatial_ids,
-            spatial_type = spatial_type,
             response = response,
             width = width
           )

@@ -2,7 +2,7 @@ test_that("ui_questions()", {
   skip_if_no_data()
 
   q <- do.call(prep_questions, test_inputs())
-  ui <- ui_questions(q, spatial_type = "points")
+  ui <- ui_questions(q)
 
   expect_s3_class(ui, "shiny.tag.list")
   expect_true(length(ui) > 0)
