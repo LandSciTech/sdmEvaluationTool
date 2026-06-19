@@ -11,7 +11,8 @@ test_page(
   species_id = "BBWO",
   user_id = "testuser",
   user_role = "evaluator",
-  user_admin = FALSE
+  user_admin = FALSE,
+  map_views = list(active_tab = NULL, set_by = NULL, view = NULL)
 )
 }
 \arguments{
@@ -27,7 +28,9 @@ test_page(
 
 \item{user_role}{Character. Example User Role.}
 
-\item{user_admin}{Logical Example User Admin status.}
+\item{user_admin}{Logical. Example User Admin status.}
+
+\item{map_views}{List. Optional set map views for map synchronization.}
 }
 \value{
 Shiny App

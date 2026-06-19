@@ -8,9 +8,12 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-7690-8360")),
     person(given="Analythium Solutions Inc.",
            role = c("cph")),
-    person(given="Her Majesty the Queen in Right of Canada as represented by the Minister of the Environment",
+    person(given="His Majesty the King in Right of Canada as represented by the Minister of the Environment",
            role = c("cph"),
            comment = "Copyright holder for default evaluation/drill down questions."),
+    person(given = "Biodiversity Pathways",
+           role = c("cph"),
+           comment = "Copyright holder for glossary.csv, and default evaluation/drill down questions."),
     person(given="Alberta Biodiversity Monitoring Institute",
            role = c("cph"),
            comment = "Copyright holder for glossary.csv, and default evaluation/drill down questions."))
@@ -19,7 +22,6 @@ Description: The goal of sdmEvalToolUI is to implement Shiny functionality
 License: Apache License 2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports:
     bsicons,
     bslib,
@@ -39,6 +41,7 @@ Imports:
     shiny,
     shinycssloaders (>= 1.1.0),
     shinyjs (>= 2.1.0),
+    shinymanager,
     stringr (>= 1.5.1),
     terra (>= 1.8.93),
     tidyr (>= 1.3.1),
@@ -54,3 +57,5 @@ Remotes:
 Config/testthat/edition: 3
 Depends: 
     R (>= 4.1)
+Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

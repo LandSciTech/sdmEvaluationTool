@@ -6,16 +6,23 @@
 \usage{
 mod_comp_predictor_raster_server(
   id = "comp_predictor_raster",
+  parent_id,
+  deployment_id,
   model_id,
-  deployment_id
+  map_views
 )
 }
 \arguments{
 \item{id}{Module ID}
 
-\item{model_id}{Model ID}
+\item{parent_id}{Parent tab ID (used to identify which tab is active)}
 
 \item{deployment_id}{Deployment ID. Required for subunits.}
+
+\item{model_id}{Model ID}
+
+\item{map_views}{List. List of reactiveVals \code{active_tab}, \code{set_by} and
+\code{view} (list with zoom and lat/lon).}
 }
 \value{
 Module server function

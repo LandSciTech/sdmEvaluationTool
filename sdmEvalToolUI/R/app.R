@@ -4,8 +4,9 @@
 #' @param options List. Shiny app options (passed to `options` in
 #' [shiny::shinyApp()].
 #' @param tabs Character. List the tabs/pages that the UI should have.
-#' @param user Character. User id. Placeholder for now, may be changed to use
-#' authentication later.
+#' @param user Character. User id. Placeholder for now, used for testing.
+#' @param user_db A data frame with credentials data or path to SQLite
+#' database created with [shinymanager::create_db()].
 #' @param ... Other arguments passed to [shiny::shinyApp()].
 #'
 #' @returns A Shiny app object. Launched in browser/viewer if interactive.
@@ -16,7 +17,7 @@
 
 sdm_tool <- function(
   lang = "english",
-  options = list(host = "0.0.0.0", port = 8080),
+  options = list(host = "0.0.0.0", port = 7405),
   tabs = c(
     "overview",
     "predictions",
@@ -27,6 +28,7 @@ sdm_tool <- function(
     "summary"
   ),
   user = NULL,
+  user_db = NULL,
   ...
 ) {
   # Pages - Names become pretty Tab names, values are ids used for navigation (input$sdm)
@@ -106,9 +108,33 @@ sdm_tool <- function(
     ))
   )
 
+  if (!is.null(user_db)) {
+    ui <- shinymanager::secure_app(ui)
+  }
+
   server <- function(input, output, session) {
+    if (!is.null(user_db)) {
+      res_auth <- shinymanager::secure_server(
+        check_credentials = shinymanager::check_credentials(user_db)
+      )
+    }
+
     # Setup ---------------------------------------------
 
+    ## Reactive Vals for passing among modules ----------------------
+
+    # List of reactiveVals tracking values for map synchronization active page/tab, , and  Map Views, named by tab plus 'active_tab' and 'set_by'
+    map_views <- list(
+      "active_tab" = reactiveVal(NULL), # Currently active page/tab
+      "set_by" = reactiveVal(NULL), # Current page/tab with the map view we are tracking
+      "view" = reactiveVal(NULL) # The actual map view we are tracking (list with zoom, and lat/lon).
+    )
+
+    abandoned <- reactiveVal(FALSE) # Tracks abandoned evaluations (species or model)
+    unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE)) # List of page ids with with TRUE/FALSE for unsaved answers
+    tab_active <- reactive(input$sdm)
+
+    ## Reactive Vals for the overview/app as a whole ------------
     # Placeholder reactiveVals until overview created
     # Will be updated by overview module when button clicked to select evaluation
     overview_inputs <- reactiveVal(NULL)
@@ -116,12 +142,6 @@ sdm_tool <- function(
 
     # Holds inputs to be updated by sdm_update_selector()
     update_inputs <- reactiveVal(NULL)
-
-    # Marker to note if evaluation has been abandoned (species or model)
-    abandoned <- reactiveVal(FALSE)
-
-    # Holds ids of pages with TRUE/FALSE for unsaved answers
-    unsaved <- reactiveVal(purrr::map_lgl(page_options, \(x) FALSE))
 
     # Updates Deployment/Model/Species selectors
     #  created locally in order to have access to input & session directly
@@ -167,7 +187,11 @@ sdm_tool <- function(
     user_id <- reactive({
       # TODO: Currently this uses the user_id argument of sdm_tool()
       #   In future may get user_id from somewhere else
-      user
+      if (is.null(user_db)) {
+        user
+      } else {
+        res_auth$user
+      }
     })
 
     user_roles <- reactive({
@@ -221,6 +245,9 @@ sdm_tool <- function(
       ))
     }) |>
       bindEvent(input$glossary)
+
+    # Track Map View  ---------------------------------
+    observe(map_views$active_tab(input$sdm))
 
     # Abandon Review -----------------------------------
     # CLEANUP: Similar to mod_utils_evaluations_server... could be merged?
@@ -508,6 +535,8 @@ sdm_tool <- function(
         model_id = reactive(input$model_id),
         species_id = reactive(input$species_id),
         opts = opts,
+        tab_active = tab_active,
+        map_views = map_views,
         abandoned = abandoned,
         unsaved = unsaved
       )

@@ -53,14 +53,17 @@ db_write_table(con, "components", components)
 #         "okoye@rce.com"
 #     ),
 #     user_affiliation = c("Rocinante", "MCRN", "RCE"),
-#     admin = c(TRUE, FALSE, FALSE)
+#     admin = c(TRUE, FALSE, FALSE),
+#     password = c("pass1", "pass2", "pass3")
 # )
 users <- data.frame(
   user_id = "testuser",
   user_name = "Test User",
   user_email = "x@y.z",
   user_affiliation = "XYZ",
-  admin = FALSE
+  admin = FALSE,
+  password = "pass1234"
+  # password = generate_password() # use this for random password
 )
 db_write_table(con, "users", users)
 

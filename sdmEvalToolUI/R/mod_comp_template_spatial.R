@@ -55,11 +55,14 @@ mod_comp_template_spatial_ui <- function(
 #' Template Spatial component Server
 #'
 #' @param id Module ID
+#' @param parent_id ID of the parent module, corresponds to the tab.
 #' @param deployment_id Deployment ID. Required for subunits.
 #' @param model_id Model ID
 #' @param species_id Species ID
 #' @param spatial_selection Spatial selection. Required for spatial evaluations.
 #' @param spatial_ids Spatial IDs. Required for spatial evaluations.
+#' @param map_views List. List of reactiveVals `active_tab`, `set_by` and
+#'   `view` (list with zoom and lat/lon).
 #'
 #' @returns Module server function
 #'
@@ -67,15 +70,18 @@ mod_comp_template_spatial_ui <- function(
 
 mod_comp_template_spatial_server <- function(
   id = "comp_template_spatial",
+  parent_id,
   deployment_id, # Require deployment_id for subunits on maps
   model_id,
   species_id,
   spatial_selection,
-  spatial_ids # ReactiveVal to be update
+  spatial_ids, # ReactiveVal to be update
+  map_views
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
 
   moduleServer(id, function(input, output, session) {
     # Setup -------------------------------------------------------------
@@ -116,8 +122,19 @@ mod_comp_template_spatial_server <- function(
         map_units(),
         subunits(),
         ns = session$ns
-      )
-    })
+      ) |>
+        set_view(map_views, tab = parent_id) # Match any existing view
+    }) |>
+      bindEvent(map_units()) # Ensure this initial map doesn't reset for view updates (see `mod_utils_map_sync_server()`)
+
+    # Synchronize map views ------------------------------------------------
+    mod_utils_map_sync_server(
+      "sync",
+      parent_id,
+      this_view = map_view(input, "map"),
+      map_views,
+      parent_session = session
+    )
 
     # Process and show map selections ---------------------------------------
     # TEMPLATE: This will be the same for each spatial component

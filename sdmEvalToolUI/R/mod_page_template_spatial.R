@@ -53,10 +53,11 @@ mod_page_template_spatial_ui <- function(
 
 #' Template Page Server
 #'
-#' @param id Shiny module ID
+#' @param id Shiny module ID. NOTE for pages this should match a value in the
+#' tabs argument of sdm_tool().f
 #' @param ... Additional arguments passed via expand_dots including
-#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved`, `opts`
-#' list (see [sdm_tool()] which programmatically calls all module pages.
+#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved`, `opts`,
+#' `map_views`. See [sdm_tool()] which programmatically calls all module pages.
 #'
 #' @returns Server function for Shiny module
 #'
@@ -64,16 +65,20 @@ mod_page_template_spatial_ui <- function(
 
 mod_page_template_spatial_server <- function(id = "template_spatial", ...) {
   expand_dots(...) # Turn `...` into arguments
+
   # TEMPLATE: This section checks if all standard args are reactive
   # This also serves to remind the developer which args are passed from
   # the main app (in `app.R`) via `...`
-  # It also includes `opts` which is a list of option-like reactives
+  # It also includes `opts` which is a list of option-like reactives as well
+  # as `map_views` which is a list of reactives tracking map views and active tabs
+
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
   stopifnot(is.reactive(abandoned)) # reactiveVal
   stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
+  purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
 
   moduleServer(id, function(input, output, session) {
     # TEMPLATE: For Pages with spatial components,
@@ -96,7 +101,7 @@ mod_page_template_spatial_server <- function(id = "template_spatial", ...) {
       abandoned = abandoned,
       unsaved = unsaved,
       # TEMPLATE: These are required for pages with spatial components
-      spatial_type = "area", # "points" or "area"
+      spatial_type = "areas", # "points" or "areas"
       spatial_ids = spatial_ids
     )
 
@@ -111,11 +116,13 @@ mod_page_template_spatial_server <- function(id = "template_spatial", ...) {
     # Spatial Component
     mod_comp_template_spatial_server(
       "template_spatial",
+      parent_id = id, # Proxy for tab id as the page id is always the name of the tab
       deployment_id = deployment_id, # Require deployment_id for subunits on maps
       model_id = model_id,
       species_id = species_id,
       spatial_selection = spatial_selection,
-      spatial_ids = spatial_ids #reactiveVal to update in module which is referred to by the evaluations module to create lists of ids to select
+      spatial_ids = spatial_ids, #reactiveVal to update in module which is referred to by the evaluations module to create lists of ids to select
+      map_views = map_views # Tracks the views of each map by tab as well as the currently active tab ("active_tab") and the tab maps should be synchronizing to ("set_by").
     )
   })
 }

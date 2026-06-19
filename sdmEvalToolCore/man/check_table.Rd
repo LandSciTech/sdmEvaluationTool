@@ -30,7 +30,8 @@ users <- data.frame(
         "okoye@rce.com"
     ),
     user_affiliation = c("Rocinante", "MCRN", "RCE"),
-    admin = c(TRUE, FALSE, FALSE)
+    admin = c(TRUE, FALSE, FALSE),
+    password = c("pass1", "pass2", "pass3")
 )
 check_table(users, "users")
 

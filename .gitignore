@@ -53,3 +53,4 @@ misc/*
 !misc/.gitkeep
 sdm_evaluation_results/*
 sdm_evaluation_results.zip
+app/*

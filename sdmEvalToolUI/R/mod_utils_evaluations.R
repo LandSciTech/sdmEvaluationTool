@@ -42,7 +42,7 @@ mod_utils_evaluations_ui <- function(
 #'
 #' @param id Shiny module ID
 #' @param spatial_type Character. Only applicable for spatial selections. Either
-#'   'points' (spatial points) or 'area' (spatial polygons/raster).
+#'   'points' (spatial points) or 'areas' (spatial polygons/raster).
 #' @param component_id Character. Component ID
 #' @param deployment_id Character. Deployment ID
 #' @param model_id Character. Model ID

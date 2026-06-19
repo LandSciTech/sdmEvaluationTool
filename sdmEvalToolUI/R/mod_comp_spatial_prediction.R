@@ -54,26 +54,32 @@ mod_comp_spatial_prediction_ui <- function(
 #' Spatial Prediction component Server
 #'
 #' @param id Module ID
+#' @param parent_id Parent tab ID (used to identify which tab is active)
 #' @param deployment_id Deployment ID. Required for subunits.
 #' @param model_id Model ID
 #' @param species_id Species ID
 #' @param spatial_selection Spatial selection. Required for spatial evaluations
 #' @param spatial_ids Spatial IDs. Required for spatial evaluations.
+#' @param map_views List. List of reactiveVals `active_tab`, `set_by` and
+#'   `view` (list with zoom and lat/lon).
 #'
 #' @returns Module server function
 #'
 #' @export
 mod_comp_spatial_prediction_server <- function(
   id = "comp_spatial_prediction",
+  parent_id,
   deployment_id,
   model_id,
   species_id,
   spatial_selection,
-  spatial_ids
+  spatial_ids,
+  map_views
 ) {
   stopifnot(is.reactive(deployment_id))
   stopifnot(is.reactive(model_id))
   stopifnot(is.reactive(species_id))
+  purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
 
   moduleServer(id, function(input, output, session) {
     # Tooltip -------------------------------------------------------
@@ -104,8 +110,19 @@ mod_comp_spatial_prediction_server <- function(
         spatial_prediction(),
         subunits(),
         ns = session$ns
-      )
-    })
+      ) |>
+        set_view(map_views, tab = parent_id)
+    }) |>
+      bindEvent(spatial_prediction())
+
+    # Synchronize map views ------------------------------------------------
+    mod_utils_map_sync_server(
+      "sync",
+      parent_id,
+      this_view = map_view(input, "map"),
+      map_views,
+      parent_session = session
+    )
 
     # Process and show map selections ---------------------------------------
     interactions <- map_reactive_vals(input, "map")

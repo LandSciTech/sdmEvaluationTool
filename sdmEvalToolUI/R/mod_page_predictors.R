@@ -49,8 +49,8 @@ mod_page_predictors_ui <- function(
 #'
 #' @param id Shiny module ID
 #' @param ... Additional arguments passed via expand_dots including
-#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved`, `opts`
-#' list (see [sdm_tool()] which programmatically calls all module pages.
+#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved`, `opts`,
+#' `map_views`. See [sdm_tool()] which programmatically calls all module pages.
 #'
 #' @returns Server function for Shiny module
 #'
@@ -63,6 +63,7 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
   stopifnot(is.reactive(abandoned)) # reactiveVal
   stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
+  purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
 
   moduleServer(id, function(input, output, session) {
     # Prepare the evaluation questions
@@ -83,8 +84,10 @@ mod_page_predictors_server <- function(id = "predictors", ...) {
     )
     mod_comp_predictor_raster_server(
       "predictor_raster",
+      parent_id = id,
       model_id = model_id,
-      deployment_id = deployment_id
+      deployment_id = deployment_id,
+      map_views = map_views
     )
   })
 }

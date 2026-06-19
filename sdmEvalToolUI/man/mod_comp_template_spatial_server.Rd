@@ -6,15 +6,19 @@
 \usage{
 mod_comp_template_spatial_server(
   id = "comp_template_spatial",
+  parent_id,
   deployment_id,
   model_id,
   species_id,
   spatial_selection,
-  spatial_ids
+  spatial_ids,
+  map_views
 )
 }
 \arguments{
 \item{id}{Module ID}
+
+\item{parent_id}{ID of the parent module, corresponds to the tab.}
 
 \item{deployment_id}{Deployment ID. Required for subunits.}
 
@@ -25,6 +29,9 @@ mod_comp_template_spatial_server(
 \item{spatial_selection}{Spatial selection. Required for spatial evaluations.}
 
 \item{spatial_ids}{Spatial IDs. Required for spatial evaluations.}
+
+\item{map_views}{List. List of reactiveVals \code{active_tab}, \code{set_by} and
+\code{view} (list with zoom and lat/lon).}
 }
 \value{
 Module server function

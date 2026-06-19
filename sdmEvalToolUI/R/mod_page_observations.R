@@ -65,8 +65,8 @@ mod_page_observations_ui <- function(
 #'
 #' @param id Shiny module ID
 #' @param ... Additional arguments passed via expand_dots including
-#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved`, `opts`
-#' list (see [sdm_tool()] which programmatically calls all module pages.
+#' `deployment_id`, `model_id`, `species_id`, `abandoned`, `unsaved`, `opts`,
+#' `map_views`. See [sdm_tool()] which programmatically calls all module pages.
 #'
 #' @returns Server function for Shiny module
 #'
@@ -80,6 +80,7 @@ mod_page_observations_server <- function(id = "observations", ...) {
   stopifnot(is.reactive(abandoned)) # reactiveVal
   stopifnot(is.reactive(unsaved)) # reactiveVal
   purrr::walk(opts, \(o) stopifnot(is.reactive(o)))
+  purrr::walk(map_views, \(v) stopifnot(is.reactive(v)))
 
   moduleServer(id, function(input, output, session) {
     # Placeholder reactiveVal until map created
@@ -89,7 +90,7 @@ mod_page_observations_server <- function(id = "observations", ...) {
     spatial_selection <- mod_utils_evaluations_server(
       "eval",
       component_id = "observations",
-      spatial_type = "area",
+      spatial_type = "areas",
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id,
@@ -109,11 +110,13 @@ mod_page_observations_server <- function(id = "observations", ...) {
     # Create the map and return all spatial ids available
     mod_comp_observations_server(
       "comp_obs",
+      parent_id = id,
       deployment_id = deployment_id,
       model_id = model_id,
       species_id = species_id,
       spatial_selection = spatial_selection,
-      spatial_ids = spatial_ids #reactiveVal to update in module
+      spatial_ids = spatial_ids, #reactiveVal to update in module
+      map_views = map_views
     )
   })
 }
