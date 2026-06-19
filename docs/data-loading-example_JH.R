@@ -12,7 +12,6 @@ devtools::load_all("sdmEvalToolCore")
 #path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
 path <- "C:/Users/HughesJo/Documents/InitialWork/NOBMWG/MET (Model Evaluation Tool) Google Drive Copy/Materials/Model Upload/BAM"
 conf <- yaml::read_yaml("spec/config.yml")
-conf$default_questions[[5]]
 # DIR <- "./misc/test"
 DIR <- "./misc/sdm_evaluation_results"
 sdmevaltool_options(base = DIR) # use the misc folder
@@ -55,14 +54,17 @@ db_write_table(con, "components", components)
 #         "okoye@rce.com"
 #     ),
 #     user_affiliation = c("Rocinante", "MCRN", "RCE"),
-#     admin = c(TRUE, FALSE, FALSE)
+#     admin = c(TRUE, FALSE, FALSE),
+#     password = c("pass1", "pass2", "pass3")
 # )
 users <- data.frame(
   user_id = "testuser",
   user_name = "Test User",
   user_email = "x@y.z",
   user_affiliation = "XYZ",
-  admin = FALSE
+  admin = FALSE,
+  password = "pass1234"
+  # password = generate_password() # use this for random password
 )
 db_write_table(con, "users", users)
 
@@ -146,8 +148,6 @@ rule <- get_comp_rule("predictor_metadata", "upload")
 fi <- file.path(path, "predictors", "predictor_metadata.csv")
 x <- read_file(fi)
 names(x)[names(x)=="variable"]="predictor"
-setdiff(rule$output$columns,names(x))
-setdiff(names(x),rule$output$columns)
 x <- x[, rule$output$columns]
 
 prep_predictor_metadata(
