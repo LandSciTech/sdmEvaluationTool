@@ -19,7 +19,8 @@ Authors:
 Other contributors:
 \itemize{
   \item Analythium Solutions Inc. [copyright holder]
-  \item Her Majesty the Queen in Right of Canada as represented by the Minister of the Environment (Copyright holder for default evaluation/drill down questions.) [copyright holder]
+  \item His Majesty the King in Right of Canada as represented by the Minister of the Environment (Copyright holder for default evaluation/drill down questions.) [copyright holder]
+  \item Biodiversity Pathways (Copyright holder for glossary.csv, and default evaluation/drill down questions.) [copyright holder]
   \item Alberta Biodiversity Monitoring Institute (Copyright holder for glossary.csv, and default evaluation/drill down questions.) [copyright holder]
 }
 

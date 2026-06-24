@@ -22,14 +22,15 @@ Load material files
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 prep_materials("observations", species_id = "BBWO", model_id = "bam_v5_can71")
-#prep_materials("model_metadata", model_id = "bam_v5_can71")
+prep_materials("model_metadata", model_id = "bam_v5_can71")
 prep_materials("predictor_metadata", model_id = "bam_v5_can71")
 #prep_materials("predictor_raster", model_id = "bam_v5_can71")
 prep_materials("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
 prep_materials("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
 prep_materials("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
 
-# Errors
+
+# Expect Errors
 # prep_materials("observations", model_id = "", species_id = "")
 # prep_materials("observations", model_id = "bam_v5_can71", species_id = "")
 \dontshow{\}) # examplesIf}
