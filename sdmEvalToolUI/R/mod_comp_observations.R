@@ -449,7 +449,7 @@ obs_prep_points <- function(obs, ...) {
       hours = round(.data$hssr),
       month = factor(month.abb[as.POSIXlt(obs$time)$mo + 1], month.abb),
       layers = dplyr::if_else(.data$status == 0, "Absence", "Presence"),
-      layers = factor(layers),
+      layers = factor(.data$layers),
       # fmt: skip
       popup = paste0(
           "<strong>Method:</strong> ", .data$method, "<br>",
