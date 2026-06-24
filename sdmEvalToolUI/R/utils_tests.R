@@ -31,16 +31,15 @@ test_page <- function(
     user_admin = user_admin
   )
 
-  map_views <-
-    ui <- bslib::page_navbar(
-      title = "SDM Tool Testing",
-      theme = sdm_theme(),
-      header = shinyjs::useShinyjs(),
-      get(paste0(module, "_ui"))(
-        title = stringr::str_remove_all(module, "mod_page_") |> fmt_pretty(),
-        id = stringr::str_remove_all(module, "mod_page_")
-      )
+  ui <- bslib::page_navbar(
+    title = "SDM Tool Testing",
+    theme = sdm_theme(),
+    header = shinyjs::useShinyjs(),
+    get(paste0(module, "_ui"))(
+      title = stringr::str_remove_all(module, "mod_page_") |> fmt_pretty(),
+      id = stringr::str_remove_all(module, "mod_page_")
     )
+  )
 
   if (module == "mod_page_overview") {
     server <- function(input, output, session) {
