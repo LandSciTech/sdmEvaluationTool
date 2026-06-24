@@ -8,6 +8,7 @@
 #' @noRd
 simple_text_input <- function(...) {
   expand_dots(...)
+  label <- span(label, metadata_popover)
   textInput(input_id_ns, label, value = response, width = width)
 }
 
@@ -22,6 +23,7 @@ yes_no_input <- function(...) {
 
   r <- response %||% character(0)
 
+  label <- span(label, metadata_popover)
   radioButtons(
     inputId = input_id_ns,
     label = label,
@@ -40,6 +42,7 @@ yes_no_input <- function(...) {
 #' @noRd
 ordinal_input <- function(...) {
   expand_dots(...)
+  label <- span(label, metadata_popover)
   selectInput(
     inputId = input_id_ns,
     label = label,
@@ -153,6 +156,7 @@ ui_questions <- function(
       "part",
       "values",
       "response",
+      "metadata",
       "parent_spatial",
       "parent_values"
     ) |>
@@ -167,13 +171,17 @@ ui_questions <- function(
           part,
           values,
           response,
+          metadata,
           parent_spatial,
           parent_values
         ) {
+          metadata_popover <- ui_metadata(metadata)
+
           i <- get(glue::glue("{type}_input"))(
             input_id_ns = ns(question_id),
             label = label,
             values = unlist(values),
+            metadata_popover = metadata_popover,
             spatial_ids = spatial_ids,
             response = response,
             width = width
@@ -274,6 +282,43 @@ ui_questions_update <- function(questions, spatial_ids = NULL) {
       server = TRUE
     )
   })
+}
+
+ui_metadata <- function(metadata) {
+  if (nrow(metadata) == 0) {
+    return(tagList())
+  }
+
+  popover(
+    bsicons::bs_icon("exclamation-circle"),
+    title = "Metadata",
+    purrr::map2(metadata$element, metadata$value, \(e, v) {
+      c <- markdown(v) |> link_to_external()
+
+      tagList(h5(e), div(c, class = "popover-contents"))
+    })
+  )
+}
+
+#' Ensure links open in new tab
+#'
+#' Adds `target = "_blank"` to `a` HTML. Currently assumes tag is class "html",
+#' and not "shiny.tag".
+#'
+#' @param tag HTML tag to check for link
+#'
+#' @returns HTML character with `target = "_blank"` if an `a` tag was detected.
+#'
+#' @noRd
+#' @examples
+#' tag <- HTML("<a href = 'https://test.org'>")
+#' link_to_external(tag)
+
+link_to_external <- function(tag) {
+  t <- stringr::str_replace(tag, "<a href", "<a target = '_blank' href")
+  # Make HTML again
+  attributes(t) <- list(class = c("html", "character"), html = TRUE)
+  t
 }
 
 #' Helper function to format Question values as Shiny Input names
