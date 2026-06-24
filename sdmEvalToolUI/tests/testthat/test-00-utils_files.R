@@ -91,12 +91,16 @@ test_that("prep_questions()", {
         "label",
         "french",
         "values",
+        "metadata_id",
         "material_id",
-        "question_id"
+        "question_id",
+        "metadata"
       )
     )
     expect_type(q[["values"]], "list")
     expect_type(q[["values"]][[1]], "character")
+    expect_type(q[["metadata"]], "list")
+    expect_s3_class(q[["metadata"]][[1]], "data.frame")
   }
 })
 
