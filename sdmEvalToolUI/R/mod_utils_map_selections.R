@@ -4,14 +4,12 @@
 #' 'show' button from evaluations.  Called by component-level modules.
 #'
 #' @param id Character. Shiny module ID.
-#' @param spatial_type Character. Only applicable for spatial selections. Either
-#'   'points' (spatial points) or 'areas' (spatial polygons/raster).
 #'
 #' @returns Shiny UI
 #'
 #' @export
 
-mod_utils_map_selections_ui <- function(id, spatial_type) {
+mod_utils_map_selections_ui <- function(id) {
   tagList(
     # From: https://github.com/trafficonese/leaflet.extras/issues/96
     # Removes selection when called
@@ -37,7 +35,8 @@ mod_utils_map_selections_ui <- function(id, spatial_type) {
       ),
       div(
         strong(glue::glue(
-          "Copy selected {stringr::str_remove(spatial_type, 's$')} IDs"
+          # TODO: Should be "subunit" IDs?
+          "Copy selected area IDs"
         )),
         copy_output(NS(id, "selected"))
       )
@@ -56,7 +55,6 @@ mod_utils_map_selections_ui <- function(id, spatial_type) {
 #' which show button was last clicked and `show_spatial_ids` which contains a
 #' list of spatial ids by category to highlight.
 #' @param interactions Interactions
-#' @param spatial_type Spatial type
 #' @param parent_session Parent session
 #'
 #' @returns Shiny server
@@ -68,7 +66,6 @@ mod_utils_map_selections_server <- function(
   data,
   spatial_selection,
   interactions,
-  spatial_type = "points",
   parent_session = getDefaultReactiveDomain()
 ) {
   stopifnot(is.reactive(data))
@@ -76,19 +73,6 @@ mod_utils_map_selections_server <- function(
   expand_list(spatial_selection) # Leads to following two objects --->
   stopifnot(is.reactive(show_clicked)) # reactiveVal
   stopifnot(is.reactive(show_spatial_ids))
-
-  # Points vs. Areas ---------------------------------------------------------
-  if (spatial_type == "points") {
-    remove_geo <- leaflet::removeMarker
-    add_geo <- add_markers
-    add_selected_geo <- add_selected_markers
-    map_click <- "marker_click"
-  } else if (spatial_type == "areas") {
-    remove_geo <- leaflet::removeShape
-    add_geo <- add_subunits
-    add_selected_geo <- add_selected_subunits
-    map_click <- "shape_click"
-  }
 
   moduleServer(id, function(input, output, session) {
     # Setup ----------------------------------------------------------------
@@ -107,8 +91,8 @@ mod_utils_map_selections_server <- function(
 
       if (length(unselect) > 0) {
         leaflet::leafletProxy("map", session = parent_session) |>
-          remove_geo(layerId = unselect) |>
-          add_geo(dplyr::filter(data(), id %in% unselect))
+          leaflet::removeShape(layerId = unselect) |>
+          add_subunits(dplyr::filter(data(), id %in% unselect))
       }
 
       if (nrow(select) > 0) {
@@ -117,8 +101,8 @@ mod_utils_map_selections_server <- function(
           dplyr::mutate(type = factor(.data$type, levels = levels))
 
         leaflet::leafletProxy("map", session = parent_session) |>
-          remove_geo(layerId = unique(select$id)) |>
-          add_selected_geo(d)
+          leaflet::removeShape(layerId = unique(select$id)) |>
+          add_selected_subunits(d)
       }
 
       # Track the current selection
@@ -135,15 +119,6 @@ mod_utils_map_selections_server <- function(
 
       # Store the selections
       s <- data()
-
-      # Filter to visible layers only if using points
-
-      if (spatial_type == "points") {
-        s <- dplyr::filter(
-          s,
-          .data$layers %in% interactions$layers_visible
-        )
-      }
 
       # Filter to selection
       s <- sf::st_filter(s, poly)
@@ -164,7 +139,7 @@ mod_utils_map_selections_server <- function(
 
     # Selections - Click  ------------------------------------------------
     observe({
-      id <- interactions[[map_click]]$id
+      id <- interactions[["shape_click"]]$id
 
       restart <- nrow(curr_selected()) == 0 ||
         !"Selected" %in% curr_selected()$type
@@ -189,13 +164,13 @@ mod_utils_map_selections_server <- function(
         }
       }
     }) |>
-      bindEvent(interactions[[map_click]])
+      bindEvent(interactions[["shape_click"]])
 
     # Selection Details ---------------------------
     output$tbl_selected <- reactable::renderReactable({
       validate(need(
         nrow(curr_selected()) > 0,
-        glue::glue("No {spatial_type} selected")
+        glue::glue("No areas selected")
       ))
 
       r <- data() |>
@@ -215,9 +190,9 @@ mod_utils_map_selections_server <- function(
         nrow(curr_selected()) == 0 ||
           "Selected" %in% curr_selected()$type
       ) {
-        title <- glue::glue("Currently selected {spatial_type}")
+        title <- glue::glue("Currently selected areas")
       } else {
-        title <- glue::glue("Identified {spatial_type}")
+        title <- glue::glue("Identified areas")
       }
       title
     })

@@ -70,7 +70,6 @@ mod_page_predictions_server <- function(id = "predictions", ...) {
       model_id = model_id,
       species_id = species_id,
       spatial_ids = spatial_ids,
-      spatial_type = "areas",
       opts = opts,
       abandoned = abandoned,
       unsaved = unsaved

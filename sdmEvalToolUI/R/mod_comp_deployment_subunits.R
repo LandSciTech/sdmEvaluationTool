@@ -44,12 +44,7 @@ mod_comp_deployment_subunits_ui <- function(
     ),
     sdm_card(
       class = "sub-card",
-      card_body(
-        mod_utils_map_selections_ui(
-          NS(id, "select"),
-          spatial_type = "areas"
-        )
-      )
+      card_body(mod_utils_map_selections_ui(NS(id, "select")))
     )
   )
 }
@@ -123,7 +118,6 @@ mod_comp_deployment_subunits_server <- function(
 
     # Process and show map selections ---------------------------------------
     # TEMPLATE: This will be the same for each spatial component
-    #  Only things that change is the spatial_type, 'points' or 'areas'
     interactions <- map_reactive_vals(input, "map")
 
     mod_utils_map_selections_server(
@@ -131,7 +125,6 @@ mod_comp_deployment_subunits_server <- function(
       data = subunits,
       spatial_selection, # reactiveVal which holds the current selection
       interactions, # reactiveVal which notes clicks etc.
-      spatial_type = "areas",
       parent_session = session
     )
 

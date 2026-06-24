@@ -3563,16 +3563,15 @@
         },
         {
           "name": "leaflet-providers",
-          "version": "2.0.0",
+          "version": "3.0.0",
           "src": {
-            "href": "leaflet-providers-2.0.0"
+            "href": "leaflet-providers-3.0.0"
           },
           "meta": null,
-          "script": "leaflet-providers_2.0.0.js",
+          "script": "leaflet-providers.js",
           "stylesheet": null,
           "head": null,
           "attachment": null,
-          "package": null,
           "all_files": false
         },
         {

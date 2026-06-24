@@ -4,13 +4,10 @@
 \alias{mod_utils_map_selections_ui}
 \title{Utility Module 'Map Selections' UI}
 \usage{
-mod_utils_map_selections_ui(id, spatial_type)
+mod_utils_map_selections_ui(id)
 }
 \arguments{
 \item{id}{Character. Shiny module ID.}
-
-\item{spatial_type}{Character. Only applicable for spatial selections. Either
-'points' (spatial points) or 'areas' (spatial polygons/raster).}
 }
 \value{
 Shiny UI
