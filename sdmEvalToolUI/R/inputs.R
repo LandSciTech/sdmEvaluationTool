@@ -76,6 +76,8 @@ ordinal_input <- function(...) {
 spatial_input <- function(...) {
   expand_dots(...)
 
+  label <- span(label, metadata_popover)
+
   id_inputs <- purrr::map(values, \(v) {
     selectizeInput(
       inputId = glue::glue("{input_id_ns}-{value_to_input(v)}"),
