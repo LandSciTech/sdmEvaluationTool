@@ -24,7 +24,6 @@ sdm_tool <- function(
     "observations",
     "model",
     "predictors",
-    "model_metadata",
     "summary"
   ),
   user = NULL,
