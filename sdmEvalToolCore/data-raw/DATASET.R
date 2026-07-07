@@ -99,7 +99,9 @@ for (i in 1:nrow(e)) {
 e$metadata_id <- NA_character_
 for (i in 1:nrow(e)) {
   if (!is.null(conf$default_questions[[i]]$metadata_id)) {
-    e$metadata_id[i] <- list(conf$default_questions[[i]]$metadata_id)
+    # mids <- list(conf$default_questions[[i]]$metadata_id)
+    mids <- paste0(conf$default_questions[[i]]$metadata_id, collapse = ",")
+    e$metadata_id[i] <- mids
   }
 }
 # e$english <- gsub("[\r\n\t]", "", e$english)
