@@ -330,7 +330,7 @@ mod_utils_evaluations_server <- function(
 #' input <- list(c(4,5,9))
 #' names(input) <- paste0(sp, "-", v)
 #' clicked <- paste0(sp, "-show")
-#' questions <- prep_questions(c, d, m, s)
+#' questions <- test_questions(c, d, m, s)
 #' show_spatial(clicked, questions, input)
 #'
 #' # Example from test_page_preditions()
@@ -345,7 +345,7 @@ mod_utils_evaluations_server <- function(
 #' input <- list(c(4,5,9), NULL, NULL, c(3,5,10), NULL, NULL)
 #' names(input) <- paste0(sp, "-", v)
 #' clicked <- paste0(sp, "-show")
-#' questions <- prep_questions(c, d, m, s)
+#' questions <- test_questions(c, d, m, s)
 #' show_spatial(clicked, questions, input)
 
 show_spatial <- function(show_clicked, questions, input) {

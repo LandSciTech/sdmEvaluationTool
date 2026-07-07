@@ -24,7 +24,6 @@ sdm_tool <- function(
     "observations",
     "model",
     "predictors",
-    "model_metadata",
     "summary"
   ),
   user = NULL,
@@ -574,6 +573,18 @@ sdm_theme <- function() {
          margin: 0;
          line-spacing: 0;
        }
+
+      /* `popover-max-width` isn't respected by bootstrap */
+      .popover {
+        max-width: 40% !important;
+      }
+      .popover-contents table {
+        margin-top: 10px;
+      }
+      .popover-contents thead {
+        border-top: 1px solid #dee2e6;
+        border-bottom: 1px solid #dee2e6;
+    }
 
        /* Validate/need messages */
       .shiny-output-error {
