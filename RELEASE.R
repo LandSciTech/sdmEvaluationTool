@@ -34,7 +34,7 @@ devtools::load_all(pkg)
 dir.create("_tmp", showWarnings = FALSE)
 q <- default_questions
 q$values <- sapply(q$values, \(x) paste0(unlist(x), collapse = ","))
-q$odmap_id <- sapply(q$odmap_id, \(x) paste0(unlist(x), collapse = ","))
+q$metadata_id <- sapply(q$metadata_id, \(x) paste0(unlist(x), collapse = ","))
 write.csv(q, row.names = FALSE, file = "_tmp/default_questions.csv")
 
 # --- UI -----------------------------

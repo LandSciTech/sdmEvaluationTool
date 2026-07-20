@@ -23,11 +23,6 @@ sdm_tool <- function(
     "predictions",
     "observations",
     "predictors",
-<<<<<<< HEAD
-    "model",
-    "model_metadata",
-=======
->>>>>>> main
     "summary"
   ),
   user = NULL,

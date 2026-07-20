@@ -128,7 +128,7 @@ species <- structure(
   row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
   class = "data.frame"
 )
-species <- species[1:2,]
+#species <- species[1:2,]
 db_write_table(con, "species", species)
 
 # ------- models table ----------
@@ -159,10 +159,14 @@ prep_predictor_metadata(
   update = FALSE
 )
 
-# --------- model_metadata / ODMAP ----
+# --------- model_metadata ----
 
-fi <- file.path(path, "ODMAP", "ODMAP_Knight_2025-12-16.csv")
+# fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
+fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
 x <- read_file(fi)
+x$metadata_id <- x[["X"]]
+x[["X"]] <- NULL
+colnames(x) <- tolower(colnames(x))
 
 prep_model_metadata(
   x = x,
@@ -171,6 +175,10 @@ prep_model_metadata(
   material_settings = NULL,
   con = con,
   update = FALSE
+)
+
+u <- arrow::read_parquet(
+  "misc/sdm_evaluation_results/materials/bam_v5_can71/metadata/model_metadata.parquet"
 )
 
 # ------- predictor_raster RESAMPLED ------
@@ -306,10 +314,10 @@ prep_deployment_questions(
   x = NULL
 )
 
-# default questions - if I set up this way then problem with conditional followup questions goes away
+# default questions - without drilldowns
 q <- sdmEvalToolCore::default_questions
 q$followup_level <- 0
-q$followup_level[3] <- 6
+#q$followup_level[5] <- 3
 q <- combine_questions(q)
 
 prep_deployment_questions(
@@ -405,14 +413,6 @@ if(F){
   devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
   user_id <- "testuser"
   sdm_tool(
-    user = user_id,
-    tabs = c(
-      "overview",
-      "predictions",
-      "observations",
-      "predictors",
-      "model",
-      "summary"
-    )
+    user = user_id
   )
 }

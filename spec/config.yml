@@ -864,15 +864,9 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Identify areas on the map where your experience prohibits your ability to provide an opinion about the accuracy of predictions.
     fr: ""
-<<<<<<< HEAD
-  values: ["no opinion"]
-  followup_level: 0
-  odmap_id: ~
-=======
   values: ["No opinion"]
   followup_level: 0
   metadata_id: ~
->>>>>>> main
 
 - component: spatial_prediction
   type: spatial
@@ -881,21 +875,13 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Identify areas on the map where your experience is limited but where the predictions seem inaccurate.
     fr: ""
-<<<<<<< HEAD
-  values: ["inaccurate seeming"]
-  followup_level: 0
-  odmap_id: ~
-=======
   values: ["Inaccurate seeming"]
   followup_level: 0
   metadata_id: ~
->>>>>>> main
 
 - component: spatial_prediction
   type: spatial
   order: 3
-<<<<<<< HEAD
-=======
   part: 0
   body:
     en: For areas on the map where you have strong experience, identify inaccuracies.
@@ -1183,304 +1169,12 @@ default_questions: # where values is missing, we use the values from question_ty
 - component: model_fit
   type: simple_text
   order: 2
->>>>>>> main
-  part: 0
-  body:
-    en: For areas on the map where you have strong experience, identify inaccuracies.
-    fr: ""
-  values: ["over* prediction", "under* prediction"]
-  followup_level: 0
-  odmap_id: ~
-
-- component: spatial_prediction
-  type: simple_text
-  order: 3
-  part: 1
-  body:
-    en: For those areas of over* or under* prediction, please explain why the prediction inaccuracies are a problem.
-    fr: ""
-  followup_level: 5
-  odmap_id: ~
-
-- component: spatial_prediction
-  type: spatial
-  order: 4
-  part: 0
-  body:
-    en: Considering what you know about the data, surveys, bird habitat associations, and other sources of uncertainty, identify areas where the uncertainty shown is either greater or less than what you think it should be.
-    fr: ""
-  values: ["greater than expected", "less than expected"]
-  followup_level: 0
-  odmap_id: ~
-
-- component: spatial_prediction
-  type: simple_text
-  order: 4
-  part: 1
-  body:
-    en: Provide ideas or comments about why the uncertainty shown is not what you would expect.
-    fr: ""
-  followup_level: 0
-<<<<<<< HEAD
-  odmap_id: ~
-#TO DO Details: For example: sampling effort, detectability, species identification, habitat associations.
-
-- component: spatial_prediction
-  type: spatial
-  order: 5
-  part: 0
-  body:
-    en: If you have any additional comments about particular areas, please identify those areas here.
-    fr: ""
-  values: ["comment"]
-  followup_level: 0
-  odmap_id: ~
-
-- component: spatial_prediction
-  type: simple_text
-  order: 5
-  part: 1
-  body:
-    en: What would you like to say about the identified comment areas?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-
-- component: spatial_prediction
-  type: simple_text
-  order: 6
-  part: 0
-  body:
-    en: Provide any additional comments or views you would like to submit concerning these Prediction topics.
-    fr: ""
-  followup_level: 0
-  odmap_id: [o_objective_3,o_utility_2,o_utility_3]
-
-# ---------- observations ------------
-- component: observations
-  type: spatial
-  order: 1
-  part: 0
-  body:
-    en: Identify areas on the map where your experience prohibits your ability to provide an opinion about the accuracy of the observation data.
-    fr: ""
-  values: ["no opinion"]
-  followup_level: 0
-  odmap_id: ~
-
-- component: observations
-  type: spatial
-  order: 2
-  part: 0
-  body:
-    en: Identify areas where you have doubts about the data, distinguishing between areas where your experience is limited and areas where your experience is strong.
-    fr: ""
-  values: ["limited experience and doubts","strong experience and doubts"]
-  followup_level: 0
-  odmap_id: ~
-
-- component: observations
-  type: simple_text
-  order: 2
-  part: 1
-  body:
-    en: Provide views about the causes of your doubts about the data.
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-
-- component: observations
-  type: ordinal
-  order: 3
-  part: 0
-  body:
-    en: With Observations selected, please examine the charts grouped by Year, Month, Hours (since sunrise), and Method. When you consider the patterns of zero* and non-zero counts, are you concerned?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: observations
-  type: simple_text
-  order: 3
-  part: 1
-  body:
-    en: Please explain your concerns.
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: observations
-  type: ordinal
-  order: 4
-  part: 0
-  body:
-    en: With Detections* selected, please examine the charts grouped by Year, Month, Hours (since sunrise), and Method. When you consider the patterns of zero* and non-zero counts, are you concerned?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: observations
-  type: simple_text
-  order: 4
-  part: 1
-  body:
-    en: Please explain your concerns.
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: observations
-  type: ordinal
-  order: 5
-  part: 0
-  body:
-    en: How concerned are you about the description and treatment of potential biases in the data, as described in the model metadata?
-    fr: ""
-  followup_level: 0
-  odmap_id: [d_bio_12]
-- component: observations
-  type: simple_text
-  order: 5
-  part: 1
-  body:
-    en: Please explain your concerns.
-    fr: ""
-  followup_level: 5
-  odmap_id: ~
-- component: observations
-  type: spatial
-  order: 6
-  part: 0
-  body:
-    en: If you have any additional comments about particular areas, please identify those areas here.
-    fr: ""
-  values: ["comment"]
-  followup_level: 0
-  odmap_id: ~
-
-- component: observations
-  type: simple_text
-  order: 6
-  part: 1
-  body:
-    en: What would you like to say about the identified comment areas?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-
-- component: observations
-  type: simple_text
-  order: 7
-  part: 0
-  body:
-    en: Provide any additional comments or views you would like to submit concerning these Observation topics.
-    fr: ""
-  followup_level: 0
-  odmap_id: [o_objective_3,o_utility_2,o_utility_3]
-
-# ------------ predictor metadata -----------
-- component: predictor_metadata
-  type: yes_no
-  order: 1
-  part: 0
-  body:
-    en: For each of the Predictors* in the drop-down list above the map, please consider the map and the metadata in the table. Are you aware of Predictor* data that is not listed that could be helpful in modeling?
-    fr: ""
-  followup_level: 0
-  odmap_id: [0_concept_1,d_pred_2, m_multicol_1, m_estim_3]
-- component: predictor_metadata
-  type: simple_text
-  order: 1
-  part: 1
-  body:
-    en: Please descibe the additional data sources, explain why they could be helpful, and suggest contacts or resources to obtain the data.
-    fr: ""
-  followup_level: 0
-  odmap_id: [d_pred_2]
-- component: predictor_metadata
-  type: yes_no
-  order: 2
-  part: 0
-  body:
-    en: Do you see Predictors* that you believe are not relevant for modeling?
-    fr: ""
-  followup_level: 0
-  odmap_id: [d_pred_2, m_multicol_1, m_estim_3]
-- component: predictor_metadata
-  type: simple_text
-  order: 2
-  part: 1
-  body:
-    en: Please indicate which Predictors* you believe are not relevant and explain.
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: predictor_metadata
-  type: ordinal
-  order: 3
-  part: 0
-  body:
-    en: Are you concerned about the quality* of any of the  Predictors* listed?
-    fr: ""
-  followup_level: 0
-  odmap_id: [d_pred_2,d_pred_9, m_preselect_1]
-#TO DO Details:  Quality can relate to characteristics such as the fineness or coarseness of the spatial resolution, or the accuracy of the data values.
-- component: predictor_metadata
-  type: simple_text
-  order: 3
-  part: 1
-  body:
-    en: Please explain your concerns about Predictor quality.
-    fr: ""
-  followup_level: 5
-  odmap_id: ~
-
-- component: predictor_metadata
-  type: yes_no
-  order: 4
-  part: 0
-  body:
-    en: Do you have other concerns about the description and treatment of the predictor data?
-    fr: ""
-  followup_level: 0
-  odmap_id: [o_objective_3,o_utility_2,o_utility_3,o_concept_1,d_pred_9,d_pred_2, m_multicol_1, m_preselect_1, m_estim_3]
-- component: predictor_metadata
-  type: simple_text
-  order: 4
-  part: 1
-  body:
-    en: Please explain your other concerns.
-    fr: ""
-  followup_level: 5
-  odmap_id: ~
-
-## ------------ model fit ------------
-- component: model_fit
-  type: ordinal
-  order: 1
-  part: 0
-  body:
-    en: How concerned are you about the adequacy or appropriateness of the validation metrics?
-    fr: ""
-  followup_level: 0
-  odmap_id: [a_metrics_1]
-- component: model_fit
-  type: simple_text
-  order: 1
-  part: 1
-  body:
-    en: What are the metrics that should be used and why?
-    fr: ""
-  followup_level: 0
-  odmap_id: ~
-- component: model_fit
-  type: simple_text
-  order: 2
   part: 0
   body:
     en: What other concerns do you have about model performance?
     fr: ""
   followup_level: 0
-  odmap_id: [o_objective_3,o_utility_2,o_utility_3,m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3,p_part_1,d_part_3]
-=======
   metadata_id: [o_objective_3,o_utility_2,o_utility_3,m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3,p_part_1,d_part_3]
->>>>>>> main
 
 
 ## ------------ model summary ------------
@@ -1492,11 +1186,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about missing predictor interactions or nonlinear relationships?
     fr: ""
   followup_level: 0
-<<<<<<< HEAD
-  odmap_id: [o_concept_1,o_algorithms_2,d_pred_2, m_estim_1,m_estim_2,m_estim_3,p_uncertainty_2,p_uncertainty_3]
-=======
   metadata_id: [o_concept_1,o_algorithms_2,d_pred_2, m_estim_1,m_estim_2,m_estim_3,p_uncertainty_2,p_uncertainty_3]
->>>>>>> main
 - component: model_summary
   type: simple_text
   order: 1
@@ -1505,11 +1195,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What interactions or nonlinear relationships are missing?
     fr: ""
   followup_level: 0
-<<<<<<< HEAD
-  odmap_id: ~
-=======
   metadata_id: ~
->>>>>>> main
 - component: model_summary
   type: ordinal
   order: 2
@@ -1518,11 +1204,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are your about the reported relative importance of predictors?
     fr: ""
   followup_level: 0
-<<<<<<< HEAD
-  odmap_id: [m_estim_2,m_estim_3]
-=======
   metadata_id: [m_estim_2,m_estim_3]
->>>>>>> main
 - component: model_summary
   type: simple_text
   order: 2
@@ -1531,11 +1213,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Which predictors would you expect to be more or less important and why?
     fr: ""
   followup_level: 0
-<<<<<<< HEAD
-  odmap_id: ~
-=======
   metadata_id: ~
->>>>>>> main
 - component: model_summary
   type: ordinal
   order: 3
@@ -1544,11 +1222,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about the appropriateness of the modeling algorithm for the model objectives and application?
     fr: ""
   followup_level: 5
-<<<<<<< HEAD
-  odmap_id: [o_objective_3,o_utility_2,o_utility_3,o_assumptions_1,o_workflow_1,o_workflow_2,o_algorithms_1, o_algorithms_2]
-=======
   metadata_id: [o_objective_3,o_utility_2,o_utility_3,o_assumptions_1,o_workflow_1,o_workflow_2,o_algorithms_1, o_algorithms_2]
->>>>>>> main
 - component: model_summary
   type: ordinal
   order: 4
@@ -1557,11 +1231,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about how well the modelling framework addresses important statistical assumptions?
     fr: ""
   followup_level: 5
-<<<<<<< HEAD
-  odmap_id: [o_concept_1, o_assumptions_1, o_workflow_1,o_workflow_2, o_objective_3, m_multicol_1, m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3, m_depend_1,m_depend_2,m_depend_3,m_threshold_1,p_output_2,p_uncertainty_5,p_uncertainty_1,p_uncertainty_2,p_uncertainty_3,p_uncertainty_4]
-=======
   metadata_id: [o_concept_1, o_assumptions_1, o_workflow_1,o_workflow_2, o_objective_3, m_multicol_1, m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3, m_depend_1,m_depend_2,m_depend_3,m_threshold_1,p_output_2,p_uncertainty_5,p_uncertainty_1,p_uncertainty_2,p_uncertainty_3,p_uncertainty_4]
->>>>>>> main
 - component: model_summary
   type: ordinal
   order: 5
@@ -1570,11 +1240,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about how well important biological assumptions are explained and justified?
     fr: ""
   followup_level: 5
-<<<<<<< HEAD
-  odmap_id: [o_objective_3, o_utility_2,o_utility_3, o_concept_1, o_assumptions_1]
-=======
   metadata_id: [o_objective_3, o_utility_2,o_utility_3, o_concept_1, o_assumptions_1]
->>>>>>> main
 - component: model_summary
   type: simple_text
   order: 6
@@ -1583,11 +1249,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What other concerns or comments do you have about model complexity?
     fr: ""
   followup_level: 0
-<<<<<<< HEAD
-  odmap_id: ~
-=======
   metadata_id: ~
->>>>>>> main
 # ---------- deployment settings --------
 - component: deployment_settings
   type: simple_text
@@ -1597,11 +1259,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Are there any non-target applications that you think this model is unsuitable for? Please explain.
     fr: ""
   followup_level: 0
-<<<<<<< HEAD
-  odmap_id: [o_objective_3, o_utility_2,o_utility_3]
-=======
   metadata_id: [o_objective_3, o_utility_2,o_utility_3]
->>>>>>> main
 - component: deployment_settings
   type: ordinal
   order: 2
@@ -1610,11 +1268,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: How concerned are you about how well suited the model is for the intended application of the model?
     fr: ""
   followup_level: 5
-<<<<<<< HEAD
-  odmap_id: [o_objective_3, o_utility_2]
-=======
   metadata_id: [o_objective_3, o_utility_2]
->>>>>>> main
 - component: deployment_settings
   type: simple_text
   order: 3
@@ -1623,11 +1277,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: What other concerns or comments do you have about using the model for the intended model applications?
     fr: ""
   followup_level: 0
-<<<<<<< HEAD
-  odmap_id: [o_objective_3, o_utility_2]
-=======
   metadata_id: [o_objective_3, o_utility_2]
->>>>>>> main
 # --------- deployment_subunits ------------
 - component: deployment_subunits
   type: simple_text
