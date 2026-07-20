@@ -29,9 +29,14 @@ combine_questions <- function(q) {
     f <- fq[fq$followup_level <= l, ]
     f$component <- q$component[i]
     f$order <- q$order[i]
+<<<<<<< HEAD
     f$part <- f$followup_level+q$part[i]
     f$odmap_id <- q$odmap_id[i]
     f$followup_level <- 0
+=======
+    f$part <- q$part[i]
+    f$metadata_id <- q$metadata_id[i]
+>>>>>>> main
     qq <- rbind(qq, f[, colnames(qq)])
     q$followup_level[i] <- 0
   }

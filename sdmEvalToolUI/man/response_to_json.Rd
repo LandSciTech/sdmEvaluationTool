@@ -18,8 +18,8 @@ Takes component, questions data frame, and input list from Shiny app and
 converts responses (evaluations) to JSON body for saving to the data base.
 }
 \examples{
-q1 <- prep_questions("model_fit", "deployment2", "bam_v5_can71", "BBWO")
-q2 <- prep_questions("model_summary", "deployment2", "bam_v5_can71", "BBWO")
+q1 <- test_questions("model_fit", "deployment2", "bam_v5_can71", "BBWO")
+q2 <- test_questions("model_summary", "deployment2", "bam_v5_can71", "BBWO")
 i1 <- test_input_evals(q1)
 i2 <- test_input_evals(q2)
 response_to_json("model_fit", rbind(q1, q2), append(i1, i2))

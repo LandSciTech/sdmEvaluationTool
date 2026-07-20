@@ -159,8 +159,12 @@ prep_predictor_metadata(
 
 # --------- model_metadata / ODMAP ----
 
-fi <- file.path(path, "ODMAP", "ODMAP_Knight_2025-12-16.csv")
+# fi <- file.path(path, "ODMAP", "ODMAP_Knight_2025-12-16.csv")
+fi <- file.path(path, "ODMAP", "metadata_Knight_2025-12-16.csv")
 x <- read_file(fi)
+x$metadata_id <- x[["X"]]
+x[["X"]] <- NULL
+colnames(x) <- tolower(colnames(x))
 
 prep_model_metadata(
   x = x,
@@ -169,6 +173,10 @@ prep_model_metadata(
   material_settings = NULL,
   con = con,
   update = FALSE
+)
+
+u <- arrow::read_parquet(
+  "misc/sdm_evaluation_results/materials/bam_v5_can71/metadata/model_metadata.parquet"
 )
 
 # ------- predictor_raster RESAMPLED ------

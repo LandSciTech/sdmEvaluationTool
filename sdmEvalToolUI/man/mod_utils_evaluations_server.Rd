@@ -6,7 +6,6 @@
 \usage{
 mod_utils_evaluations_server(
   id = "evaluations",
-  spatial_type = "points",
   component_id,
   deployment_id,
   model_id,
@@ -19,9 +18,6 @@ mod_utils_evaluations_server(
 }
 \arguments{
 \item{id}{Shiny module ID}
-
-\item{spatial_type}{Character. Only applicable for spatial selections. Either
-'points' (spatial points) or 'areas' (spatial polygons/raster).}
 
 \item{component_id}{Character. Component ID}
 

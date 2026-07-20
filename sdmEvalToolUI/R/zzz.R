@@ -7,16 +7,19 @@ utils::globalVariables(c(
   # - variables passed to modules as `...` 
   # - lists which are expanded into variables cannot be otherwise defined
 
-  # Inputs
+  # Input args
   "model_id", "species_id", "deployment_id",
-  
-  # Other
-  "opts", "abandoned", "overview_update", "overview_inputs", "unsaved",
-  "completed", "id", "id_spatial", "label", "input_id_ns",
-  "layers", "part", "show_clicked", "response", "width", 
-  "show_spatial_ids", "map_views",
-  
-  "values" # Spatial inputs
+  "opts", "abandoned", "unsaved", "map_views",
+
+  # spatial_selection list arg gives...
+  "show_clicked", "show_spatial_ids",
+ 
+  # inputs.R
+  "label", "input_id_ns", "metadata_popover", "response", "width",  "values",
+
+  # mod_page_overview_server.R
+  "overview_update", "overview_inputs"
+ 
 ))
 
 .onAttach <- function(libname, pkgname) {

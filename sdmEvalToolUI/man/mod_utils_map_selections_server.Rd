@@ -9,7 +9,6 @@ mod_utils_map_selections_server(
   data,
   spatial_selection,
   interactions,
-  spatial_type = "points",
   parent_session = getDefaultReactiveDomain()
 )
 }
@@ -23,8 +22,6 @@ which show button was last clicked and \code{show_spatial_ids} which contains a
 list of spatial ids by category to highlight.}
 
 \item{interactions}{Interactions}
-
-\item{spatial_type}{Spatial type}
 
 \item{parent_session}{Parent session}
 }

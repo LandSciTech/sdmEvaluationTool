@@ -1,26 +1,31 @@
 {
   "input": {
-    "comp_summary-layers_visible": "Subunits",
-    "comp_summary-map_bounds": {
-      "north": 60.23981116999893,
-      "east": -49.96582031250001,
-      "south": 48.45835188280866,
-      "west": -121.11328125
+    "comp_observations-hours": null,
+    "comp_observations-layers_visible": "Subunits",
+    "comp_observations-map_bounds": {
+      "north": 59.46740794183739,
+      "east": -48.77929687500001,
+      "south": 48.57478991092886,
+      "west": -119.9267578125
     },
-    "comp_summary-map_center": {
-      "lng": -85.53955078125001,
-      "lat": 54.77534585936449
+    "comp_observations-map_center": {
+      "lng": -84.35302734375001,
+      "lat": 54.38055736863065
     },
-    "comp_summary-map_groups": [
+    "comp_observations-map_groups": [
       "CartoDB",
       "editableFeatureGroup",
+      "Presence",
       "Subunits"
     ],
-    "comp_summary-map_zoom": 5,
-    "comp_summary-select-selected_copy": 0
+    "comp_observations-map_zoom": 5,
+    "comp_observations-method": null,
+    "comp_observations-month": null,
+    "comp_observations-select-selected_copy": 0,
+    "comp_observations-year": null
   },
   "output": {
-    "comp_summary-map": {
+    "comp_observations-map": {
       "x": {
         "options": {
           "crs": {
@@ -152,8 +157,70 @@
               {
                 "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" class=\"bi bi-star-fill \" style=\"height:1em;width:1em;fill:currentColor;vertical-align:-0.125em;\" aria-label=\"Clear selection\" role=\"img\" ><title>Clear selection<\/title><path d=\"M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z\"><\/path><\/svg>",
                 "title": "Clear selection",
-                "onClick": "function(btn, map){\n  Shiny.onInputChange('comp_summary-clear_selection', Math.random());\n}",
+                "onClick": "function(btn, map){\n  Shiny.onInputChange('comp_observations-clear_selection', Math.random());\n}",
                 "position": "topleft"
+              }
+            ]
+          },
+          {
+            "method": "createMapPane",
+            "args": [
+              "Absence-pane",
+              390
+            ]
+          },
+          {
+            "method": "addRasterImage",
+            "args": [
+              "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJsAAAB2CAYAAADfu+HQAAAEPUlEQVR4nO3dbXLbIBSFYdzJarK5bKVdXLId9UeqGUqEuEhwQNz3mfE04/pDiY8v4sP4tW1bABR+jT4A+EHYIHMatj9fYYt/3i/9DwsrorJB5jRsH+/hpToQrI/KBpkXQx9QobJBhrBBhrBBhrBBhrBBhrBBhrBBpmnYmDfFGSobZN5aPAgVDRaXwvbnK2wf7+G1h4wJe1jQjEKmeiI+bjKpaKhBZYOM+ZyN8zPcxXo2yNCMQoawQaZb2BjoRYrKBpkm01UxRUWjZ/xMVDbIVIfNUrk+3sOrV9VJt4To8Rzoo3pQdzSazueiGYVMMWzpxDuVBVeZKtu+fq3V7XrY3xSzNPf4iWYUMs0n4kdWN8yteWWLl4uPxC6Z86EZhUyXsO3N6AyVZYZjwDcqG2S6r9SdcdKcTswYrpeFEzotmlHIuK5s0Fq6sl3tiTJG18fSYcNclg7b1ZN/Og19PDpsuebuThMYD9VYHp8m1+7RYcOzTBm2UrUoVZI7zWA81ZZbLBpfF/989pWZVMBJhj6OXoTci6g6n0oHfHMDwKVji+/nfRB5ysqGNU1R2WZUU4W8Vyyr5Srb2blRrhd5dJ+zZVK525aOy/YbrGu5sGFeyzSjMy5lwv+WqmxnQSs1Y6Whljv3x7elwoa5LdOM9mIdb0MZYYMMzShk3ISt9dwkHYJ6bsLW+jyL87Z6bsKG8VyF7Uo1Sqe17h6D5+bXVdh2NS+4ZQPEmvNBz82vy7BhkG3bXFx+f25b/G/P5+ByfHFT2RT7xuVWF+Obm7BhPKarIOOysll7j62bwtIK4tWbXpdhwxiELZQ/Z9BqXrXUgZhl8+teXIYtHqit/RTV1dsdBfboS99WHvR130FIP0Qcws9PxR/dJ73ubkh6PObZ86SPffZ3aMVlZcMgo0eVR19+f27b2ci/5f+ePnNQ+hu0urivbHc+kfXU86ujD1krfhf3YYOO+w5CqtRJuLL1wmysHaHW3IbN0vu6slXXDBvSWB53xJuGZhQybsOWeydbdjOy7H5k1WtHytLj7p2Co85Br1kMt81oTmnQ84kj/bXnaL1+R8JmYP3j5zoTMwVz5DG5bUahR9gManahTHuwVytIz9UfoyotYfsn3Uo+vj6E/AuU26b+LkVI1dvlEzbIELZIzRBAWhV6nHjXVh3L7dNKrGxSCVv4vxeZrpZNhwtyswo9XrQWa+SOvmmmzdHVexv1xLM4W7SoGuwsHZc1dNY53FG7Z1LZIMOgbmKW75qacUD4Lipb5MpqidbPv/+sPnlXIGyQIWwJS6/N+lG9K89rvf6JOGeLHC2oDOF8OdJqTV1PVLYDe4j2y9HgbQhrnbwrEDbIELZIbjC3ZKXzqp4IW6W4WV1xLKwnwnYiDpNqL46VETbIMPRxEcMe9QgbZGhGIUPYIEPYIEPYIEPYIEPYIEPYIEPYIEPYIEPYIPMXIkU0My5nxFgAAAAASUVORK5CYII=",
+              [
+                [
+                  59.09277115924524,
+                  -95.67068888241501
+                ],
+                [
+                  49.04366505584084,
+                  -73.02839918107348
+                ]
+              ],
+              null,
+              "Absence",
+              {
+                "interactive": true,
+                "className": "",
+                "pane": "Absence-pane",
+                "opacity": 0.8
+              }
+            ]
+          },
+          {
+            "method": "createMapPane",
+            "args": [
+              "Presence-pane",
+              390
+            ]
+          },
+          {
+            "method": "addRasterImage",
+            "args": [
+              "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJsAAAB2CAYAAADfu+HQAAACQ0lEQVR4nO3bsW7iQBRAUVjln6ip+d7UqfNVbLOWkAWsAXMN+JwKKSEy0s2bGQPb4/G4gcKfpS+A9RAbGbGRERuZm2Pb7Q9OFNzFZCOzdeuDislGRmxkxEZGbGTERkZsZMRGRmxkxEZGbGTERkZsZL5ufcLpR4x+f763814On8xkIzN5sg0TzTTjXj7PRsYySkZsZMRGRmxkxEZGbGRmj82XmLnEfTYyllEyYiMza2z2a1xjspFxQCBjspERGxmxkREbmafH5nYIA6dRMpZRMmIjIzYyYiMjNjJiIyM2MmIjIzYyYiMjtgu8pzs/742SMdnIiI2M2MiIjYzYyIiNjNjIiI2M2MiIjYzYyIiNjNjIiI2M2MiIjYzYyIiNjNjIiO2C3f5w9KWXeYltgiG8qfGJ9LzVf7tqtz8cf3++t+PHU543PJ76nLUz2cisfrLN4ZaJuGYm2+b6HusT919LvSaxkRHb5voGf/yzYSq8+wFhiem22j2bfVbPZCOz2timTLVLS83pUvqqB4hHru1Zr+nrGX/0U5wL8l32aqfXNlzzPTev57TaPdszvMM+cMlrXO0ySk9sM3r1qbY0sf3Hqx4A7rXkP4TYyIjtn3MTbLyZPv2d8a2FT5uAz+A0SsZke1GfOCnFRkZsI68yUT7xNorYRi4dCHic2MiI7YpblrJHp+AapqhbHxeMPynB48Q2wTt8muMdWEbJmGxkTDYyYiMjNjJiIyM2MmIjIzYyYiMjNjJiIyM2MmIjIzYyYiMjNjJ/AQgLv+fsmkr4AAAAAElFTkSuQmCC",
+              [
+                [
+                  59.09277115924524,
+                  -95.67068888241501
+                ],
+                [
+                  49.04366505584084,
+                  -73.02839918107348
+                ]
+              ],
+              null,
+              "Presence",
+              {
+                "interactive": true,
+                "className": "",
+                "pane": "Presence-pane",
+                "opacity": 0.8
               }
             ]
           },
@@ -3426,7 +3493,11 @@
                 "Open Street Map",
                 "Google"
               ],
-              "Subunits",
+              [
+                "Absence",
+                "Presence",
+                "Subunits"
+              ],
               {
                 "collapsed": false,
                 "autoZIndex": true,
@@ -3449,12 +3520,12 @@
         ],
         "limits": {
           "lat": [
-            50.04094343369769,
-            59.01644883440925
+            49.04366505584084,
+            59.09277115924524
           ],
           "lng": [
             -95.67068888241502,
-            -75.39566328973622
+            -73.02839918107348
           ]
         }
       },
@@ -3464,7 +3535,7 @@
       "jsHooks": {
         "render": [
           {
-            "code": "function(el, x, data) {\n  return (  function(el, x) {\n    var map = this;\n    \n    // Track visible layers\n    var visibleLayers = [];\n    \n    // When layer is added\n    map.on('overlayadd', function(e) {\n      visibleLayers.push(e.name);\n      Shiny.setInputValue('comp_summary-layers_visible', visibleLayers);\n    });\n    \n    // When layer is removed\n    map.on('overlayremove', function(e) {\n      var index = visibleLayers.indexOf(e.name);\n      if (index > -1) {\n        visibleLayers.splice(index, 1);\n      }\n      Shiny.setInputValue('comp_summary-layers_visible', visibleLayers);\n    });\n    \n    // Initialize with currently visible layers\n    setTimeout(function() {\n      map.eachLayer(function(layer) {\n        if (layer.options && layer.options.group && map.hasLayer(layer)) {\n          if (!visibleLayers.includes(layer.options.group)) {\n            visibleLayers.push(layer.options.group);\n          }\n        }\n      });\n      Shiny.setInputValue('comp_summary-layers_visible', visibleLayers);\n    }, 500);\n  }).call(this.getMap(), el, x, data);\n}",
+            "code": "function(el, x, data) {\n  return (  function(el, x) {\n    var map = this;\n    \n    // Track visible layers\n    var visibleLayers = [];\n    \n    // When layer is added\n    map.on('overlayadd', function(e) {\n      visibleLayers.push(e.name);\n      Shiny.setInputValue('comp_observations-layers_visible', visibleLayers);\n    });\n    \n    // When layer is removed\n    map.on('overlayremove', function(e) {\n      var index = visibleLayers.indexOf(e.name);\n      if (index > -1) {\n        visibleLayers.splice(index, 1);\n      }\n      Shiny.setInputValue('comp_observations-layers_visible', visibleLayers);\n    });\n    \n    // Initialize with currently visible layers\n    setTimeout(function() {\n      map.eachLayer(function(layer) {\n        if (layer.options && layer.options.group && map.hasLayer(layer)) {\n          if (!visibleLayers.includes(layer.options.group)) {\n            visibleLayers.push(layer.options.group);\n          }\n        }\n      });\n      Shiny.setInputValue('comp_observations-layers_visible', visibleLayers);\n    }, 500);\n  }).call(this.getMap(), el, x, data);\n}",
             "data": null
           }
         ]
@@ -3563,16 +3634,15 @@
         },
         {
           "name": "leaflet-providers",
-          "version": "2.0.0",
+          "version": "3.0.0",
           "src": {
-            "href": "leaflet-providers-2.0.0"
+            "href": "leaflet-providers-3.0.0"
           },
           "meta": null,
-          "script": "leaflet-providers_2.0.0.js",
+          "script": "leaflet-providers.js",
           "stylesheet": null,
           "head": null,
           "attachment": null,
-          "package": null,
           "all_files": false
         },
         {
@@ -3637,7 +3707,7 @@
         }
       ]
     },
-    "comp_summary-select-selected": {
+    "comp_observations-select-selected": {
       "message": "",
       "call": "NULL",
       "type": [
@@ -3645,7 +3715,7 @@
         "validation"
       ]
     },
-    "comp_summary-select-tbl_selected": {
+    "comp_observations-select-tbl_selected": {
       "message": "No areas selected",
       "call": "NULL",
       "type": [
@@ -3653,7 +3723,82 @@
         "validation"
       ]
     },
-    "comp_summary-select-tbl_title": "Currently selected areas"
+    "comp_observations-select-tbl_title": "Currently selected areas",
+    "comp_observations-tooltip": {
+      "html": "<bslib-tooltip placement=\"auto\" bsOptions=\"[]\" data-require-bs-version=\"5\" data-require-bs-caller=\"tooltip()\">\n  <template>Observations.<\/template>\n  <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" class=\"bi bi-info-circle \" style=\"height:1em;width:1em;fill:currentColor;vertical-align:-0.125em;\" aria-label=\"Details\" role=\"img\" ><title>Details<\/title><path d=\"M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z\"><\/path>\n<path d=\"m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z\"><\/path><\/svg>\n<\/bslib-tooltip>",
+      "deps": [
+        {
+          "name": "bslib-component-js",
+          "version": "0.11.0",
+          "src": {
+            "href": "bslib-component-js-0.11.0"
+          },
+          "meta": null,
+          "script": [
+            {
+              "src": "components.min.js"
+            },
+            {
+              "src": "web-components.min.js",
+              "type": "module"
+            }
+          ],
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        },
+        {
+          "name": "bslib-component-css",
+          "version": "0.11.0",
+          "src": {
+            "href": "bslib-component-css-0.11.0"
+          },
+          "meta": null,
+          "script": null,
+          "stylesheet": "bslib-component-css.min.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "bslib-tag-require",
+          "version": "0.11.0",
+          "src": {
+            "href": "bslib-tag-require-0.11.0"
+          },
+          "meta": null,
+          "script": "tag-require.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "all_files": true
+        }
+      ]
+    },
+    "comp_observations-ui_selectors": {
+      "html": "<div style=\"display:grid; grid-template-columns: 200px 200px 200px 200px; gap: 10px; padding-bottom:0;\">\n  <div class=\"form-group shiny-input-container\">\n    <label class=\"control-label\" id=\"comp_observations-year-label\" for=\"comp_observations-year\">Year<\/label>\n    <div>\n      <select id=\"comp_observations-year\" class=\"shiny-input-select\" multiple=\"multiple\"><option value=\"2001\">2001<\/option>\n<option value=\"2002\">2002<\/option>\n<option value=\"2003\">2003<\/option>\n<option value=\"2004\">2004<\/option>\n<option value=\"2005\">2005<\/option>\n<option value=\"2006\">2006<\/option>\n<option value=\"2007\">2007<\/option>\n<option value=\"2008\">2008<\/option>\n<option value=\"2009\">2009<\/option>\n<option value=\"2010\">2010<\/option>\n<option value=\"2011\">2011<\/option>\n<option value=\"2012\">2012<\/option>\n<option value=\"2014\">2014<\/option>\n<option value=\"2015\">2015<\/option>\n<option value=\"2016\">2016<\/option>\n<option value=\"2017\">2017<\/option>\n<option value=\"2018\">2018<\/option>\n<option value=\"2019\">2019<\/option>\n<option value=\"2020\">2020<\/option>\n<option value=\"2021\">2021<\/option>\n<option value=\"2022\">2022<\/option><\/select>\n      <script type=\"application/json\" data-for=\"comp_observations-year\">{\"plugins\":[\"selectize-plugin-a11y\"]}<\/script>\n    <\/div>\n  <\/div>\n  <div class=\"form-group shiny-input-container\">\n    <label class=\"control-label\" id=\"comp_observations-month-label\" for=\"comp_observations-month\">Month<\/label>\n    <div>\n      <select id=\"comp_observations-month\" class=\"shiny-input-select\" multiple=\"multiple\"><option value=\"May\">May<\/option>\n<option value=\"Jun\">Jun<\/option>\n<option value=\"Jul\">Jul<\/option><\/select>\n      <script type=\"application/json\" data-for=\"comp_observations-month\">{\"plugins\":[\"selectize-plugin-a11y\"]}<\/script>\n    <\/div>\n  <\/div>\n  <div class=\"form-group shiny-input-container\">\n    <label class=\"control-label\" id=\"comp_observations-hours-label\" for=\"comp_observations-hours\">Hours (after sunrise)<\/label>\n    <div>\n      <select id=\"comp_observations-hours\" class=\"shiny-input-select\" multiple=\"multiple\"><option value=\"0\">0<\/option>\n<option value=\"1\">1<\/option>\n<option value=\"2\">2<\/option>\n<option value=\"3\">3<\/option>\n<option value=\"4\">4<\/option>\n<option value=\"5\">5<\/option>\n<option value=\"6\">6<\/option>\n<option value=\"7\">7<\/option>\n<option value=\"8\">8<\/option><\/select>\n      <script type=\"application/json\" data-for=\"comp_observations-hours\">{\"plugins\":[\"selectize-plugin-a11y\"]}<\/script>\n    <\/div>\n  <\/div>\n  <div class=\"form-group shiny-input-container\">\n    <label class=\"control-label\" id=\"comp_observations-method-label\" for=\"comp_observations-method\">Method<\/label>\n    <div>\n      <select id=\"comp_observations-method\" class=\"shiny-input-select\" multiple=\"multiple\"><option value=\"1SPM\">1SPM<\/option>\n<option value=\"1SPT\">1SPT<\/option>\n<option value=\"PC\">PC<\/option>\n<option value=\"eBird\">eBird<\/option><\/select>\n      <script type=\"application/json\" data-for=\"comp_observations-method\">{\"plugins\":[\"selectize-plugin-a11y\"]}<\/script>\n    <\/div>\n  <\/div>\n<\/div>",
+      "deps": [
+        {
+          "name": "selectize",
+          "version": "0.15.2",
+          "src": {
+            "href": "selectize-0.15.2"
+          },
+          "meta": null,
+          "script": [
+            "selectize.min.js",
+            "selectize-plugin-a11y.min.js"
+          ],
+          "stylesheet": "selectize.css",
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    }
   },
   "export": {
 

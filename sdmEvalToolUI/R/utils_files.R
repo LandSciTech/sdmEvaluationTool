@@ -9,14 +9,15 @@
 #' @export
 #' @examplesIf have_data()
 #' prep_materials("observations", species_id = "BBWO", model_id = "bam_v5_can71")
-#' #prep_materials("model_metadata", model_id = "bam_v5_can71")
+#' prep_materials("model_metadata", model_id = "bam_v5_can71")
 #' prep_materials("predictor_metadata", model_id = "bam_v5_can71")
 #' #prep_materials("predictor_raster", model_id = "bam_v5_can71")
 #' prep_materials("spatial_prediction", species_id = "BBWO", model_id = "bam_v5_can71")
 #' prep_materials("model_summary", species_id = "BBWO", model_id = "bam_v5_can71")
 #' prep_materials("model_fit", species_id = "BBWO", model_id = "bam_v5_can71")
 #'
-#' # Errors
+#'
+#' # Expect Errors
 #' # prep_materials("observations", model_id = "", species_id = "")
 #' # prep_materials("observations", model_id = "bam_v5_can71", species_id = "")
 
@@ -282,7 +283,20 @@ prep_questions <- function(
         .data$order,
         .data$part,
         sep = "_"
-      )
+      ),
+      metadata_id = stringr::str_split(.data$metadata_id, ",( )?")
+    )
+
+  # Add any metadata - Only add those with actual data!
+  meta <- prep_materials("model_metadata", model_id = model_id) |>
+    dplyr::select("metadata_id", "element", "value") |>
+    tidyr::drop_na()
+
+  q <- q |>
+    dplyr::mutate(
+      metadata = purrr::map(.data$metadata_id, \(m) {
+        dplyr::filter(meta, .data$metadata_id %in% .env$m)
+      })
     )
 
   if (!is.null(user_id)) {
@@ -345,6 +359,10 @@ fetch_questions <- function(deployment_id, component_id) {
 
   if (any(component_id != "ALL")) {
     q <- dplyr::filter(q, .data$component %in% .env$component_id)
+  }
+  # TODO: Temporary until all questions updated
+  if (!"metadata_id" %in% names(q)) {
+    q$metadata_id <- NA_character_
   }
 
   q

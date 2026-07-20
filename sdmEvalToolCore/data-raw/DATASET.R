@@ -77,7 +77,7 @@ e <- do.call(
   rbind,
   lapply(conf$default_questions, \(z) {
     z$values <- NULL
-    z$odmap_id <- NULL
+    z$metadata_id <- NULL
     as.data.frame(z)
   })
 )
@@ -96,10 +96,12 @@ for (i in 1:nrow(e)) {
     e$values[i] <- list(conf$default_questions[[i]]$values)
   }
 }
-e$odmap_id <- NA_character_
+e$metadata_id <- NA_character_
 for (i in 1:nrow(e)) {
-  if (!is.null(conf$default_questions[[i]]$odmap_id)) {
-    e$odmap_id[i] <- list(conf$default_questions[[i]]$odmap_id)
+  if (!is.null(conf$default_questions[[i]]$metadata_id)) {
+    # mids <- list(conf$default_questions[[i]]$metadata_id)
+    mids <- paste0(conf$default_questions[[i]]$metadata_id, collapse = ",")
+    e$metadata_id[i] <- mids
   }
 }
 # e$english <- gsub("[\r\n\t]", "", e$english)

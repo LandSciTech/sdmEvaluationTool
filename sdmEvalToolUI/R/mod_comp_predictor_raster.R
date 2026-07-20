@@ -11,7 +11,7 @@
 test_comp_predictor_raster <- function(...) {
   test_comp(
     "mod_comp_predictor_raster",
-    use = c("model_id", "deployment_id"),
+    use = c("parent_id", "model_id", "deployment_id", "map_views"),
     ...
   )
 }

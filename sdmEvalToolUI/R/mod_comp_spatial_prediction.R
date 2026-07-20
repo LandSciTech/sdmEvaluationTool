@@ -41,12 +41,7 @@ mod_comp_spatial_prediction_ui <- function(
     ),
     sdm_card(
       class = "sub-card",
-      card_body(
-        mod_utils_map_selections_ui(
-          NS(id, "select"),
-          spatial_type = "areas"
-        )
-      )
+      card_body(mod_utils_map_selections_ui(NS(id, "select")))
     )
   )
 }
@@ -132,7 +127,6 @@ mod_comp_spatial_prediction_server <- function(
       data = subunits,
       spatial_selection,
       interactions,
-      spatial_type = "areas",
       parent_session = session
     )
 

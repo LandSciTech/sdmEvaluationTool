@@ -42,11 +42,7 @@ mod_comp_observations_ui <- function(
     ),
     sdm_card(
       class = "sub-card",
-      mod_utils_map_selections_ui(
-        NS(id, "select"),
-        # spatial_type = "points"
-        spatial_type = "areas"
-      )
+      card_body(mod_utils_map_selections_ui(NS(id, "select")))
     )
   )
 }
@@ -204,7 +200,6 @@ mod_comp_observations_server <- function(
       data = subunits,
       spatial_selection,
       interactions,
-      spatial_type = "areas",
       parent_session = session
     )
 
@@ -454,7 +449,7 @@ obs_prep_points <- function(obs, ...) {
       hours = round(.data$hssr),
       month = factor(month.abb[as.POSIXlt(obs$time)$mo + 1], month.abb),
       layers = dplyr::if_else(.data$status == 0, "Absence", "Presence"),
-      layers = factor(layers),
+      layers = factor(.data$layers),
       # fmt: skip
       popup = paste0(
           "<strong>Method:</strong> ", .data$method, "<br>",

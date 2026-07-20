@@ -4,12 +4,7 @@
 \alias{ui_questions}
 \title{Create dynamic question inputs}
 \usage{
-ui_questions(
-  questions,
-  spatial_ids = NULL,
-  spatial_type = "points",
-  width = NULL
-)
+ui_questions(questions, spatial_ids = NULL, width = NULL)
 }
 \arguments{
 \item{questions}{Data frame prepared by \code{prep_questions()} for a specific
@@ -19,8 +14,6 @@ ui_questions(
 \code{\link[=ui_questions_update]{ui_questions_update()}}]. Only applies if using 'client-side selectize'.
 All possible Spatial ID options for spatial inputs choices. Generally
 passed in as ReactiveVal (see \code{\link[=mod_page_template_spatial_server]{mod_page_template_spatial_server()}}.}
-
-\item{spatial_type}{Character. Spatial type, either \code{points} or \code{areas}.}
 
 \item{width}{Numeric. Optional width of Shiny UI input.}
 }
@@ -34,22 +27,13 @@ data frame.
 \examples{
 \dontshow{if (have_data()) withAutoprint(\{ # examplesIf}
 q <- prep_questions(
-  "test",
-  "deployment1",
-  "bam_v5_can71",
-  "BBWO",
-  user_id = "testuser"
-)
-ui_questions(q, spatial_type = "points")
-
-q <- prep_questions(
   "observations",
   "deployment1",
   "bam_v5_can71",
   "BBWO",
   user_id = "testuser"
 )
-ui_questions(q, spatial_type = "areas")
+ui_questions(q)
 
 # More than one component
 q <- prep_questions(
@@ -59,6 +43,6 @@ q <- prep_questions(
   "BBWO",
   user_id = "testuser"
 )
-u <- ui_questions(q, spatial_type = "areas")
+u <- ui_questions(q)
 \dontshow{\}) # examplesIf}
 }
