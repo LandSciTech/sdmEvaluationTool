@@ -360,7 +360,7 @@ fetch_questions <- function(deployment_id, component_id) {
   if (any(component_id != "ALL")) {
     q <- dplyr::filter(q, .data$component %in% .env$component_id)
   }
-  if(nrow(q)>0){
+  if (nrow(q) > 0) {
     # TODO: Temporary until all questions updated
     if (!"metadata_id" %in% names(q)) {
       q$metadata_id <- NA_character_
