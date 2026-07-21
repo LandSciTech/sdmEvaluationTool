@@ -64,7 +64,7 @@ sdmevaltool_options(base = "./sdm_evaluation_results")
 
 ## EFI 2026 Workshop slides and guides
 
-[Here](https://docs.google.com/presentation/d/1VO_ZM08t4L7oU31vEEYN3cbO-_XMALIwSJaxKPGRX_8/edit?slide=id.g3ee47704c5b_0_444#slide=id.g3ee47704c5b_0_444) are the slides for the [EFI 2026 workshop](https://projects.ecoforecast.org/meetings.ecoforecast/_assets/files/2026-06-09_EFI2026_Workshops_v2.pdf).
+Here are the [EFI 2026 workshop slides](https://docs.google.com/presentation/d/1VO_ZM08t4L7oU31vEEYN3cbO-_XMALIwSJaxKPGRX_8/edit?slide=id.g3ee47704c5b_0_444#slide=id.g3ee47704c5b_0_444).
 
 Guides for different user groups:
 

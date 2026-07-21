@@ -126,7 +126,7 @@ prep_deployment_questions <- function(
     paste0(z, collapse = ", ")
   })
   q$values <- v
-  q$metadata_id <- NULL
+  q$metadata_id <- sapply(q$metadata_id, \(x) paste0(unlist(x), collapse = ","))
   upload_material(
     "deployment_questions",
     x = q,
