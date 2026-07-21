@@ -167,7 +167,9 @@ affirmative <- function(type = "standard") {
       "Moderately_undersampled",
       "Over_prediction",
       "Under_prediction",
+      "Uncertain_but_seems_inaccurate",
       "Comment",
+      "Inaccurate",
       "Greater_than_expected",
       "Less_than_expected",
       "Limited_experience_and_doubts","Strong_experience_and_doubts"

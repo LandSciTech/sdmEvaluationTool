@@ -23,6 +23,7 @@ sdm_tool <- function(
     "predictions",
     "observations",
     "predictors",
+    "model",
     "summary"
   ),
   user = NULL,
