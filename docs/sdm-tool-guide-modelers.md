@@ -123,7 +123,8 @@ users <- data.frame(
   user_name = "Test User",
   user_email = "x@y.z",
   user_affiliation = "XYZ",
-  admin = FALSE
+  admin = FALSE,
+  password = generate_password()
 )
 db_write_table(con, "users", users)
 ```
@@ -556,7 +557,7 @@ sdm_tool(
 ```
 
 A window should pop-up with the loaded app. Alternatively, you can visit
-the following link in your browser: <http://localhost:8080>.
+the following link in your browser: <http://localhost:7405>.
 
 If you see an error message `Error: Could not connect to database`, try
 setting the right folder with `sdmevaltool_options()`:

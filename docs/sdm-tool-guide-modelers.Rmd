@@ -548,7 +548,7 @@ sdm_tool(
 )
 ```
 
-A window should pop-up with the loaded app. Alternatively, you can visit the following link in your browser: <http://localhost:8080>.
+A window should pop-up with the loaded app. Alternatively, you can visit the following link in your browser: <http://localhost:7405>.
 
 If you see an error message `Error: Could not connect to database`,
 try setting the right folder with `sdmevaltool_options()`:
