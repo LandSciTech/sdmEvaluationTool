@@ -52,7 +52,7 @@ library(sdmEvalToolUI)
 sdm_tool(user = "testuser")
 ```
 
-A window should pop-up with the loaded app. Alternatively, you can visit the following link in your browser: <http://localhost:8080>.
+A window should pop-up with the loaded app. Alternatively, you can visit the following link in your browser: <http://localhost:7405>.
 
 If you see an error message `Error: Could not connect to database`,
 try setting the right folder with `sdmevaltool_options()`:
@@ -62,16 +62,18 @@ try setting the right folder with `sdmevaltool_options()`:
 sdmevaltool_options(base = "./sdm_evaluation_results")
 ```
 
-## EFI 2026 Workshop
+## EFI 2026 Workshop slides and guides
 
 [Here](https://docs.google.com/presentation/d/1VO_ZM08t4L7oU31vEEYN3cbO-_XMALIwSJaxKPGRX_8/edit?slide=id.g3ee47704c5b_0_444#slide=id.g3ee47704c5b_0_444) are the slides for the [EFI 2026 workshop](https://projects.ecoforecast.org/meetings.ecoforecast/_assets/files/2026-06-09_EFI2026_Workshops_v2.pdf).
 
 Guides for different user groups:
 
-- [User guide for evaluators](./sdm-tool-guide-evaluators.md): how to leave and edit evaluations
-- [User guide for modelers](./sdm-tool-guide-modelers.md): how to manage materials and deployments
-- [User guide for developers](./sdm-tool-guide-developers.md): how to make changes to R packages
-- [User guide for administrators](./sdm-tool-guide-deployment.md): how to deploy the tool
+- [User guide for evaluators](./docs/sdm-tool-guide-evaluators.md): how to leave and edit evaluations
+- [User guide for modelers](./docs/sdm-tool-guide-modelers.md): how to manage materials and deployments
+- [User guide for developers](./docs/sdm-tool-guide-developers.md): how to make changes to R packages
+- [User guide for administrators](./docs/sdm-tool-guide-deployment.md): how to deploy the tool
+
+Find more gritty details in the system [spec](./spec/README.md).
 
 ## Testing
 
