@@ -62,6 +62,10 @@ try setting the right folder with `sdmevaltool_options()`:
 sdmevaltool_options(base = "./sdm_evaluation_results")
 ```
 
+## EFI 2026 Workshop
+
+[Here](https://docs.google.com/presentation/d/1VO_ZM08t4L7oU31vEEYN3cbO-_XMALIwSJaxKPGRX_8/edit?slide=id.g3ee47704c5b_0_444#slide=id.g3ee47704c5b_0_444) are the slides and links for the [EFI 2026 workshop](https://projects.ecoforecast.org/meetings.ecoforecast/_assets/files/2026-06-09_EFI2026_Workshops_v2.pdf).
+
 ## Testing
 
 The R packages can be checked locally following the [`RELEASE.R`](./RELEASE.R)

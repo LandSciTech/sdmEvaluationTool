@@ -16,6 +16,14 @@ the field *Directory name*, type in *sdmEvaluationTool*, then, click on
 the *Browse* button and select a location you’ll remember (e.g.,
 `c:/users/user_name/work`).
 
+## Adding the data set
+
+Now download the
+[sdv_evaluation_results.zip](https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link)
+to your *sdmEvaluationTool* project folder. If you have an older version
+of *sdv_evaluation_results.zip* in your project folder, replace it with
+the new version.
+
 ## Installation
 
 Use this script in R to install required packages and download/extract
@@ -23,20 +31,12 @@ the example data set (say ‘yes’ or select the ‘All’ option to update
 packages if asked):
 
 ``` r
-source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
+source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/word-refinement/setup_JH.R")
 ```
 
-## Adding the data set
-
-Remove the `sdm_evaluation_results.zip` and the `sdm_evaluation_results`
-folder with its contents. Then save and extract the archive containing
-the real deployment sent to you via email or a shared drive link. Use a
-system tool or the following command to extract the deployment
-materials:
-
-``` r
-unzip("./sdm_evaluation_results.zip")
-```
+Note that if you have a previous deployment of the tool installed, this
+setup script will move your old results to an
+*sdm_evaluation_results_old* folder.
 
 ### Running the app locally
 
@@ -76,47 +76,79 @@ sdmevaltool_options(base = "./sdm_evaluation_results")
 
 ## Navigation
 
-## Landing page and instructions
+The landing page shows an evaluator all the deployments. Each deployment
+lists the model related materials (orange buttons) and the species
+related materials (blue buttons). The percentages on the right show the
+overall progress. Clicking the chevrons left of the species names opens
+up a table showing the progress of the evaluation materials.
 
-<figure>
-<img src="./images/tabs-01.png" alt="Landing" />
-<figcaption aria-hidden="true">Landing</figcaption>
-</figure>
+The left side of the top navigation (1) lets you go through the tabs,
+each tab showing one or two deployment materials. Tabs with blue letters
+refer to materials for species, tabs with orange letters refer to model
+level results. You can change the user role (2) if you have any other
+roles.
 
-<figure>
-<img src="./images/tabs-02.png" alt="Index" />
-<figcaption aria-hidden="true">Index</figcaption>
-</figure>
+Select a deployment, model, and species from the dropdown menus at the
+right side of the top navigation (3). You can also click the orange/blue
+buttons to make a similar selection. These settings will apply to the
+materials being shown in the other tabs with respect to deployments,
+models, and species. Come back here any time or use the top navigation
+to make changes to these values.
+
+![](./images/tabs-01.png)
+
+Once a deployment is selected, you’ll see a welcome message on the
+right. Hide this message by clicking the arrow in the top right corner.
+The message can be made visible again by clicking the arrow.
+
+Clicking the question mark icon in the bottom right corner of the page
+(4) opens the glossary.
+
+![](./images/tabs-02.png)
 
 ## Model materials
 
 ### Spatial predictions
 
-<figure>
-<img src="./images/tabs-03.png" alt="Spatial predictions" />
-<figcaption aria-hidden="true">Spatial predictions</figcaption>
-</figure>
+The main part of the tabs is the deployment material and the evaluation
+area on the right. The evaluations can be hidden to make the main area
+larger. Scroll up and down in the evaluations area.
+
+![](./images/tabs-03.png)
+
+Spatial predictions are shown as raster layers in the interactive map.
+Select the base layer, turn on the Distribution or or Uncertainty
+layers. There is also a Subunits layer that is used for spatial
+evaluations (see below).
+
+Click the Expand button (bottom right corner of the cards that contain
+the maps, tables, etc.) to pop the material into a full-screen mode.
 
 ### Observations
 
-<figure>
-<img src="./images/tabs-04.png" alt="Observations, charts" />
-<figcaption aria-hidden="true">Observations, charts</figcaption>
-</figure>
+The observations tab has a Charts and a Map component. Select the
+options for the charts (1) and the observations summaries (2) will
+change accordingly.
 
-<figure>
-<img src="./images/tabs-05.png" alt="Observations, map" />
-<figcaption aria-hidden="true">Observations, map</figcaption>
-</figure>
+![](./images/tabs-04.png)
+
+In the map, there are also dropdowns to filter the observations by (1).
+In the map (2), change the base layers, and turn on/off the Absences and
+Presences, also the Subunits.
+
+![](./images/tabs-05.png)
 
 ### Model fit and summary
 
-<figure>
-<img src="./images/tabs-06.png" alt="Model fit and summary" />
-<figcaption aria-hidden="true">Model fit and summary</figcaption>
-</figure>
+The model fit (1) and model summary (2) is shown in the same tab.
+
+![](./images/tabs-06.png)
 
 ### Predictors
+
+The Predictors tab contains the Predictor Raster (1) map, use the
+dropdown to change the layer. The predictor metadata (2) table is at the
+bottom. Use the expand button to make them pop to full-screen.
 
 <figure>
 <img src="./images/tabs-07.png" alt="Predictors" />
@@ -124,6 +156,10 @@ sdmevaltool_options(base = "./sdm_evaluation_results")
 </figure>
 
 ### Glossary
+
+Click the question mark icon in the bottom right corner of the page
+opens the glossary. Search for words by typing into the Search area. As
+a result, you’ll see topics and descriptions in which the world appear.
 
 <figure>
 <img src="./images/tabs-09.png" alt="Predictors" />
@@ -138,9 +174,13 @@ sdmevaltool_options(base = "./sdm_evaluation_results")
 
 ### Abandoning and resuming evaluations
 
-Models
+The `X` icon in the top right corner (3) is to “abandon” the review (see
+more on this below).
 
-Species
+<figure>
+<img src="./images/tabs-10.png" alt="Summary" />
+<figcaption aria-hidden="true">Summary</figcaption>
+</figure>
 
 ### Summary
 
