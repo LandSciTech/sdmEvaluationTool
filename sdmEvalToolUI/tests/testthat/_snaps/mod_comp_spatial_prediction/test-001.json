@@ -9,7 +9,7 @@
     },
     "comp_spatial_prediction-map_center": {
       "lng": -84.44091796875,
-      "lat": 54.34214886448344
+      "lat": 54.34214886448341
     },
     "comp_spatial_prediction-map_groups": [
       "CartoDB",
