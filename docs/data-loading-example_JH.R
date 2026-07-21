@@ -128,7 +128,7 @@ species <- structure(
   row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
   class = "data.frame"
 )
-#species <- species[1:2,]
+species <- species[1:2,]
 db_write_table(con, "species", species)
 
 # ------- models table ----------
