@@ -12,7 +12,7 @@
 This repo contains R packages, Shiny apps, and documentation that describes
 and implements the SDM Evaluation Tool.
 
-- [`docs`](./docs/): Documentation for _evaluators_, _modelers_, and _developers_.
+- [`docs`](./docs/README.md): Documentation for _evaluators_, _modelers_, and _developers_.
 - [`misc`](./misc/): A folder where we keep gitignored files (materials used for testing, etc.)
 - [`sdmEvalToolCore`](./sdmEvalToolCore/): R package implementing the SDM Evaluation Tool core functionality
 - [`sdmEvalToolUI`](./sdmEvalToolUI/): R package implementing the SDM Evaluation Tool UI modules and Shiny apps
@@ -64,7 +64,14 @@ sdmevaltool_options(base = "./sdm_evaluation_results")
 
 ## EFI 2026 Workshop
 
-[Here](https://docs.google.com/presentation/d/1VO_ZM08t4L7oU31vEEYN3cbO-_XMALIwSJaxKPGRX_8/edit?slide=id.g3ee47704c5b_0_444#slide=id.g3ee47704c5b_0_444) are the slides and links for the [EFI 2026 workshop](https://projects.ecoforecast.org/meetings.ecoforecast/_assets/files/2026-06-09_EFI2026_Workshops_v2.pdf).
+[Here](https://docs.google.com/presentation/d/1VO_ZM08t4L7oU31vEEYN3cbO-_XMALIwSJaxKPGRX_8/edit?slide=id.g3ee47704c5b_0_444#slide=id.g3ee47704c5b_0_444) are the slides for the [EFI 2026 workshop](https://projects.ecoforecast.org/meetings.ecoforecast/_assets/files/2026-06-09_EFI2026_Workshops_v2.pdf).
+
+Guides for different user groups:
+
+- [User guide for evaluators](./sdm-tool-guide-evaluators.md): how to leave and edit evaluations
+- [User guide for modelers](./sdm-tool-guide-modelers.md): how to manage materials and deployments
+- [User guide for developers](./sdm-tool-guide-developers.md): how to make changes to R packages
+- [User guide for administrators](./sdm-tool-guide-deployment.md): how to deploy the tool
 
 ## Testing
 
