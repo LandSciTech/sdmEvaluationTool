@@ -9,7 +9,7 @@
 ╚══════╝╚═════╝ ╚═╝     ╚═╝       ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝
 ```
 
-This repo contains R packages, Shiny apps, and documentation that describes
+This repository contains R packages, Shiny apps, and documentation that describes
 and implements the SDM Evaluation Tool.
 
 - [`docs`](./docs/README.md): Documentation for _evaluators_, _modelers_, and _developers_.

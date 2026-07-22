@@ -30,7 +30,7 @@ combine_questions <- function(q) {
     f$component <- q$component[i]
     f$order <- q$order[i]
     f$part <- f$followup_level+q$part[i] #q$part[i]
-    f$metadata_id <- q$metadata_id[i]
+    f$metadata_id <- NA#q$metadata_id[i]
     qq <- rbind(qq, f[, colnames(qq)])
     q$followup_level[i] <- 0
   }
