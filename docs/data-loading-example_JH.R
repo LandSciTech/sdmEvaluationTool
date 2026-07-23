@@ -256,6 +256,7 @@ prep_model_fit(
 # -------- spatial_prediction ----
 
 for (species_id in species$species_id) {
+  #species_id <- species$species_id[1]
   fi <- file.path(path, "predictions", paste0(species_id, "_can71_2020.tif"))
   x <- read_file(fi)
 
@@ -278,18 +279,18 @@ x <- read_file(fi)
 
 deployments <- data.frame(
   deployment_id = c("deployment1", "deployment2"),
-  deployment_name = c("BAM: Pop. Assessment", "BAM: Prioritization"),
+  deployment_name = c("Complex for spatial prioritization", "Simple for population assessment"),
   deployment_description = c(
-    "BAM: population assessment",
-    "BAM: spatial prioritization"
+    "Complex for spatial prioritization",
+    "Simple for population assessment"
   ),
   deployment_create_user = "testuser",
   deployment_create_time = timestamp_to(now()),
   deployment_settings = c("[]", "[]")
 )
 d1 <- d2 <- conf$templates$deployment_settings
-d1$use_case <- list(list(en = "Population assessment", fr = ""))
-d2$use_case <- list(list(en = "Spatial prioritization", fr = ""))
+d1$use_case <- list(list(en = "Spatial prioritization", fr = ""))
+d2$use_case <- list(list(en = "Population assessment", fr = ""))
 d1$instructions_to_evaluators <- paste0(x, collapse = "\n")
 d2$instructions_to_evaluators <- paste0(x, collapse = "\n")
 deployments$deployment_settings[1] <- jsonlite::toJSON(d1)
@@ -317,7 +318,7 @@ prep_deployment_questions(
 # default questions - without drilldowns
 q <- sdmEvalToolCore::default_questions
 q$followup_level <- 0
-#q$followup_level[5] <- 3
+q <- subset(q,!is.element(component,c("model_fit","model_summary")))
 q <- combine_questions(q)
 
 prep_deployment_questions(
