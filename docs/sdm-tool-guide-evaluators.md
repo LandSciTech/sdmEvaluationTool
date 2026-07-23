@@ -56,8 +56,8 @@ sdm_tool(
     "overview",
     "predictions",
     "observations",
-    "model",
     "predictors",
+    "model",
     "summary"
   )
 )
@@ -74,7 +74,7 @@ setting the right folder with `sdmevaltool_options()`:
 sdmevaltool_options(base = "./sdm_evaluation_results")
 ```
 
-## Navigation
+## Navigation and glossary
 
 The landing page shows an evaluator all the deployments. Each deployment
 lists the model related materials (orange buttons) and the species
@@ -88,61 +88,83 @@ refer to materials for species, tabs with orange letters refer to model
 level results. You can change the user role (2) if you have any other
 roles.
 
-Select a deployment, model, and species from the dropdown menus at the
-right side of the top navigation (3). You can also click the orange/blue
-buttons to make a similar selection. These settings will apply to the
-materials being shown in the other tabs with respect to deployments,
-models, and species. Come back here any time or use the top navigation
-to make changes to these values.
-
-![](./images/tabs-01.png)
-
-Once a deployment is selected, you’ll see a welcome message on the
-right. Hide this message by clicking the arrow in the top right corner.
-The message can be made visible again by clicking the arrow.
+Select a deployment and model from the dropdown menus at the right side
+of the top navigation (3), and select a species (4). You can also click
+the orange/blue buttons to make a similar selection. Model purpose,
+evaluation questions, and evaluation polygons can differ among
+deployments, allowing the evaluation process to be tailored to the
+specific needs of modelers, users and evaluators. In the “Simple for
+population assessment” example deployment we have provided much larger
+evaluation polygons, removed followup questions, and removed questions
+about the model that would be difficult for a non-modeler to answer.
+Deployment, model, and species selections determine what is shown in the
+other tabs. You can return to the Index tab at any time or use the top
+navigation to make changes to these values.
 
 Clicking the question mark icon in the bottom right corner of the page
-(4) opens the glossary.
+(5) opens the glossary.
 
-![](./images/tabs-02.png)
+![](./images/tabs/Slide1.png) Search for words in the glossary by typing
+into the Search area. You will see topics and descriptions in which the
+word appears.
 
-## Model materials
+![](./images/tabs/Slide2.png)
+
+Once a deployment is selected, you’ll see a welcome message and
+instructions on the right. You can hide this message by clicking the
+arrow in the top right corner. The message can be made visible again by
+clicking the arrow.
+
+![](./images/tabs/Slide3.png) At any time you can “abandon” a review by
+clicking the `X` icon (2). It is helpful to describe your reason for
+abandoning the review. You can resume an abandoned review at any time by
+clicking the red `X` icon and changing your answer to ‘no’.
+
+![](./images/tabs/Slide4.png)
+
+## Model materials and evaluations
 
 ### Spatial predictions
 
-The main part of the tabs is the deployment material and the evaluation
-area on the right. The evaluations can be hidden to make the main area
-larger. Scroll up and down in the evaluations area.
+The main part of the tabs are the deployment material (1) and the
+evaluation area on the right. The evaluations can be hidden to make the
+main area larger. Scroll up and down in the evaluations area.
 
-![](./images/tabs-03.png)
+![](./images/tabs/Slide5.png)
 
-Spatial predictions are shown as raster layers in the interactive map.
-Select the base layer, turn on the Distribution or or Uncertainty
+Spatial predictions (1) are shown as raster layers in the interactive
+map. Select the base layer, turn on the Distribution or or Uncertainty
 layers. There is also a Subunits layer that is used for spatial
 evaluations (see below).
 
 Click the Expand button (bottom right corner of the cards that contain
 the maps, tables, etc.) to pop the material into a full-screen mode.
 
+Spatial questions (e.g. 2) ask evaluators to identify one or more
+evaluation subunits. In this example, the evaluator has indicated that
+they are confident about their knowledge of the species in units 71, 72
+and 92. The red dot (3) indicates that the evaluator has not yet saved
+their responses to the prediction evaluation questions. To save, scroll
+to the bottom of the evaluatio questions and click “Save Responses”.
+
+Throughout the questions asterisks (e.g. 4) indicate terms that may not
+be familiar to all evaluators. Check the glossary (5) for definitions of
+unfamiliar terms.
+
 ### Observations
 
-The observations tab has a Charts and a Map component. Select the
-options for the charts (1) and the observations summaries (2) will
-change accordingly.
+The observations tab has a Charts and a Map component.
 
-![](./images/tabs-04.png)
-
-In the map, there are also dropdowns to filter the observations by (1).
-In the map (2), change the base layers, and turn on/off the Absences and
+In the map, there are dropdowns to filter the observations by (1). In
+the map (2), change the base layers, and turn on/off the Absences and
 Presences, also the Subunits.
 
-![](./images/tabs-05.png)
+![](./images/tabs/Slide6.png)
 
-### Model fit and summary
+Select the options for the charts (1) and the observations summaries (2)
+will change accordingly.
 
-The model fit (1) and model summary (2) is shown in the same tab.
-
-![](./images/tabs-06.png)
+![](./images/tabs/Slide7.png)
 
 ### Predictors
 
@@ -150,41 +172,21 @@ The Predictors tab contains the Predictor Raster (1) map, use the
 dropdown to change the layer. The predictor metadata (2) table is at the
 bottom. Use the expand button to make them pop to full-screen.
 
-<figure>
-<img src="./images/tabs-07.png" alt="Predictors" />
-<figcaption aria-hidden="true">Predictors</figcaption>
-</figure>
+![Predictors](./images/tabs/Slide8.png) In some cases (e.g. 3)
+additional information about the model is useful or essential for
+answering a question. Click on the (!) to see relevant model metadata.
 
-### Glossary
+### Model fit and summary
 
-Click the question mark icon in the bottom right corner of the page
-opens the glossary. Search for words by typing into the Search area. As
-a result, you’ll see topics and descriptions in which the world appear.
+The model fit (1) and model summary (2) are shown in the same tab.
 
-<figure>
-<img src="./images/tabs-09.png" alt="Predictors" />
-<figcaption aria-hidden="true">Predictors</figcaption>
-</figure>
+![](./images/tabs/Slide9.png)
 
-## Evaluations
+### Evaluation summary
 
-### Spatial evaluations
+Summarize your evaluation by answering questions in the summary tab. In
+this example, the evaluator believes that the model can be used for the
+intended applications in the identified areas, and is very concerned
+about using the model for the intended applications in other areas.
 
-### Non-spatial evaluations
-
-### Abandoning and resuming evaluations
-
-The `X` icon in the top right corner (3) is to “abandon” the review (see
-more on this below).
-
-<figure>
-<img src="./images/tabs-10.png" alt="Summary" />
-<figcaption aria-hidden="true">Summary</figcaption>
-</figure>
-
-### Summary
-
-<figure>
-<img src="./images/tabs-08.png" alt="Summary" />
-<figcaption aria-hidden="true">Summary</figcaption>
-</figure>
+![](./images/tabs/Slide10.png)

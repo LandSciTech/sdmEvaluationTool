@@ -1066,7 +1066,7 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   followup_level: 0
 #  metadata_id: ~
-  metadata_id: [o_concept_1,d_pred_2, m_multicol_1]
+  metadata_id: [o_concept_1,d_pred_2]
 #TO DO: mechanism for omitting blank metadata fields from display
 
 - component: predictor_metadata
@@ -1274,10 +1274,22 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   followup_level: 0
   metadata_id: [o_objective_3, o_utility_2]
+
+- component: deployment_settings
+  type: spatial
+  order: 1
+  part: 2
+  body:
+    en: Identify areas (if any) where you believe the model can be used for the intended applications(s).
+    fr: ""
+  followup_level: 0
+  metadata_id: ~
+#TO DO: this is a temporary fix to make sense of the "confidence zones map". Consider more carefully what should be shown in this tab and why.
+
 - component: deployment_settings
   type: simple_text
   order: 1
-  part: 1
+  part: 3
   body:
     en: Please explain your concern about using the model for the intended model application(s).
     fr: ""
