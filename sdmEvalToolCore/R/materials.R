@@ -326,6 +326,13 @@ prep_spatial_prediction <- function(
 ) {
   cat("> Preparing spatial prediction for species", species_id, "\n")
   x <- terra::project(x, "epsg:4326")
+
+  #temporary fix for https://github.com/LandSciTech/sdmEvaluationTool/issues/88
+  names(x)[1] <- "mean"
+  if(length(names(x))>=2){
+    names(x)[2] <- "standarderror"
+  }
+
   upload_material(
     "spatial_prediction",
     x = x,
