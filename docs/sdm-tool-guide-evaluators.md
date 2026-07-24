@@ -18,11 +18,13 @@ the *Browse* button and select a location you’ll remember (e.g.,
 
 ## Adding the data set
 
-Now download the
-[sdv_evaluation_results.zip](https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link)
+Now download the example
+[sdm_evaluation_results.zip](https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link)
 to your *sdmEvaluationTool* project folder. If you have an older version
-of *sdv_evaluation_results.zip* in your project folder, replace it with
-the new version.
+of *sdm_evaluation_results.zip* in your project folder, replace it with
+the new version. If you received a different version of
+*sdm_evaluation_results.zip* that was developed for the models you are
+evaluating, use that version instead of the example.
 
 ## Installation
 
