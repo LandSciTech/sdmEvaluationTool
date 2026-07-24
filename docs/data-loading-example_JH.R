@@ -318,13 +318,13 @@ for (j in 1:nrow(deployments)) {
 
 # --------- deployment questions -----------
 
-# default questions - with drilldown
+# default questions - with drilldowns
 prep_deployment_questions(
   deployment_id = "deployment1",
   x = NULL
 )
 
-# default questions - without drilldowns
+# default questions - without drilldowns or model summary questions
 q <- sdmEvalToolCore::default_questions
 q$followup_level <- 0
 q <- subset(q,!is.element(component,c("model_fit","model_summary")))

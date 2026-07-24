@@ -13,12 +13,19 @@ Install the following R packages:
 - jsonlite
 - suntools
 - sdmEvalToolCore
+- sdmEvalToolUI
 
 ## Uploading model materials
 
-See the [`data-loading-example.R`](data-loading-example.R) script.
+First, download the [example model
+materials](https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link)
+to your sdmEvaluationTool project folder.
 
-We first load libraries and set up variables:
+Then follow the [`data-loading-example_JH.R`](data-loading-example_JH.R)
+script.
+
+We first load libraries, unzip demo materials, remove old prepared
+materials, and set up variables:
 
 ``` r
 library(sf)
@@ -29,13 +36,24 @@ library(RSQLite)
 library(jsonlite)
 library(suntools)
 library(sdmEvalToolCore)
+library(sdmEvalToolUI)
 
-path <- "c:/path/to/data/Model Upload/BAM"
+path <- "./BAM Demo"
+if(!exists(path)){
+  if(!file.exists("./BAM Demo.zip")){
+    stop("Missing BAM Demo.zip model materials. Download from https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link to your project folder.")
+  }
+  unzip("./BAM Demo.zip")
+}
+
 conf <- yaml::read_yaml(system.file("config.yml", package = "sdmEvalToolCore"))
 DIR <- "misc/sdm_evaluation_results"
 dir.create(DIR, recursive = TRUE)
 
 sdmevaltool_options(base = DIR)
+
+unlink(DIR, recursive = TRUE)
+dir.create(DIR, recursive = TRUE)
 ```
 
 Use an existing database file (copy it to the root of the `DIR` folder),
@@ -82,19 +100,27 @@ only a small portion of all expected species:
 species <- structure(
   list(
     species_id = c(
-      "BBWA", ... , "TEWA"
+      "BLPW",
+      ...,
+      "TEWA"
     ),
     scientific_name = c(
-      "Setophaga castanea", ... , "Oreothlypis peregrina"
+      "Setophaga striata",
+      ...,
+      "Oreothlypis peregrina"
     ),
     english_name = c(
-      "Bay-breasted Warbler", ... , "Tennessee Warbler"
+      "Blackpoll Warbler",
+      ...,
+      "Tennessee Warbler"
     ),
     french_name = c(
-      "Paruline à poitrine baie", ... , "Paruline obscure"
+      "Paruline rayée",
+      ...,
+      "Paruline obscure"
     )
   ),
-  row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
+  row.names = c(24L, 40L, 76L, 90L, 106L, 118L),
   class = "data.frame"
 )
 db_write_table(con, "species", species)
@@ -151,10 +177,10 @@ prep_predictor_metadata(
 )
 ```
 
-Model (ODMAP) metadata:
+Model metadata:
 
 ``` r
-fi <- file.path(path, "ODMAP", "ODMAP_Knight_2025-12-16.csv")
+fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
 x <- read_file(fi)
 
 prep_model_metadata(
@@ -298,10 +324,10 @@ now. This field is JSON, we’ll add the value later:
 ``` r
 deployments <- data.frame(
   deployment_id = c("deployment1", "deployment2"),
-  deployment_name = c("BAM: Pop. Assessment", "BAM: Prioritization"),
+  deployment_name = c("Complex for spatial prioritization", "Simple for population assessment"),
   deployment_description = c(
-    "BAM: population assessment",
-    "BAM: spatial prioritization"
+    "Complex for spatial prioritization",
+    "Simple for population assessment"
   ),
   deployment_create_user = "testuser",
   deployment_create_time = timestamp_to(now()),
@@ -322,8 +348,8 @@ the use case:
 
 ``` r
 d1 <- d2 <- conf$templates$deployment_settings
-d1$use_case <- list(list(en = "Population assessment", fr = ""))
-d2$use_case <- list(list(en = "Spatial prioritization", fr = ""))
+d1$use_case <- list(list(en = "Spatial prioritization", fr = ""))
+d2$use_case <- list(list(en = "Population assessment", fr = ""))
 d1$instructions_to_evaluators <- paste0(x, collapse = "\n")
 d2$instructions_to_evaluators <- paste0(x, collapse = "\n")
 deployments$deployment_settings[1] <- jsonlite::toJSON(d1)
@@ -358,14 +384,18 @@ prep_deployment_questions(
 )
 ```
 
-The file now can be edited as needed.
+The
+./misc/sdm_evaluation_results/deployments/deployment1/deployment_questions.csv
+file now can be edited as needed.
 
-If drilldown questions are needed, edit the `followup_level` field and
-apply the `combine_questions()` function like:
+The question set can also be edited before writing the csv file. In this
+example we simplify the evaluation by removing the followup, model_fit
+and model_summary questions.
 
 ``` r
 q <- sdmEvalToolCore::default_questions
-q$followup_level[5] <- 3
+q$followup_level <- 0
+q <- subset(q,!is.element(component,c("model_fit","model_summary")))
 q <- combine_questions(q)
 
 prep_deployment_questions(
@@ -435,7 +465,7 @@ of a reference raster (distribution maps) and the spatial points
 
 ``` r
 # raster template
-r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+r <- read_file(file.path(path, "predictions", "LEYE_can71_2020.tif"))
 # spatial points template
 xy <- read_file(file.path(path, "data", "observations_can71.csv"))
 xy <- xy[, c("lat", "lon")]
@@ -474,7 +504,15 @@ prep_deployment_subunits(
 
 To share the deployment with evaluators, follow these steps.
 
-Compress the deployment materials and the fresh database:
+First, test that your deployment works:
+
+``` r
+  user_id <- "testuser"
+  sdm_tool(user = user_id)
+```
+
+After confirming the deployment works, compress the deployment materials
+and the fresh database:
 
 ``` r
 od <- setwd("misc")
@@ -489,80 +527,5 @@ setwd(od)
 ```
 
 This will create the `misc/sdm_evaluation_results.zip` file. Send this
-file to the evaluators with the following setup instructions.
-
-### Prerequisites
-
-- [R](https://cran.r-project.org/)
-- [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
-- [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or a
-  similar environment of you choosing
-
-Before installation, first create a new RStudio Project where you’ll
-store the data required for this tool. To do so, select *File* \> *New
-Project*. When prompted, select *New Directory* and *New Project*. Under
-the field *Directory name*, type in *sdmEvaluationTool*, then, click on
-the *Browse* button and select a location you’ll remember (e.g.,
-`c:/users/user_name/work`).
-
-### Installation
-
-Use this script in R to install required packages and download/extract
-the example data set (say ‘yes’ or select the ‘All’ option to update
-packages if asked):
-
-``` r
-source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
-```
-
-### Adding the data set
-
-The evaluators will have to first remove the
-`sdm_evaluation_results.zip` and the `sdm_evaluation_results` folder
-with its contents. Then they will need to save and extract the archive
-containing the real deployment. Use a system tool or the following
-command to extract the files:
-
-``` r
-unzip("./sdm_evaluation_results.zip")
-```
-
-### Running the app locally
-
-Provide the following script to the evaluators:
-
-- replace the `"<evaluator_user_name>"` with their user name
-- use the subset of `tabs` as needed, i.e. by excluding the `"model"`
-  and `"model_metadata"` tabs.
-- change the order of the tabs as desired
-
-``` r
-# load libraries
-library(sdmEvalToolCore)
-library(sdmEvalToolUI)
-
-# start the app
-sdm_tool(
-  user = "<evaluator_user_name>",
-  tabs = c(
-    "overview",
-    "predictions",
-    "observations",
-    "model",
-    "predictors",
-    "model_metadata",
-    "summary"
-  )
-)
-```
-
-A window should pop-up with the loaded app. Alternatively, you can visit
-the following link in your browser: <http://localhost:7405>.
-
-If you see an error message `Error: Could not connect to database`, try
-setting the right folder with `sdmevaltool_options()`:
-
-``` r
-# use your path here to point to the right folder
-sdmevaltool_options(base = "./sdm_evaluation_results")
-```
+file to your evaluators and ask them to follow the installation
+instructions in the evaluator’s guide.
