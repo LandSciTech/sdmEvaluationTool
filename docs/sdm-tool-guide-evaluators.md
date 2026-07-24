@@ -88,21 +88,21 @@ refer to materials for species, tabs with orange letters refer to model
 level results. You can change the user role (2) if you have any other
 roles.
 
-Select a deployment and model from the dropdown menus at the right side
-of the top navigation (3), and select a species (4). You can also click
-the orange/blue buttons to make a similar selection. Model purpose,
-evaluation questions, and evaluation polygons can differ among
-deployments, allowing the evaluation process to be tailored to the
-specific needs of modelers, users and evaluators. In the “Simple for
-population assessment” example deployment we have provided much larger
-evaluation polygons, removed followup questions, and removed questions
-about the model that would be difficult for a non-modeler to answer.
-Deployment, model, and species selections determine what is shown in the
-other tabs. You can return to the Index tab at any time or use the top
-navigation to make changes to these values.
+Select a deployment, model and species from the dropdown menus at the
+right side of the top navigation (3). You can also click the orange/blue
+buttons to make a similar selection. Model purpose, evaluation
+questions, and evaluation polygons can differ among deployments,
+allowing the evaluation process to be tailored to the specific needs of
+modelers, users and evaluators. In the “Simple for population
+assessment” example deployment we have provided much larger evaluation
+polygons, removed followup questions, and removed questions about the
+model that would be difficult for a non-modeler to answer. Deployment,
+model, and species selections determine what is shown in the other tabs.
+You can return to the Index tab at any time or use the top navigation to
+make changes to these values.
 
 Clicking the question mark icon in the bottom right corner of the page
-(5) opens the glossary.
+(4) opens the glossary.
 
 ![](./images/tabs/Slide1.png) Search for words in the glossary by typing
 into the Search area. You will see topics and descriptions in which the

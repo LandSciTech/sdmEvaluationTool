@@ -23,12 +23,15 @@ Install the following R packages:
 - jsonlite
 - suntools
 - sdmEvalToolCore
+- sdmEvalToolUI
 
 ## Uploading model materials
 
-See the [`data-loading-example.R`](data-loading-example.R) script.
+First, download the [example model materials](https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link) to your sdmEvaluationTool project folder. 
 
-We first load libraries and set up variables:
+Then follow the [`data-loading-example_JH.R`](data-loading-example_JH.R) script.
+
+We first load libraries, unzip demo materials, remove old prepared materials, and set up variables:
 
 ```R
 library(sf)
@@ -39,13 +42,24 @@ library(RSQLite)
 library(jsonlite)
 library(suntools)
 library(sdmEvalToolCore)
+library(sdmEvalToolUI)
 
-path <- "c:/path/to/data/Model Upload/BAM"
+path <- "./BAM Demo"
+if(!exists(path)){
+  if(!file.exists("./BAM Demo.zip")){
+    stop("Missing BAM Demo.zip model materials. Download from https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link to your project folder.")
+  }
+  unzip("./BAM Demo.zip")
+}
+
 conf <- yaml::read_yaml(system.file("config.yml", package = "sdmEvalToolCore"))
 DIR <- "misc/sdm_evaluation_results"
 dir.create(DIR, recursive = TRUE)
 
 sdmevaltool_options(base = DIR)
+
+unlink(DIR, recursive = TRUE)
+dir.create(DIR, recursive = TRUE)
 ```
 
 Use an existing database file (copy it to the root of the `DIR` folder),
@@ -90,16 +104,20 @@ a small portion of all expected species:
 species <- structure(
   list(
     species_id = c(
-      "BBWA", ... , "TEWA"
+      "BBWA",
+      "BBWO"
     ),
     scientific_name = c(
-      "Setophaga castanea", ... , "Oreothlypis peregrina"
+      "Setophaga castanea",
+      "Picoides arcticus"
     ),
     english_name = c(
-      "Bay-breasted Warbler", ... , "Tennessee Warbler"
+      "Bay-breasted Warbler",
+      "Black-backed Woodpecker"
     ),
     french_name = c(
-      "Paruline à poitrine baie", ... , "Paruline obscure"
+      "Paruline à poitrine baie",
+      "Pic à dos noir"
     )
   ),
   row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),

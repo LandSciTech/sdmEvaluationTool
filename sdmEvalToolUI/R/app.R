@@ -231,7 +231,8 @@ sdm_tool <- function(
             name = "Description",
             minWidth = 200
           )
-        )
+        ),
+        height = 400
       )
 
       showModal(as_fill_carrier(

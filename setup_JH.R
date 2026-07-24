@@ -21,7 +21,7 @@ if(file.exists("./sdm_evaluation_results")){
 }
 
 if(!file.exists("./sdm_evaluation_results.zip")){
-  stop("Missing sdm_evaluation_results.zip. Download from https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link to your project file.")
+  stop("Missing sdm_evaluation_results.zip. Download from https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link to your project folder.")
 }
 
 message("------ Unzipping contents ---------------")

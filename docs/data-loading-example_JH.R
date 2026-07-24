@@ -1,4 +1,4 @@
-# Organize files for minim BAM project
+# Prepare example BAM materials and deployments
 
 library(sf)
 library(terra)
@@ -7,12 +7,23 @@ library(DBI)
 library(RSQLite)
 library(jsonlite)
 library(suntools)
-devtools::load_all("sdmEvalToolCore")
+library(sdmEvalToolCore)
+library(sdmEvalToolUI)
+#optionally use local version of the package
+if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolCore")
+if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolUI")
 
-#path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
-path <- "C:/Users/HughesJo/Documents/InitialWork/NOBMWG/MET (Model Evaluation Tool) Google Drive Copy/Materials/Model Upload/BAM"
+path <- "./BAM Demo"
+#path <- "C:/Users/HughesJo/Documents/InitialWork/NOBMWG/MET (Model Evaluation Tool) Google Drive Copy/Materials/Model Upload/BAM Demo"
+
+if(!exists(path)){
+  if(!file.exists("./BAM Demo.zip")){
+    stop("Missing BAM Demo.zip model materials. Download from https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link to your project folder.")
+  }
+  unzip("./BAM Demo.zip")
+}
+
 conf <- yaml::read_yaml("spec/config.yml")
-# DIR <- "./misc/test"
 DIR <- "./misc/sdm_evaluation_results"
 sdmevaltool_options(base = DIR) # use the misc folder
 
@@ -73,62 +84,61 @@ db_write_table(con, "users", users)
 species <- structure(
   list(
     species_id = c(
-      "BBWA",
-      "BBWO",
+      #"BBWA",
+      #"BBWO",
       "BLPW",
-      "CAWA",
+      #"CAWA",
       "CONW",
       "LEYE",
       "OSFL",
-      "OVEN",
+      #"OVEN",
       "RUBL",
-      "SOSA",
+      #"SOSA",
       "TEWA"
     ),
     scientific_name = c(
-      "Setophaga castanea",
-      "Picoides arcticus",
+      #"Setophaga castanea",
+      #"Picoides arcticus",
       "Setophaga striata",
-      "Cardellina canadensis",
+      #"Cardellina canadensis",
       "Oporornis agilis",
       "Tringa flavipes",
       "Contopus cooperi",
-      "Seiurus aurocapilla",
+      #"Seiurus aurocapilla",
       "Euphagus carolinus",
-      "Tringa solitaria",
+      #"Tringa solitaria",
       "Oreothlypis peregrina"
     ),
     english_name = c(
-      "Bay-breasted Warbler",
-      "Black-backed Woodpecker",
+      #"Bay-breasted Warbler",
+      #"Black-backed Woodpecker",
       "Blackpoll Warbler",
-      "Canada Warbler",
+      #"Canada Warbler",
       "Connecticut Warbler",
       "Lesser Yellowlegs",
       "Olive-sided Flycatcher",
-      "Ovenbird",
+      #"Ovenbird",
       "Rusty Blackbird",
-      "Solitary Sandpiper",
+      #"Solitary Sandpiper",
       "Tennessee Warbler"
     ),
     french_name = c(
-      "Paruline à poitrine baie",
-      "Pic à dos noir",
+      #"Paruline à poitrine baie",
+      #"Pic à dos noir",
       "Paruline rayée",
-      "Paruline du Canada",
+      #"Paruline du Canada",
       "Paruline à gorge grise",
       "Petit Chevalier",
       "Moucherolle à côtés olive",
-      "Paruline couronnée",
+      #"Paruline couronnée",
       "Quiscale rouilleux",
-      "Chevalier solitaire",
+      #"Chevalier solitaire",
       "Paruline obscure"
     )
   ),
-  row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
+  row.names = c(24L, 40L, 76L, 90L, 106L, 118L),#c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
   class = "data.frame"
 )
-species <- species[1:2,]
 db_write_table(con, "species", species)
 
 # ------- models table ----------
@@ -161,7 +171,6 @@ prep_predictor_metadata(
 
 # --------- model_metadata ----
 
-# fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
 fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
 x <- read_file(fi)
 x$metadata_id <- x[["X"]]
@@ -362,7 +371,7 @@ db_write_table(
 # --------- deployment subunits -----------
 
 # raster template
-r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+r <- read_file(file.path(path, "predictions", "LEYE_can71_2020.tif"))
 # spatial points template
 xy <- read_file(file.path(path, "data", "observations_can71.csv"))
 xy <- xy[, c("lat", "lon")]
@@ -394,6 +403,7 @@ dbListTables(con)
 db_disconnect(con)
 
 if (FALSE) {
+  #zip deployment materials for sharing.
   file.copy(
     make_target_path("sdm_evaluation_db.sqlite"),
     make_target_path("sdm_evaluation_db_og.sqlite")
@@ -411,10 +421,9 @@ if (FALSE) {
 }
 
 if(F){
-  devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
+  #devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
   user_id <- "testuser"
   sdm_tool(
     user = user_id
-
   )
 }

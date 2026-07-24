@@ -880,7 +880,6 @@ default_questions: # where values is missing, we use the values from question_ty
   values: [Over* prediction, Under* prediction, Uncertain but seems inaccurate]
   followup_level: 0
   metadata_id: ~
-#TO DO: add * to over and under.
 
 - component: spatial_prediction
   type: simple_text

@@ -75,6 +75,8 @@ Guides for different user groups:
 
 Find more gritty details in the system [spec](./spec/README.md).
 
+Please share your thoughts & suggestions [here](https://docs.google.com/document/d/1iSqw2VEbQd3n34kJvNG93RsaoK1QBtAZHfkQKqjVn1A/edit?tab=t.0).
+
 ## Testing
 
 The R packages can be checked locally following the [`RELEASE.R`](./RELEASE.R)
