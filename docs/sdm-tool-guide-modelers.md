@@ -17,15 +17,15 @@ Install the following R packages:
 
 ## Uploading model materials
 
-First, download the [example model
-materials](https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link)
+First, download the example model
+materials [BAM Demo](https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link)
 to your sdmEvaluationTool project folder.
 
-Then follow the [`data-loading-example_JH.R`](data-loading-example_JH.R)
-script.
+Open the [`data-loading-example_JH.R`](data-loading-example_JH.R) script.
 
-We first load libraries, unzip demo materials, remove old prepared
-materials, and set up variables:
+The script begins by loading the required libraries, unziping the demo 
+materials (if applicable), removing old prepared materials (if applicable),
+and setting up variables:
 
 ``` r
 library(sf)
@@ -56,8 +56,7 @@ unlink(DIR, recursive = TRUE)
 dir.create(DIR, recursive = TRUE)
 ```
 
-Use an existing database file (copy it to the root of the `DIR` folder),
-or create a new database file and turn foreign key constraints on:
+Next, create a new database file and turn foreign key constraints on:
 
 ``` r
 con <- db_connect(make_target_path("sdm_evaluation_db.sqlite"))
@@ -65,12 +64,14 @@ rs <- DBI::dbSendQuery(con, "PRAGMA foreign_keys = ON;")
 DBI::dbClearResult(rs)
 ```
 
-If using a fresh database, use the `db_create_tables()` function to
-create the empty tables:
+Use the `db_create_tables()` function to create the empty tables:
 
 ``` r
 db_create_tables(con)
 ```
+
+Instead of creating a new database, if you have an existing database 
+file, you can copy it to the root of the `DIR` folder.
 
 Due to the foreign key constraint, tables need to be updated respecting
 the keys relationships. If a key is used as a foreign key, it needs to
@@ -93,8 +94,9 @@ colnames(components) <- c(
 db_write_table(con, "components", components)
 ```
 
-The species table should also not change frequently, however, this is
-only a small portion of all expected species:
+The species table should also not change frequently. However, for 
+the purpose of this example, here only a small portion of all 
+expected species are listed:
 
 ``` r
 species <- structure(
@@ -126,7 +128,7 @@ species <- structure(
 db_write_table(con, "species", species)
 ```
 
-The model table:
+Next, build the model table:
 
 ``` r
 model_id <- "bam_v5_can71" # we'll use the model ID later
@@ -155,16 +157,22 @@ users <- data.frame(
 db_write_table(con, "users", users)
 ```
 
-Add as many users as needed. You can make a CSV file following the
+Add as many users as needed. You can make a csv file following the
 column names. Read in the file with `read.csv()` to have the full
 `users` table.
 
-Predictor metadata:
+Next, the script will load existing files containing the data for 
+each model material and prepare it in the required format for the 
+app. You can inspect each file for a reference of how they 
+should be provided.
+
+First, create the predictor metadata:
 
 ``` r
 rule <- get_comp_rule("predictor_metadata", "upload")
 fi <- file.path(path, "predictors", "predictor_metadata.csv")
 x <- read_file(fi)
+names(x)[names(x)=="variable"]="predictor"
 x <- x[, rule$output$columns]
 
 prep_predictor_metadata(
@@ -177,7 +185,7 @@ prep_predictor_metadata(
 )
 ```
 
-Model metadata:
+Create the model metadata:
 
 ``` r
 fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
@@ -193,7 +201,7 @@ prep_model_metadata(
 )
 ```
 
-Predictor raster (resampled to save space):
+To prepare the predictor raster (resampled to save space), run:
 
 ``` r
 fi <- file.path(path, "predictors", "predictor_stack.tif")
@@ -210,7 +218,7 @@ prep_predictor_raster(
 )
 ```
 
-Species observations, processing multiple species:
+To prepare the species observations, processing multiple species at once, run:
 
 ``` r
 fi <- file.path(path, "data", "observations_can71.csv")
@@ -228,7 +236,7 @@ prep_observations(
 )
 ```
 
-Model summaries for the species:
+The model summaries for the species are prepared with:
 
 ``` r
 fi <- file.path(path, "predictors", "predictor_importance.csv")
@@ -247,7 +255,7 @@ prep_model_summary(
 )
 ```
 
-Model fit for the species:
+The model fit for the species are prepared with:
 
 ``` r
 fi <- file.path(path, "reliability", "validation_can71.csv")
@@ -266,7 +274,7 @@ prep_model_fit(
 )
 ```
 
-Species predictions:
+Lastly, the species predictions are prepared with:
 
 ``` r
 for (species_id in species$species_id) {
@@ -288,7 +296,7 @@ for (species_id in species$species_id) {
 ## Material settings
 
 Default material settings are defined in the YAML specification. To
-access these, you can use the following:
+access these, you can run the following directly in the RStudio Console:
 
 ``` r
 component_id <- "predictor_metadata"
@@ -304,6 +312,11 @@ This default is used when using the above `prep_<component_id>()`
 functions. Using the same structure, we can pass a new legend:
 
 ``` r
+fi <- file.path(path, "predictors", "predictor_metadata.csv")
+x <- read_file(fi)
+names(x)[names(x)=="variable"]="predictor"
+x <- x[, rule$output$columns]
+
 prep_predictor_metadata(
   x = x,
   model_id = model_id,
@@ -431,7 +444,7 @@ db_write_table(con, "access", access, mode = "upsert")
 
 The deployment materials repeat the materials for each deployment. To do
 this part, we read in the materials (filter if deployments involve a
-subset), add the deployment ID. Finally, write the table to the
+subset), and add the deployment ID. Finally, write the table to the
 database:
 
 ``` r
@@ -483,7 +496,7 @@ prep_deployment_subunits(
 ```
 
 Alternatively, deployment subunits can be defined based on custom vector
-layers, e.g. ecoregions/ecoprovinces. In this case the subunit vector
+layers (e.g., ecoregions/ecoprovinces). In this case, the subunit vector
 layer will be transformed to epsg:4326 and clipped to the bounding box
 of the reference layers:
 
@@ -511,7 +524,8 @@ First, test that your deployment works:
   sdm_tool(user = user_id)
 ```
 
-After confirming the deployment works, compress the deployment materials
+This should launch a pop-up window with the Shiny app. After 
+confirming the deployment works, compress the deployment materials
 and the fresh database:
 
 ``` r
