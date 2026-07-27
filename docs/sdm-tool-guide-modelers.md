@@ -72,8 +72,9 @@ db_create_tables(con)
 ```
 
 Find an overview of the database structure in the system
-[`spec`](./spec/). Instead of creating a new database, if you have an
-existing database file, you can copy it to the root of the `DIR` folder.
+[`spec`](../spec/README.md). Instead of creating a new database, if you
+have an existing database file, you can copy it to the root of the `DIR`
+folder.
 
 Due to the foreign key constraint, tables need to be updated respecting
 the keys relationships. If a key is used as a foreign key, it needs to
