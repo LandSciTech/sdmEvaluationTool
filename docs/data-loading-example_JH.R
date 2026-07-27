@@ -399,17 +399,26 @@ prep_deployment_subunits(
   reference_points = xy
 )
 
-sort(unique(sdmEvalToolCore::fields$table))
-dbListTables(con)
-db_disconnect(con)
+# sort(unique(sdmEvalToolCore::fields$table))
+# dbListTables(con)
+# db_disconnect(con)
 
-if (FALSE) {
-  #zip deployment materials for sharing.
-  file.copy(
-    make_target_path("sdm_evaluation_db.sqlite"),
-    make_target_path("sdm_evaluation_db_og.sqlite")
+
+#if(FALSE){
+  #devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
+  user_id <- "testuser"
+  sdm_tool(
+    user = user_id
   )
+#}
 
+#if (FALSE) {
+  # #zip deployment materials for sharing.
+  # file.copy(
+  #   make_target_path("sdm_evaluation_db.sqlite"),
+  #   make_target_path("sdm_evaluation_db_og.sqlite")
+  # )
+  
   od <- setwd("misc")
   utils::zip(
     "./sdm_evaluation_results.zip",
@@ -419,12 +428,5 @@ if (FALSE) {
     )
   )
   setwd(od)
-}
+#}
 
-if(F){
-  #devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
-  user_id <- "testuser"
-  sdm_tool(
-    user = user_id
-  )
-}
