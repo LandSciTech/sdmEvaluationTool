@@ -27,11 +27,11 @@ Prerequisites:
 - [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
 - [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or a similar environment of you choosing
 
-Before installation, first create a new RStudio Project where you'll store the 
-data required for this tool. To do so, select _File_ > _New Project_. When prompted, select _New Directory_ and _New Project_. Under the field _Directory name_, type in _sdmEvaluationTool_, then, click on the *Browse* button and select a location you'll remember (e.g., `c:/users/user_name/work`).
+Once the prerequisites are installed, Open RStudio. Begin by creating a new RStudio Project where you'll store the 
+data required for this tool. To do so, select _File_ > _New Project_. When prompted, select _New Directory_ and _New Project_. Under the field _Directory name_, type in _sdmEvaluationTool_, then, click on the *Browse* button and select a location you'll remember (e.g., `c:/users/user_name/work`). Click on the *Create Project* button to complete the setup.
 
-Use this script in R to install required packages and download/extract the example 
-data set (say 'yes' or select the 'All' option to update packages if asked):
+In the RStudio Console, run the following script to install required packages and download/extract the example 
+dataset (say 'yes' or select the 'All' option to update packages if asked):
 
 ```R
 source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
@@ -48,10 +48,9 @@ library(sdmEvalToolUI)
 sdm_tool(user = "testuser")
 ```
 
-A window should pop-up with the loaded app. Alternatively, you can visit the following link in your browser: <http://localhost:8080>.
+A window should pop-up with the loaded app. Alternatively, you can copy the link returned in the RStudio Console and paste it in your browser (e.g., http://localhost:8080).
 
-If you see an error message `Error: Could not connect to database`,
-try setting the right folder with `sdmevaltool_options()`:
+If you see an error message `Error: Could not connect to database`, try setting the right folder with `sdmevaltool_options()`:
 
 ```R
 # use your path here to point to the right folder
@@ -60,11 +59,9 @@ sdmevaltool_options(base = "./sdm_evaluation_results")
 
 ## Testing
 
-The R packages can be checked locally following the [`RELEASE.R`](./RELEASE.R)
-file.
+The R packages can be checked locally following the [`RELEASE.R`](./RELEASE.R) file.
 
-The GitHub Action workflows are triggered when changes are made to files in the
-corresponding folders, see YAML files inside the [`.github/workflows`](./.github/workflows/) folder.
+The GitHub Action workflows are triggered when changes are made to files in the corresponding folders (see YAML files inside the [`.github/workflows`](./.github/workflows/) folder).
 
 To test a vanilla install of the packages, use [Docker](https://docs.docker.com/get-started/introduction/get-docker-desktop/):
 
