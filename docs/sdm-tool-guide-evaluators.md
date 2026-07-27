@@ -9,29 +9,29 @@
 - [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or a
   similar environment of you choosing
 
-Once the prerequisites are installed, Open RStudio. Begin by creating a new
-RStudio Project where you’ll store the data required for this tool. To do 
-so, select *File* \> *New Project*. When prompted, select *New Directory* 
-and *New Project*. Under the field *Directory name*, type in 
-*sdmEvaluationTool*, then, click on the *Browse* button and select a 
+Once the prerequisites are installed, Open RStudio. Begin by creating a
+new RStudio Project where you’ll store the data required for this tool.
+To do so, select *File* \> *New Project*. When prompted, select *New
+Directory* and *New Project*. Under the field *Directory name*, type in
+*sdmEvaluationTool*, then, click on the *Browse* button and select a
 location you’ll remember (e.g., `c:/users/user_name/work`). Click on the
 *Create Project* button to complete the setup.
 
 ## Adding the data set
 
-Now download the example 
-[sdm_evaluation_results.zip](https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link) 
-to your *sdmEvaluationTool* project folder. If you have an older version of
-*sdm_evaluation_results.zip* in your project folder, replace it with 
-the new version. If you received a different version of 
-*sdm_evaluation_results.zip* that was developed for the models you are 
+Now download the example
+[sdm_evaluation_results.zip](https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link)
+to your *sdmEvaluationTool* project folder. If you have an older version
+of *sdm_evaluation_results.zip* in your project folder, replace it with
+the new version. If you received a different version of
+*sdm_evaluation_results.zip* that was developed for the models you are
 evaluating, use that version instead of the example.
 
 ## Installation
 
-In the RStudio Console, run this script to install required packages 
-and download/extract the example data set (say ‘yes’ or select 
-the ‘All’ option to update packages if asked):
+In the RStudio Console, run this script to install required packages and
+download/extract the example data set (say ‘yes’ or select the ‘All’
+option to update packages if asked):
 
 ``` r
 source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/word-refinement/setup_JH.R")
@@ -43,7 +43,7 @@ setup script will move your old results to an
 
 ### Running the app locally
 
-Start the app by running the following script in the RStudio Console 
+Start the app by running the following script in the RStudio Console
 (option to replace `"testuser"` with your user name):
 
 ``` r
@@ -107,11 +107,9 @@ You can return to the Index tab at any time or use the top navigation to
 make changes to these values.
 
 Clicking the question mark icon in the bottom right corner of the page
-(4) opens the glossary.
-
-Search for words in the glossary by typing
-into the Search area. You will see topics and descriptions in which the
-word appears.
+(4) opens the glossary. Search for words in the glossary by typing into
+the Search area. You will see topics and descriptions in which the word
+appears.
 
 ![](./images/tabs/Slide2.PNG)
 
@@ -120,12 +118,12 @@ instructions on the right. You can hide this message by clicking the
 arrow in the top right corner. The message can be made visible again by
 clicking the arrow.
 
-![](./images/tabs/Slide3.PNG) 
+![](./images/tabs/Slide3.PNG)
 
-At any time you can “abandon” a review by
-clicking the `X` icon (2). It is helpful to describe your reason for
-abandoning the review. You can resume an abandoned review at any time by
-clicking the red `X` icon and changing your answer to ‘No’.
+At any time you can “abandon” a review by clicking the `X` icon (2). It
+is helpful to describe your reason for abandoning the review. You can
+resume an abandoned review at any time by clicking the red `X` icon and
+changing your answer to ‘No’.
 
 ![](./images/tabs/Slide4.PNG)
 
@@ -144,7 +142,8 @@ map. Select the base layer, turn on the Distribution or Uncertainty
 layers. There is also a Subunits layer that is used for spatial
 evaluations (see below).
 
-Click the Expand button (bottom right corner of the map) to pop the material into a full-screen mode.
+Click the Expand button (bottom right corner of the map) to pop the
+material into a full-screen mode.
 
 Spatial questions (e.g., 2) ask evaluators to identify one or more
 evaluation subunits. In this example, the evaluator has indicated that
@@ -153,9 +152,9 @@ and 92. The red dot (3) indicates that the evaluator has not yet saved
 their responses to the prediction evaluation questions. To save, scroll
 to the bottom of the evaluation questions and click “Save Responses”.
 
-Throughout, the questions asterisks (e.g., 4) indicate terms that may not
-be familiar to all evaluators. Check the glossary (5) for definitions of
-unfamiliar terms.
+Throughout, the questions asterisks (e.g., 4) indicate terms that may
+not be familiar to all evaluators. Check the glossary (5) for
+definitions of unfamiliar terms.
 
 ### Observations
 
@@ -167,8 +166,8 @@ Presences, and also the Subunits.
 
 ![](./images/tabs/Slide6.PNG)
 
-Select the options for the charts (1), and the observations summaries (2)
-will change accordingly.
+Select the options for the charts (1), and the observations summaries
+(2) will change accordingly.
 
 ![](./images/tabs/Slide7.PNG)
 
@@ -176,15 +175,21 @@ will change accordingly.
 
 The Predictors tab contains the Predictor Raster (1) map. Use the
 dropdown to change the layer. The Predictor Metadata (2) table is at the
-bottom. Use the expand button to make them pop to full-screen (button appears on hover).
+bottom. Use the expand button to make them pop to full-screen (button
+appears on hover).
 
-![Predictors](./images/tabs/Slide8.PNG) 
+<figure>
+<img src="./images/tabs/Slide8.PNG" alt="Predictors" />
+<figcaption aria-hidden="true">Predictors</figcaption>
+</figure>
 
-In some cases (e.g., 3), additional information about the model is useful or essential for answering a question. Click on the (!) to see relevant model metadata.
+In some cases (e.g., 3), additional information about the model is
+useful or essential for answering a question. Click on the (!) to see
+relevant model metadata.
 
 ### Model fit and summary
 
-The Model Fit (1) and Model Summary (2) are shown in the same tab.
+The model fit (1) and model summary (2) are shown in the same tab.
 
 ![](./images/tabs/Slide9.PNG)
 

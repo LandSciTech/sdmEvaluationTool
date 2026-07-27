@@ -173,9 +173,9 @@ prep_predictor_metadata(
 fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
 x <- read_file(fi)
 
-# x$metadata_id <- x[["X"]]
-# x[["X"]] <- NULL
-# colnames(x) <- tolower(colnames(x))
+x$metadata_id <- x[["X"]]
+x[["X"]] <- NULL
+colnames(x) <- tolower(colnames(x))
 
 prep_model_metadata(
   x = x,
@@ -401,24 +401,22 @@ prep_deployment_subunits(
 
 # sort(unique(sdmEvalToolCore::fields$table))
 # dbListTables(con)
-# db_disconnect(con)
+db_disconnect(con)
 
 
-#if(FALSE){
-  #devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
-  user_id <- "testuser"
-  sdm_tool(
-    user = user_id
+#devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
+user_id <- "testuser"
+sdm_tool(
+  user = user_id
+)
+
+if (FALSE) {
+  #zip deployment materials for sharing.
+  file.copy(
+     make_target_path("sdm_evaluation_db.sqlite"),
+     make_target_path("sdm_evaluation_db_og.sqlite")
   )
-#}
 
-#if (FALSE) {
-  # #zip deployment materials for sharing.
-  # file.copy(
-  #   make_target_path("sdm_evaluation_db.sqlite"),
-  #   make_target_path("sdm_evaluation_db_og.sqlite")
-  # )
-  
   od <- setwd("misc")
   utils::zip(
     "./sdm_evaluation_results.zip",
@@ -428,5 +426,5 @@ prep_deployment_subunits(
     )
   )
   setwd(od)
-#}
+}
 
