@@ -18,7 +18,7 @@ Install the following R packages:
 ## Uploading model materials
 
 First, download the example model
-materials [BAM Demo](https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link)
+materials [BAM Demo.zip](https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link)
 to your sdmEvaluationTool project folder.
 
 Open the [`data-loading-example_JH.R`](data-loading-example_JH.R) script.
