@@ -71,8 +71,9 @@ Use the `db_create_tables()` function to create the empty tables:
 db_create_tables(con)
 ```
 
-Instead of creating a new database, if you have an existing database
-file, you can copy it to the root of the `DIR` folder.
+See the system [spec](./spec/README.md) for an overview of the database
+structure. Instead of creating a new database, if you have an existing
+database file, you can copy it to the root of the `DIR` folder.
 
 Due to the foreign key constraint, tables need to be updated respecting
 the keys relationships. If a key is used as a foreign key, it needs to
