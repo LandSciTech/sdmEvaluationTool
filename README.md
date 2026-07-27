@@ -27,14 +27,15 @@ Prerequisites:
 - [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
 - [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or a similar environment of you choosing
 
-Before installation, first create a new RStudio Project where you'll store the 
-data required for this tool. To do so, select _File_ > _New Project_. When prompted, select _New Directory_ and _New Project_. Under the field _Directory name_, type in _sdmEvaluationTool_, then, click on the *Browse* button and select a location you'll remember (e.g., `c:/users/user_name/work`).
+Once the prerequisites are installed, Open RStudio. Begin by creating a new RStudio Project where you'll store the 
+data required for this tool. To do so, select _File_ > _New Project_. When prompted, select _New Directory_ and _New Project_. Under the field _Directory name_, type in _sdmEvaluationTool_, then, click on the *Browse* button and select a location you'll remember (e.g., `c:/users/user_name/work`). Click on the *Create Project* button to complete the setup.
 
 Now download the [sdm_evaluation_results.zip](https://drive.google.com/file/d/12dZ8vpiNuusICc4b1QyREr1NI8HQAM1t/view?usp=drive_link) to your _sdmEvaluationTool_ project folder.
 If you have an older version of _sdm_evaluation_results.zip_ in your project folder, replace it with the new version.
 
-Use this script in R to install required packages and download/extract the example 
-data set (say 'yes' or select the 'All' option to update packages if asked):
+In the RStudio Console, run this script to install required packages and 
+download/extract the example dataset (say 'yes' or select the 'All' option to 
+update packages if asked):
 
 ```R
 source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/word-refinement/setup_JH.R")

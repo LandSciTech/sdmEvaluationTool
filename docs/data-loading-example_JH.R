@@ -54,31 +54,6 @@ colnames(components) <- c(
 )
 db_write_table(con, "components", components)
 
-# ------- users table -----------
-
-# users <- data.frame(
-#     user_id = c("holden", "draper", "okoye"),
-#     user_name = c("James Holden", "Bobbie Draper", "Elvi Okoye"),
-#     user_email = c(
-#         "jim@rocinante.org",
-#         "bdraper@mcrn.gov",
-#         "okoye@rce.com"
-#     ),
-#     user_affiliation = c("Rocinante", "MCRN", "RCE"),
-#     admin = c(TRUE, FALSE, FALSE),
-#     password = c("pass1", "pass2", "pass3")
-# )
-users <- data.frame(
-  user_id = "testuser",
-  user_name = "Test User",
-  user_email = "x@y.z",
-  user_affiliation = "XYZ",
-  admin = FALSE,
-  password = "pass1234"
-  # password = generate_password() # use this for random password
-)
-db_write_table(con, "users", users)
-
 # ------- species table ----------
 
 species <- structure(
@@ -143,7 +118,6 @@ db_write_table(con, "species", species)
 
 # ------- models table ----------
 
-user_id <- "testuser" # user who uploads the materials
 model_id <- "bam_v5_can71"
 models <- data.frame(
   model_id = model_id,
@@ -151,6 +125,31 @@ models <- data.frame(
   model_description = "BAM version 5 Canada model in BCR 71"
 )
 db_write_table(con, "models", models)
+
+# ------- users table -----------
+
+# users <- data.frame(
+#     user_id = c("holden", "draper", "okoye"),
+#     user_name = c("James Holden", "Bobbie Draper", "Elvi Okoye"),
+#     user_email = c(
+#         "jim@rocinante.org",
+#         "bdraper@mcrn.gov",
+#         "okoye@rce.com"
+#     ),
+#     user_affiliation = c("Rocinante", "MCRN", "RCE"),
+#     admin = c(TRUE, FALSE, FALSE),
+#     password = c("pass1", "pass2", "pass3")
+# )
+users <- data.frame(
+  user_id = "testuser",
+  user_name = "Test User",
+  user_email = "x@y.z",
+  user_affiliation = "XYZ",
+  admin = FALSE,
+  password = "pass1234"
+  # password = generate_password() # use this for random password
+)
+db_write_table(con, "users", users)
 
 # --------- predictor_metadata ----
 
@@ -173,9 +172,10 @@ prep_predictor_metadata(
 
 fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
 x <- read_file(fi)
-x$metadata_id <- x[["X"]]
-x[["X"]] <- NULL
-colnames(x) <- tolower(colnames(x))
+
+# x$metadata_id <- x[["X"]]
+# x[["X"]] <- NULL
+# colnames(x) <- tolower(colnames(x))
 
 prep_model_metadata(
   x = x,
@@ -186,9 +186,9 @@ prep_model_metadata(
   update = FALSE
 )
 
-u <- arrow::read_parquet(
-  "misc/sdm_evaluation_results/materials/bam_v5_can71/metadata/model_metadata.parquet"
-)
+# u <- arrow::read_parquet(
+#   "misc/sdm_evaluation_results/materials/bam_v5_can71/metadata/model_metadata.parquet"
+# )
 
 # ------- predictor_raster RESAMPLED ------
 
@@ -282,10 +282,6 @@ for (species_id in species$species_id) {
 
 # --------- DEPLOYMENTS -----------
 
-rule <- get_comp_rule("deployment_settings", "upload")
-fi <- file.path(path, "welcome", "evaluator_welcome.md")
-x <- read_file(fi)
-
 deployments <- data.frame(
   deployment_id = c("deployment1", "deployment2"),
   deployment_name = c("Complex for spatial prioritization", "Simple for population assessment"),
@@ -297,6 +293,11 @@ deployments <- data.frame(
   deployment_create_time = timestamp_to(now()),
   deployment_settings = c("[]", "[]")
 )
+
+rule <- get_comp_rule("deployment_settings", "upload")
+fi <- file.path(path, "welcome", "evaluator_welcome.md")
+x <- read_file(fi)
+
 d1 <- d2 <- conf$templates$deployment_settings
 d1$use_case <- list(list(en = "Spatial prioritization", fr = ""))
 d2$use_case <- list(list(en = "Population assessment", fr = ""))
@@ -324,7 +325,7 @@ prep_deployment_questions(
   x = NULL
 )
 
-# default questions - without drilldowns or model summary questions
+# default questions - without followup, model fit or model summary questions
 q <- sdmEvalToolCore::default_questions
 q$followup_level <- 0
 q <- subset(q,!is.element(component,c("model_fit","model_summary")))
@@ -398,17 +399,26 @@ prep_deployment_subunits(
   reference_points = xy
 )
 
-sort(unique(sdmEvalToolCore::fields$table))
-dbListTables(con)
-db_disconnect(con)
+# sort(unique(sdmEvalToolCore::fields$table))
+# dbListTables(con)
+# db_disconnect(con)
 
-if (FALSE) {
-  #zip deployment materials for sharing.
-  file.copy(
-    make_target_path("sdm_evaluation_db.sqlite"),
-    make_target_path("sdm_evaluation_db_og.sqlite")
+
+#if(FALSE){
+  #devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
+  user_id <- "testuser"
+  sdm_tool(
+    user = user_id
   )
+#}
 
+#if (FALSE) {
+  # #zip deployment materials for sharing.
+  # file.copy(
+  #   make_target_path("sdm_evaluation_db.sqlite"),
+  #   make_target_path("sdm_evaluation_db_og.sqlite")
+  # )
+  
   od <- setwd("misc")
   utils::zip(
     "./sdm_evaluation_results.zip",
@@ -418,12 +428,5 @@ if (FALSE) {
     )
   )
   setwd(od)
-}
+#}
 
-if(F){
-  #devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
-  user_id <- "testuser"
-  sdm_tool(
-    user = user_id
-  )
-}
