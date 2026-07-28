@@ -10,8 +10,8 @@ library(suntools)
 library(sdmEvalToolCore)
 library(sdmEvalToolUI)
 #optionally use local version of the package
-if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolCore")
-if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolUI")
+#if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolCore")
+#if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolUI")
 
 path <- "./BAM Demo"
 #path <- "C:/Users/HughesJo/Documents/InitialWork/NOBMWG/MET (Model Evaluation Tool) Google Drive Copy/Materials/Model Upload/BAM Demo"
@@ -158,6 +158,8 @@ fi <- file.path(path, "predictors", "predictor_metadata.csv")
 x <- read_file(fi)
 names(x)[names(x)=="variable"]="predictor"
 x <- x[, rule$output$columns]
+
+user_id <- "testuser"
 
 prep_predictor_metadata(
   x = x,
@@ -412,6 +414,7 @@ prep_deployment_subunits(
   )
 #}
 
+# End previous function to run the following:
 #if (FALSE) {
   # #zip deployment materials for sharing.
   # file.copy(
