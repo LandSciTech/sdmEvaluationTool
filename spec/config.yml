@@ -1064,8 +1064,8 @@ default_questions: # where values is missing, we use the values from question_ty
     en: For each of the Predictors* in the drop-down list above the map, please consider the map and the metadata in the table. Descibe any additional data sources that you think could be helpful in modelling, explain why they could be helpful, and suggest contacts or resources to obtain the data.
     fr: ""
   followup_level: 0
-#  metadata_id: ~
-  metadata_id: [o_concept_1,d_pred_2]
+  metadata_id: ~
+#  metadata_id: [o_concept_1,d_pred_2]
 #TO DO: mechanism for omitting blank metadata fields from display
 
 - component: predictor_metadata
@@ -1076,8 +1076,8 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Indicate any Predictors* you believe are not relevant for modelling and explain why, keeping in mind the purpose of the model.
     fr: ""
   followup_level: 0
-#  metadata_id: [o_utility_2,o_utility_3,o_algorithms_2]
-  metadata_id: [o_utility_2,o_utility_3,o_algorithms_2,d_pred_2, m_multicol_1, m_estim_3]
+  metadata_id: [o_utility_2,o_utility_3,o_algorithms_2]
+#  metadata_id: [o_utility_2,o_utility_3,o_algorithms_2,d_pred_2, m_multicol_1, m_estim_3]
 
 - component: predictor_metadata
   type: ordinal
@@ -1087,8 +1087,8 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Indicate your level of concern with the quality* of any of the  Predictors*.
     fr: ""
   followup_level: 0
-#  metadata_id: ~
-  metadata_id: [d_pred_2,d_pred_9, m_preselect_1]
+  metadata_id: ~
+#  metadata_id: [d_pred_2,d_pred_9, m_preselect_1]
 #TO DO Details:  Quality can relate to characteristics such as the fineness or coarseness of the spatial resolution, or the accuracy of the data values.
 
 - component: predictor_metadata
@@ -1109,8 +1109,8 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Indicate your level of concern about the description and treatment of predictor data, as described in the metadata.
     fr: ""
   followup_level: 0
-#  metadata_id: [o_objective_3,o_utility_2,o_utility_3,o_workflow_1,m_estim_3]
-  metadata_id: [o_objective_3,o_utility_2,o_utility_3,o_workflow_1,o_concept_1,d_pred_9,d_pred_2, m_multicol_1, m_preselect_1, m_estim_3]
+  metadata_id: [o_objective_3,o_utility_2,o_utility_3,o_workflow_1,m_estim_3]
+#  metadata_id: [o_objective_3,o_utility_2,o_utility_3,o_workflow_1,o_concept_1,d_pred_9,d_pred_2, m_multicol_1, m_preselect_1, m_estim_3]
 
 - component: predictor_metadata
   type: simple_text
@@ -1130,7 +1130,9 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Indicate your level of concern about missing predictor interactions or nonlinear relationships.
     fr: ""
   followup_level: 0
-  metadata_id: [o_concept_1,o_algorithms_2,d_pred_2]
+  metadata_id: [o_workflow_1,o_algorithms_2]
+#  metadata_id: [o_concept_1,o_algorithms_2,d_pred_2]
+
 - component: predictor_metadata
   type: simple_text
   order: 5
@@ -1151,7 +1153,9 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Indicate your level of concern about the adequacy or appropriateness of the validation metrics.
     fr: ""
   followup_level: 0
-  metadata_id: [a_metrics_1]
+  metadata_id: ~
+  #metadata_id: [a_metrics_1]
+
 - component: model_fit
   type: simple_text
   order: 1
@@ -1170,8 +1174,8 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Please explain any additional concerns you have about model performance, given the purpose of the model.
     fr: ""
   followup_level: 0
-  metadata_id: [o_objective_3,o_utility_2,o_utility_3,m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3,p_part_1,d_part_3]
-
+  metadata_id: [o_objective_3,o_utility_2,o_utility_3,m_estim_1, m_estim_2, m_estim_3,d_part_1,d_part_3]
+  #metadata_id: [o_objective_3,o_utility_2,o_utility_3,m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3,d_part_1,d_part_3]
 
 ## ------------ model summary ------------
 
@@ -1184,6 +1188,7 @@ default_questions: # where values is missing, we use the values from question_ty
     fr: ""
   followup_level: 0
   metadata_id: [m_estim_3]
+
 - component: model_summary
   type: simple_text
   order: 2
