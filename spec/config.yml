@@ -1174,7 +1174,7 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Please explain any additional concerns you have about model performance, given the purpose of the model.
     fr: ""
   followup_level: 0
-  metadata_id: [o_objective_3,o_utility_2,o_utility_3,m_estim_1, m_estim_2, m_estim_3,d_part_1,d_part_3]
+  metadata_id: [o_utility_2,o_utility_3,m_estim_1, m_estim_2, m_estim_3,d_part_1,d_part_3]
   #metadata_id: [o_objective_3,o_utility_2,o_utility_3,m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3,d_part_1,d_part_3]
 
 ## ------------ model summary ------------
@@ -1207,7 +1207,9 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Indicate your level of concern about the appropriateness of the modeling algorithm for the model objectives and application.
     fr: ""
   followup_level: 0
-  metadata_id: [o_objective_3,o_utility_2,o_utility_3,o_assumptions_1,o_workflow_1,o_workflow_2,o_algorithms_1, o_algorithms_2]
+  metadata_id: [o_utility_2,o_utility_3,o_assumptions_1,o_workflow_1,o_algorithms_1, o_algorithms_2]
+  #metadata_id: [o_objective_3,o_utility_2,o_utility_3,o_assumptions_1,o_workflow_1,o_workflow_2,o_algorithms_1, o_algorithms_2]
+
 - component: model_summary
   type: simple_text
   order: 3
@@ -1226,7 +1228,8 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Indicate your level of concern about how well the modelling framework addresses important statistical assumptions.
     fr: ""
   followup_level: 0
-  metadata_id: [o_concept_1, o_assumptions_1, o_workflow_1,o_workflow_2, o_objective_3, m_multicol_1, m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3, m_depend_1,m_depend_2,m_depend_3,m_threshold_1,p_output_2,p_uncertainty_5,p_uncertainty_1,p_uncertainty_2,p_uncertainty_3,p_uncertainty_4]
+  metadata_id: [o_assumptions_1, o_workflow_1, m_settings_1, m_estim_1, m_estim_2, m_estim_3,m_threshold_1]
+  #metadata_id: [o_concept_1, o_assumptions_1, o_workflow_1,o_workflow_2, o_objective_3, m_multicol_1, m_settings_1, m_settings_2, m_estim_1, m_estim_2, m_estim_3, m_selection_1, m_selection_2, m_selection_3, m_depend_1,m_depend_2,m_depend_3,m_threshold_1,p_output_2,p_uncertainty_5,p_uncertainty_1,p_uncertainty_2,p_uncertainty_3,p_uncertainty_4]
 #TO DO: scroll bar when metadata pop up is too big.
 
 - component: model_summary
@@ -1247,7 +1250,9 @@ default_questions: # where values is missing, we use the values from question_ty
     en: Indicate your level of concern about how well important biological assumptions are explained and justified.
     fr: ""
   followup_level: 0
-  metadata_id: [o_objective_3, o_utility_2,o_utility_3, o_concept_1, o_assumptions_1]
+  metadata_id: [o_objective_3, o_workflow_1, o_utility_2,o_utility_3, o_assumptions_1]
+  #metadata_id: [o_objective_3, o_utility_2,o_utility_3, o_concept_1, o_assumptions_1]
+
 - component: model_summary
   type: simple_text
   order: 5
@@ -1274,7 +1279,7 @@ default_questions: # where values is missing, we use the values from question_ty
   order: 1
   part: 0
   body:
-    en: Indicate your level of concern about the use of this model for the intended application(s), as described in the metadata.
+    en: Indicate your level of concern about the use of this model for the intended application(s).
     fr: ""
   followup_level: 0
   metadata_id: [o_objective_3, o_utility_2]

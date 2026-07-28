@@ -45,12 +45,13 @@ test_that("affirmative()", {
         "Moderately_biased",
         "Very_undersampled",
         "Moderately_undersampled",
-        "over*_prediction",
-        "under*_prediction",
-        "comment",
-        "greater_than_expected",
-        "less_than_expected",
-        "limited_experience_and_doubts","strong_experience_and_doubts"
+        "Over*_prediction",
+        "Under*_prediction",
+        "Uncertain_but_seems_inaccurate",
+        "Comment",
+        "Inaccurate",
+        "Greater_than_expected",
+        "Less_than_expected"
       )
   ))
 })

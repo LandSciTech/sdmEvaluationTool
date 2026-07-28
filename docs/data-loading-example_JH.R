@@ -16,7 +16,7 @@ if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToo
 path <- "./BAM Demo"
 #path <- "C:/Users/HughesJo/Documents/InitialWork/NOBMWG/MET (Model Evaluation Tool) Google Drive Copy/Materials/Model Upload/BAM Demo"
 
-if(!exists(path)){
+if(!file.exists(path)){
   if(!file.exists("./BAM Demo.zip")){
     stop("Missing BAM Demo.zip model materials. Download from https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link to your project folder.")
   }
@@ -60,7 +60,7 @@ species <- structure(
   list(
     species_id = c(
       #"BBWA",
-      #"BBWO",
+      "BBWO",
       "BLPW",
       #"CAWA",
       "CONW",
@@ -73,7 +73,7 @@ species <- structure(
     ),
     scientific_name = c(
       #"Setophaga castanea",
-      #"Picoides arcticus",
+      "Picoides arcticus",
       "Setophaga striata",
       #"Cardellina canadensis",
       "Oporornis agilis",
@@ -86,7 +86,7 @@ species <- structure(
     ),
     english_name = c(
       #"Bay-breasted Warbler",
-      #"Black-backed Woodpecker",
+      "Black-backed Woodpecker",
       "Blackpoll Warbler",
       #"Canada Warbler",
       "Connecticut Warbler",
@@ -99,7 +99,7 @@ species <- structure(
     ),
     french_name = c(
       #"Paruline à poitrine baie",
-      #"Pic à dos noir",
+      "Pic à dos noir",
       "Paruline rayée",
       #"Paruline du Canada",
       "Paruline à gorge grise",

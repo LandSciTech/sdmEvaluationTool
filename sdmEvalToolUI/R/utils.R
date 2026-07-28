@@ -171,8 +171,7 @@ affirmative <- function(type = "standard") {
       "Comment",
       "Inaccurate",
       "Greater_than_expected",
-      "Less_than_expected",
-      "Limited_experience_and_doubts","Strong_experience_and_doubts"
+      "Less_than_expected"
     )
   }
   a
