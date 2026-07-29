@@ -1,53 +1,61 @@
-# Species Distribution Model Evaluation Tool (MET)
+    ## Warning: package 'knitr' was built under R version 4.4.3
+
+# Species Distribution Model Evaluation Tool (sdmEvaluationTool)
 
 What is in this folder:
 
 ``` bash
 spec
 ├── config.yml     # centralized configuration
-├── glossary.yml   # terminology
 ├── README.md      # this file
 └── README.Rmd     # the source of the md file
 ```
 
 ## Objective
 
-MET that will enable NOBMWG members to:
+The sdmEvaluationTool is part of a framework for evaluation of (bird)
+species distribution models. Objectives for the model evaluation
+framework include:
 
-- evaluate bird SDMs;
-- develop methods for synthesizing expert evaluations with quantitative
-  evaluations to inform model improvement and application; and
-- to assess what more (if anything) is needed to improve the bird SDM
-  evaluation process.
+- Enabling modelers to share relevant model materials with expert
+  reviewers, and to elicit relevant feedback;
+- Enabling experts to review relevant model materials and provide
+  relevant feedback;
+- Developing guidance on evaluating models with respect to particular
+  uses and applications;
+- And enabling synthesis of quantitative and expert evaluations to guide
+  model development, interpretations of reliability, and appropriate
+  uses.
 
-MET attributes include:
+The model evaluation framework consists of a set of related tools,
+protocols and guidance, each handling a specific functionality. The
+sdmEvaluationTool enables loading of model materials into an interface
+for eliciting expert evaluations.
 
-1.  **Modular**: The MET consists of independent Modules, each handling
-    specific functionality. This minimizes duplication of code within
-    and among Modules and links Modules into a usable tool.
-2.  **Flexible**: The MET code is stored and shared in a GitHub
-    repository that allows ECCC and other Tool Maintainers in the NOBMWG
-    to add to or modify all components of the MET.
-3.  **Expandable**: The MET allows for the possibility of adding new
-    Modules created by Tool Maintainers in future.
-4.  **Portable**: Tool Maintainers will be able to run the MET locally
-    on their computers with minimal changes, and will understand
-    possible future server deployment options and procedures.
-5.  **Generalizable**: The MET allows for a variety of species, SDM
-    model types, and geographies.
-6.  **Spatially explicit**: Users will be able to visualize, interact
-    with, and provide feedback on multiple raster and vector layers
-    (predictions, uncertainty, covariates, etc).
-7.  **Open source**: MET code will be released under a suitable open
-    source software license that is compatible with the ODMAP v1 project
-    dependency.
-8.  **Comparative**: Users will be able to view outputs from multiple
-    models (e.g., predictions of multiple species), either side by side
-    or by toggling among layers, to gain a deeper understanding of model
-    outputs.
-9.  **Multiple formats**: Users must be able to upload, view and
-    interact with Model Materials in a variety of formats (text, tables,
-    rasters, vectors).
+sdmEvaluationTool attributes include:
+
+1.  **Modular**: The sdmEvaluationTool consists of independent Modules,
+    each handling specific functionality. This minimizes duplication of
+    code within and among Modules and links Modules into a usable tool.
+2.  **Flexible**: The sdmEvaluationTool code is stored and shared in a
+    GitHub repository that allows ECCC and other Tool Maintainers in the
+    NOBMWG to add to or modify all components of the sdmEvaluationTool.
+3.  **Expandable**: The sdmEvaluationTool allows for the possibility of
+    adding new Modules created by Tool Maintainers in future.
+4.  **Portable**: Tool Maintainers can run the sdmEvaluationTool locally
+    on their computers with minimal changes, and understand possible
+    future server deployment options and procedures.
+5.  **Generalizable**: The sdmEvaluationTool allows for a variety of
+    species, SDM model types, and geographies.
+6.  **Spatially explicit**: Users can visualize, interact with, and
+    provide feedback on multiple raster and vector layers (predictions,
+    uncertainty, covariates, etc).
+7.  **Open source**: sdmEvaluationTool code is open source.
+8.  **Comparative**: Users can view outputs from multiple models (e.g.,
+    predictions of multiple species), either side by side or by toggling
+    among layers, to gain a deeper understanding of model outputs.
+9.  **Multiple formats**: Users can upload, view and interact with Model
+    Materials in a variety of formats (text, tables, rasters, vectors).
 
 ## Conceptual model
 
@@ -108,6 +116,7 @@ the future, this table might be a 3rd party authorization tool.
 | `user_email` | text | `UNIQUE NOT NULL` | The user’s email address. |
 | `user_affiliation` | text | `NOT NULL` | The user’s primary affiliation, e.g. ECCC, BAM, etc. |
 | `admin` | boolean | `NOT NULL` | Boolean flag for admin users. |
+| `password` | text | `NOT NULL` | The user’s password. |
 
 ### Species (`species`)
 
@@ -271,7 +280,7 @@ Allowed values and access types for user roles:
 | `modeler` | Read, Write (create new, edit theirs) | Read | Read, Write |
 | `admin` | Read, Write (create new, edit all, delete) | Read, Write (create new, edit all, delete) | Read, Write |
 
-The UI will enforce role based access rules.
+The UI enforces role based access rules.
 
 The `users` table needs to be updated regularly, requires admin access
 and writing directly to the database.
@@ -302,7 +311,7 @@ are the material specific components:
   for not completing an evaluation.
 - **observations** (mandatory): Detections or counts by location and
   timestamp for a single or multiple species.
-- **model_metadata** (mandatory): ODMAP protocol metadata.
+- **model_metadata** (mandatory): model metadata.
 - **predictor_metadata** (mandatory): Predictor metadata.
 - **predictor_raster** (optional): Predictor raster, a multi-band TIF
   with spatial predictors as bands.
@@ -370,17 +379,17 @@ Method, time, status should be part of popup message on click.
 
 ### Model Metadata (`model_metadata`)
 
-ODMAP protocol metadata.
+model metadata.
 
 **Mandatory**: Yes
 
-**Input**: TBD once we integrate ODMAP into the UI.
+**Input**: TBD once we integrate into the UI.
 
-**Output**: TBD once we integrate ODMAP into the UI.
+**Output**: TBD once we integrate into the UI.
 
 Output path: `materials/{model_id}/metadata/model_metadata.parquet`
 
-**Display**: TBD once we integrate ODMAP into the UI.
+**Display**: TBD once we integrate into the UI.
 
 ### Predictor Metadata (`predictor_metadata`)
 
@@ -582,14 +591,14 @@ The `material_settings` field stores figure legends and units (what the
 values in the rasters mean) get stored. This is created based on UI
 inputs during materials upload.
 
-Questions will have an expected table format, and a csv file can be
-uploaded similarly to metadata.
+Questions have an expected table format, and a csv file can be uploaded
+similarly to metadata.
 
-Subunits can be used to make evaluations more specific. In the 1st
-phase, we will make sure subunits can be identified (popups, paste ID to
-clipboard). In next phase, we will develop more sophisticated ways of
-providing subunit level feedback if this is identified as a priority. If
-no subunits are provided for a deployment, the subunits will not show.
+Subunits can be used to make evaluations more specific, and are
+identified by copying and pasting subunit IDs. In future, we may develop
+more sophisticated ways of providing subunit level feedback if this is
+identified as a priority. If no subunits are provided for a deployment,
+the subunits will not show.
 
 The evaluations for each material are stored in the SQLite database,
 alongside the other tables outlined in the conceptual overview.
@@ -629,23 +638,23 @@ Questions are organized by **components** and **question order**. For
 each component, questions are displayed in the order from smallest to
 largest order number.
 
-Each question also has a **part** identifier. When the part number is 0,
-it indicates that there are no follow up (or drill down) questions. When
-the part number is \>0, it indicates that the question has multiple
-parts. The 1st part of the questions is usually a Yes/No question. The
-2nd question can be a text input, i.e. if the answer to part 1 was Yes,
-the evaluator will explain further.
+Each question also has a **part** identifier. Part numbers \>0 indicate
+a question with multiple parts. The 1st part of a question is often
+binary or ordinal (“e.g. Indicate your level of concern…”), and
+subsequent question parts invite reviewers to explain their concerns.
+Subsequent parts hidden until the reviewer answers the first part - if
+reviewers have no concerns, they are not invited to explain them.
 
-Another scenario is that the follow up question(s) are spatial, in which
-case spatial subunits that apply to the question will be interactively
-selected and their IDs saved as the answer. It is assumed that IDs
-listed as part of parts belonging to the same question number are
-mutually exclusive.
+Spatial questions allow reviewers to interactively select spatial
+subunits and save the IDs as the answers. Spatial questions also often
+have subsequent parts to give reviewers an opportunity to explain their
+answers. It is assumed that IDs listed in parts belonging to the same
+question number are mutually exclusive.
 
 The **follow-up level** can be defined for each question where it makes
 sense according to the modeler when they are assembling the questions
 for a deployment. Follow-up level 0 means no follow up questions. Higher
-numbers (1–6) will add the same number of predetermined follow-up
+numbers (1–5) will add the same number of predetermined follow-up
 questions to the given higher level question.
 
 The **default** questions and the follow-up questions are part of the
