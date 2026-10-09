@@ -34,7 +34,8 @@ mod_page_summary_ui <- function(
 
     sdm_layout_sidebar(
       sidebar = mod_utils_evaluations_ui(NS(id, "eval"), review_width),
-      mod_comp_deployment_subunits_ui(NS(id, "deployment_subunits"))
+      #mod_comp_deployment_subunits_ui(NS(id, "deployment_subunits"))
+      mod_comp_spatial_prediction_ui(NS(id, "spatial_prediction"))
     )
   )
 }
@@ -77,8 +78,10 @@ mod_page_summary_server <- function(id = "summary", ...) {
       spatial_ids = spatial_ids
     )
 
-    mod_comp_deployment_subunits_server(
-      "deployment_subunits",
+    #mod_comp_deployment_subunits_server(
+    #  "deployment_subunits",
+    mod_comp_spatial_prediction_server(
+      "spatial_prediction",
       parent_id = id,
       deployment_id = deployment_id,
       model_id = model_id,
