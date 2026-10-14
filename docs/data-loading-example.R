@@ -1,4 +1,4 @@
-# Organize files for minim BAM project
+# Prepare example BAM materials and deployments
 
 library(sf)
 library(terra)
@@ -7,11 +7,23 @@ library(DBI)
 library(RSQLite)
 library(jsonlite)
 library(suntools)
-devtools::load_all("sdmEvalToolCore")
+library(sdmEvalToolCore)
+library(sdmEvalToolUI)
+#optionally use local version of the package
+if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolCore")
+if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolUI")
 
-path <- "~/Dropbox/a8m/projects-2025/eccc-sdm/02-data/Model Upload/BAM"
+path <- "./BAM Demo"
+#path <- "C:/Users/HughesJo/Documents/InitialWork/NOBMWG/MET (Model Evaluation Tool) Google Drive Copy/Materials/Model Upload/BAM Demo"
+
+if(!file.exists(path)){
+  if(!file.exists("./BAM Demo.zip")){
+    stop("Missing BAM Demo.zip model materials. Download from https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link to your project folder.")
+  }
+  unzip("./BAM Demo.zip")
+}
+
 conf <- yaml::read_yaml("spec/config.yml")
-# DIR <- "./misc/test"
 DIR <- "./misc/sdm_evaluation_results"
 sdmevaltool_options(base = DIR) # use the misc folder
 
@@ -42,6 +54,78 @@ colnames(components) <- c(
 )
 db_write_table(con, "components", components)
 
+# ------- species table ----------
+
+species <- structure(
+  list(
+    species_id = c(
+      #"BBWA",
+      "BBWO",
+      "BLPW",
+      #"CAWA",
+      "CONW",
+      "LEYE",
+      "OSFL",
+      #"OVEN",
+      "RUBL",
+      #"SOSA",
+      "TEWA"
+    ),
+    scientific_name = c(
+      #"Setophaga castanea",
+      "Picoides arcticus",
+      "Setophaga striata",
+      #"Cardellina canadensis",
+      "Oporornis agilis",
+      "Tringa flavipes",
+      "Contopus cooperi",
+      #"Seiurus aurocapilla",
+      "Euphagus carolinus",
+      #"Tringa solitaria",
+      "Oreothlypis peregrina"
+    ),
+    english_name = c(
+      #"Bay-breasted Warbler",
+      "Black-backed Woodpecker",
+      "Blackpoll Warbler",
+      #"Canada Warbler",
+      "Connecticut Warbler",
+      "Lesser Yellowlegs",
+      "Olive-sided Flycatcher",
+      #"Ovenbird",
+      "Rusty Blackbird",
+      #"Solitary Sandpiper",
+      "Tennessee Warbler"
+    ),
+    french_name = c(
+      #"Paruline à poitrine baie",
+      "Pic à dos noir",
+      "Paruline rayée",
+      #"Paruline du Canada",
+      "Paruline à gorge grise",
+      "Petit Chevalier",
+      "Moucherolle à côtés olive",
+      #"Paruline couronnée",
+      "Quiscale rouilleux",
+      #"Chevalier solitaire",
+      "Paruline obscure"
+    )
+  ),
+  row.names = c(24L, 40L, 76L, 90L, 106L, 118L),#c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
+  class = "data.frame"
+)
+db_write_table(con, "species", species)
+
+# ------- models table ----------
+
+model_id <- "bam_v5_can71"
+models <- data.frame(
+  model_id = model_id,
+  model_name = "BAM v5 Can 71",
+  model_description = "BAM version 5 Canada model in BCR 71"
+)
+db_write_table(con, "models", models)
+
 # ------- users table -----------
 
 # users <- data.frame(
@@ -67,79 +151,6 @@ users <- data.frame(
 )
 db_write_table(con, "users", users)
 
-# ------- species table ----------
-
-species <- structure(
-  list(
-    species_id = c(
-      "BBWA",
-      "BBWO",
-      "BLPW",
-      "CAWA",
-      "CONW",
-      "LEYE",
-      "OSFL",
-      "OVEN",
-      "RUBL",
-      "SOSA",
-      "TEWA"
-    ),
-    scientific_name = c(
-      "Setophaga castanea",
-      "Picoides arcticus",
-      "Setophaga striata",
-      "Cardellina canadensis",
-      "Oporornis agilis",
-      "Tringa flavipes",
-      "Contopus cooperi",
-      "Seiurus aurocapilla",
-      "Euphagus carolinus",
-      "Tringa solitaria",
-      "Oreothlypis peregrina"
-    ),
-    english_name = c(
-      "Bay-breasted Warbler",
-      "Black-backed Woodpecker",
-      "Blackpoll Warbler",
-      "Canada Warbler",
-      "Connecticut Warbler",
-      "Lesser Yellowlegs",
-      "Olive-sided Flycatcher",
-      "Ovenbird",
-      "Rusty Blackbird",
-      "Solitary Sandpiper",
-      "Tennessee Warbler"
-    ),
-    french_name = c(
-      "Paruline à poitrine baie",
-      "Pic à dos noir",
-      "Paruline rayée",
-      "Paruline du Canada",
-      "Paruline à gorge grise",
-      "Petit Chevalier",
-      "Moucherolle à côtés olive",
-      "Paruline couronnée",
-      "Quiscale rouilleux",
-      "Chevalier solitaire",
-      "Paruline obscure"
-    )
-  ),
-  row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
-  class = "data.frame"
-)
-db_write_table(con, "species", species)
-
-# ------- models table ----------
-
-user_id <- "testuser" # user who uploads the materials
-model_id <- "bam_v5_can71"
-models <- data.frame(
-  model_id = model_id,
-  model_name = "BAM v5 Can 71",
-  model_description = "BAM version 5 Canada model in BCR 71"
-)
-db_write_table(con, "models", models)
-
 # --------- predictor_metadata ----
 
 rule <- get_comp_rule("predictor_metadata", "upload")
@@ -147,6 +158,8 @@ fi <- file.path(path, "predictors", "predictor_metadata.csv")
 x <- read_file(fi)
 names(x)[names(x)=="variable"]="predictor"
 x <- x[, rule$output$columns]
+
+user_id <- "testuser"
 
 prep_predictor_metadata(
   x = x,
@@ -157,11 +170,11 @@ prep_predictor_metadata(
   update = FALSE
 )
 
-# --------- model_metadata / ODMAP ----
+# --------- model_metadata ----
 
-# fi <- file.path(path, "ODMAP", "ODMAP_Knight_2025-12-16.csv")
-fi <- file.path(path, "ODMAP", "metadata_Knight_2025-12-16.csv")
+fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
 x <- read_file(fi)
+
 x$metadata_id <- x[["X"]]
 x[["X"]] <- NULL
 colnames(x) <- tolower(colnames(x))
@@ -175,9 +188,9 @@ prep_model_metadata(
   update = FALSE
 )
 
-u <- arrow::read_parquet(
-  "misc/sdm_evaluation_results/materials/bam_v5_can71/metadata/model_metadata.parquet"
-)
+# u <- arrow::read_parquet(
+#   "misc/sdm_evaluation_results/materials/bam_v5_can71/metadata/model_metadata.parquet"
+# )
 
 # ------- predictor_raster RESAMPLED ------
 
@@ -254,6 +267,7 @@ prep_model_fit(
 # -------- spatial_prediction ----
 
 for (species_id in species$species_id) {
+  #species_id <- species$species_id[1]
   fi <- file.path(path, "predictions", paste0(species_id, "_can71_2020.tif"))
   x <- read_file(fi)
 
@@ -270,24 +284,25 @@ for (species_id in species$species_id) {
 
 # --------- DEPLOYMENTS -----------
 
-rule <- get_comp_rule("deployment_settings", "upload")
-fi <- file.path(path, "welcome", "evaluator_welcome.md")
-x <- read_file(fi)
-
 deployments <- data.frame(
   deployment_id = c("deployment1", "deployment2"),
-  deployment_name = c("BAM: Pop. Assessment", "BAM: Prioritization"),
+  deployment_name = c("Complex for spatial prioritization", "Simple for population assessment"),
   deployment_description = c(
-    "BAM: population assessment",
-    "BAM: spatial prioritization"
+    "Complex for spatial prioritization",
+    "Simple for population assessment"
   ),
   deployment_create_user = "testuser",
   deployment_create_time = timestamp_to(now()),
   deployment_settings = c("[]", "[]")
 )
+
+rule <- get_comp_rule("deployment_settings", "upload")
+fi <- file.path(path, "welcome", "evaluator_welcome.md")
+x <- read_file(fi)
+
 d1 <- d2 <- conf$templates$deployment_settings
-d1$use_case <- list(list(en = "Population assessment", fr = ""))
-d2$use_case <- list(list(en = "Spatial prioritization", fr = ""))
+d1$use_case <- list(list(en = "Spatial prioritization", fr = ""))
+d2$use_case <- list(list(en = "Population assessment", fr = ""))
 d1$instructions_to_evaluators <- paste0(x, collapse = "\n")
 d2$instructions_to_evaluators <- paste0(x, collapse = "\n")
 deployments$deployment_settings[1] <- jsonlite::toJSON(d1)
@@ -306,16 +321,16 @@ for (j in 1:nrow(deployments)) {
 
 # --------- deployment questions -----------
 
-# default questions - with drilldown
+# default questions - with drilldowns
 prep_deployment_questions(
   deployment_id = "deployment1",
   x = NULL
 )
 
-# default questions - without drilldowns
+# default questions - without followup, model fit or model summary questions
 q <- sdmEvalToolCore::default_questions
 q$followup_level <- 0
-#q$followup_level[5] <- 3
+q <- subset(q,!is.element(component,c("model_fit","model_summary")))
 q <- combine_questions(q)
 
 prep_deployment_questions(
@@ -359,7 +374,7 @@ db_write_table(
 # --------- deployment subunits -----------
 
 # raster template
-r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+r <- read_file(file.path(path, "predictions", "LEYE_can71_2020.tif"))
 # spatial points template
 xy <- read_file(file.path(path, "data", "observations_can71.csv"))
 xy <- xy[, c("lat", "lon")]
@@ -386,10 +401,19 @@ prep_deployment_subunits(
   reference_points = xy
 )
 
-sort(unique(sdmEvalToolCore::fields$table))
-dbListTables(con)
+# sort(unique(sdmEvalToolCore::fields$table))
+# dbListTables(con)
 db_disconnect(con)
 
+
+#devtools::load_all("sdmEvalToolCore");devtools::load_all("sdmEvalToolUI")
+user_id <- "testuser"
+sdm_tool(
+  user = user_id
+)
+
+# If the Shiny app is working, close the app and
+# zip deployment materials for sharing.
 if (FALSE) {
   file.copy(
     make_target_path("sdm_evaluation_db.sqlite"),
@@ -406,3 +430,4 @@ if (FALSE) {
   )
   setwd(od)
 }
+
