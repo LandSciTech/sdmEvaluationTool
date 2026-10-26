@@ -46,13 +46,12 @@ Access to the Upload UI:
 
 ### 1. Overview
 
-Summaries for:
+This page is intended to provide a high-level overview of the models, deployments.
+It provides summaries for:
 
 - Models: List the models and their statuses
-- Deployments: List the deployments and their statuses, plus the completeness of evaluations for published deployments
+- Deployments: List the deployments and their statuses
 
-This page is intended to provide a high-level overview of the models, deployments, 
-and evaluations, allowing users to quickly assess the status and completeness of their work.
 
 ### 2. Model Materials Upload & Settings
 
