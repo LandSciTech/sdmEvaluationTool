@@ -326,7 +326,7 @@ add_control <- function(map, groups = character(0)) {
 
   map <- map |>
     leaflet::addLayersControl(
-      baseGroups = c("CartoDB", "ESRI", "Open Street Map", "Google"),
+      baseGroups = c("Open Street Map", "CartoDB", "ESRI", "Google"),
       overlayGroups = groups,
       position = "topright",
       options = leaflet::layersControlOptions(collapsed = FALSE)
