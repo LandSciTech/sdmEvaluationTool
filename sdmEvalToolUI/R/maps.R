@@ -25,11 +25,19 @@ base_map <- function(ns = identity) {
       group = "Google",
       options = leaflet::providerTileOptions(zIndex = 200)
     ) |>
-    leaflet::addProviderTiles(
-      provider = "CartoDB.Positron",
+    addTiles(
+      urlTemplate = sprintf(
+        "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=%s",
+        Sys.getenv("CARTODB_KEY")
+      ),
       group = "CartoDB",
       options = leaflet::providerTileOptions(zIndex = 200)
     ) |>
+    # leaflet::addProviderTiles(
+    #   provider = "CartoDB.Positron",
+    #   group = "CartoDB",
+    #   options = leaflet::providerTileOptions(zIndex = 200)
+    # ) |>
     leaflet::addProviderTiles(
       provider = "OpenStreetMap",
       group = "Open Street Map",
@@ -326,7 +334,11 @@ add_control <- function(map, groups = character(0)) {
 
   map <- map |>
     leaflet::addLayersControl(
-      baseGroups = c("Open Street Map", "CartoDB", "ESRI", "Google"),
+      baseGroups = if (nzchar(Sys.getenv("CARTODB_KEY"))) {
+        c("Open Street Map", "CartoDB", "ESRI", "Google")
+      } else {
+        c("Open Street Map", "ESRI", "Google")
+      },
       overlayGroups = groups,
       position = "topright",
       options = leaflet::layersControlOptions(collapsed = FALSE)
