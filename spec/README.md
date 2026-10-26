@@ -5,7 +5,6 @@ What is in this folder:
 ``` bash
 spec
 ├── config.yml     # centralized configuration
-├── glossary.yml   # terminology
 ├── README.md      # this file
 └── README.Rmd     # the source of the md file
 ```
@@ -108,6 +107,7 @@ the future, this table might be a 3rd party authorization tool.
 | `user_email` | text | `UNIQUE NOT NULL` | The user’s email address. |
 | `user_affiliation` | text | `NOT NULL` | The user’s primary affiliation, e.g. ECCC, BAM, etc. |
 | `admin` | boolean | `NOT NULL` | Boolean flag for admin users. |
+| `password` | text | `NOT NULL` | The user’s password. |
 
 ### Species (`species`)
 
