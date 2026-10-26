@@ -153,6 +153,7 @@ Canadian extent and this is version 1.1. Updates are done by
 | `model_id` | text | `PRIMARY KEY` | Model ID, lower case, alphanumeric, `.` and `_` allowed. |
 | `model_name` | text | `UNIQUE NOT NULL` | A human readable version of `model_id` displayed in the app, can include spaces. |
 | `model_description` | text | `NOT NULL` | A human readable version of `model_id` displayed in the app. |
+| `model_status` | text | `NOT NULL` | Status of the model, one of `draft`, `published`, or `archived`. |
 
 ### Materials (`materials`)
 
@@ -171,7 +172,6 @@ materials.
 | `material_modify_user` | text | `REFERENCES users (user_id)` | User who modified the model material (foreign key). |
 | `material_modify_time` | timestamp |  | Time of last modification. |
 | `material_settings` | jsonb | `NOT NULL` | Material settings, see `templates`. |
-| `material_status` | text | `NOT NULL` | Status of the material, one of `draft`, `published`, or `archived`. |
 
 ### Deployments (`deployments`)
 

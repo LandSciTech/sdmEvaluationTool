@@ -209,6 +209,11 @@ tables:
       #   description: A file path or URL used to find the ODMAP metadata for the model.
       #   type: text
       #   constraint: NOT NULL
+      model_status:
+        name: Model Status
+        description: Status of the model, one of `draft`, `published`, or `archived`.
+        type: text
+        constraint: NOT NULL
 
   materials:
     name: Materials
@@ -262,11 +267,6 @@ tables:
         name: Material Settings
         description: Material settings, see `templates`.
         type: jsonb
-        constraint: NOT NULL
-      material_status:
-        name: Material Status
-        description: Status of the material, one of `draft`, `published`, or `archived`.
-        type: text
         constraint: NOT NULL
 
   deployments:
