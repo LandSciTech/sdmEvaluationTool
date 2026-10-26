@@ -171,6 +171,7 @@ materials.
 | `material_modify_user` | text | `REFERENCES users (user_id)` | User who modified the model material (foreign key). |
 | `material_modify_time` | timestamp |  | Time of last modification. |
 | `material_settings` | jsonb | `NOT NULL` | Material settings, see `templates`. |
+| `material_status` | text | `NOT NULL` | Status of the material, one of `draft`, `published`, or `archived`. |
 
 ### Deployments (`deployments`)
 
@@ -188,6 +189,7 @@ of.
 | `deployment_create_user` | text | `REFERENCES users (user_id)` | User who created the deployment (foreign key). |
 | `deployment_create_time` | timestamp | `NOT NULL` | Time of deployment creation. |
 | `deployment_settings` | jsonb | `NOT NULL` | Deployment settings, see `templates`. |
+| `deployment_status` | text | `NOT NULL` | Status of the deployment, one of `draft`, `published`, or `archived`. |
 
 ### Deployment Materials (`deployment_materials`)
 

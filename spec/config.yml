@@ -263,6 +263,11 @@ tables:
         description: Material settings, see `templates`.
         type: jsonb
         constraint: NOT NULL
+      material_status:
+        name: Material Status
+        description: Status of the material, one of `draft`, `published`, or `archived`.
+        type: text
+        constraint: NOT NULL
 
   deployments:
     name: Deployments
@@ -303,6 +308,11 @@ tables:
         name: Deployment Settings
         description: Deployment settings, see `templates`.
         type: jsonb
+        constraint: NOT NULL
+      deployment_status:
+        name: Deployment Status
+        description: Status of the deployment, one of `draft`, `published`, or `archived`.
+        type: text
         constraint: NOT NULL
 
   deployment_materials:
