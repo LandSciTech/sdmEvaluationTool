@@ -111,7 +111,7 @@ species <- structure(
       "Paruline obscure"
     )
   ),
-  row.names = c(24L, 40L, 76L, 90L, 106L, 118L),#c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
+  row.names = c(16L, 24L, 40L, 76L, 90L, 106L, 118L),
   class = "data.frame"
 )
 db_write_table(con, "species", species)
