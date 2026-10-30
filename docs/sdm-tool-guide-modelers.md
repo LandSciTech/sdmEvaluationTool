@@ -21,7 +21,7 @@ First, download the example model materials [BAM
 demo.zip](https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link)
 to your sdmEvaluationTool project folder.
 
-Open the [`data-loading-example_JH.R`](data-loading-example_JH.R)
+Open the [`data-loading-example.R`](data-loading-example.R)
 script.
 
 The script begins by loading the required libraries, unziping the demo

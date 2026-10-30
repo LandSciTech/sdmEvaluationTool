@@ -142,6 +142,8 @@ export(value_to_input)
 import(bslib)
 import(sdmEvalToolCore)
 import(shiny)
-importFrom(rlang,":=")
-importFrom(rlang,.data)
-importFrom(rlang,.env)
+importFrom(rlang,
+  ":=",
+  .data,
+  .env
+)

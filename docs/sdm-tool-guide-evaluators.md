@@ -34,7 +34,7 @@ download/extract the example data set (say ‘yes’ or select the ‘All’
 option to update packages if asked):
 
 ``` r
-source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/word-refinement/setup_JH.R")
+source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/review-2026-10/setup.R")
 ```
 
 Note that if you have a previous deployment of the tool installed, this

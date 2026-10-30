@@ -13,6 +13,7 @@ The goal of sdmEvalToolCore is to implement the data model and common non-intera
 
 Authors:
 \itemize{
+  \item Peter Solymos \email{psolymos@gmail.com} (\href{https://orcid.org/0000-0001-7337-1740}{ORCID})
   \item Steffi LaZerte \email{sel@steffilazerte.ca} (\href{https://orcid.org/0000-0002-7690-8360}{ORCID})
 }
 
