@@ -366,6 +366,5 @@ fetch_questions <- function(deployment_id, component_id) {
       q$metadata_id <- NA_character_
     }
   }
-
   q
 }

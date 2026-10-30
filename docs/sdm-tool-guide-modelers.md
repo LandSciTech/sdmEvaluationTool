@@ -13,12 +13,20 @@ Install the following R packages:
 - jsonlite
 - suntools
 - sdmEvalToolCore
+- sdmEvalToolUI
 
 ## Uploading model materials
 
-See the [`data-loading-example.R`](data-loading-example.R) script.
+First, download the example model materials [BAM
+demo.zip](https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link)
+to your sdmEvaluationTool project folder.
 
-We first load libraries and set up variables:
+Open the [`data-loading-example_JH.R`](data-loading-example_JH.R)
+script.
+
+The script begins by loading the required libraries, unziping the demo
+materials (if applicable), removing old prepared materials (if
+applicable), and setting up variables:
 
 ``` r
 library(sf)
@@ -29,17 +37,27 @@ library(RSQLite)
 library(jsonlite)
 library(suntools)
 library(sdmEvalToolCore)
+library(sdmEvalToolUI)
 
-path <- "c:/path/to/data/Model Upload/BAM"
+path <- "./BAM Demo"
+if(!exists(path)){
+  if(!file.exists("./BAM Demo.zip")){
+    stop("Missing BAM Demo.zip model materials. Download from https://drive.google.com/file/d/1CJZ_TDy5XPF3UtyDz6IrWzuShyO1bdxx/view?usp=drive_link to your project folder.")
+  }
+  unzip("./BAM Demo.zip")
+}
+
 conf <- yaml::read_yaml(system.file("config.yml", package = "sdmEvalToolCore"))
 DIR <- "misc/sdm_evaluation_results"
 dir.create(DIR, recursive = TRUE)
 
 sdmevaltool_options(base = DIR)
+
+unlink(DIR, recursive = TRUE)
+dir.create(DIR, recursive = TRUE)
 ```
 
-Use an existing database file (copy it to the root of the `DIR` folder),
-or create a new database file and turn foreign key constraints on:
+Next, create a new database file and turn foreign key constraints on:
 
 ``` r
 con <- db_connect(make_target_path("sdm_evaluation_db.sqlite"))
@@ -47,12 +65,16 @@ rs <- DBI::dbSendQuery(con, "PRAGMA foreign_keys = ON;")
 DBI::dbClearResult(rs)
 ```
 
-If using a fresh database, use the `db_create_tables()` function to
-create the empty tables:
+Use the `db_create_tables()` function to create the empty tables:
 
 ``` r
 db_create_tables(con)
 ```
+
+Find an overview of the database structure in the system
+[`spec`](../spec/README.md). Instead of creating a new database, if you
+have an existing database file, you can copy it to the root of the `DIR`
+folder.
 
 Due to the foreign key constraint, tables need to be updated respecting
 the keys relationships. If a key is used as a foreign key, it needs to
@@ -75,32 +97,41 @@ colnames(components) <- c(
 db_write_table(con, "components", components)
 ```
 
-The species table should also not change frequently, however, this is
-only a small portion of all expected species:
+The species table should also not change frequently. However, for the
+purpose of this example, here only a small portion of all expected
+species are listed:
 
 ``` r
 species <- structure(
   list(
     species_id = c(
-      "BBWA", ... , "TEWA"
+      "BLPW",
+      ...,
+      "TEWA"
     ),
     scientific_name = c(
-      "Setophaga castanea", ... , "Oreothlypis peregrina"
+      "Setophaga striata",
+      ...,
+      "Oreothlypis peregrina"
     ),
     english_name = c(
-      "Bay-breasted Warbler", ... , "Tennessee Warbler"
+      "Blackpoll Warbler",
+      ...,
+      "Tennessee Warbler"
     ),
     french_name = c(
-      "Paruline à poitrine baie", ... , "Paruline obscure"
+      "Paruline rayée",
+      ...,
+      "Paruline obscure"
     )
   ),
-  row.names = c(15L, 16L, 24L, 33L, 40L, 76L, 90L, 91L, 106L, 113L, 118L),
+  row.names = c(24L, 40L, 76L, 90L, 106L, 118L),
   class = "data.frame"
 )
 db_write_table(con, "species", species)
 ```
 
-The model table:
+Next, build the model table:
 
 ``` r
 model_id <- "bam_v5_can71" # we'll use the model ID later
@@ -123,21 +154,27 @@ users <- data.frame(
   user_name = "Test User",
   user_email = "x@y.z",
   user_affiliation = "XYZ",
-  admin = FALSE
+  admin = FALSE,
+  password = generate_password()
 )
 db_write_table(con, "users", users)
 ```
 
-Add as many users as needed. You can make a CSV file following the
+Add as many users as needed. You can make a csv file following the
 column names. Read in the file with `read.csv()` to have the full
 `users` table.
 
-Predictor metadata:
+Next, the script will load existing files containing the data for each
+model material and prepare it in the required format for the app. You
+can inspect each file for a reference of how they should be provided.
+
+First, create the predictor metadata:
 
 ``` r
 rule <- get_comp_rule("predictor_metadata", "upload")
 fi <- file.path(path, "predictors", "predictor_metadata.csv")
 x <- read_file(fi)
+names(x)[names(x)=="variable"]="predictor"
 x <- x[, rule$output$columns]
 
 prep_predictor_metadata(
@@ -150,10 +187,10 @@ prep_predictor_metadata(
 )
 ```
 
-Model (ODMAP) metadata:
+Create the model metadata:
 
 ``` r
-fi <- file.path(path, "ODMAP", "ODMAP_Knight_2025-12-16.csv")
+fi <- file.path(path, "metadata", "metadata_Knight_2025-12-16.csv")
 x <- read_file(fi)
 
 prep_model_metadata(
@@ -166,7 +203,7 @@ prep_model_metadata(
 )
 ```
 
-Predictor raster (resampled to save space):
+To prepare the predictor raster (resampled to save space), run:
 
 ``` r
 fi <- file.path(path, "predictors", "predictor_stack.tif")
@@ -183,7 +220,8 @@ prep_predictor_raster(
 )
 ```
 
-Species observations, processing multiple species:
+To prepare the species observations, processing multiple species at
+once, run:
 
 ``` r
 fi <- file.path(path, "data", "observations_can71.csv")
@@ -201,7 +239,7 @@ prep_observations(
 )
 ```
 
-Model summaries for the species:
+The model summaries for the species are prepared with:
 
 ``` r
 fi <- file.path(path, "predictors", "predictor_importance.csv")
@@ -220,7 +258,7 @@ prep_model_summary(
 )
 ```
 
-Model fit for the species:
+The model fit for the species are prepared with:
 
 ``` r
 fi <- file.path(path, "reliability", "validation_can71.csv")
@@ -239,7 +277,7 @@ prep_model_fit(
 )
 ```
 
-Species predictions:
+Lastly, the species predictions are prepared with:
 
 ``` r
 for (species_id in species$species_id) {
@@ -261,7 +299,7 @@ for (species_id in species$species_id) {
 ## Material settings
 
 Default material settings are defined in the YAML specification. To
-access these, you can use the following:
+access these, you can run the following directly in the RStudio Console:
 
 ``` r
 component_id <- "predictor_metadata"
@@ -277,6 +315,12 @@ This default is used when using the above `prep_<component_id>()`
 functions. Using the same structure, we can pass a new legend:
 
 ``` r
+
+fi <- file.path(path, "predictors", "predictor_metadata.csv")
+x <- read_file(fi)
+names(x)[names(x)=="variable"]="predictor"
+x <- x[, rule$output$columns]
+
 prep_predictor_metadata(
   x = x,
   model_id = model_id,
@@ -297,10 +341,10 @@ now. This field is JSON, we’ll add the value later:
 ``` r
 deployments <- data.frame(
   deployment_id = c("deployment1", "deployment2"),
-  deployment_name = c("BAM: Pop. Assessment", "BAM: Prioritization"),
+  deployment_name = c("Complex for spatial prioritization", "Simple for population assessment"),
   deployment_description = c(
-    "BAM: population assessment",
-    "BAM: spatial prioritization"
+    "Complex for spatial prioritization",
+    "Simple for population assessment"
   ),
   deployment_create_user = "testuser",
   deployment_create_time = timestamp_to(now()),
@@ -321,8 +365,8 @@ the use case:
 
 ``` r
 d1 <- d2 <- conf$templates$deployment_settings
-d1$use_case <- list(list(en = "Population assessment", fr = ""))
-d2$use_case <- list(list(en = "Spatial prioritization", fr = ""))
+d1$use_case <- list(list(en = "Spatial prioritization", fr = ""))
+d2$use_case <- list(list(en = "Population assessment", fr = ""))
 d1$instructions_to_evaluators <- paste0(x, collapse = "\n")
 d2$instructions_to_evaluators <- paste0(x, collapse = "\n")
 deployments$deployment_settings[1] <- jsonlite::toJSON(d1)
@@ -357,14 +401,18 @@ prep_deployment_questions(
 )
 ```
 
-The file now can be edited as needed.
+The
+./misc/sdm_evaluation_results/deployments/deployment1/deployment_questions.csv
+file now can be edited as needed.
 
-If drilldown questions are needed, edit the `followup_level` field and
-apply the `combine_questions()` function like:
+The question set can also be edited before writing the csv file. In this
+example we simplify the evaluation by removing the followup, model_fit
+and model_summary questions.
 
 ``` r
 q <- sdmEvalToolCore::default_questions
-q$followup_level[5] <- 3
+q$followup_level <- 0
+q <- subset(q,!is.element(component,c("model_fit","model_summary")))
 q <- combine_questions(q)
 
 prep_deployment_questions(
@@ -400,7 +448,7 @@ db_write_table(con, "access", access, mode = "upsert")
 
 The deployment materials repeat the materials for each deployment. To do
 this part, we read in the materials (filter if deployments involve a
-subset), add the deployment ID. Finally, write the table to the
+subset), and add the deployment ID. Finally, write the table to the
 database:
 
 ``` r
@@ -434,7 +482,7 @@ of a reference raster (distribution maps) and the spatial points
 
 ``` r
 # raster template
-r <- read_file(file.path(path, "predictions", "CAWA_can71_2020.tif"))
+r <- read_file(file.path(path, "predictions", "LEYE_can71_2020.tif"))
 # spatial points template
 xy <- read_file(file.path(path, "data", "observations_can71.csv"))
 xy <- xy[, c("lat", "lon")]
@@ -452,7 +500,7 @@ prep_deployment_subunits(
 ```
 
 Alternatively, deployment subunits can be defined based on custom vector
-layers, e.g. ecoregions/ecoprovinces. In this case the subunit vector
+layers (e.g., ecoregions/ecoprovinces). In this case, the subunit vector
 layer will be transformed to epsg:4326 and clipped to the bounding box
 of the reference layers:
 
@@ -473,7 +521,16 @@ prep_deployment_subunits(
 
 To share the deployment with evaluators, follow these steps.
 
-Compress the deployment materials and the fresh database:
+First, test that your deployment works:
+
+``` r
+  user_id <- "testuser"
+  sdm_tool(user = user_id)
+```
+
+This should launch a pop-up window with the Shiny app. After confirming
+the deployment works, compress the deployment materials and the fresh
+database:
 
 ``` r
 od <- setwd("misc")
@@ -488,80 +545,5 @@ setwd(od)
 ```
 
 This will create the `misc/sdm_evaluation_results.zip` file. Send this
-file to the evaluators with the following setup instructions.
-
-### Prerequisites
-
-- [R](https://cran.r-project.org/)
-- [Rtools](https://cran.r-project.org/bin/windows/Rtools/) on Windows
-- [RStudio Desktop](https://posit.co/download/rstudio-desktop/) or a
-  similar environment of you choosing
-
-Before installation, first create a new RStudio Project where you’ll
-store the data required for this tool. To do so, select *File* \> *New
-Project*. When prompted, select *New Directory* and *New Project*. Under
-the field *Directory name*, type in *sdmEvaluationTool*, then, click on
-the *Browse* button and select a location you’ll remember (e.g.,
-`c:/users/user_name/work`).
-
-### Installation
-
-Use this script in R to install required packages and download/extract
-the example data set (say ‘yes’ or select the ‘All’ option to update
-packages if asked):
-
-``` r
-source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
-```
-
-### Adding the data set
-
-The evaluators will have to first remove the
-`sdm_evaluation_results.zip` and the `sdm_evaluation_results` folder
-with its contents. Then they will need to save and extract the archive
-containing the real deployment. Use a system tool or the following
-command to extract the files:
-
-``` r
-unzip("./sdm_evaluation_results.zip")
-```
-
-### Running the app locally
-
-Provide the following script to the evaluators:
-
-- replace the `"<evaluator_user_name>"` with their user name
-- use the subset of `tabs` as needed, i.e. by excluding the `"model"`
-  and `"model_metadata"` tabs.
-- change the order of the tabs as desired
-
-``` r
-# load libraries
-library(sdmEvalToolCore)
-library(sdmEvalToolUI)
-
-# start the app
-sdm_tool(
-  user = "<evaluator_user_name>",
-  tabs = c(
-    "overview",
-    "predictions",
-    "observations",
-    "model",
-    "predictors",
-    "model_metadata",
-    "summary"
-  )
-)
-```
-
-A window should pop-up with the loaded app. Alternatively, you can visit
-the following link in your browser: <http://localhost:8080>.
-
-If you see an error message `Error: Could not connect to database`, try
-setting the right folder with `sdmevaltool_options()`:
-
-``` r
-# use your path here to point to the right folder
-sdmevaltool_options(base = "./sdm_evaluation_results")
-```
+file to your evaluators and ask them to follow the installation
+instructions in the evaluator’s guide.
