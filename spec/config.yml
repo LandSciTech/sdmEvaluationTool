@@ -877,7 +877,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Identify areas of innacuracy in the predictions, given your knowledge of the species.
     fr: ""
-  values: [Over* prediction, Under* prediction, Uncertain but seems inaccurate]
+  values: [Over prediction, Under prediction, Uncertain but seems inaccurate]
   followup_level: 0
   metadata_id: ~
 
@@ -1291,6 +1291,7 @@ default_questions: # where values is missing, we use the values from question_ty
   body:
     en: Identify areas (if any) where you believe the model can be used for the intended applications(s).
     fr: ""
+  values: ["Can be used"]
   followup_level: 0
   metadata_id: ~
 #TO DO: this is a temporary fix to make sense of the "confidence zones map". Consider more carefully what should be shown in this tab and why.

@@ -9,12 +9,8 @@ library(jsonlite)
 library(suntools)
 library(sdmEvalToolCore)
 library(sdmEvalToolUI)
-#optionally use local version of the package
-if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolCore")
-if (requireNamespace("devtools", quietly = TRUE)) devtools::load_all("sdmEvalToolUI")
 
 path <- "./BAM Demo"
-#path <- "C:/Users/HughesJo/Documents/InitialWork/NOBMWG/MET (Model Evaluation Tool) Google Drive Copy/Materials/Model Upload/BAM Demo"
 
 if(!file.exists(path)){
   if(!file.exists("./BAM Demo.zip")){
@@ -23,7 +19,7 @@ if(!file.exists(path)){
   unzip("./BAM Demo.zip")
 }
 
-conf <- yaml::read_yaml("spec/config.yml")
+conf <- yaml::read_yaml(system.file("config.yml", package = "sdmEvalToolCore"))
 DIR <- "./misc/sdm_evaluation_results"
 sdmevaltool_options(base = DIR) # use the misc folder
 
