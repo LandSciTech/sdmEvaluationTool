@@ -25,7 +25,7 @@ base_map <- function(ns = identity) {
       group = "Google",
       options = leaflet::providerTileOptions(zIndex = 200)
     ) |>
-    addTiles(
+    leaflet::addTiles(
       urlTemplate = sprintf(
         "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=%s",
         Sys.getenv("CARTODB_KEY")
