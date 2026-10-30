@@ -65,8 +65,6 @@ sdmevaltool_options(base = "./sdm_evaluation_results")
 
 ## User guides
 
-Here are the [EFI 2026 workshop slides](https://docs.google.com/presentation/d/1VO_ZM08t4L7oU31vEEYN3cbO-_XMALIwSJaxKPGRX_8/edit?slide=id.g3ee47704c5b_0_444#slide=id.g3ee47704c5b_0_444).
-
 Guides for different user groups:
 
 - [User guide for evaluators](./docs/sdm-tool-guide-evaluators.md): how to leave and edit evaluations
@@ -75,8 +73,6 @@ Guides for different user groups:
 - [User guide for administrators](./docs/sdm-tool-guide-deployment.md): how to deploy the tool
 
 Find more gritty details in the system [spec](./spec/README.md).
-
-Please share your thoughts & suggestions [here](https://docs.google.com/document/d/1iSqw2VEbQd3n34kJvNG93RsaoK1QBtAZHfkQKqjVn1A/edit?tab=t.0).
 
 ## Testing
 
