@@ -3,7 +3,7 @@
 ## Monorepo structure
 
 - This is an R monorepo containing packages, Shiny apps, specifications, and user documentation.
-- `sdmEvalToolCore` owns the data model, database and file-management helpers, configuration, and shared data. `sdmEvalToolUI` depends on Core and contains the Shiny modules and app. Keep that dependency direction.
+- `sdmEvalToolCore` owns the data model, database and file-management helpers, configuration, and shared data. `sdmEvalToolUI` depends on Core and contains the Shiny modules and app. `sdmEvalToolUp` implements upload-oriented functionality and also depends on Core and UI. Keep that dependency direction.
 - `spec/config.yml` is the canonical specification for components, tables, fields, file paths, and related defaults. When it changes, update the packaged configuration and generated data by following `RELEASE.R`.
 - `app/` contains an app instance and its deployment data. `misc/` is for local, gitignored test data; `working/` contains interim scripts.
 

@@ -16,6 +16,7 @@ and implements the SDM Evaluation Tool.
 - [`misc`](./misc/): A folder where we keep gitignored files (materials used for testing, etc.)
 - [`sdmEvalToolCore`](./sdmEvalToolCore/): R package implementing the SDM Evaluation Tool core functionality
 - [`sdmEvalToolUI`](./sdmEvalToolUI/): R package implementing the SDM Evaluation Tool UI modules and Shiny apps
+- [`sdmEvalToolUp`](./sdmEvalToolUp/): R package scaffold for upload-oriented functionality
 - [`spec`](./spec/): SDM Evaluation Tool specifications.
 - [`working`](./working/): Scripts used in the interim.
 

@@ -1,0 +1,38 @@
+Package: sdmEvalToolUp
+Title: SDM Evaluation Tool Upload
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Peter", "Solymos", email = "psolymos@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7337-1740")),
+    person("Steffi", "LaZerte", email = "sel@steffilazerte.ca", role = c("aut"),
+           comment = c(ORCID = "0000-0002-7690-8360")),
+    person(given="Analythium Solutions Inc.",
+           role = c("cph")),
+    person(given="His Majesty the King in Right of Canada as represented by the Minister of the Environment",
+           role = c("cph"),
+           comment = "Copyright holder for default evaluation/drill down questions."),
+    person(given = "Biodiversity Pathways",
+           role = c("cph"),
+           comment = "Copyright holder for glossary.csv, and default evaluation/drill down questions."),
+    person(given="Alberta Biodiversity Monitoring Institute",
+           role = c("cph"),
+           comment = "Copyright holder for glossary.csv, and default evaluation/drill down questions."))
+Description: Provides a package for upload-oriented functionality in the
+    SDM Evaluation Tool, building on the shared data model and
+    file-management functionality in sdmEvalToolCore.
+License: Apache License 2.0
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports:
+    sdmEvalToolCore,
+    sdmEvalToolUI
+Suggests:
+    testthat (>= 3.0.0)
+Remotes:
+    LandSciTech/sdmEvaluationTool/sdmEvalToolCore,
+    LandSciTech/sdmEvaluationTool/sdmEvalToolUI
+Config/testthat/edition: 3
+Depends:
+    R (>= 4.1)
+Config/roxygen2/version: 8.1.1
+RoxygenNote: 7.3.3
