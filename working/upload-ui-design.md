@@ -22,7 +22,8 @@ managed through direct database manipulation.
   database and can be downloaded as needed to make sure other related materials 
   reference the correct species IDs
 - Users: the users table is probably also best managed through direct database manipulation,
-  note that the access table would be part of the Upload UI management scope **DISCUSSION NEEDED**
+  note that the access table would be part of the Upload UI management scope
+  - **DISCUSSION NEEDED**: should the user table be editable by Admins through the Upload UI or only managed through direct database manipulation
 
 Configuration changes needed for the Upload UI module 
 (the Evaluation UI needs to filter Models and Deployments with an published status):
@@ -36,22 +37,50 @@ Configuration changes needed for the Upload UI module
   - `published`: The deployment is published and available for Evaluations
   - `archived`: The deployment is archived and no longer available for Evaluations
 
+Modelers can change the status of models and deployments through the Upload UI.
+**DISCUSSION NEEDED**:
+- should modelers have the ability to revert changes (e.g. archived to published or published to draft),
+  or is this reserved for Admins only? Downsides of reverting changes include potential inconsistencies in the evaluation process and confusion among users regarding the current status of models and deployments.
+- Do we need new role? `materials_edit_own` doesn't quite cover the scenario where a modeler needs to revert the status of a model or deployment they created (and is the same `Yes` value for admins and modelers). E.g. `materials_revert_own` could be a new role to allow modelers to revert the status of their own models or deployments.
+
 Access to the Upload UI:
 
-- Users with administrative privileges will have access to the Upload UI and can manage materials, deployments, and related configurations
-- Option 1: all admin users have access to all models/deployments and the DB registers who created or modified them
-- Option 2: each admin user can only view and manage the models/deployments they have created **DISCUSSION NEEDED**
+- Users with modeler privileges will have access to the Upload UI and can manage materials, deployments, and related configurations
+- **DISCUSSION NEEDED**
+  - Option 1: all modeler users have access to all models/deployments and the DB registers who created or modified them
+  - Option 2: each modeler user can only view and manage the models/deployments they have created
+
+```yaml
+  modeler:
+    name: Modeler
+    materials_read: Yes
+    materials_create_new: Yes
+    materials_edit_own: Yes ???
+    materials_edit_all: No
+    materials_delete: No
+    materials_revert_own: Yes/No ???
+...
+
+  admin:
+    name: Admin
+    materials_read: Yes
+    materials_create_new: Yes
+    materials_edit_own: Yes ???
+    materials_edit_all: Yes
+    materials_delete: Yes
+    materials_revert_own: Yes ???
+...
+```
 
 ## UI Layout
 
 ### 1. Overview
 
 This page is intended to provide a high-level overview of the models, deployments.
-It provides summaries for:
+It provides summaries for "own" models and deployments:
 
 - Models: List the models and their statuses
 - Deployments: List the deployments and their statuses
-
 
 ### 2. Model Materials Upload & Settings
 
@@ -98,27 +127,29 @@ Different tabs for managing deployment materials:
 - Deployment settings (mandatory):
   - Use cases
   - Instructions for the deployment (this is currently an app level setting, may need to be customized per deployment)
-  - Spatial prediction layers: select the map layers to be displayed for the deployment
+  - Spatial prediction layers: select the map layers to be displayed for the deployment (at least 1) and define color palettes
 - Deployment subunits (not mandatory):
   - Upload custom subunit layer (perform some validation: compare extent with other materials like observations and prediction layers)
   - Or auto generate grid or hexagon subunits (specify resolution or size) consistent with the extent of other materials like observations and prediction layers
-- Deployment questions (not mandatory): allow to download default questions table to modify
+- Deployment questions (not mandatory): allow to download default questions table to modify & upload the modified version
   - Upload deployment questions file (validate format and content)
   - Or use default questions
 - Deployment materials (mandatory):
   - Select model
   - Select available materials and species to be considered for this deployment
+    **DISCUSSION NEEDED**: if only a single deployment is considered per Evaluation app, should the materials tabs be also defined as inputs based on deployment settings, instead of an _app deployment_ level argument? I.e. the app can figure out from the deployment.
   - Default to include all available materials and species
-  - Can select only a subset of available materials and species for this deployment
+  - Can select only a subset of available materials and species for this deployment (on/off check box etc.)
 - Overall validation before publishing:
   - Check that mandatory deployment settings, materials, and species selections are complete and consistent
 
 ### 4. User Management
 
-This section allows administrative users to manage user accounts and their access privileges within the Upload UI:
+This section allows administrative/modeler users to manage user accounts and their access privileges within the Upload UI:
 
-- Add new users and assign them appropriate roles and access levels
-- Edit existing user information and update their access privileges
-- Remove users who no longer require access to the Upload UI
-- Manage the access table to control which users have access to specific published deployments as evaluators
-
+- Admin (Modeler??? see above):
+  - Add new users and assign them appropriate roles and access levels
+  - Edit existing user information and update their access privileges
+  - Remove users who no longer require access to the Upload UI
+- Modeler:
+  - Manage the access table to control which users have access to specific published deployments as evaluators
