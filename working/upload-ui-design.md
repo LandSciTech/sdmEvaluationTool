@@ -9,7 +9,7 @@ It is important to consider how the Upload UI will be deployed, locally or on a 
   - The files and database need to be deployed for the Evaluation UI
   - This would be an acceptable solution for Shinyapps (Posit Connect) based deployments
     because integration the Evaluation and Upload UIs would be challenging
-    (i.e. can't have 2 app routes within the same deployment) **DISCUSSION NEEDED**
+    (i.e. can't have 2 app routes within the same deployment) -- this is the most pressing use case for now
 - The Upload UI a standalone application and is not integrated with the Evaluation UI:
   - It manages files and database common to both the Upload and Evaluation UIs
   - Suitable for Shiny Server or ShinyProxy based deployments
@@ -20,10 +20,11 @@ managed through direct database manipulation.
 - Components: this table is governed by the configuration YAML and the Core package
 - Species: it is likely easier if the species table is also pre-uploaded to the 
   database and can be downloaded as needed to make sure other related materials 
-  reference the correct species IDs
+  reference the correct species IDs, **allow uploading a table** but run unique checks to prevent duplicates, use current spp list as the "template" to download and follow for the uploaded table
 - Users: the users table is probably also best managed through direct database manipulation,
   note that the access table would be part of the Upload UI management scope
-  - **DISCUSSION NEEDED**: should the user table be editable by Admins through the Upload UI or only managed through direct database manipulation
+  - **DISCUSSION NEEDED**: should the user table be editable by Admins through the Upload UI or only managed through direct database manipulation:
+  - modelers to be able to add new user as evaluator (add to both users and access tables) but not have full control over existing users, **think about a new role** for adding new users
 
 Configuration changes needed for the Upload UI module 
 (the Evaluation UI needs to filter Models and Deployments with an published status):
@@ -36,17 +37,18 @@ Configuration changes needed for the Upload UI module
   - `draft`: The deployment is in draft status and cannot be used for Evaluations but can be edited in the Upload UI
   - `published`: The deployment is published and available for Evaluations
   - `archived`: The deployment is archived and no longer available for Evaluations
+- What pieces are still editable after being published, e.g. adding users, or editing wording (in metadata, existing question, palette) but no 'structural' changes to files/database
 
 Modelers can change the status of models and deployments through the Upload UI.
 **DISCUSSION NEEDED**:
 - should modelers have the ability to revert changes (e.g. archived to published or published to draft),
-  or is this reserved for Admins only? Downsides of reverting changes include potential inconsistencies in the evaluation process and confusion among users regarding the current status of models and deployments.
-- Do we need new role? `materials_edit_own` doesn't quite cover the scenario where a modeler needs to revert the status of a model or deployment they created (and is the same `Yes` value for admins and modelers). E.g. `materials_revert_own` could be a new role to allow modelers to revert the status of their own models or deployments.
+  or is this reserved for Admins only? Downsides of reverting changes include potential inconsistencies in the evaluation process and confusion among users regarding the current status of models and deployments. **OK if no evaluations are added yet**
+- Do we need new role? `materials_edit_own` doesn't quite cover the scenario where a modeler needs to revert the status of a model or deployment they created (and is the same `Yes` value for admins and modelers). E.g. `materials_revert_own` could be a new role to allow modelers to revert the status of their own models or deployments. **Probably no**
 
 Access to the Upload UI:
 
 - Users with modeler privileges will have access to the Upload UI and can manage materials, deployments, and related configurations
-- **DISCUSSION NEEDED**
+- **DISCUSSION NEEDED: input from Dave & Elly**
   - Option 1: all modeler users have access to all models/deployments and the DB registers who created or modified them
   - Option 2: each modeler user can only view and manage the models/deployments they have created
 
@@ -58,7 +60,6 @@ Access to the Upload UI:
     materials_edit_own: Yes ???
     materials_edit_all: No
     materials_delete: No
-    materials_revert_own: Yes/No ???
 ...
 
   admin:
@@ -68,7 +69,6 @@ Access to the Upload UI:
     materials_edit_own: Yes ???
     materials_edit_all: Yes
     materials_delete: Yes
-    materials_revert_own: Yes ???
 ...
 ```
 
@@ -95,19 +95,20 @@ Different tabs for managing model materials:
 
 - Species ID is NA:
   - Predictor metadata (mandatory): file upload + validation
-  - Model metadata (mandatory): file upload
+  - Model metadata (mandatory): file upload, **UI integration with metadata tool**
     - Prediction map layer metadata (mandatory): included in metadata
   - Predictor raster (not mandatory): file upload, resampling if too big, basic validation
 - Species ID is provided:
   - Observations (mandatory): file upload + validation
-  - Model summary (mandatory, should it be? **DISCUSSION NEEDED**): file upload + validation
-  - Model fit (mandatory, should it be? **DISCUSSION NEEDED**): file upload + validation
+  - Model summary (mandatory, should it be? **DISCUSSION NEEDED: we don't think so, placeholder table?**): file upload + validation
+  - Model fit (mandatory, should it be? **DISCUSSION NEEDED: we don't think so, placeholder table?**): file upload + validation
   - Spatial predictions (mandatory): multiple file upload + validation
     - UI need to handle upload for different species
     - List species with existing uploads (re-upload possible?)
     - List species without uploads for easy identification and upload
     - Validate against map layer metadata expectations (i.e. layer ID, resolution, extent)
 - Overall validation before publishing:
+  - Different stages of "doneness", i.e. an't upload layers until metadata tables are done **Figure out how status should be stored in the DB or this could be more of a UI-driven status tracking through steps in the UI**
   - Species with materials must have the same material across all relevant tabs 
     (e.g., spatial prediction, observations, model summary, model fit)
   - Present table summarizing the completeness and consistency of materials for each species and model level materials
