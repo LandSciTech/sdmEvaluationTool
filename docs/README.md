@@ -1,4 +1,4 @@
-# SDM Model Evaluation Tool (MET) Documentation
+# SDM Model Evaluation Tool (sdmEvaluationTool) Documentation
 
 Guides for different user groups:
 

@@ -25,11 +25,19 @@ base_map <- function(ns = identity) {
       group = "Google",
       options = leaflet::providerTileOptions(zIndex = 200)
     ) |>
-    leaflet::addProviderTiles(
-      provider = "CartoDB.Positron",
+    leaflet::addTiles(
+      urlTemplate = sprintf(
+        "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=%s",
+        Sys.getenv("CARTODB_KEY")
+      ),
       group = "CartoDB",
       options = leaflet::providerTileOptions(zIndex = 200)
     ) |>
+    # leaflet::addProviderTiles(
+    #   provider = "CartoDB.Positron",
+    #   group = "CartoDB",
+    #   options = leaflet::providerTileOptions(zIndex = 200)
+    # ) |>
     leaflet::addProviderTiles(
       provider = "OpenStreetMap",
       group = "Open Street Map",
@@ -71,16 +79,16 @@ base_map <- function(ns = identity) {
         "
     function(el, x) {
       var map = this;
-      
+
       // Track visible layers
       var visibleLayers = [];
-      
+
       // When layer is added
       map.on('overlayadd', function(e) {
         visibleLayers.push(e.name);
         Shiny.setInputValue('{{layers_id}}', visibleLayers);
       });
-      
+
       // When layer is removed
       map.on('overlayremove', function(e) {
         var index = visibleLayers.indexOf(e.name);
@@ -89,7 +97,7 @@ base_map <- function(ns = identity) {
         }
         Shiny.setInputValue('{{layers_id}}', visibleLayers);
       });
-      
+
       // Initialize with currently visible layers
       setTimeout(function() {
         map.eachLayer(function(layer) {
@@ -165,7 +173,7 @@ add_subunits <- function(
 #' @examplesIf have_data()
 #' subunits <- deployment_subunits_prep("deployment1") |>
 #'   dplyr::mutate(
-#'     type = c(rep("Very biased", 10), rep("Moderately biased", 10), rep(NA, 114)),
+#'     type = c(rep("Very biased", 10), rep("Moderately biased", 10), rep(NA, 115)),
 #'     type = factor(type)
 #'   )
 #'
@@ -326,7 +334,11 @@ add_control <- function(map, groups = character(0)) {
 
   map <- map |>
     leaflet::addLayersControl(
-      baseGroups = c("CartoDB", "ESRI", "Open Street Map", "Google"),
+      baseGroups = if (nzchar(Sys.getenv("CARTODB_KEY"))) {
+        c("Open Street Map", "CartoDB", "ESRI", "Google")
+      } else {
+        c("Open Street Map", "ESRI", "Google")
+      },
       overlayGroups = groups,
       position = "topright",
       options = leaflet::layersControlOptions(collapsed = FALSE)

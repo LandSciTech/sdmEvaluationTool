@@ -22,8 +22,8 @@ sdm_tool <- function(
     "overview",
     "predictions",
     "observations",
-    "model",
     "predictors",
+    "model",
     "summary"
   ),
   user = NULL,
@@ -35,8 +35,8 @@ sdm_tool <- function(
     "overview" = "Index",
     "predictions" = "Predictions",
     "observations" = "Observations",
-    "model" = "Model",
     "predictors" = "Predictors",
+    "model" = "Model",
     "model_metadata" = "Model Metadata",
     "summary" = "Summary"
   )
@@ -231,7 +231,8 @@ sdm_tool <- function(
             name = "Description",
             minWidth = 200
           )
-        )
+        ),
+        height = 400
       )
 
       showModal(as_fill_carrier(
@@ -596,7 +597,7 @@ sdm_theme <- function() {
          padding: 1rem;
        }
 
-       
+
        /* Cards within Cards (e.g. spatial maps over selection tables) */
        .card.sub-card {
          border: 0 !important;
@@ -650,10 +651,10 @@ sdm_theme <- function() {
          margin-bottom: -25px;
          margin-right: 25px;
          display: block;
-         text-align: right;     
-         font-size: 90%;   
+         text-align: right;
+         font-size: 90%;
        }
-       
+
        /* Unsaved changes indicator */
        .answer-changed {
          position: relative;
@@ -669,7 +670,7 @@ sdm_theme <- function() {
         padding-left: 15px;
         text-indent: -15px;
         }
-   
+
         .answer-changed + input,
         .answer-changed + div input,
         .answer-changed + div .selectize-input,
@@ -691,7 +692,7 @@ sdm_theme <- function() {
          background-color: $species-colour;
          border-color: $species-colour;
          width: 150px;
-       } 
+       }
        .btn-model {
          color: white;
          background-color: $model-colour;
@@ -706,7 +707,7 @@ sdm_theme <- function() {
         margin-left: -0.25rem !important;
         margin-right: -0.5rem !important;
         /* Match margin of form items */
-        margin-bottom: 1rem !important; 
+        margin-bottom: 1rem !important;
        }
 
        .btn-abandon.btn-danger {
@@ -742,14 +743,14 @@ sdm_theme <- function() {
          border: 0;
          margin: 0;
          padding: 2px 10px 2px 10px;
-       }      
+       }
        .btn-refresh {
         color: $success;
         padding: 2px 8px 2px 8px;
        }
 
        .btn-rnd {
-        border-radius: 50%;         
+        border-radius: 50%;
        }"
     ) |>
 

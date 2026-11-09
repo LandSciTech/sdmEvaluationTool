@@ -16,7 +16,7 @@ All possible Spatial ID options for spatial inputs choices. Generally
 passed in as ReactiveVal (see \code{\link[=mod_page_template_spatial_server]{mod_page_template_spatial_server()}}.}
 }
 \value{
-Nothing. Performs Javascript update (see \code{\link[shiny:updateSelectInput]{shiny::updateSelectizeInput()}}).
+Nothing. Performs Javascript update (see \code{\link[shiny:updateSelectizeInput]{updateSelectizeInput()}}).
 }
 \description{
 Because there many be many possible selections for Spatial inputs, we use

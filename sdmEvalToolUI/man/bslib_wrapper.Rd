@@ -38,11 +38,11 @@ bslib function output
 \itemize{
 \item \code{sdm_card()} - Wrapper for \code{\link[bslib:card]{bslib::card()}}, provides defaults for \code{class},
 \code{full_screen} and \code{min_height.}
-\item \code{sdm_card_header()} - Wrapper for \code{\link[bslib:card_body]{bslib::card_header()}}, provides default
+\item \code{sdm_card_header()} - Wrapper for \code{\link[bslib:card_header]{bslib::card_header()}}, provides default
 custom class (see \code{\link[=sdm_theme]{sdm_theme()}}).
-\item \code{sdm_nav_panel()} - Wrapper for \code{\link[bslib:nav-items]{bslib::nav_panel()}}, provides default
+\item \code{sdm_nav_panel()} - Wrapper for \code{\link[bslib:nav_panel]{bslib::nav_panel()}}, provides default
 custom class (see \code{\link[=sdm_theme]{sdm_theme()}}).
-\item \code{sdm_layout_sidebar()} - Wrapper for \code{\link[bslib:sidebar]{bslib::layout_sidebar()}}, provides
+\item \code{sdm_layout_sidebar()} - Wrapper for \code{\link[bslib:layout_sidebar]{bslib::layout_sidebar()}}, provides
 defaults for \code{gap} and \code{border}.
 }
 }
