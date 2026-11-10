@@ -15,6 +15,8 @@ Authors:
 \itemize{
   \item Peter Solymos \email{psolymos@gmail.com} (\href{https://orcid.org/0000-0001-7337-1740}{ORCID})
   \item Steffi LaZerte \email{sel@steffilazerte.ca} (\href{https://orcid.org/0000-0002-7690-8360}{ORCID})
+  \item Josie Hughes (\href{https://orcid.org/0000-0001-7875-9015}{ORCID})
+  \item David Hope (\href{https://orcid.org/0000-0002-2140-4261}{ORCID})
 }
 
 Other contributors:

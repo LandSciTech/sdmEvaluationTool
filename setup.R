@@ -33,11 +33,11 @@ if (!requireNamespace("remotes")) {
   install.packages("remotes")
 }
 remotes::install_github(
-  "LandSciTech/sdmEvaluationTool/sdmEvalToolCore@review-2026-10",
+  "LandSciTech/sdmEvaluationTool/sdmEvalToolCore",
   dependencies = TRUE
 )
 remotes::install_github(
-  "LandSciTech/sdmEvaluationTool/sdmEvalToolUI@review-2026-10",
+  "LandSciTech/sdmEvaluationTool/sdmEvalToolUI",
   dependencies = TRUE
 )
 message("------ Done! ----------------------------")
