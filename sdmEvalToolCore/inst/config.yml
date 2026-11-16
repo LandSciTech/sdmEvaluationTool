@@ -209,6 +209,11 @@ tables:
       #   description: A file path or URL used to find the metadata for the model.
       #   type: text
       #   constraint: NOT NULL
+      model_status:
+        name: Model Status
+        description: Status of the model, one of `draft`, `published`, or `archived`.
+        type: text
+        constraint: NOT NULL
 
   materials:
     name: Materials
@@ -303,6 +308,11 @@ tables:
         name: Deployment Settings
         description: Deployment settings, see `templates`.
         type: jsonb
+        constraint: NOT NULL
+      deployment_status:
+        name: Deployment Status
+        description: Status of the deployment, one of `draft`, `published`, or `archived`.
+        type: text
         constraint: NOT NULL
 
   deployment_materials:

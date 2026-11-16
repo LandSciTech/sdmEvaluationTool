@@ -262,7 +262,7 @@ leaflet() |>
 leaflet() |>
     addMapPane("left", zIndex = 0) |>
     addMapPane("right", zIndex = 0) |>
-    addTiles(
+    leaflet::addTiles(
         group = "base",
         layerId = "baseid",
         options = pathOptions(pane = "right")

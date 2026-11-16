@@ -12,6 +12,10 @@ which are used to support sdmEvalToolUI.
 
 Therefore sdmEvalToolCore is a dependency of sdmEvalToolUI.
 
+The `sdmEvalToolUp` package is a scaffold for upload-oriented
+functionality. It depends on `sdmEvalToolCore` and does not yet expose
+upload workflows.
+
 ## Gettings started
 
 We use a standard [R package development workflow](https://r-pkgs.org/)

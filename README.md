@@ -16,6 +16,7 @@ and implements the SDM Evaluation Tool.
 - [`misc`](./misc/): A folder where we keep gitignored files (materials used for testing, etc.)
 - [`sdmEvalToolCore`](./sdmEvalToolCore/): R package implementing the SDM Evaluation Tool core functionality
 - [`sdmEvalToolUI`](./sdmEvalToolUI/): R package implementing the SDM Evaluation Tool UI modules and Shiny apps
+- [`sdmEvalToolUp`](./sdmEvalToolUp/): R package scaffold for upload-oriented functionality
 - [`spec`](./spec/): SDM Evaluation Tool specifications.
 - [`working`](./working/): Scripts used in the interim.
 
@@ -38,7 +39,7 @@ download/extract the example dataset (say 'yes' or select the 'All' option to
 update packages if asked):
 
 ```R
-source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/word-refinement/setup_JH.R")
+source("https://raw.githubusercontent.com/LandSciTech/sdmEvaluationTool/refs/heads/main/setup.R")
 ```
 Note that if you have a previous deployment of the tool installed, this setup script will move your old results to an _sdm_evaluation_results_old_ folder.
 
@@ -65,8 +66,6 @@ sdmevaltool_options(base = "./sdm_evaluation_results")
 
 ## User guides
 
-Here are the [EFI 2026 workshop slides](https://docs.google.com/presentation/d/1VO_ZM08t4L7oU31vEEYN3cbO-_XMALIwSJaxKPGRX_8/edit?slide=id.g3ee47704c5b_0_444#slide=id.g3ee47704c5b_0_444).
-
 Guides for different user groups:
 
 - [User guide for evaluators](./docs/sdm-tool-guide-evaluators.md): how to leave and edit evaluations
@@ -75,8 +74,6 @@ Guides for different user groups:
 - [User guide for administrators](./docs/sdm-tool-guide-deployment.md): how to deploy the tool
 
 Find more gritty details in the system [spec](./spec/README.md).
-
-Please share your thoughts & suggestions [here](https://docs.google.com/document/d/1iSqw2VEbQd3n34kJvNG93RsaoK1QBtAZHfkQKqjVn1A/edit?tab=t.0).
 
 ## Testing
 

@@ -162,6 +162,7 @@ Canadian extent and this is version 1.1. Updates are done by
 | `model_id` | text | `PRIMARY KEY` | Model ID, lower case, alphanumeric, `.` and `_` allowed. |
 | `model_name` | text | `UNIQUE NOT NULL` | A human readable version of `model_id` displayed in the app, can include spaces. |
 | `model_description` | text | `NOT NULL` | A human readable version of `model_id` displayed in the app. |
+| `model_status` | text | `NOT NULL` | Status of the model, one of `draft`, `published`, or `archived`. |
 
 ### Materials (`materials`)
 
@@ -197,6 +198,7 @@ of.
 | `deployment_create_user` | text | `REFERENCES users (user_id)` | User who created the deployment (foreign key). |
 | `deployment_create_time` | timestamp | `NOT NULL` | Time of deployment creation. |
 | `deployment_settings` | jsonb | `NOT NULL` | Deployment settings, see `templates`. |
+| `deployment_status` | text | `NOT NULL` | Status of the deployment, one of `draft`, `published`, or `archived`. |
 
 ### Deployment Materials (`deployment_materials`)
 
