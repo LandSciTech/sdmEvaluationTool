@@ -118,7 +118,8 @@ model_id <- "bam_v5_can71"
 models <- data.frame(
   model_id = model_id,
   model_name = "BAM v5 Can 71",
-  model_description = "BAM version 5 Canada model in BCR 71"
+  model_description = "BAM version 5 Canada model in BCR 71",
+  model_status = "draft"
 )
 db_write_table(con, "models", models)
 
@@ -303,6 +304,7 @@ d1$instructions_to_evaluators <- paste0(x, collapse = "\n")
 d2$instructions_to_evaluators <- paste0(x, collapse = "\n")
 deployments$deployment_settings[1] <- jsonlite::toJSON(d1)
 deployments$deployment_settings[2] <- jsonlite::toJSON(d2)
+deployments$deployment_status <- "draft"
 
 db_write_table(con, "deployments", deployments)
 
