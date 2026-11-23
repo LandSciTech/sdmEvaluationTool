@@ -1,0 +1,76 @@
+<mxfile host="65bd71144e">
+    <diagram id="upload-overview" name="01 Overview">
+        <mxGraphModel dx="1281" dy="928" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="624" background="#FFFFFF" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="nav" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="60" width="1360" as="geometry"/>
+                </mxCell>
+                <mxCell id="brand" parent="1" style="text;align=left;fontSize=19;fontStyle=1;fontColor=#2E5266;" value="SDM Tool | Upload" vertex="1">
+                    <mxGeometry height="60" width="190" x="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-overview" parent="1" style="fillColor=#2E5266;strokeColor=none;fontSize=15;fontStyle=1;fontColor=#FFFFFF;" value="Overview" vertex="1">
+                    <mxGeometry height="40" width="104" x="227" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-species" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Species list" vertex="1">
+                    <mxGeometry height="60" width="120" x="333" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-model" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Model materials" vertex="1">
+                    <mxGeometry height="60" width="154" x="455" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-deployment" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Deployments" vertex="1">
+                    <mxGeometry height="60" width="130" x="611" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-users" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="User management" vertex="1">
+                    <mxGeometry height="60" width="164" x="743" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="role" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;fontSize=14;fontColor=#2E5266;" value="User Name" vertex="1">
+                    <mxGeometry height="36" width="124" x="1212" y="12" as="geometry"/>
+                </mxCell>
+                <mxCell id="heading" parent="1" style="text;align=left;fontSize=30;fontStyle=1;fontColor=#212529;" value="Overview" vertex="1">
+                    <mxGeometry height="42" width="800" x="24" y="82" as="geometry"/>
+                </mxCell>
+                <mxCell id="intro" parent="1" style="text;align=left;fontSize=15;fontColor=#495057;" value="See the status of models and deployments you own, and open an item to continue working on it." vertex="1">
+                    <mxGeometry height="25" width="1312" x="24" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="models" parent="1" style="fillColor=#FFFFFF;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="366" width="644" x="24" y="181" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployments" parent="1" style="fillColor=#FFFFFF;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="366" width="644" x="692" y="181" as="geometry"/>
+                </mxCell>
+                <mxCell id="models-header" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=14;fontSize=17;fontStyle=1;fontColor=#212529;" value="My models" vertex="1">
+                    <mxGeometry height="47" width="644" x="24" y="181" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployments-header" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=14;fontSize=17;fontStyle=1;fontColor=#212529;" value="My deployments" vertex="1">
+                    <mxGeometry height="47" width="644" x="692" y="181" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-search" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=14;fontColor=#495057;" value="Search models..." vertex="1">
+                    <mxGeometry height="38" width="280" x="40" y="244" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-filter" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;fontSize=14;fontColor=#212529;" value="All statuses ▾" vertex="1">
+                    <mxGeometry height="38" width="150" x="336" y="244" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment-search" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=14;fontColor=#495057;" value="Search deployments..." vertex="1">
+                    <mxGeometry height="38" width="280" x="708" y="244" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment-filter" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;fontSize=14;fontColor=#212529;" value="All statuses ▾" vertex="1">
+                    <mxGeometry height="38" width="150" x="1004" y="244" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-table" parent="1" style="text;html=1;align=left;verticalAlign=top;spacing=0;fontSize=15;fontColor=#212529;" value="&lt;table width=&#39;610&#39; cellpadding=&#39;11&#39; cellspacing=&#39;0&#39; style=&#39;border-collapse:collapse&#39;&gt;&lt;tr style=&#39;background:#F1F3F5;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;th width=&#39;300&#39;&gt;Model&lt;/th&gt;&lt;th width=&#39;160&#39;&gt;Status&lt;/th&gt;&lt;th&gt;Action&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;Boreal birds v2&lt;/td&gt;&lt;td&gt;&lt;b style=&#39;color:#805514&#39;&gt;Draft&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;color:#2E5266&#39;&gt;&lt;u&gt;Edit&lt;/u&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;Boreal birds v1&lt;/td&gt;&lt;td&gt;&lt;b style=&#39;color:#476146&#39;&gt;Published&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;color:#2E5266&#39;&gt;&lt;u&gt;View&lt;/u&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;Boreal birds pilot&lt;/td&gt;&lt;td&gt;Archived&lt;/td&gt;&lt;td style=&#39;color:#2E5266&#39;&gt;&lt;u&gt;View&lt;/u&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+                    <mxGeometry height="178" width="612" x="40" y="306" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment-table" parent="1" style="text;html=1;align=left;verticalAlign=top;spacing=0;fontSize=15;fontColor=#212529;" value="&lt;table width=&#39;610&#39; cellpadding=&#39;11&#39; cellspacing=&#39;0&#39; style=&#39;border-collapse:collapse&#39;&gt;&lt;tr style=&#39;background:#F1F3F5;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;th width=&#39;270&#39;&gt;Deployment&lt;/th&gt;&lt;th width=&#39;165&#39;&gt;Status&lt;/th&gt;&lt;th&gt;Action&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;Western boreal review&lt;/td&gt;&lt;td&gt;&lt;b style=&#39;color:#805514&#39;&gt;Draft&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;color:#2E5266&#39;&gt;&lt;u&gt;Edit&lt;/u&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;Boreal baseline review&lt;/td&gt;&lt;td&gt;&lt;b style=&#39;color:#476146&#39;&gt;Published&lt;/b&gt;&lt;/td&gt;&lt;td style=&#39;color:#2E5266&#39;&gt;&lt;u&gt;View&lt;/u&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;Pilot review&lt;/td&gt;&lt;td&gt;Archived&lt;/td&gt;&lt;td style=&#39;color:#2E5266&#39;&gt;&lt;u&gt;View&lt;/u&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+                    <mxGeometry height="178" width="612" x="708" y="306" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-count" parent="1" style="text;align=left;fontSize=13;fontColor=#495057;" value="3 models" vertex="1">
+                    <mxGeometry height="24" width="200" x="40" y="507" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment-count" parent="1" style="text;align=left;fontSize=13;fontColor=#495057;" value="3 deployments" vertex="1">
+                    <mxGeometry height="24" width="200" x="708" y="507" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

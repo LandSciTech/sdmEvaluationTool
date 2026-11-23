@@ -1,0 +1,94 @@
+<mxfile host="65bd71144e">
+    <diagram id="upload-user-management" name="05 User Management">
+        <mxGraphModel dx="1583" dy="916" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="970" background="#FFFFFF" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="nav" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="60" width="1360" as="geometry"/>
+                </mxCell>
+                <mxCell id="brand" parent="1" style="text;align=left;fontSize=19;fontStyle=1;fontColor=#2E5266;" value="SDM Tool | Upload" vertex="1">
+                    <mxGeometry height="60" width="190" x="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-overview" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Overview" vertex="1">
+                    <mxGeometry height="60" width="104" x="227" y="16" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-species" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Species list" vertex="1">
+                    <mxGeometry height="60" width="120" x="333" y="16" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-model" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Model materials" vertex="1">
+                    <mxGeometry height="60" width="154" x="455" y="16" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-deployment" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Deployments" vertex="1">
+                    <mxGeometry height="60" width="130" x="611" y="16" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-users" parent="1" style="fillColor=#2E5266;strokeColor=none;fontSize=15;fontStyle=1;fontColor=#FFFFFF;" value="User management" vertex="1">
+                    <mxGeometry height="40" width="164" x="743" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="role" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;fontSize=14;fontColor=#2E5266;" value="User Name" vertex="1">
+                    <mxGeometry height="36" width="124" x="1212" y="12" as="geometry"/>
+                </mxCell>
+                <mxCell id="heading" parent="1" style="text;align=left;fontSize=30;fontStyle=1;fontColor=#212529;" value="User Management" vertex="1">
+                    <mxGeometry height="42" width="800" x="24" y="82" as="geometry"/>
+                </mxCell>
+                <mxCell id="intro" parent="1" style="text;align=left;fontSize=15;fontColor=#495057;" value="Manage who can evaluate a published deployment. Deployment access is separate from editing user accounts." vertex="1">
+                    <mxGeometry height="25" width="1312" x="24" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="grant-card" parent="1" style="fillColor=#FFFFFF;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="387" width="386" x="24" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="grant-header" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=14;fontSize=17;fontStyle=1;fontColor=#212529;" value="Grant evaluator access" vertex="1">
+                    <mxGeometry height="47" width="386" x="24" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment-label" parent="1" style="text;align=left;fontSize=15;fontStyle=1;fontColor=#212529;" value="Published deployment" vertex="1">
+                    <mxGeometry height="25" width="354" x="40" y="246" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=14;fontColor=#212529;" value="Boreal baseline review ▾" vertex="1">
+                    <mxGeometry height="39" width="354" x="40" y="276" as="geometry"/>
+                </mxCell>
+                <mxCell id="evaluator-label" parent="1" style="text;align=left;fontSize=15;fontStyle=1;fontColor=#212529;" value="Existing user" vertex="1">
+                    <mxGeometry height="25" width="354" x="40" y="332" as="geometry"/>
+                </mxCell>
+                <mxCell id="evaluator" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=14;fontColor=#495057;" value="Search by name or user ID... ▾" vertex="1">
+                    <mxGeometry height="39" width="354" x="40" y="362" as="geometry"/>
+                </mxCell>
+                <mxCell id="grant" parent="1" style="fillColor=#2E5266;strokeColor=none;fontSize=14;fontStyle=1;fontColor=#FFFFFF;" value="Grant access" vertex="1">
+                    <mxGeometry height="39" width="150" x="40" y="422" as="geometry"/>
+                </mxCell>
+                <mxCell id="grant-help" parent="1" style="text;whiteSpace=wrap;align=left;fontSize=13;fontColor=#495057;" value="Adds an evaluator to this deployment&#39;s access list without changing their account or roles." vertex="1">
+                    <mxGeometry height="55" width="354" x="40" y="475" as="geometry"/>
+                </mxCell>
+                <mxCell id="access-card" parent="1" style="fillColor=#FFFFFF;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="387" width="902" x="434" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="access-heading" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=14;fontSize=17;fontStyle=1;fontColor=#212529;" value="Evaluators with access" vertex="1">
+                    <mxGeometry height="47" width="902" x="434" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="access-filter" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=14;fontColor=#495057;" value="Search this deployment&#39;s access list..." vertex="1">
+                    <mxGeometry height="39" width="364" x="450" y="246" as="geometry"/>
+                </mxCell>
+                <mxCell id="access-table" parent="1" style="text;html=1;align=left;verticalAlign=top;spacing=0;fontSize=15;fontColor=#212529;" value="&lt;table width=&#39;866&#39; cellpadding=&#39;11&#39; cellspacing=&#39;0&#39; style=&#39;border-collapse:collapse&#39;&gt;&lt;tr style=&#39;background:#F1F3F5;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;th width=&#39;215&#39;&gt;User ID&lt;/th&gt;&lt;th width=&#39;250&#39;&gt;Display name&lt;/th&gt;&lt;th width=&#39;190&#39;&gt;Deployment role&lt;/th&gt;&lt;th&gt;Action&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;evaluator-01&lt;/td&gt;&lt;td&gt;Sample evaluator A&lt;/td&gt;&lt;td&gt;Evaluator&lt;/td&gt;&lt;td style=&#39;color:#842029&#39;&gt;&lt;u&gt;Revoke access&lt;/u&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;evaluator-02&lt;/td&gt;&lt;td&gt;Sample evaluator B&lt;/td&gt;&lt;td&gt;Evaluator&lt;/td&gt;&lt;td style=&#39;color:#842029&#39;&gt;&lt;u&gt;Revoke access&lt;/u&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+                    <mxGeometry height="147" width="870" x="450" y="306" as="geometry"/>
+                </mxCell>
+                <mxCell id="access-help" parent="1" style="text;align=left;fontSize=13;fontColor=#495057;" value="Revoking access removes only this deployment assignment, not the user&#39;s account." vertex="1">
+                    <mxGeometry height="35" width="870" x="450" y="474" as="geometry"/>
+                </mxCell>
+                <mxCell id="account-card" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="253" width="1312" x="24" y="598" as="geometry"/>
+                </mxCell>
+                <mxCell id="account-header" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=14;fontSize=17;fontStyle=1;fontColor=#212529;" value="Accounts and roles (Admin only)" vertex="1">
+                    <mxGeometry height="44" width="1312" x="24" y="598" as="geometry"/>
+                </mxCell>
+                <mxCell id="add-user" parent="1" style="fillColor=#FFFFFF;strokeColor=#2E5266;fontSize=14;fontStyle=1;fontColor=#2E5266;" value="+ Add user" vertex="1">
+                    <mxGeometry height="36" width="128" x="40" y="661" as="geometry"/>
+                </mxCell>
+                <mxCell id="account-hints" parent="1" style="text;align=left;fontSize=14;fontColor=#495057;" value="Add / edit form: display name, user ID, role, and access privileges." vertex="1">
+                    <mxGeometry height="36" width="1110" x="184" y="661" as="geometry"/>
+                </mxCell>
+                <mxCell id="account-table" parent="1" style="text;html=1;align=left;verticalAlign=top;spacing=0;fontSize=14;fontColor=#212529;" value="&lt;table width=&#39;1274&#39; cellpadding=&#39;10&#39; cellspacing=&#39;0&#39; style=&#39;border-collapse:collapse&#39;&gt;&lt;tr style=&#39;background:#F1F3F5;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;th width=&#39;340&#39;&gt;User&lt;/th&gt;&lt;th width=&#39;250&#39;&gt;Role&lt;/th&gt;&lt;th width=&#39;320&#39;&gt;Upload UI access&lt;/th&gt;&lt;th&gt;Actions&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&#39;background:white;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;Sample modeler&lt;/td&gt;&lt;td&gt;Modeler&lt;/td&gt;&lt;td&gt;Enabled&lt;/td&gt;&lt;td style=&#39;color:#2E5266&#39;&gt;&lt;u&gt;Edit&lt;/u&gt; &amp;nbsp; &lt;u&gt;Remove&lt;/u&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+                    <mxGeometry height="82" width="1280" x="40" y="712" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -1,0 +1,88 @@
+<mxfile host="65bd71144e">
+    <diagram id="upload-species" name="02 Species list">
+        <mxGraphModel dx="1317" dy="954" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="680" background="#FFFFFF" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="nav" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="60" width="1360" as="geometry"/>
+                </mxCell>
+                <mxCell id="brand" parent="1" style="text;align=left;fontSize=19;fontStyle=1;fontColor=#2E5266;" value="SDM Tool | Upload" vertex="1">
+                    <mxGeometry height="60" width="190" x="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-overview" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Overview" vertex="1">
+                    <mxGeometry height="60" width="104" x="227" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-species" parent="1" style="fillColor=#2E5266;strokeColor=none;fontSize=15;fontStyle=1;fontColor=#FFFFFF;" value="Species list" vertex="1">
+                    <mxGeometry height="40" width="120" x="333" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-model" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Model materials" vertex="1">
+                    <mxGeometry height="60" width="154" x="455" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-deployment" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Deployments" vertex="1">
+                    <mxGeometry height="60" width="130" x="611" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-users" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="User management" vertex="1">
+                    <mxGeometry height="60" width="164" x="743" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="role" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;fontSize=14;fontColor=#2E5266;" value="User Name" vertex="1">
+                    <mxGeometry height="36" width="124" x="1212" y="12" as="geometry"/>
+                </mxCell>
+                <mxCell id="heading" parent="1" style="text;align=left;fontSize=30;fontStyle=1;fontColor=#212529;" value="Species list" vertex="1">
+                    <mxGeometry height="42" width="800" x="24" y="82" as="geometry"/>
+                </mxCell>
+                <mxCell id="intro" parent="1" style="text;align=left;fontSize=15;fontColor=#495057;" value="Download the current Canadian bird list as a CSV template, then validate your edited table before importing." vertex="1">
+                    <mxGeometry height="25" width="1312" x="24" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="upload-card" parent="1" style="fillColor=#FFFFFF;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="445" width="392" x="24" y="181" as="geometry"/>
+                </mxCell>
+                <mxCell id="upload-header" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=14;fontSize=17;fontStyle=1;fontColor=#212529;" value="Upload species table" vertex="1">
+                    <mxGeometry height="47" width="392" x="24" y="181" as="geometry"/>
+                </mxCell>
+                <mxCell id="template" parent="1" style="fillColor=#FFFFFF;strokeColor=#2E5266;fontSize=14;fontStyle=1;fontColor=#2E5266;" value="Download Canadian bird template (.csv)" vertex="1">
+                    <mxGeometry height="38" width="360" x="40" y="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="file-label" parent="1" style="text;align=left;fontSize=15;fontStyle=1;fontColor=#212529;" value="Species table (.csv)" vertex="1">
+                    <mxGeometry height="25" width="360" x="40" y="314" as="geometry"/>
+                </mxCell>
+                <mxCell id="file-browse" parent="1" style="fillColor=#E9ECEF;strokeColor=#CED4DA;fontSize=14;fontColor=#212529;" value="Browse..." vertex="1">
+                    <mxGeometry height="38" width="93" x="40" y="344" as="geometry"/>
+                </mxCell>
+                <mxCell id="file" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=14;fontColor=#212529;" value="boreal-species.csv" vertex="1">
+                    <mxGeometry height="38" width="267" x="133" y="344" as="geometry"/>
+                </mxCell>
+                <mxCell id="format-help" parent="1" style="text;whiteSpace=wrap;align=left;fontSize=14;fontColor=#495057;" value="Keep the template column names and save." vertex="1">
+                    <mxGeometry height="36" width="360" x="40" y="392" as="geometry"/>
+                </mxCell>
+                <mxCell id="validate" parent="1" style="fillColor=#2E5266;strokeColor=none;fontSize=15;fontStyle=1;fontColor=#FFFFFF;" value="Validate file" vertex="1">
+                    <mxGeometry height="39" width="156" x="40" y="443" as="geometry"/>
+                </mxCell>
+                <mxCell id="import" parent="1" style="fillColor=#E9ECEF;strokeColor=#CED4DA;fontSize=15;fontColor=#646C74;" value="Import table" vertex="1">
+                    <mxGeometry height="39" width="189" x="211" y="443" as="geometry"/>
+                </mxCell>
+                <mxCell id="import-help" parent="1" style="text;align=left;fontSize=13;fontColor=#495057;" value="Import is unavailable until validation passes." vertex="1">
+                    <mxGeometry height="24" width="360" x="40" y="490" as="geometry"/>
+                </mxCell>
+                <mxCell id="preview-card" parent="1" style="fillColor=#FFFFFF;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="445" width="896" x="440" y="181" as="geometry"/>
+                </mxCell>
+                <mxCell id="preview-header" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=14;fontSize=17;fontStyle=1;fontColor=#212529;" value="Validation and preview" vertex="1">
+                    <mxGeometry height="47" width="896" x="440" y="181" as="geometry"/>
+                </mxCell>
+                <mxCell id="validation-error" parent="1" style="html=1;whiteSpace=wrap;fillColor=#F8D7DA;strokeColor=#F1AEB5;align=left;spacingLeft=12;fontSize=15;fontColor=#842029;" value="&lt;b&gt;Cannot import: duplicate species ID OVEN&lt;/b&gt;&lt;br&gt;Rows 2 and 4 use the same ID. Correct the file, then upload and validate it again." vertex="1">
+                    <mxGeometry height="68" width="864" x="456" y="246" as="geometry"/>
+                </mxCell>
+                <mxCell id="uniqueness" parent="1" style="text;align=left;fontSize=14;fontColor=#495057;" value="Checks: unique species IDs and names, plus required columns and values." vertex="1">
+                    <mxGeometry height="27" width="864" x="456" y="326" as="geometry"/>
+                </mxCell>
+                <mxCell id="preview-table" parent="1" style="text;html=1;align=left;verticalAlign=top;spacing=0;fontSize=14;fontColor=#212529;" value="&lt;table width=&#39;860&#39; cellpadding=&#39;9&#39; cellspacing=&#39;0&#39; style=&#39;border-collapse:collapse&#39;&gt;&lt;tr style=&#39;background:#F1F3F5;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;th width=&#39;56&#39;&gt;Row&lt;/th&gt;&lt;th width=&#39;112&#39;&gt;Species ID&lt;/th&gt;&lt;th width=&#39;192&#39;&gt;Scientific name&lt;/th&gt;&lt;th width=&#39;190&#39;&gt;English name&lt;/th&gt;&lt;th width=&#39;186&#39;&gt;French name&lt;/th&gt;&lt;th&gt;Check&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&#39;background:#FFF2F2;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;OVEN&lt;/td&gt;&lt;td&gt;&lt;i&gt;Seiurus aurocapilla&lt;/i&gt;&lt;/td&gt;&lt;td&gt;Ovenbird&lt;/td&gt;&lt;td&gt;Paruline couronn&amp;eacute;e&lt;/td&gt;&lt;td style=&#39;color:#842029&#39;&gt;Duplicate ID&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;3&lt;/td&gt;&lt;td&gt;SCTA&lt;/td&gt;&lt;td&gt;&lt;i&gt;Piranga olivacea&lt;/i&gt;&lt;/td&gt;&lt;td&gt;Scarlet Tanager&lt;/td&gt;&lt;td&gt;Piranga &amp;eacute;carlate&lt;/td&gt;&lt;td&gt;Passed&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background:#FFF2F2;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;4&lt;/td&gt;&lt;td&gt;OVEN&lt;/td&gt;&lt;td&gt;&lt;i&gt;Catharus ustulatus&lt;/i&gt;&lt;/td&gt;&lt;td&gt;Swainson&#39;s Thrush&lt;/td&gt;&lt;td&gt;Grive &amp;agrave; dos olive&lt;/td&gt;&lt;td style=&#39;color:#842029&#39;&gt;Duplicate ID&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+                    <mxGeometry height="161" width="864" x="456" y="368" as="geometry"/>
+                </mxCell>
+                <mxCell id="preview-count" parent="1" style="text;align=left;fontSize=13;fontColor=#495057;" value="3 rows checked; 2 flagged." vertex="1">
+                    <mxGeometry height="26" width="864" x="456" y="560" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

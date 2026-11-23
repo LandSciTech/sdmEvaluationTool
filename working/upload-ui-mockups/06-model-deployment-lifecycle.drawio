@@ -1,0 +1,147 @@
+<mxfile host="65bd71144e">
+    <diagram id="model-deployment-lifecycle" name="Model and deployment lifecycle">
+        <mxGraphModel dx="1349" dy="781" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="818" background="#FFFFFF" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" parent="1" style="text;align=left;fontSize=30;fontStyle=1;fontColor=#212529;" value="Model and deployment lifecycle" vertex="1">
+                    <mxGeometry height="44" width="1352" x="24" y="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="subtitle" parent="1" style="text;align=left;fontSize=16;fontColor=#495057;" value="A published model makes its materials available for deployment. Evaluators can use a deployment only while both are published." vertex="1">
+                    <mxGeometry height="26" width="1352" x="24" y="68" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-lane" parent="1" style="rounded=1;arcSize=5;fillColor=#F4F8FA;strokeColor=#C7D5DD;" vertex="1">
+                    <mxGeometry height="230" width="1352" x="24" y="108" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment-lane" parent="1" style="rounded=1;arcSize=5;fillColor=#F6F8F4;strokeColor=#CAD6C7;" vertex="1">
+                    <mxGeometry height="274" width="1352" x="24" y="388" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-lane-title" parent="1" style="text;align=left;fontSize=17;fontStyle=1;fontColor=#2E5266;" value="1. MODEL" vertex="1">
+                    <mxGeometry height="28" width="135" x="44" y="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-lane-note" parent="1" style="text;align=left;fontSize=14;fontColor=#495057;" value="Publish only when the required model-level and species-level materials are complete and consistent." vertex="1">
+                    <mxGeometry height="28" width="1170" x="185" y="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment-lane-title" parent="1" style="text;align=left;fontSize=17;fontStyle=1;fontColor=#476146;" value="2. DEPLOYMENT" vertex="1">
+                    <mxGeometry height="28" width="160" x="44" y="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment-lane-note" parent="1" style="text;align=left;fontSize=14;fontColor=#495057;" value="Only published models can be selected. Publishing also requires complete and consistent settings, materials, and species selections." vertex="1">
+                    <mxGeometry height="28" width="1141" x="214" y="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-draft" parent="1" style="rounded=1;arcSize=12;html=1;fillColor=#FFF3CD;strokeColor=#A67B29;fontColor=#664D03;fontSize=15;" value="&lt;b&gt;Draft&lt;/b&gt;&lt;br&gt;Create and edit materials" vertex="1">
+                    <mxGeometry height="68" width="218" x="64" y="202" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-check" parent="1" style="rhombus;perimeter=rhombusPerimeter;html=1;fillColor=#FFFFFF;strokeColor=#2E5266;fontColor=#212529;fontSize=14;" value="Required&lt;br&gt;materials&lt;br&gt;pass checks?" vertex="1">
+                    <mxGeometry height="106" width="222" x="348" y="183" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-published" parent="1" style="rounded=1;arcSize=12;html=1;fillColor=#E5F1E3;strokeColor=#476146;fontColor=#30452E;fontSize=15;" value="&lt;b&gt;Published&lt;/b&gt;&lt;br&gt;Available for deployments" vertex="1">
+                    <mxGeometry height="68" width="250" x="686" y="202" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-archived" parent="1" style="rounded=1;arcSize=12;html=1;fillColor=#F1F3F5;strokeColor=#6C757D;fontColor=#343A40;fontSize=15;" value="&lt;b&gt;Archived&lt;/b&gt;&lt;br&gt;Unavailable for deployments" vertex="1">
+                    <mxGeometry height="68" width="214" x="1120" y="202" as="geometry"/>
+                </mxCell>
+                <mxCell id="deploy-draft" parent="1" style="rounded=1;arcSize=12;html=1;fillColor=#FFF3CD;strokeColor=#A67B29;fontColor=#664D03;fontSize=15;" value="&lt;b&gt;Draft&lt;/b&gt;&lt;br&gt;Create and edit deployment" vertex="1">
+                    <mxGeometry height="68" width="218" x="64" y="498" as="geometry"/>
+                </mxCell>
+                <mxCell id="deploy-check" parent="1" style="rhombus;perimeter=rhombusPerimeter;html=1;fillColor=#FFFFFF;strokeColor=#476146;fontColor=#212529;fontSize=14;" value="Model published&lt;br&gt;and deployment&lt;br&gt;checks pass?" vertex="1">
+                    <mxGeometry height="106" width="222" x="348" y="479" as="geometry"/>
+                </mxCell>
+                <mxCell id="deploy-published" parent="1" style="rounded=1;arcSize=12;html=1;fillColor=#E5F1E3;strokeColor=#476146;fontColor=#30452E;fontSize=15;" value="&lt;b&gt;Published&lt;/b&gt;&lt;br&gt;Eligible for evaluation" vertex="1">
+                    <mxGeometry height="68" width="250" x="686" y="498" as="geometry"/>
+                </mxCell>
+                <mxCell id="deploy-archived" parent="1" style="rounded=1;arcSize=12;html=1;fillColor=#F1F3F5;strokeColor=#6C757D;fontColor=#343A40;fontSize=15;" value="&lt;b&gt;Archived&lt;/b&gt;&lt;br&gt;Unavailable for evaluation" vertex="1">
+                    <mxGeometry height="68" width="214" x="1120" y="498" as="geometry"/>
+                </mxCell>
+                <mxCell id="evaluation" parent="1" style="rounded=1;arcSize=35;html=1;whiteSpace=wrap;fillColor=#E3EDF4;strokeColor=#2E5266;strokeWidth=2;fontColor=#2E5266;fontSize=15;" value="&lt;b&gt;Evaluation UI&lt;/b&gt;&lt;br&gt;Show only if the deployment and its model are both published." vertex="1">
+                    <mxGeometry height="72" width="486" x="704" y="709" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-publish-request" edge="1" parent="1" source="model-draft" style="endArrow=block;endFill=1;strokeColor=#495057;strokeWidth=2;fontSize=13;labelBackgroundColor=#F4F8FA;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="model-check" value="Publish">
+                    <mxGeometry relative="1" y="13" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-publish-yes" edge="1" parent="1" source="model-check" style="endArrow=block;endFill=1;strokeColor=#476146;strokeWidth=2;fontSize=13;labelBackgroundColor=#F4F8FA;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="model-published" value="Yes">
+                    <mxGeometry relative="1" y="13" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-publish-no" edge="1" parent="1" source="model-check" style="edgeStyle=segmentEdgeStyle;endArrow=block;endFill=1;strokeColor=#A67B29;strokeWidth=2;fontColor=#664D03;fontSize=13;labelBackgroundColor=#F4F8FA;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" target="model-draft" value="No: fix materials">
+                    <mxGeometry relative="1" y="11" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="459" y="312"/>
+                            <mxPoint x="173" y="312"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="model-archive" edge="1" parent="1" source="model-published" style="endArrow=block;endFill=1;strokeColor=#495057;strokeWidth=2;fontSize=13;labelBackgroundColor=#F4F8FA;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="model-archived" value="Archive">
+                    <mxGeometry relative="1" y="13" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-restore" edge="1" parent="1" source="model-archived" style="edgeStyle=segmentEdgeStyle;endArrow=block;endFill=1;dashed=1;strokeColor=#6C757D;strokeWidth=2;fontSize=13;labelBackgroundColor=#F4F8FA;exitX=0.5;exitY=0;entryX=0.72;entryY=0;" target="model-published" value="Restore to published">
+                    <mxGeometry relative="1" y="-11" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1227" y="174"/>
+                            <mxPoint x="866" y="174"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="model-revert" edge="1" parent="1" source="model-published" style="edgeStyle=segmentEdgeStyle;endArrow=block;endFill=1;dashed=1;strokeColor=#6C757D;strokeWidth=2;fontSize=13;labelBackgroundColor=#F4F8FA;exitX=0.3;exitY=0;entryX=0.5;entryY=0;" target="model-draft" value="Return to draft">
+                    <mxGeometry relative="1" y="-11" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="761" y="174"/>
+                            <mxPoint x="173" y="174"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="model-dependency" edge="1" parent="1" source="model-published" style="edgeStyle=segmentEdgeStyle;endArrow=block;endFill=1;strokeColor=#2E5266;strokeWidth=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="deploy-check">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="811" y="362"/>
+                            <mxPoint x="459" y="362"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="dependency-label" parent="1" style="rounded=1;arcSize=18;fillColor=#FFFFFF;strokeColor=#C7D5DD;fontSize=14;fontStyle=1;fontColor=#2E5266;" value="Selected model must be published" vertex="1">
+                    <mxGeometry height="30" width="256" x="507" y="347" as="geometry"/>
+                </mxCell>
+                <mxCell id="deploy-publish-request" edge="1" parent="1" source="deploy-draft" style="endArrow=block;endFill=1;strokeColor=#495057;strokeWidth=2;fontSize=13;labelBackgroundColor=#F6F8F4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="deploy-check" value="Publish">
+                    <mxGeometry relative="1" y="13" as="geometry"/>
+                </mxCell>
+                <mxCell id="deploy-publish-yes" edge="1" parent="1" source="deploy-check" style="endArrow=block;endFill=1;strokeColor=#476146;strokeWidth=2;fontSize=13;labelBackgroundColor=#F6F8F4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="deploy-published" value="Yes">
+                    <mxGeometry relative="1" y="13" as="geometry"/>
+                </mxCell>
+                <mxCell id="deploy-publish-no" edge="1" parent="1" source="deploy-check" style="edgeStyle=segmentEdgeStyle;endArrow=block;endFill=1;strokeColor=#A67B29;strokeWidth=2;fontColor=#664D03;fontSize=13;labelBackgroundColor=#F6F8F4;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" target="deploy-draft" value="No: fix settings or selections">
+                    <mxGeometry relative="1" y="11" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="459" y="602"/>
+                            <mxPoint x="173" y="602"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="deploy-archive" edge="1" parent="1" source="deploy-published" style="endArrow=block;endFill=1;strokeColor=#495057;strokeWidth=2;fontSize=13;labelBackgroundColor=#F6F8F4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="deploy-archived" value="Archive">
+                    <mxGeometry relative="1" y="13" as="geometry"/>
+                </mxCell>
+                <mxCell id="deploy-restore" edge="1" parent="1" source="deploy-archived" style="edgeStyle=segmentEdgeStyle;endArrow=block;endFill=1;dashed=1;strokeColor=#6C757D;strokeWidth=2;fontSize=13;labelBackgroundColor=#F6F8F4;exitX=0.5;exitY=0;entryX=0.72;entryY=0;" target="deploy-published" value="Restore to published">
+                    <mxGeometry relative="1" y="-11" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1227" y="467"/>
+                            <mxPoint x="866" y="467"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="deploy-revert" edge="1" parent="1" source="deploy-published" style="edgeStyle=segmentEdgeStyle;endArrow=block;endFill=1;dashed=1;strokeColor=#6C757D;strokeWidth=2;fontSize=13;labelBackgroundColor=#F6F8F4;exitX=0.3;exitY=1;entryX=0.2;entryY=1;" target="deploy-draft" value="Return to draft*">
+                    <mxGeometry relative="1" y="11" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="761" y="636"/>
+                            <mxPoint x="108" y="636"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="evaluation-eligibility" edge="1" parent="1" source="deploy-published" style="endArrow=block;endFill=1;strokeColor=#2E5266;strokeWidth=3;exitX=0.72;exitY=1;entryX=0.33333;entryY=0;" target="evaluation">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="RM6_TLwKP_sMY4Hru1Uf-1" parent="1" style="text;align=left;fontSize=14;fontColor=#495057;" value="* All deployments depending on &#xa;  the model needs to be archived" vertex="1">
+                    <mxGeometry height="58" width="214" x="1125" y="270" as="geometry"/>
+                </mxCell>
+                <mxCell id="RM6_TLwKP_sMY4Hru1Uf-2" parent="1" style="text;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;color: rgb(52, 58, 64); font-family: Helvetica; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;*&amp;nbsp;Limited to deployments with&amp;nbsp;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(52, 58, 64); font-family: Helvetica; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&amp;nbsp; no evaluations&lt;/span&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="39" width="209" x="1131" y="568" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

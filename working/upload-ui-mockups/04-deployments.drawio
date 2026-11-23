@@ -1,0 +1,127 @@
+<mxfile host="65bd71144e">
+    <diagram id="upload-deployments" name="04 Deployment Upload and Settings">
+        <mxGraphModel dx="1542" dy="892" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="1050" background="#FFFFFF" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="nav" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="60" width="1360" as="geometry"/>
+                </mxCell>
+                <mxCell id="brand" parent="1" style="text;align=left;fontSize=19;fontStyle=1;fontColor=#2E5266;" value="SDM Tool | Upload" vertex="1">
+                    <mxGeometry height="60" width="190" x="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-overview" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Overview" vertex="1">
+                    <mxGeometry height="60" width="104" x="227" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-species" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Species list" vertex="1">
+                    <mxGeometry height="60" width="120" x="333" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-model" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Model materials" vertex="1">
+                    <mxGeometry height="60" width="154" x="455" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-deployment" parent="1" style="fillColor=#2E5266;strokeColor=none;fontSize=15;fontStyle=1;fontColor=#FFFFFF;" value="Deployments" vertex="1">
+                    <mxGeometry height="40" width="130" x="611" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-users" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="User management" vertex="1">
+                    <mxGeometry height="60" width="164" x="743" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="role" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;fontSize=14;fontColor=#2E5266;" value="User Name" vertex="1">
+                    <mxGeometry height="36" width="124" x="1212" y="12" as="geometry"/>
+                </mxCell>
+                <mxCell id="heading" parent="1" style="text;align=left;fontSize=30;fontStyle=1;fontColor=#212529;" value="Deployment Upload &amp; Settings" vertex="1">
+                    <mxGeometry height="42" width="1050" x="24" y="82" as="geometry"/>
+                </mxCell>
+                <mxCell id="intro" parent="1" style="text;align=left;fontSize=15;fontColor=#495057;" value="Choose what evaluators will review: a published model, species and materials, map layers, and evaluation settings." vertex="1">
+                    <mxGeometry height="25" width="1090" x="24" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="new-deployment" parent="1" style="fillColor=#2E5266;strokeColor=none;fontSize=14;fontStyle=1;fontColor=#FFFFFF;" value="+ New draft deployment" vertex="1">
+                    <mxGeometry height="39" width="220" x="1116" y="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="sidebar" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="482" width="274" x="24" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="sidebar-heading" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=13;fontSize=16;fontStyle=1;fontColor=#212529;" value="Current deployment" vertex="1">
+                    <mxGeometry height="44" width="274" x="24" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="choose-deployment" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=15;fontColor=#212529;" value="Western boreal review ▾" vertex="1">
+                    <mxGeometry height="37" width="242" x="40" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="deployment-status" parent="1" style="text;align=left;fontSize=14;fontStyle=1;fontColor=#805514;" value="Status: Draft" vertex="1">
+                    <mxGeometry height="24" width="242" x="40" y="286" as="geometry"/>
+                </mxCell>
+                <mxCell id="save" parent="1" style="fillColor=#FFFFFF;strokeColor=#2E5266;fontSize=14;fontStyle=1;fontColor=#2E5266;" value="Save draft" vertex="1">
+                    <mxGeometry height="36" width="242" x="40" y="322" as="geometry"/>
+                </mxCell>
+                <mxCell id="publish" parent="1" style="fillColor=#E9ECEF;strokeColor=#CED4DA;fontSize=14;fontColor=#646C74;" value="Publish deployment" vertex="1">
+                    <mxGeometry height="36" width="242" x="40" y="368" as="geometry"/>
+                </mxCell>
+                <mxCell id="archive" parent="1" style="fillColor=#E9ECEF;strokeColor=#CED4DA;fontSize=14;fontColor=#646C74;" value="Archive deployment" vertex="1">
+                    <mxGeometry height="36" width="242" x="40" y="414" as="geometry"/>
+                </mxCell>
+                <mxCell id="readiness" parent="1" style="html=1;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEE2E6;align=left;verticalAlign=top;spacing=10;fontSize=13;fontColor=#212529;" value="&lt;b&gt;Publish checks&lt;/b&gt;&lt;br&gt;&lt;span style=&#39;color:#476146&#39;&gt;Passed: required settings and map layers&lt;br&gt;Passed: model and material selection&lt;/span&gt;&lt;br&gt;&lt;span style=&#39;color:#805514&#39;&gt;Blocked: select at least one species&lt;/span&gt;&lt;br&gt;&lt;br&gt;Archive is available after publishing." vertex="1">
+                    <mxGeometry height="159" width="242" x="40" y="470" as="geometry"/>
+                </mxCell>
+                <mxCell id="main-card" parent="1" style="fillColor=#FFFFFF;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="482" width="1018" x="318" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-strip" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="44" width="1018" x="318" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-settings" parent="1" style="fillColor=#2E5266;strokeColor=#2E5266;fontSize=14;fontStyle=1;fontColor=#FFFFFF;" value="Settings (required)" vertex="1">
+                    <mxGeometry height="44" width="172" x="318" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-subunits" parent="1" style="text;fontSize=14;fontColor=#2E5266;" value="Subunits (optional)" vertex="1">
+                    <mxGeometry height="44" width="174" x="495" y="186" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-questions" parent="1" style="text;fontSize=14;fontColor=#2E5266;" value="Questions (optional)" vertex="1">
+                    <mxGeometry height="44" width="172" x="674" y="186" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-materials" parent="1" style="text;fontSize=14;fontColor=#2E5266;" value="Materials (required)" vertex="1">
+                    <mxGeometry height="44" width="171" x="851" y="186" as="geometry"/>
+                </mxCell>
+                <mxCell id="use-case-label" parent="1" style="text;align=left;fontSize=15;fontStyle=1;fontColor=#212529;" value="Use cases" vertex="1">
+                    <mxGeometry height="24" width="982" x="336" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="use-case" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=14;fontColor=#212529;" value="Habitat assessment, species distribution review ▾" vertex="1">
+                    <mxGeometry height="38" width="982" x="336" y="269" as="geometry"/>
+                </mxCell>
+                <mxCell id="instructions-label" parent="1" style="text;align=left;fontSize=15;fontStyle=1;fontColor=#212529;" value="Instructions for this deployment (required)" vertex="1">
+                    <mxGeometry height="24" width="982" x="336" y="322" as="geometry"/>
+                </mxCell>
+                <mxCell id="instructions-browse" parent="1" style="fillColor=#E9ECEF;strokeColor=#CED4DA;fontSize=14;fontColor=#212529;" value="Browse..." vertex="1">
+                    <mxGeometry height="38" width="93" x="336" y="351" as="geometry"/>
+                </mxCell>
+                <mxCell id="instructions-file" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=14;fontColor=#212529;" value="deployment-instructions.md" vertex="1">
+                    <mxGeometry height="38" width="889" x="429" y="351" as="geometry"/>
+                </mxCell>
+                <mxCell id="instructions-help" parent="1" style="text;align=left;fontSize=13;fontColor=#495057;" value="Upload a Markdown (.md) file." vertex="1">
+                    <mxGeometry height="24" width="982" x="336" y="397" as="geometry"/>
+                </mxCell>
+                <mxCell id="layers-label" parent="1" style="text;align=left;fontSize=15;fontStyle=1;fontColor=#212529;" value="Spatial prediction layers" vertex="1">
+                    <mxGeometry height="24" width="982" x="336" y="444" as="geometry"/>
+                </mxCell>
+                <mxCell id="layers-help" parent="1" style="text;align=left;fontSize=13;fontColor=#495057;" value="Display at least one prediction layer. Set a color palette for each selected layer." vertex="1">
+                    <mxGeometry height="24" width="982" x="336" y="472" as="geometry"/>
+                </mxCell>
+                <mxCell id="layers-table" parent="1" style="text;html=1;align=left;verticalAlign=top;spacing=0;fontSize=14;fontColor=#212529;" value="&lt;table width=&#39;978&#39; cellpadding=&#39;10&#39; cellspacing=&#39;0&#39; style=&#39;border-collapse:collapse&#39;&gt;&lt;tr style=&#39;background:#F1F3F5;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;th width=&#39;120&#39;&gt;Display&lt;/th&gt;&lt;th width=&#39;390&#39;&gt;Layer&lt;/th&gt;&lt;th&gt;Color palette&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;&amp;#9745;&lt;/td&gt;&lt;td&gt;Habitat suitability&lt;/td&gt;&lt;td&gt;[ Viridis &amp;#9662; ]&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;&amp;#9744;&lt;/td&gt;&lt;td&gt;Prediction uncertainty&lt;/td&gt;&lt;td style=&#39;color:#646C74&#39;&gt;Select layer to enable palette&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+                    <mxGeometry height="122" width="982" x="336" y="503" as="geometry"/>
+                </mxCell>
+                <mxCell id="other-states" parent="1" style="text;align=left;fontSize=20;fontStyle=1;fontColor=#2E5266;" value="Other inner-tab states" vertex="1">
+                    <mxGeometry height="30" width="500" x="24" y="690" as="geometry"/>
+                </mxCell>
+                <mxCell id="state-note" parent="1" style="text;align=left;fontSize=14;fontColor=#495057;" value="Design reference: each state below replaces the Settings panel; it is not shown beneath it in the app." vertex="1">
+                    <mxGeometry height="24" width="1312" x="24" y="722" as="geometry"/>
+                </mxCell>
+                <mxCell id="subunits-example" parent="1" style="html=1;whiteSpace=wrap;fillColor=#F8F9FA;strokeColor=#DEE2E6;align=left;verticalAlign=top;spacing=14;fontSize=14;fontColor=#212529;" value="&lt;b style=&#39;font-size:16px&#39;&gt;Subunits (optional)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Source&lt;/b&gt; &amp;nbsp; ( ) None &amp;nbsp; ( ) Upload layer &amp;nbsp; (o) Generate&lt;br&gt;&lt;br&gt;&lt;b&gt;When Upload is selected&lt;/b&gt;&lt;br&gt;[ Choose subunit layer ] &amp;nbsp; [ Validate ]&lt;br&gt;&lt;br&gt;&lt;b&gt;When Generate is selected&lt;/b&gt;&lt;br&gt;[ Shape: Grid / Hexagon &amp;#9662; ] &amp;nbsp; [ Size (km): 10 ]&lt;br&gt;[ Preview and validate ]&lt;br&gt;&lt;br&gt;Use the extent of observations and predictions for generation. Compare uploaded layer extent with both." vertex="1">
+                    <mxGeometry height="252" width="418" x="24" y="763" as="geometry"/>
+                </mxCell>
+                <mxCell id="questions-example" parent="1" style="html=1;whiteSpace=wrap;fillColor=#F8F9FA;strokeColor=#DEE2E6;align=left;verticalAlign=top;spacing=14;fontSize=14;fontColor=#212529;" value="&lt;b style=&#39;font-size:16px&#39;&gt;Questions (optional)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Source&lt;/b&gt; &amp;nbsp; (o) Use defaults &amp;nbsp; ( ) Upload custom&lt;br&gt;&lt;br&gt;[ Download default questions (.csv) ]&lt;br&gt;&lt;br&gt;&lt;b&gt;When Upload custom is selected&lt;/b&gt;&lt;br&gt;[ Choose edited table ] &amp;nbsp; [ Upload and validate ]&lt;br&gt;&lt;br&gt;Show format and content errors before accepting the custom questions." vertex="1">
+                    <mxGeometry height="252" width="418" x="462" y="763" as="geometry"/>
+                </mxCell>
+                <mxCell id="materials-example" parent="1" style="html=1;whiteSpace=wrap;fillColor=#F8F9FA;strokeColor=#DEE2E6;align=left;verticalAlign=top;spacing=14;fontSize=14;fontColor=#212529;" value="&lt;b style=&#39;font-size:16px&#39;&gt;Materials (required)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Published model&lt;/b&gt; &amp;nbsp; [ Boreal birds v1 &amp;#9662; ]&lt;br&gt;&lt;br&gt;&lt;b&gt;Materials&lt;/b&gt; [ Select all ]&lt;br&gt;&amp;#9745; Observations &amp;nbsp; &amp;#9745; Spatial predictions &amp;nbsp; &amp;#9744; Model fit&lt;br&gt;&lt;b&gt;Species&lt;/b&gt; [ Select all ]&lt;br&gt;&amp;#9744; OVEN : Ovenbird &amp;nbsp; &amp;#9744; BBWA : Bay-breasted Warbler&lt;br&gt;&lt;br&gt;Start with all available items selected, then allow a subset. &lt;b style=&#39;color:#805514&#39;&gt;0 species selected; select at least one.&lt;/b&gt;&lt;br&gt;Open: should this selection also define Evaluation UI tabs?" vertex="1">
+                    <mxGeometry height="252" width="436" x="900" y="763" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -4,6 +4,8 @@
 
 It is important to consider how the Upload UI will be deployed, locally or on a remote server, independently or combined with the Evaluation UI.
 
+[View the two deployment options in draw.io](./upload-ui-mockups/00-upload-ui-deployment.drawio).
+
 - The Upload UI is launched locally -- this is the most pressing use case for now:
   - Its purpose is the provide an interactive way of organizing materials and deployments
   - The files and database need to be deployed for the Evaluation UI
@@ -36,6 +38,8 @@ Modelers can change the status of models and deployments through the Upload UI.
 - Modelers can also revert changes (e.g. archived to published or published to draft),
   but published -> draft deployments may be restricted to cases where no evaluations have been added yet
 
+[View the model and deployment lifecycle flowchart in draw.io](./upload-ui-mockups/06-model-deployment-lifecycle.drawio).
+
 Access to the Upload UI **DISCUSSION NEEDED: input from Dave & Elly**:
 
 - Users with modeler privileges will have access to the Upload UI and can manage materials, deployments, and related configurations
@@ -45,6 +49,14 @@ Access to the Upload UI **DISCUSSION NEEDED: input from Dave & Elly**:
   - Option 3: each modeler user can only view and edit the models/deployments they have created
 
 ## UI Layout
+
+Each section is a separate fluid page in the top navigation. Open the editable draw.io mockup for each page:
+
+1. [Overview](./upload-ui-mockups/01-overview.drawio)
+2. [Species list](./upload-ui-mockups/02-species-list.drawio)
+3. [Model Materials Upload & Settings](./upload-ui-mockups/03-model-materials.drawio)
+4. [Deployment Upload & Settings](./upload-ui-mockups/04-deployments.drawio)
+5. [User Management](./upload-ui-mockups/05-user-management.drawio)
 
 ### 1. Overview
 
@@ -105,7 +117,7 @@ Different tabs for managing deployment materials:
 
 - Deployment settings (mandatory):
   - Use cases
-  - Instructions for the deployment (this is currently an app level setting, may need to be customized per deployment)
+  - Instructions for the deployment: require a Markdown (`.md`) file upload for each deployment. Instructions are currently an app-level setting.
   - Spatial prediction layers: select the map layers to be displayed for the deployment (at least 1) and define color palettes
 - Deployment subunits (not mandatory):
   - Upload custom subunit layer (perform some validation: compare extent with other materials like observations and prediction layers)

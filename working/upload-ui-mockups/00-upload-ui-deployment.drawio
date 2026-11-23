@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="upload-ui-deployment" name="Upload UI deployment">
+    <mxGraphModel dx="1220" dy="740" grid="0" page="1" pageScale="1" pageWidth="1220" pageHeight="740" background="#FFFFFF">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Upload UI deployment options" style="text;html=1;align=left;verticalAlign=middle;spacing=0;fontSize=30;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="24" y="20" width="1172" height="44" as="geometry"/>
+        </mxCell>
+        <mxCell id="subtitle" value="Deploy data from a local workspace, or have two separate apps use the same data on a server." style="text;html=1;align=left;verticalAlign=middle;spacing=0;fontSize=16;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="24" y="66" width="1172" height="24" as="geometry"/>
+        </mxCell>
+        <mxCell id="local-panel" style="rounded=1;arcSize=5;fillColor=#F0FDFA;strokeColor=#5EEAD4;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="24" y="108" width="1172" height="312" as="geometry"/>
+        </mxCell>
+        <mxCell id="local-title" value="1. Upload UI runs locally" style="text;html=1;align=left;verticalAlign=middle;spacing=0;fontSize=23;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="48" y="126" width="880" height="31" as="geometry"/>
+        </mxCell>
+        <mxCell id="priority" value="CURRENT PRIORITY" style="rounded=1;arcSize=50;fillColor=#0F766E;strokeColor=none;fontColor=#FFFFFF;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1008" y="128" width="164" height="27" as="geometry"/>
+        </mxCell>
+        <mxCell id="local-subtitle" value="Organize materials and evaluation deployments interactively, then deploy the files and database." style="text;html=1;align=left;verticalAlign=middle;spacing=0;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="48" y="162" width="1124" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="workstation" value="LOCAL WORKSTATION" style="rounded=1;arcSize=9;dashed=1;dashPattern=5 4;fillColor=#FFFFFF;strokeColor=#94A3B8;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;fontSize=12;fontStyle=1;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="48" y="201" width="492" height="148" as="geometry"/>
+        </mxCell>
+        <mxCell id="evaluation-host" value="HOSTED EVALUATION APP" style="rounded=1;arcSize=9;dashed=1;dashPattern=5 4;fillColor=#FFFFFF;strokeColor=#94A3B8;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;fontSize=12;fontStyle=1;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="732" y="201" width="440" height="148" as="geometry"/>
+        </mxCell>
+        <mxCell id="local-upload" value="&lt;b&gt;Upload UI&lt;/b&gt;&lt;br&gt;Materials and deployments" style="rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#CCFBF1;strokeColor=#0F766E;fontColor=#134E4A;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="66" y="246" width="194" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="local-data" value="&lt;b&gt;Local data&lt;/b&gt;&lt;br&gt;Files + database" style="rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#1E293B;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="326" y="246" width="196" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="deployed-data" value="&lt;b&gt;Deployed data&lt;/b&gt;&lt;br&gt;Files + database" style="rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#1E293B;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="750" y="246" width="178" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="hosted-evaluation" value="&lt;b&gt;Evaluation UI&lt;/b&gt;&lt;br&gt;Hosted Shiny app" style="rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#1E3A8A;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="994" y="246" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="organize-data" value="Updates" style="html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="local-upload" target="local-data">
+          <mxGeometry x="0" y="12" relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="deploy-data" value="Deploy files + database" style="html=1;endArrow=block;endFill=1;strokeColor=#0F766E;strokeWidth=3;fontColor=#115E59;fontSize=14;fontStyle=1;labelBackgroundColor=#F0FDFA;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="local-data" target="deployed-data">
+          <mxGeometry x="0" y="14" relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="use-deployed-data" value="Uses" style="html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="hosted-evaluation" target="deployed-data">
+          <mxGeometry x="0" y="-12" relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="local-platforms" value="&lt;b&gt;shinyapps.io or Posit Connect:&lt;/b&gt; Host only the Evaluation UI, so the deployment does not need a second app route." style="text;html=1;align=left;verticalAlign=middle;spacing=0;fontSize=15;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="48" y="368" width="1124" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="standalone-panel" style="rounded=1;arcSize=5;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="24" y="444" width="1172" height="272" as="geometry"/>
+        </mxCell>
+        <mxCell id="standalone-title" value="2. Upload UI runs as a standalone app" style="text;html=1;align=left;verticalAlign=middle;spacing=0;fontSize=23;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="48" y="462" width="1124" height="31" as="geometry"/>
+        </mxCell>
+        <mxCell id="standalone-subtitle" value="The apps are not integrated. They share files and a database on the remote server." style="text;html=1;align=left;verticalAlign=middle;spacing=0;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="48" y="498" width="1124" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="remote-server" value="REMOTE SERVER" style="rounded=1;arcSize=9;dashed=1;dashPattern=5 4;fillColor=#FFFFFF;strokeColor=#94A3B8;align=left;verticalAlign=top;spacingLeft=16;spacingTop=10;fontSize=12;fontStyle=1;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="48" y="538" width="1124" height="118" as="geometry"/>
+        </mxCell>
+        <mxCell id="standalone-upload" value="&lt;b&gt;Upload UI&lt;/b&gt;&lt;br&gt;Standalone Shiny app" style="rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#CCFBF1;strokeColor=#0F766E;fontColor=#134E4A;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="112" y="576" width="250" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="shared-data" value="&lt;b&gt;Shared data&lt;/b&gt;&lt;br&gt;Files + database" style="rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#F1F5F9;strokeColor=#64748B;fontColor=#1E293B;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="490" y="576" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="standalone-evaluation" value="&lt;b&gt;Evaluation UI&lt;/b&gt;&lt;br&gt;Separate Shiny app" style="rounded=1;arcSize=12;html=1;whiteSpace=wrap;fillColor=#DBEAFE;strokeColor=#2563EB;fontColor=#1E3A8A;fontSize=15;" vertex="1" parent="1">
+          <mxGeometry x="858" y="576" width="250" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="manage-shared-data" value="Manages" style="html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=13;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="standalone-upload" target="shared-data">
+          <mxGeometry x="0" y="12" relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="use-shared-data" value="Uses" style="html=1;endArrow=block;endFill=1;strokeColor=#475569;strokeWidth=2;fontColor=#334155;fontSize=13;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="standalone-evaluation" target="shared-data">
+          <mxGeometry x="0" y="-12" relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="standalone-platforms" value="&lt;b&gt;Suitable for:&lt;/b&gt; Shiny Server or ShinyProxy." style="text;html=1;align=left;verticalAlign=middle;spacing=0;fontSize=15;fontColor=#334155;" vertex="1" parent="1">
+          <mxGeometry x="48" y="670" width="1124" height="30" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

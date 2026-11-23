@@ -1,0 +1,133 @@
+<mxfile host="65bd71144e">
+    <diagram id="upload-model-materials" name="03 Model Materials Upload and Settings">
+        <mxGraphModel dx="1855" dy="1073" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1360" pageHeight="965" background="#FFFFFF" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="nav" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="60" width="1360" as="geometry"/>
+                </mxCell>
+                <mxCell id="brand" parent="1" style="text;align=left;fontSize=19;fontStyle=1;fontColor=#2E5266;" value="SDM Tool | Upload" vertex="1">
+                    <mxGeometry height="60" width="190" x="24" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-overview" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Overview" vertex="1">
+                    <mxGeometry height="60" width="104" x="227" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-species" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Species list" vertex="1">
+                    <mxGeometry height="60" width="120" x="333" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-model" parent="1" style="fillColor=#2E5266;strokeColor=none;fontSize=15;fontStyle=1;fontColor=#FFFFFF;" value="Model materials" vertex="1">
+                    <mxGeometry height="40" width="154" x="455" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-deployment" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="Deployments" vertex="1">
+                    <mxGeometry height="60" width="130" x="611" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="nav-users" parent="1" style="text;fontSize=15;fontColor=#2E5266;" value="User management" vertex="1">
+                    <mxGeometry height="60" width="164" x="743" y="14" as="geometry"/>
+                </mxCell>
+                <mxCell id="role" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;fontSize=14;fontColor=#2E5266;" value="User Name" vertex="1">
+                    <mxGeometry height="36" width="124" x="1212" y="12" as="geometry"/>
+                </mxCell>
+                <mxCell id="heading" parent="1" style="text;align=left;fontSize=30;fontStyle=1;fontColor=#212529;" value="Model Materials Upload &amp; Settings" vertex="1">
+                    <mxGeometry height="42" width="1000" x="24" y="82" as="geometry"/>
+                </mxCell>
+                <mxCell id="intro" parent="1" style="text;align=left;fontSize=15;fontColor=#495057;" value="Complete model metadata first, then upload materials for each species and review completeness before publishing." vertex="1">
+                    <mxGeometry height="25" width="1100" x="24" y="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="new-model" parent="1" style="fillColor=#2E5266;strokeColor=none;fontSize=14;fontStyle=1;fontColor=#FFFFFF;" value="+ New draft model" vertex="1">
+                    <mxGeometry height="39" width="180" x="1156" y="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="sidebar" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="393" width="254" x="24" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="sidebar-heading" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=13;fontSize=16;fontStyle=1;fontColor=#212529;" value="Current model" vertex="1">
+                    <mxGeometry height="44" width="254" x="24" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="choose-model" parent="1" style="fillColor=#FFFFFF;strokeColor=#CED4DA;align=left;spacingLeft=10;fontSize=15;fontColor=#212529;" value="Boreal birds v2 ▾" vertex="1">
+                    <mxGeometry height="37" width="222" x="40" y="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-status" parent="1" style="text;align=left;fontSize=14;fontStyle=1;fontColor=#805514;" value="Status: Draft" vertex="1">
+                    <mxGeometry height="24" width="222" x="40" y="286" as="geometry"/>
+                </mxCell>
+                <mxCell id="save" parent="1" style="fillColor=#FFFFFF;strokeColor=#2E5266;fontSize=14;fontStyle=1;fontColor=#2E5266;" value="Save draft" vertex="1">
+                    <mxGeometry height="36" width="222" x="40" y="322" as="geometry"/>
+                </mxCell>
+                <mxCell id="publish" parent="1" style="fillColor=#E9ECEF;strokeColor=#CED4DA;fontSize=14;fontColor=#646C74;" value="Publish model" vertex="1">
+                    <mxGeometry height="36" width="222" x="40" y="368" as="geometry"/>
+                </mxCell>
+                <mxCell id="archive" parent="1" style="fillColor=#E9ECEF;strokeColor=#CED4DA;fontSize=14;fontColor=#646C74;" value="Archive model" vertex="1">
+                    <mxGeometry height="36" width="222" x="40" y="414" as="geometry"/>
+                </mxCell>
+                <mxCell id="lifecycle-help" parent="1" style="text;html=1;whiteSpace=wrap;align=left;fontSize=13;fontColor=#495057;" value="&lt;b&gt;Draft &amp;rarr; Published &amp;rarr; Archived&lt;/b&gt;&lt;br&gt;Publish after all required checks pass. Archive is available for published models." vertex="1">
+                    <mxGeometry height="73" width="222" x="40" y="468" as="geometry"/>
+                </mxCell>
+                <mxCell id="main-card" parent="1" style="fillColor=#FFFFFF;strokeColor=#DEE2E6;" vertex="1">
+                    <mxGeometry height="393" width="1038" x="298" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="model-level" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=10;fontSize=12;fontStyle=1;fontColor=#212529;" value="MODEL-LEVEL  /  NO SPECIES ID" vertex="1">
+                    <mxGeometry height="34" width="424" x="298" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="species-level" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=10;fontSize=12;fontStyle=1;fontColor=#212529;" value="SPECIES-LEVEL  /  SPECIES ID REQUIRED" vertex="1">
+                    <mxGeometry height="34" width="482" x="722" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="review-level" parent="1" style="fillColor=#D8DED8;strokeColor=#DEE2E6;align=left;spacingLeft=10;fontSize=12;fontStyle=1;fontColor=#212529;" value="REVIEW" vertex="1">
+                    <mxGeometry height="34" width="132" x="1204" y="177" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-predictor-metadata" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;fontSize=13;fontColor=#2E5266;" value="Predictor metadata *" vertex="1">
+                    <mxGeometry height="39" width="151" x="298" y="211" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-model-metadata" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;fontSize=13;fontColor=#2E5266;" value="Model metadata *" vertex="1">
+                    <mxGeometry height="39" width="139" x="449" y="211" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-raster" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;fontSize=13;fontColor=#2E5266;" value="Predictor raster" vertex="1">
+                    <mxGeometry height="39" width="134" x="588" y="211" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-observations" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;fontSize=13;fontColor=#2E5266;" value="Observations *" vertex="1">
+                    <mxGeometry height="39" width="117" x="722" y="211" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-summary" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;fontSize=13;fontColor=#2E5266;" value="Model summary" vertex="1">
+                    <mxGeometry height="39" width="130" x="839" y="211" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-fit" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;fontSize=13;fontColor=#2E5266;" value="Model fit" vertex="1">
+                    <mxGeometry height="39" width="95" x="969" y="211" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-predictions" parent="1" style="fillColor=#F8F9FA;strokeColor=#DEE2E6;fontSize=13;fontColor=#2E5266;" value="Spatial predictions *" vertex="1">
+                    <mxGeometry height="39" width="140" x="1064" y="211" as="geometry"/>
+                </mxCell>
+                <mxCell id="tab-completeness" parent="1" style="fillColor=#2E5266;strokeColor=#2E5266;fontSize=13;fontStyle=1;fontColor=#FFFFFF;" value="Completeness" vertex="1">
+                    <mxGeometry height="39" width="132" x="1204" y="211" as="geometry"/>
+                </mxCell>
+                <mxCell id="blocking-check" parent="1" style="fillColor=#FFF3CD;strokeColor=#FFECB5;html=1;align=left;spacingLeft=10;fontSize=14;fontColor=#664D03;" value="&lt;b&gt;Not ready to publish.&lt;/b&gt; BBWA is missing a model-fit table and required prediction layers." vertex="1">
+                    <mxGeometry height="44" width="1006" x="314" y="267" as="geometry"/>
+                </mxCell>
+                <mxCell id="metadata-check" parent="1" style="text;html=1;align=left;fontSize=14;fontColor=#212529;" value="&lt;b&gt;Model-level checks:&lt;/b&gt; Predictor metadata passed; model metadata and map layer metadata passed; predictor raster not supplied (optional)." vertex="1">
+                    <mxGeometry height="26" width="1006" x="314" y="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="completeness-table" parent="1" style="text;html=1;align=left;verticalAlign=top;spacing=0;fontSize=14;fontColor=#212529;" value="&lt;table width=&#39;1000&#39; cellpadding=&#39;10&#39; cellspacing=&#39;0&#39; style=&#39;border-collapse:collapse&#39;&gt;&lt;tr style=&#39;background:#F1F3F5;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;th width=&#39;160&#39;&gt;Species ID&lt;/th&gt;&lt;th width=&#39;162&#39;&gt;Observations&lt;/th&gt;&lt;th width=&#39;162&#39;&gt;Model summary&lt;/th&gt;&lt;th width=&#39;148&#39;&gt;Model fit&lt;/th&gt;&lt;th width=&#39;174&#39;&gt;Spatial predictions&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;/tr&gt;&lt;tr style=&#39;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;OVEN&lt;/td&gt;&lt;td&gt;Valid&lt;/td&gt;&lt;td&gt;Valid&lt;/td&gt;&lt;td&gt;Valid&lt;/td&gt;&lt;td&gt;2 / 2 valid&lt;/td&gt;&lt;td style=&#39;color:#476146&#39;&gt;&lt;b&gt;Complete&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr style=&#39;background:#FFF8E5;border-bottom:1px solid #DEE2E6&#39;&gt;&lt;td&gt;BBWA&lt;/td&gt;&lt;td&gt;Valid&lt;/td&gt;&lt;td&gt;Placeholder&lt;/td&gt;&lt;td&gt;Missing&lt;/td&gt;&lt;td&gt;0 / 2 uploaded&lt;/td&gt;&lt;td style=&#39;color:#805514&#39;&gt;&lt;b&gt;Incomplete&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" vertex="1">
+                    <mxGeometry height="126" width="1006" x="314" y="363" as="geometry"/>
+                </mxCell>
+                <mxCell id="completeness-help" parent="1" style="text;align=left;fontSize=13;fontColor=#495057;" value="Every species with uploaded data must have all required materials. Valid placeholders count where allowed." vertex="1">
+                    <mxGeometry height="30" width="770" x="314" y="490" as="geometry"/>
+                </mxCell>
+                <mxCell id="run-checks" parent="1" style="fillColor=#FFFFFF;strokeColor=#2E5266;fontSize=14;fontStyle=1;fontColor=#2E5266;" value="Run checks again" vertex="1">
+                    <mxGeometry height="36" width="164" x="1156" y="502" as="geometry"/>
+                </mxCell>
+                <mxCell id="other-states" parent="1" style="text;align=left;fontSize=20;fontStyle=1;fontColor=#2E5266;" value="Other inner-tab states" vertex="1">
+                    <mxGeometry height="30" width="500" x="24" y="604" as="geometry"/>
+                </mxCell>
+                <mxCell id="state-note" parent="1" style="text;align=left;fontSize=14;fontColor=#495057;" value="Design reference: each state below replaces the Completeness panel; it is not shown beneath it in the app." vertex="1">
+                    <mxGeometry height="24" width="1312" x="24" y="638" as="geometry"/>
+                </mxCell>
+                <mxCell id="metadata-example" parent="1" style="html=1;whiteSpace=wrap;fillColor=#F8F9FA;strokeColor=#DEE2E6;align=left;verticalAlign=top;spacing=14;fontSize=14;fontColor=#212529;" value="&lt;b style=&#39;font-size:16px&#39;&gt;Model-level tabs&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Predictor metadata (required)&lt;/b&gt;&lt;br&gt;[ Choose metadata table ] &amp;nbsp; [ Validate ]&lt;br&gt;&lt;br&gt;&lt;b&gt;Model metadata (required)&lt;/b&gt;&lt;br&gt;[ Open metadata tool ] &amp;nbsp; [ Upload and validate ]&lt;br&gt;Include required prediction map layer metadata.&lt;br&gt;&lt;br&gt;&lt;b&gt;Predictor raster (optional)&lt;/b&gt;&lt;br&gt;[ Choose raster ] &amp;nbsp; [ Validate ]&lt;br&gt;Resample if too large; report basic checks." vertex="1">
+                    <mxGeometry height="245" width="418" x="24" y="678" as="geometry"/>
+                </mxCell>
+                <mxCell id="species-example" parent="1" style="html=1;whiteSpace=wrap;fillColor=#F8F9FA;strokeColor=#DEE2E6;align=left;verticalAlign=top;spacing=14;fontSize=14;fontColor=#212529;" value="&lt;b style=&#39;font-size:16px&#39;&gt;Observations, Model summary, Model fit&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Species ID&lt;/b&gt; &amp;nbsp; [ BBWA : Bay-breasted Warbler &amp;#9662; ]&lt;br&gt;&lt;br&gt;Each tab: [ Choose table ] &amp;nbsp; [ Upload and validate ]&lt;br&gt;All three tables are required for the selected species.&lt;br&gt;&lt;br&gt;&lt;b&gt;Model summary and Model fit only&lt;/b&gt;&lt;br&gt;[ Use placeholder table ]&lt;br&gt;When using a summary placeholder, turn off the Model summary display in evaluations." vertex="1">
+                    <mxGeometry height="245" width="436" x="462" y="678" as="geometry"/>
+                </mxCell>
+                <mxCell id="prediction-example" parent="1" style="html=1;whiteSpace=wrap;fillColor=#F8F9FA;strokeColor=#DEE2E6;align=left;verticalAlign=top;spacing=14;fontSize=14;fontColor=#212529;" value="&lt;b style=&#39;font-size:16px&#39;&gt;Spatial predictions (required)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Species with uploads:&lt;/b&gt; OVEN (2 layers)&lt;br&gt;&lt;b&gt;Species missing uploads:&lt;/b&gt; BBWA (0 layers)&lt;br&gt;&lt;br&gt;[ Species: BBWA &amp;#9662; ] &amp;nbsp; [ Choose multiple rasters ]&lt;br&gt;[ Upload and validate ]&lt;br&gt;&lt;br&gt;Match the layer IDs, resolution, and extent to validated map layer metadata. Upload is disabled until that metadata passes. Re-upload policy is open." vertex="1">
+                    <mxGeometry height="245" width="418" x="918" y="678" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
