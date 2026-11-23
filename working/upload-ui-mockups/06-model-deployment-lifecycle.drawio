@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="model-deployment-lifecycle" name="Model and deployment lifecycle">
-        <mxGraphModel dx="1349" dy="781" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="818" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="1686" dy="1205" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="818" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -139,7 +139,7 @@
                     <mxGeometry height="58" width="214" x="1125" y="270" as="geometry"/>
                 </mxCell>
                 <mxCell id="RM6_TLwKP_sMY4Hru1Uf-2" parent="1" style="text;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;color: rgb(52, 58, 64); font-family: Helvetica; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;*&amp;nbsp;Limited to deployments with&amp;nbsp;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(52, 58, 64); font-family: Helvetica; font-size: 14px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&amp;nbsp; no evaluations&lt;/span&gt;&lt;/div&gt;" vertex="1">
-                    <mxGeometry height="39" width="209" x="1131" y="568" as="geometry"/>
+                    <mxGeometry height="39" width="209" x="340" y="662" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
